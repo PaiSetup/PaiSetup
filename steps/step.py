@@ -22,21 +22,13 @@ class Step:
     def _perform_impl(self, *args, **kwargs):
         raise NotImplementedError()
 
-
-class SucklessSoftwareStep(Step):
-    def __init__(self, name, url, revision, patches_dir):
-        super().__init__(name)
-        self.url = url
-        self.revision = revision
-        self.patches_dir = patches_dir
-
-    def _perform_impl(self, root_build_dir):
+    def _compile_remote_project(self, root_build_dir, url, revision, patches_dir):
         build_dir = root_build_dir / self.name
-        log(f"Downloading {self.url} to {build_dir}")
-        command.setup_git_repo(self.url, self.revision, build_dir)
+        log(f"Downloading {url} to {build_dir}")
+        command.setup_git_repo(url, revision, build_dir)
 
         with Pushd(build_dir):
-            diffs = list(Path(self.patches_dir).glob("*.diff"))
+            diffs = list(Path(patches_dir).glob("*.diff"))
             log(f"Applying {len(diffs)} patches")
             with LogIndent():
                 diffs.sort()
