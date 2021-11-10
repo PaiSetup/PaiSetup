@@ -4,8 +4,9 @@ import os
 
 
 class DotProfileStep(Step):
-    def __init__(self):
+    def __init__(self, root_dir):
         super().__init__("dotprofile")
+        self.root_dir = root_dir
 
     def _perform_impl(self):
         path = f'{os.environ["HOME"]}/.profile'
@@ -20,6 +21,7 @@ class DotProfileStep(Step):
 # Do not change it manually
 #
 
+export LINUX_SETUP_ROOT={self.root_dir}
 source ~/Scripts/BashUtils/load_functions.sh
 
 alias ls='ls --color=auto'
