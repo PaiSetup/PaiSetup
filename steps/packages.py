@@ -45,6 +45,8 @@ class PackagesStep(Step):
             "sudo",
             "openssh",
             "strace",
+            "wget",
+            "curl",
             # Fonts
             # "libxft-bgra",
             "ttf-joypixels",
