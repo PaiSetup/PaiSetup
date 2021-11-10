@@ -10,7 +10,7 @@ class DwmStep(Step):
 
     def _perform_impl(self):
         (Path(self.root_build_dir) / "dwm" / "config.h").unlink(True)
-        (Path(self.root_build_dir) / "dwm" / "blocks.h").unlink(True)
+        (Path(self.root_build_dir) / "dwmblocks" / "blocks.h").unlink(True)
 
         self._compile_remote_project(
             self.root_build_dir / "dwm",
