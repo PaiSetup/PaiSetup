@@ -19,7 +19,8 @@ steps = [
 ]
 
 for step in steps:
-    steps[0].add_packages(step.get_required_packages())
+    if hasattr(steps[0], "add_packages"):
+        steps[0].add_packages(step.get_required_packages())
 
 for step in steps:
     step.perform()
