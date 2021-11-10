@@ -34,4 +34,7 @@ class DwmStep(Step):
             "xorg-xinit",
             "xorg-server",
             "xorg-xsetroot",
+            "nitrogen",
+            "picom",
+            "dmenu",
         ]

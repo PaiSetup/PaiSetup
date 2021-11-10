@@ -36,3 +36,19 @@ class PackagesStep(Step):
                 self._packages += arg
             else:
                 self._packages.append(str(arg))
+
+    def get_required_packages(self):
+        return [
+            # General
+            "nano",
+            "code",  # TODO switch to codium
+            "sudo",
+            "openssh",
+            "strace",
+            # Fonts
+            # "libxft-bgra",
+            "ttf-joypixels",
+            # C++
+            "base-devel",
+            "cmake",
+        ]

@@ -9,14 +9,14 @@ from steps.packages import PackagesStep
 from steps.dotprofile import DotProfileStep
 
 
-root_dir = Path(__file__)
-build_dir = root_dir.parent / "build"
+root_dir = Path(__file__).parent
+build_dir = root_dir / "build"
 
 steps = [
     PackagesStep(build_dir),  # This must be the first step
-    DotProfileStep(),
+    DotProfileStep(root_dir),
     GitStep(),
-    DwmStep(build_dir, True),
+    DwmStep(build_dir, False),
     StStep(build_dir, True),
 ]
 

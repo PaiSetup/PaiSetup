@@ -22,6 +22,8 @@ class DotProfileStep(Step):
 #
 
 export LINUX_SETUP_ROOT={self.root_dir}
+export EDITOR=nano
+
 source ~/Scripts/BashUtils/load_functions.sh
 
 alias ls='ls --color=auto'
