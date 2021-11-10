@@ -14,10 +14,6 @@ class CommandError(Exception):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
 
 
-def cd(dir):
-    os.chdir(dir)
-
-
 def run_command(command, *, stdin=subprocess.PIPE):
     args = shlex.split(command)
     process = subprocess.Popen(args, stdin=stdin, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -26,6 +22,14 @@ def run_command(command, *, stdin=subprocess.PIPE):
 
     if return_value != 0:
         raise CommandError(output)
+
+
+def is_package_installed(package):
+    try:
+        run_command("pacman -Qi yay-git")
+        return True
+    except CommandError:
+        return False
 
 
 def setup_git_repo(url, revision, directory):

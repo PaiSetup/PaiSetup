@@ -10,15 +10,18 @@ class PackagesStep(Step):
         self._packages = []
 
     def _perform_impl(self, root_build_dir):
-        log("Installing git")
-        command.run_command("sudo pacman -Syu git --noconfirm")
+        if command.is_package_installed("yay-git"):
+            log("yay is already installed")
+        else:
+            log("Installing git")
+            command.run_command("sudo pacman -Syu git --noconfirm")
 
-        log("Downloading yay")
-        build_dir = root_build_dir / "yay-git"
-        command.setup_git_repo("https://aur.archlinux.org/yay-git.git", "", build_dir)
-        log("Installing yay")
-        with Pushd(build_dir):
-            command.run_command("makepkg -si --noconfirm")
+            log("Downloading yay")
+            build_dir = root_build_dir / "yay-git"
+            command.setup_git_repo("https://aur.archlinux.org/yay-git.git", "", build_dir)
+            log("Installing yay")
+            with Pushd(build_dir):
+                command.run_command("makepkg -si --noconfirm")
 
         packages = " ".join(self._packages)
         log(f"Installing packages: {packages}")
