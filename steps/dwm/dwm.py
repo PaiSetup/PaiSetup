@@ -10,3 +10,6 @@ class DwmStep(SucklessSoftwareStep):
             "6.2",
             Path(__file__).parent,
         )
+
+    def get_required_packages(self):
+        return ["xorg-xrandr", "xorg-xinit", "xorg-server", "xorg-xsetroot"]

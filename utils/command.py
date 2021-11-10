@@ -36,7 +36,7 @@ def setup_git_repo(url, revision, directory):
     with utils.os_helpers.Pushd(directory):
         run_command(f"git reset {revision} --hard")
         run_command(f"git clean -fxd")
-        run_command(f"chmod ugo+rw {directory} -R")
+        run_command(f"sudo chmod ugo+rw {directory} -R")
 
 
 def apply_patch(file):

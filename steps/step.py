@@ -7,15 +7,14 @@ from utils.log import log, LogIndent
 
 
 class Step:
-    def __init__(self, name, *, requires_root=False):
+    def __init__(self, name):
         self.name = name
-        self.requires_root = requires_root
+
+    def get_required_packages(self):
+        pass
 
     def perform(self, *args, **kwargs):
         log(f"Performing step: {self.name}")
-
-        if self.requires_root:
-            self._require_root_rights()
 
         with LogIndent():
             self._perform_impl(*args, **kwargs)
@@ -23,15 +22,10 @@ class Step:
     def _perform_impl(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def _require_root_rights(self):
-        effective_user_id = os.geteuid()
-        if effective_user_id != 0:
-            raise PermissionError()
-
 
 class SucklessSoftwareStep(Step):
     def __init__(self, name, url, revision, patches_dir):
-        super().__init__(name, requires_root=True)
+        super().__init__(name)
         self.url = url
         self.revision = revision
         self.patches_dir = patches_dir
@@ -51,4 +45,4 @@ class SucklessSoftwareStep(Step):
                     command.apply_patch(diff)
 
             log(f"Building and installing")
-            command.run_command("make install")
+            command.run_command("sudo make install")
