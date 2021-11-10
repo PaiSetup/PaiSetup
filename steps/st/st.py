@@ -12,4 +12,5 @@ class StStep(Step):
             "https://git.suckless.org/st",
             "0.8.2",
             Path(__file__).parent,
+            True,
         )

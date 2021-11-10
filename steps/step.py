@@ -22,9 +22,10 @@ class Step:
     def _perform_impl(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def _compile_remote_project(self, build_dir, url, revision, patches_dir):
-        log(f"Downloading {url} to {build_dir}")
-        command.setup_git_repo(url, revision, build_dir)
+    def _compile_remote_project(self, build_dir, url, revision, patches_dir, setup_repo):
+        if setup_repo:
+            log(f"Downloading {url} to {build_dir}")
+            command.setup_git_repo(url, revision, build_dir)
 
         with Pushd(build_dir):
             diffs = list(Path(patches_dir).glob("*.diff"))

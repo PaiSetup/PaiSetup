@@ -12,6 +12,7 @@ class DwmStep(Step):
             "git://git.suckless.org/dwm",
             "6.2",
             Path(__file__).parent / "dwm",
+            True,
         )
 
         self._compile_remote_project(
@@ -19,6 +20,7 @@ class DwmStep(Step):
             "https://github.com/torrinfail/dwmblocks",
             "",
             Path(__file__).parent / "dwmblocks",
+            True,
         )
 
     def get_required_packages(self):
