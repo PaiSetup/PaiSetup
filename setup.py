@@ -16,7 +16,7 @@ steps = [
     PackagesStep(build_dir),  # This must be the first step
     DotProfileStep(root_dir),
     GitStep(),
-    DwmStep(build_dir, False),
+    DwmStep(build_dir, True),
     StStep(build_dir, True),
 ]
 

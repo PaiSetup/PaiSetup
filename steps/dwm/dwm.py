@@ -27,7 +27,7 @@ class DwmStep(Step):
         self._compile_remote_project(
             self.root_build_dir / "dwmblocks",
             "https://github.com/torrinfail/dwmblocks",
-            "",
+            "96cbb453",
             dwm_step_dir / "dwmblocks",
             self.setup_repo,
         )
