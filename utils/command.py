@@ -7,8 +7,9 @@ from pathlib import Path
 
 class CommandError(Exception):
     def __init__(self, output):
-        self.stdout = output[0].decode("ascii") if output[0] != None else "None"
-        self.stderr = output[1].decode("ascii") if output[1] != None else "None"
+        a = output[0][1290:1310]
+        self.stdout = output[0].decode("utf-8") if output[0] != None else "None"
+        self.stderr = output[1].decode("utf-8") if output[1] != None else "None"
 
     def __str__(self):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
@@ -24,9 +25,19 @@ def run_command(command, *, stdin=subprocess.PIPE):
         raise CommandError(output)
 
 
-def is_package_installed(package):
+def are_packages_installed(arg):
+    known_package_groups = ["base-devel"]
+
+    packages = [p for p in arg if p not in known_package_groups]
+    package_groups = [p for p in arg if p in known_package_groups]
+
     try:
-        run_command("pacman -Qi yay-git")
+        if packages:
+            packages = " ".join(packages)
+            run_command(f"pacman -Qi {packages}")
+        if package_groups:
+            package_groups = " ".join(package_groups)
+            run_command(f"pacman -Qg {package_groups}")
         return True
     except CommandError:
         return False

@@ -11,7 +11,7 @@ class PackagesStep(Step):
         self._packages = []
 
     def _perform_impl(self):
-        if command.is_package_installed("yay-git"):
+        if command.are_packages_installed(["yay-git"]):
             log("yay is already installed")
         else:
             log("Installing git")
@@ -24,9 +24,13 @@ class PackagesStep(Step):
             with Pushd(build_dir):
                 command.run_command("makepkg -si --noconfirm")
 
-        packages = " ".join(self._packages)
-        log(f"Installing packages: {packages}")
-        command.run_command(f"sudo yay -Syu --noconfirm {packages}")
+        log(f"Required packages: {self._packages}")
+        if command.are_packages_installed(self._packages):
+            log("Already installed")
+        else:
+            log("Installing")
+
+            command.run_command(f"sudo yay -Syu --noconfirm {self._packages}")
 
     def add_packages(self, *args):
         for arg in args:
