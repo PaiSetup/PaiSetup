@@ -9,10 +9,13 @@ class DotProfileStep(Step):
         self.root_dir = root_dir
 
     def _perform_impl(self):
-        path = f'{os.environ["HOME"]}/.profile'
-        with open(path, "w") as file:
+        profile_path = f'{os.environ["HOME"]}/.profile'
+        bashrc_path = f'{os.environ["HOME"]}/.bashrc'
+        with open(profile_path, "w") as file:
             content = self._generate_content()
             file.write(content)
+        os.remove(bashrc_path)
+        os.symlink(profile_path, bashrc_path)
 
     def _generate_content(self):
         return fr"""#! usr/bin/sh
