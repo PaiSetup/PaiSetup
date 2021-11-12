@@ -2,7 +2,7 @@ diff --git a/blocks.def.h b/blocks.def.h
 index 9c22d68..4461afd 100644
 --- a/blocks.def.h
 +++ b/blocks.def.h
-@@ -1,9 +1,10 @@
+@@ -1,9 +1,11 @@
  //Modify this file to change what commands output to your statusbar, and recompile using the make command.
  static const Block blocks[] = {
 -	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
@@ -11,6 +11,7 @@ index 9c22d68..4461afd 100644
 -	{"", "date '+%b %d (%a) %I:%M%p'",					5,		0},
 +	/*Icon*/     /*Command*/                                              /*Update Interval*/   /*Update Signal*/
 +	{" ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/resources.sh",    2,                    0},
++	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/nettraf.sh",      1,                    0},
 +	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/volume.sh",       1,                    0},
 +	{"🔄 ",        "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/checkupdates.sh", 3600,                 0},
 +	{"📅 ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/date.sh",         60,                   0},
