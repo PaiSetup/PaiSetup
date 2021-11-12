@@ -4,8 +4,8 @@
 # Do not change it manually
 #
 
-(nitrogen --set-zoom-fill ~/Wallpapers/active ;  sleep 1 ;  nitrogen --set-zoom-fill ~/Wallpapers/active) &
-xrandr --output Virtual-1 --mode 1920x1080 &
+(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &
+(sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &
 picom -b --no-fading-openclose &
 dwmblocks &
 
