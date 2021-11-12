@@ -12,7 +12,7 @@ class StStep(Step):
         self._compile_remote_project(
             self.root_build_dir / "st",
             "https://git.suckless.org/st",
-            "0.8.2",
+            "0.8.4",
             Path(__file__).parent,
             self.setup_repo,
         )
