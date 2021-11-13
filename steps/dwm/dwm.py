@@ -32,8 +32,29 @@ class DwmStep(Step):
             self.setup_repo,
         )
 
-        copyfile(dwm_step_dir / "xinitrc", f"{os.environ['HOME']}/.xinitrc")
-        copyfile(dwm_step_dir / "dunstrc", f"{os.environ['HOME']}/.dunstrc")
+    def setup_required_dotfiles(self, dotfiles_step):
+        dwm_step_dir = Path(__file__).parent
+
+        dotfiles_step.add_dotfile_lines(
+            ".xinitrc",
+            [
+                "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
+                "(sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &",
+                "picom -b --no-fading-openclose &",
+                "dwmblocks &",
+                "dunst -config ~/.dunstrc &",
+                "",
+                "while true; do",
+                "    dwm >/dev/null 2>&1 || break",
+                "done",
+            ],
+        )
+        dotfiles_step.add_dotfile_symlink(
+            src=dwm_step_dir / "dunstrc",
+            link=".dunstrc",
+            prepend_home_dir_src=False,
+            prepend_home_dir_link=True,
+        )
 
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(

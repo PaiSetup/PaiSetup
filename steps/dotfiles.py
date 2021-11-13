@@ -1,6 +1,7 @@
 from steps.step import Step
 from utils import command
 import os
+from utils.log import log
 
 
 class DotFilesStep(Step):
@@ -61,14 +62,19 @@ class DotFilesStep(Step):
 
     def _perform_impl(self):
         for dotfile, lines in self.files_map.items():
+            log(f"Setting up {dotfile} with {len(lines)} lines")
             with open(dotfile, "w") as file:
                 file.writelines((f"{x}\n" for x in lines))
 
-        for src, dst in self.symlinks:
-            os.remove(dst)
-            os.symlink(src, dst)
+        for src, link in self.symlinks:
+            log(f"Creating symlink {link} -> {src}")
+            try:
+                os.remove(link)
+            except FileNotFoundError:
+                pass
+            os.symlink(src, link)
 
-    def add_dotfile_lines(self, dotfile, lines, prepend_home_dir=True):
+    def add_dotfile_lines(self, dotfile, lines, *, prepend_home_dir=True):
         if prepend_home_dir:
             dotfile = f'{os.environ["HOME"]}/{dotfile}'
 
@@ -83,12 +89,13 @@ class DotFilesStep(Step):
             ]
         self.files_map[dotfile] += lines
 
-    def add_dotfile_section(self, dotfile, section_comment, lines, prepend_home_dir=True):
-        lines = [f'# {section_comment}'] + lines + [""]
-        self.add_dotfile_lines(dotfile, lines, prepend_home_dir)
+    def add_dotfile_section(self, dotfile, section_comment, lines, *, prepend_home_dir=True):
+        lines = [f"# {section_comment}"] + lines + [""]
+        self.add_dotfile_lines(dotfile, lines, prepend_home_dir=prepend_home_dir)
 
-    def add_dotfile_symlink(self, src, dst, prepend_home_dir=True):
-        if prepend_home_dir:
+    def add_dotfile_symlink(self, src, link, *, prepend_home_dir_src=True, prepend_home_dir_link=True):
+        if prepend_home_dir_src:
             src = f'{os.environ["HOME"]}/{src}'
-            dst = f'{os.environ["HOME"]}/{dst}'
-        self.symlinks.append((src, dst))
+        if prepend_home_dir_link:
+            link = f'{os.environ["HOME"]}/{link}'
+        self.symlinks.append((src, link))
