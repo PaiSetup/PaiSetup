@@ -29,6 +29,8 @@ export EDITOR=nano
 
 source ~/Scripts/BashUtils/load_functions.sh
 
+echo 0 | sudo tee "/proc/sys/kernel/yama/ptrace_scope" > /dev/null
+
 alias ls='ls --color=auto'
 
 export PS1="\[\e[33m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]\[\e[31m\] \[\e[m\]\[\e[36m\]\w\[\e[m\]\[\e[33m\]]\[\e[m\]\[\e[31m\]\\$\[\e[m\] "
