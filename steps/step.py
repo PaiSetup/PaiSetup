@@ -10,7 +10,10 @@ class Step:
     def __init__(self, name):
         self.name = name
 
-    def get_required_packages(self):
+    def setup_required_packages(self, packages_step):
+        pass
+
+    def setup_required_dotfiles(self, dotfiles_step):
         pass
 
     def perform(self):

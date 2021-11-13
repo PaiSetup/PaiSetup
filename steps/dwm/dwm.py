@@ -35,14 +35,16 @@ class DwmStep(Step):
         copyfile(dwm_step_dir / "xinitrc", f"{os.environ['HOME']}/.xinitrc")
         copyfile(dwm_step_dir / "dunstrc", f"{os.environ['HOME']}/.dunstrc")
 
-    def get_required_packages(self):
-        return [
-            "xorg-xrandr",
-            "xorg-xinit",
-            "xorg-server",
-            "xorg-xsetroot",
-            "nitrogen",
-            "picom",
-            "dmenu",
-            "dunst",
-        ]
+    def setup_required_packages(self, packages_step):
+        packages_step.add_packages(
+            [
+                "xorg-xrandr",
+                "xorg-xinit",
+                "xorg-server",
+                "xorg-xsetroot",
+                "nitrogen",
+                "picom",
+                "dmenu",
+                "dunst",
+            ]
+        )

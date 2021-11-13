@@ -41,29 +41,31 @@ class PackagesStep(Step):
             else:
                 self._packages.append(str(arg))
 
-    def get_required_packages(self):
-        return [
-            # General
-            "nano",
-            "code",  # TODO switch to codium
-            "sudo",
-            "openssh",
-            "strace",
-            "wget",
-            "curl",
-            "graphui", # graphviz
-            # Fonts
-            # "libxft-bgra",
-            "ttf-joypixels",
-            # Python
-            "python",
-            "python-pip",
-            # C++
-            "base-devel",
-            "cmake",
-            "doxygen",
-            # Multimedia
-            "vlc",
-            "bcompare",
-            "git",
-        ]
+    def setup_required_packages(self, packages_step):
+        packages_step.add_packages(
+            [
+                # General
+                "nano",
+                "code",  # TODO switch to codium
+                "sudo",
+                "openssh",
+                "strace",
+                "wget",
+                "curl",
+                "graphui",  # graphviz
+                # Fonts
+                # "libxft-bgra",
+                "ttf-joypixels",
+                # Python
+                "python",
+                "python-pip",
+                # C++
+                "base-devel",
+                "cmake",
+                "doxygen",
+                # Multimedia
+                "vlc",
+                "bcompare",
+                "git",
+            ]
+        )

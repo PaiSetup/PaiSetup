@@ -12,17 +12,25 @@ from steps.dotfiles import DotFilesStep
 root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
 
+# Setup steps. They can be safely commented out if neccessary
 steps = [
-    PackagesStep(build_dir),  # This must be the first step
+    PackagesStep(build_dir),
     DotFilesStep(root_dir),
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),
 ]
 
+# Allow steps to express their dependencies to other steps
+find_step_with_method = lambda s, m: next((x for x in s if hasattr(x, m)), None)
+package_step = find_step_with_method(steps, "add_packages")
+dotfiles_step = find_step_with_method(steps, "add_dotfile_lines")
 for step in steps:
-    if hasattr(steps[0], "add_packages"):
-        steps[0].add_packages(step.get_required_packages())
+    if package_step:
+        step.setup_required_packages(package_step)
+    if dotfiles_step:
+        step.setup_required_dotfiles(dotfiles_step)
 
+# Run the steps
 for step in steps:
     step.perform()
