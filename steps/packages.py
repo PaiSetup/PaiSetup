@@ -51,10 +51,19 @@ class PackagesStep(Step):
             "strace",
             "wget",
             "curl",
+            "graphui", # graphviz
             # Fonts
             # "libxft-bgra",
             "ttf-joypixels",
+            # Python
+            "python",
+            "python-pip"
             # C++
             "base-devel",
             "cmake",
+            "doxygen",
+            # Multimedia
+            "vlc",
+            "bcompare",
+            "git",
         ]
