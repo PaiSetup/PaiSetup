@@ -6,7 +6,7 @@ from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
 from steps.git import GitStep
 from steps.packages import PackagesStep
-from steps.dotprofile import DotProfileStep
+from steps.dotfiles import DotFilesStep
 
 
 root_dir = Path(__file__).parent
@@ -14,7 +14,7 @@ build_dir = root_dir / "build"
 
 steps = [
     PackagesStep(build_dir),  # This must be the first step
-    DotProfileStep(root_dir),
+    DotFilesStep(root_dir),
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),
