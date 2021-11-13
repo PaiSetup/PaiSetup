@@ -33,6 +33,7 @@ class DwmStep(Step):
         )
 
         copyfile(dwm_step_dir / "xinitrc", f"{os.environ['HOME']}/.xinitrc")
+        copyfile(dwm_step_dir / "dunstrc", f"{os.environ['HOME']}/.dunstrc")
 
     def get_required_packages(self):
         return [
@@ -43,4 +44,5 @@ class DwmStep(Step):
             "nitrogen",
             "picom",
             "dmenu",
+            "dunst",
         ]

@@ -8,6 +8,7 @@
 (sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &
 picom -b --no-fading-openclose &
 dwmblocks &
+dunst -config ~/.dunstrc &
 
 while true; do
     dwm >/dev/null 2>&1 || break
