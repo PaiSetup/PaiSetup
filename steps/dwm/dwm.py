@@ -68,7 +68,7 @@ class DwmStep(Step):
         dotfiles_step.add_dotfile_section(
             ".profile",
             "Load X Resources file",
-            ["xrdb .Xresources"],
+            ["xrdb ~/.Xresources"],
         )
 
         dotfiles_step.add_dotfile_lines(
