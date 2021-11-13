@@ -2,6 +2,7 @@ from steps.step import Step
 from pathlib import Path
 from shutil import copyfile
 import os
+from steps.dotfiles import FileType
 
 
 class DwmStep(Step):
@@ -79,6 +80,7 @@ class DwmStep(Step):
                 "dmenu.selfgcolor: #eeeeee",
                 "dmenu.selbgcolor: #003b00",
             ],
+            file_type=FileType.XResources,
         )
 
     def setup_required_packages(self, packages_step):
