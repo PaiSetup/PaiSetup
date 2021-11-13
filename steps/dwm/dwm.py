@@ -32,6 +32,14 @@ class DwmStep(Step):
             self.setup_repo,
         )
 
+        self._compile_remote_project(
+            self.root_build_dir / "dmenu",
+            "https://git.suckless.org/dmenu",
+            "5.0",
+            dwm_step_dir / "dmenu",
+            self.setup_repo,
+        )
+
     def setup_required_dotfiles(self, dotfiles_step):
         dwm_step_dir = Path(__file__).parent
 
@@ -56,6 +64,23 @@ class DwmStep(Step):
             prepend_home_dir_link=True,
         )
 
+        dotfiles_step.add_dotfile_section(
+            ".profile",
+            "Load X Resources file",
+            ["xrdb .Xresources"],
+        )
+
+        dotfiles_step.add_dotfile_lines(
+            ".Xresources",
+            [
+                "dmenu.font: monospace:size=15",
+                "dmenu.normfgcolor: #bbbbbb",
+                "dmenu.normbgcolor: #222222",
+                "dmenu.selfgcolor: #eeeeee",
+                "dmenu.selbgcolor: #003b00",
+            ],
+        )
+
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(
             [
@@ -65,7 +90,6 @@ class DwmStep(Step):
                 "xorg-xsetroot",
                 "nitrogen",
                 "picom",
-                "dmenu",
                 "dunst",
             ]
         )

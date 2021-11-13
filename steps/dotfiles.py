@@ -51,6 +51,10 @@ class DotFilesStep(Step):
                 r"export PS1='\[\e[33m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]\[\e[31m\] \[\e[m\]\[\e[36m\]\w\[\e[m\]\[\e[33m\]]\[\e[m\]\[\e[31m\]\\$\[\e[m\] '",
             ],
         )
+
+        self.add_dotfile_symlink(".profile", ".bashrc")
+
+    def _perform_impl(self):
         self.add_dotfile_section(
             ".profile",
             "Automatically startup GUI only on tty1",
@@ -58,9 +62,7 @@ class DotFilesStep(Step):
                 '[[ -z "$DISPLAY" ]] && [[ $(tty) = /dev/tty1 ]] && startx',
             ],
         )
-        self.add_dotfile_symlink(".profile", ".bashrc")
 
-    def _perform_impl(self):
         for dotfile, lines in self.files_map.items():
             log(f"Setting up {dotfile} with {len(lines)} lines")
             with open(dotfile, "w") as file:
