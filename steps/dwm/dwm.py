@@ -52,6 +52,7 @@ class DwmStep(Step):
                 "picom -b --no-fading-openclose &",
                 "dwmblocks &",
                 "dunst -config ~/.dunstrc &",
+                "xrdb ~/.Xresources &"
                 "",
                 "while true; do",
                 "    dwm >/dev/null 2>&1 || break",
@@ -63,12 +64,6 @@ class DwmStep(Step):
             link=".dunstrc",
             prepend_home_dir_src=False,
             prepend_home_dir_link=True,
-        )
-
-        dotfiles_step.add_dotfile_section(
-            ".profile",
-            "Load X Resources file",
-            ["xrdb ~/.Xresources"],
         )
 
         dotfiles_step.add_dotfile_lines(
