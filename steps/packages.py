@@ -57,7 +57,7 @@ class PackagesStep(Step):
             "ttf-joypixels",
             # Python
             "python",
-            "python-pip"
+            "python-pip",
             # C++
             "base-devel",
             "cmake",

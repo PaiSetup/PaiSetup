@@ -26,6 +26,7 @@ class DotProfileStep(Step):
 
 export LINUX_SETUP_ROOT={self.root_dir}
 export EDITOR=nano
+export TERMINAL="st -e"
 
 source ~/Scripts/BashUtils/load_functions.sh
 
