@@ -1,7 +1,8 @@
+[ "$#" -ne 0 ] && [ -n "$BUTTON"] && BUTTON="$1"
+
 [ "$BUTTON" = "1" ] && {
     selection=`printf "Cancel\nShutdown\nReboot" | dmenu -l 3`
     case $selection in
-        Cancel) ;;
         Shutdown) shutdown now ;; 
         Reboot) reboot ;;
     esac
