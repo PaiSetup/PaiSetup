@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index c94a4d0..cfd3c72 100644
+index c94a4d0..9d16e68 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,26 +1,27 @@
@@ -36,18 +36,19 @@ index c94a4d0..cfd3c72 100644
  
  static const Rule rules[] = {
  	/* xprop(1):
-@@ -29,7 +30,9 @@ static const Rule rules[] = {
+@@ -29,7 +30,10 @@ static const Rule rules[] = {
  	 */
  	/* class      instance    title       tags mask     isfloating   monitor */
  	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 -	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 +	{ "firefox",  NULL,       NULL,       1 << 1,       0,           -1 },
++	{ "Chromium", NULL,       NULL,       1 << 1,       0,           -1 },
 +	{ "code-oss", NULL,       NULL,       1 << 2,       0,           -1 },
 +	{ "vlc",      NULL,       NULL,       1 << 3,       0,           -1 },
  };
  
  /* layout(s) */
-@@ -45,7 +48,7 @@ static const Layout layouts[] = {
+@@ -45,7 +49,7 @@ static const Layout layouts[] = {
  };
  
  /* key definitions */
@@ -56,7 +57,7 @@ index c94a4d0..cfd3c72 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -64,6 +67,8 @@ static Key keys[] = {
+@@ -64,6 +68,8 @@ static Key keys[] = {
  	/* modifier                     key        function        argument */
  	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
  	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },

@@ -53,6 +53,7 @@ class PackagesStep(Step):
                 "wget",
                 "curl",
                 "graphui",  # graphviz
+                "chromium",
                 # Fonts
                 # "libxft-bgra",
                 "ttf-joypixels",
