@@ -18,6 +18,9 @@
       ```
     - install os and basic tools `pacstrap /mnt base linux linux-firmware git python base-devel`
     - generate fstab
+      ```
+      genfstab -U /mnt >> /mnt/etc/fstab
+      ```
     - arch-chroot /mnt
   - Root-level configuration
     - Run commands
