@@ -14,7 +14,7 @@ class BashScriptsStep(Step):
     def _perform_impl(self):
         if self.setup_repo:
             log(f"Pulling latest version of scripts to {self.scripts_dir}")
-            command.setup_git_repo_on_latest_commit("git@github.com:InternalMD/Scripts.git", self.scripts_dir)
+            command.setup_git_repo_on_latest_commit("https://github.com/InternalMD/Scripts.git", self.scripts_dir)
         else:
             log(f"Skipping repo setup for {self.scripts_dir}")
 
