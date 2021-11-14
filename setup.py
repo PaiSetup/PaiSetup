@@ -8,6 +8,7 @@ from steps.git import GitStep
 from steps.packages import PackagesStep
 from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
+from steps.wallpaper.wallpaper import WallpaperStep
 
 
 root_dir = Path(__file__).parent
@@ -21,6 +22,7 @@ steps = [
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),
+    WallpaperStep(),
 ]
 
 # Allow steps to express their dependencies to other steps

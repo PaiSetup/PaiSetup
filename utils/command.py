@@ -16,7 +16,10 @@ class CommandError(Exception):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
 
 
-def run_command(command, *, stdin=subprocess.PIPE):
+def run_command(command, *, run_in_sh=False, stdin=subprocess.PIPE):
+    if run_in_sh:
+        command = f'sh -c "{command}"'
+
     args = shlex.split(command)
     process = subprocess.Popen(args, stdin=stdin, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output = process.communicate()
