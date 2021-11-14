@@ -3,6 +3,8 @@ from pathlib import Path
 from shutil import copyfile
 import os
 from steps.dotfiles import FileType
+from utils.log import log
+from utils import command
 
 
 class DwmStep(Step):
@@ -40,6 +42,9 @@ class DwmStep(Step):
             dwm_step_dir / "dmenu",
             self.setup_repo,
         )
+
+        log("Setting keyboard for X Window System to \"pl\"")
+        command.run_command("setxkbmap pl")
 
     def setup_required_dotfiles(self, dotfiles_step):
         dwm_step_dir = Path(__file__).parent
