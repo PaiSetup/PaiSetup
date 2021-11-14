@@ -3,8 +3,8 @@
   - Install system according to https://wiki.archlinux.org/title/installation_guide and https://wiki.archlinux.org/title/GRUB#UEFI_systems
     - disregard all locales, keyboard configs, clocks, etc. They will be setup by the scripts
     - partition the drive
-    - mount partitions and enable swap
-    - pacstrap /mnt base linux linux-firmware networkmanager git
+    - mount partitions and enable swap (efi is mounted to /mnt/efi)
+    - pacstrap /mnt base linux linux-firmware
     - generate fstab
     - arch-chroot /mnt
   - Root-level configuration

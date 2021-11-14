@@ -4,12 +4,12 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Configure time
+echo "Configuring time"
 timedatectl set-ntp true
 ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
 hwclock --systohc
 
-# Locale
+echo "Setting up locales"
 echo "pl_PL.UTF-8 UTF-8" >> /etc/locale.gen
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
@@ -19,17 +19,25 @@ localectl set-x11-keymap pl
 setxkbmap pl
 echo pl > /etc/vconsole.conf
 
-# Create user
+echo "Configuring root passwd"
+passwd
+
 USERNAME=maciej
+echo "Creating user: $USERNAME"
 useradd -m $USERNAME
 passwd $USERNAME
 groupadd sudo
 usermod -aG tty $USERNAME
 
-# Enable sudo
+echo "Setting up network"
+pacman -Syu --noconfirm networkmanager
+systemctl enable NetworkManager
+echo $USERNAME_arch > /etc/hostname
+
+echo "Enabling sudo"
 pacman -Syu --noconfirm sudo
 visudo
 printf '\n# Allow sudoers to use sudo without password\n%%sudo ALL=(ALL) NOPASSWD: ALL\n' | sudo EDITOR='tee -a' visudo
 
-# Login as the new user
+echo "Switching to user $USERNAME"
 su $USERNAME
