@@ -9,13 +9,14 @@ class PackagesStep(Step):
         super().__init__("packages")
         self.root_build_dir = root_build_dir
         self._packages = []
+        self._assumed_packages = []
 
     def _perform_impl(self):
-        if not command.get_missing_packages(["yay-git"]):
+        if not command.get_missing_packages(["yay"]):
             log("yay is already installed")
         else:
             log("Downloading yay")
-            build_dir = self.root_build_dir / "yay-git"
+            build_dir = self.root_build_dir / "yay"
             command.setup_git_repo("https://aur.archlinux.org/yay-git.git", "", build_dir)
             log("Installing yay")
             with Pushd(build_dir):
@@ -31,23 +32,33 @@ class PackagesStep(Step):
         if not missing_packages:
             log("Already installed")
         else:
-            log(f"Missing packages: {missing_packages}")
-            log("Installing")
-            command.run_command(f"sudo yay -Syu --noconfirm {' '.join(missing_packages)}")
+            assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
+            packages_option = " ".join(missing_packages)
+            install_command = f"sudo yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
+            log(f"Running command: {install_command}")
+            command.run_command(install_command)
 
-    def add_packages(self, *args):
+    @staticmethod
+    def _add_packages_to_list(packages_list, *args):
         for arg in args:
             if arg is None:
                 pass
             elif isinstance(arg, list):
-                self._packages += arg
+                packages_list += arg
             else:
-                self._packages.append(str(arg))
+                packages_list.append(str(arg))
+
+    def add_packages(self, *args):
+        PackagesStep._add_packages_to_list(self._packages, *args)
+
+    def add_assumed_packages(self, *args):
+        PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(
             [
                 # Fonts
+                "vi",
                 "libxft-bgra",
                 "ttf-joypixels",
                 "ttf-font-awesome",
@@ -73,5 +84,10 @@ class PackagesStep(Step):
                 "bcompare",
                 "git",
                 "alsa-utils",
+            ]
+        )
+        packages_step.add_assumed_packages(
+            [
+                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
             ]
         )
