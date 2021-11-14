@@ -58,7 +58,6 @@ class PackagesStep(Step):
         packages_step.add_packages(
             [
                 # Fonts
-                "vi",
                 "libxft-bgra",
                 "ttf-joypixels",
                 "ttf-font-awesome",
@@ -68,6 +67,8 @@ class PackagesStep(Step):
                 "sudo",
                 "openssh",
                 "strace",
+                "pacman-contrib",
+                "libnotify",
                 "wget",
                 "curl",
                 "graphui",  # graphviz
