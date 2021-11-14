@@ -11,7 +11,7 @@ class PackagesStep(Step):
         self._packages = []
 
     def _perform_impl(self):
-        if command.are_packages_installed(["yay-git"]):
+        if not command.get_missing_packages(["yay-git"]):
             log("yay is already installed")
         else:
             log("Downloading yay")
@@ -27,11 +27,12 @@ class PackagesStep(Step):
         command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
         log(f"Required packages: {self._packages}")
-        if command.are_packages_installed(self._packages):
+        missing_packages = command.get_missing_packages(self._packages)
+        if not missing_packages:
             log("Already installed")
         else:
+            log(f"Missing packages: {missing_packages}")
             log("Installing")
-
             command.run_command(f"sudo yay -Syu --noconfirm {self._packages}")
 
     def add_packages(self, *args):

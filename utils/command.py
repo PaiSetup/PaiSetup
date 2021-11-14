@@ -3,6 +3,7 @@ import shlex
 import os
 import utils.os_helpers
 from pathlib import Path
+import re
 
 
 class CommandError(Exception):
@@ -25,22 +26,31 @@ def run_command(command, *, stdin=subprocess.PIPE):
         raise CommandError(output)
 
 
-def are_packages_installed(arg):
+def get_missing_packages(arg):
     known_package_groups = ["base-devel"]
 
     packages = [p for p in arg if p not in known_package_groups]
     package_groups = [p for p in arg if p in known_package_groups]
 
-    try:
-        if packages:
-            packages = " ".join(packages)
+    # Try to get info on packages and package groups. Pacman will print a line to stderr for each
+    # package that isn't installed.
+    missing = []
+    if packages:
+        packages = " ".join(packages)
+        try:
             run_command(f"pacman -Qi {packages}")
-        if package_groups:
-            package_groups = " ".join(package_groups)
+        except CommandError as e:
+            missing += e.stderr.splitlines()
+    if package_groups:
+        package_groups = " ".join(package_groups)
+        try:
             run_command(f"pacman -Qg {package_groups}")
-        return True
-    except CommandError:
-        return False
+        except CommandError as e:
+            missing += e.stderr.splitlines()
+
+    # Extract package name from the line
+    missing = [re.search("'([^']+)'", x).group(1) for x in missing]
+    return missing
 
 
 def setup_git_repo(url, revision, directory):

@@ -85,6 +85,7 @@ class DwmStep(Step):
                 "xorg-xinit",
                 "xorg-server",
                 "xorg-xsetroot",
+                "xorg-setxkbmap",
                 "nitrogen",
                 "picom",
                 "dunst",
