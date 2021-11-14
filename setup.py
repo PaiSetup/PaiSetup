@@ -7,6 +7,7 @@ from steps.st.st import StStep
 from steps.git import GitStep
 from steps.packages import PackagesStep
 from steps.dotfiles import DotFilesStep
+from steps.bash_scripts import BashScriptsStep
 
 
 root_dir = Path(__file__).parent
@@ -16,6 +17,7 @@ build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir),
     DotFilesStep(root_dir),
+    BashScriptsStep(True),
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),

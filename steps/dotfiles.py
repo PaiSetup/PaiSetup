@@ -48,13 +48,6 @@ class DotFilesStep(Step):
         )
         self.add_dotfile_section(
             ".profile",
-            "Convenience scripts",
-            [
-                "source ~/Scripts/BashUtils/load_functions.sh",
-            ],
-        )
-        self.add_dotfile_section(
-            ".profile",
             "Allow attaching debugger to a running process",
             [
                 "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
