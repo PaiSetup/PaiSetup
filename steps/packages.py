@@ -47,6 +47,10 @@ class PackagesStep(Step):
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(
             [
+                # Fonts
+                "libxft-bgra",
+                "ttf-joypixels",
+                "ttf-font-awesome",
                 # General
                 "nano",
                 "code",  # TODO switch to codium
@@ -57,10 +61,6 @@ class PackagesStep(Step):
                 "curl",
                 "graphui",  # graphviz
                 "chromium",
-                # Fonts
-                "libxft-bgra",
-                "ttf-joypixels",
-                "ttf-font-awesome",
                 # Python
                 "python",
                 "python-pip",
