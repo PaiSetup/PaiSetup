@@ -33,7 +33,7 @@ class PackagesStep(Step):
         else:
             log(f"Missing packages: {missing_packages}")
             log("Installing")
-            command.run_command(f"sudo yay -Syu --noconfirm {self._packages}")
+            command.run_command(f"sudo yay -Syu --noconfirm {' '.join(missing_packages)}")
 
     def add_packages(self, *args):
         for arg in args:
