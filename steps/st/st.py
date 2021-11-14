@@ -16,3 +16,12 @@ class StStep(Step):
             Path(__file__).parent,
             self.setup_repo,
         )
+
+    def setup_required_dotfiles(self, dotfiles_step):
+        dotfiles_step.add_dotfile_section(
+            ".profile",
+            "Command for calling default terminal",
+            [
+                "export TERMINAL='st -e'",
+            ],
+        )

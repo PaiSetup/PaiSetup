@@ -19,8 +19,6 @@ class BashScriptsStep(Step):
             log(f"Skipping repo setup for {self.scripts_dir}")
 
     def setup_required_dotfiles(self, dotfiles_step):
-        dwm_step_dir = Path(__file__).parent
-
         dotfiles_step.add_dotfile_section(
             ".profile",
             "Convenience scripts",

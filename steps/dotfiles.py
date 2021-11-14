@@ -43,7 +43,6 @@ class DotFilesStep(Step):
                 f"export LINUX_SETUP_ROOT={self.root_dir}",
                 "export EDITOR=nano",
                 "export BROWSER=firefox",
-                "export TERMINAL='st -e'",
             ],
         )
         self.add_dotfile_section(
@@ -55,9 +54,10 @@ class DotFilesStep(Step):
         )
         self.add_dotfile_section(
             ".profile",
-            "Automatically color ls output",
+            "ls aliases",
             [
                 "alias ls='ls --color=auto'",
+                "alias ll='ls -la'"
             ],
         )
         self.add_dotfile_section(
