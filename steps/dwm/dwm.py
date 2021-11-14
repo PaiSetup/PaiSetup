@@ -43,8 +43,6 @@ class DwmStep(Step):
             self.setup_repo,
         )
 
-        log("Setting keyboard for X Window System to \"pl\"")
-        command.run_command("setxkbmap pl")
 
     def setup_required_dotfiles(self, dotfiles_step):
         dwm_step_dir = Path(__file__).parent

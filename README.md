@@ -39,6 +39,8 @@
         LinuxSetup/ssh_setup.sh
         LinuxSetup/setup.py
         ```
-    - reboot
+    - Reboot
+    - OS should boot into graphical interface
+    - Run `setxkbmap pl` to enable polish diacritics
 
 WARNING: only `setup.py` script can be run multiple times safely. Running other `.sh` scripts repeatedly can have unforseen consequences.
