@@ -4,7 +4,7 @@
     - disregard all locales, keyboard configs, clocks, etc. They will be setup by the scripts
     - partition the drive
     - mount partitions and enable swap (efi is mounted to /mnt/efi)
-    - pacstrap /mnt base linux linux-firmware
+    - install os and basic tools `pacstrap /mnt base linux linux-firmware git python base-devel`
     - generate fstab
     - arch-chroot /mnt
   - Root-level configuration

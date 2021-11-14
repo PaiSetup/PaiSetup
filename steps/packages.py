@@ -14,15 +14,17 @@ class PackagesStep(Step):
         if command.are_packages_installed(["yay-git"]):
             log("yay is already installed")
         else:
-            log("Installing git")
-            command.run_command("sudo pacman -Syu git --noconfirm")
-
             log("Downloading yay")
             build_dir = self.root_build_dir / "yay-git"
             command.setup_git_repo("https://aur.archlinux.org/yay-git.git", "", build_dir)
             log("Installing yay")
             with Pushd(build_dir):
                 command.run_command("makepkg -si --noconfirm")
+
+        log("Setting permissions for tmp yay directory")
+        command.run_command("sudo mkdir /tmp/yay -p")
+        command.run_command("sh -c 'sudo chown $USER /tmp/yay'")
+        command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
         log(f"Required packages: {self._packages}")
         if command.are_packages_installed(self._packages):
@@ -55,8 +57,9 @@ class PackagesStep(Step):
                 "graphui",  # graphviz
                 "chromium",
                 # Fonts
-                # "libxft-bgra",
+                "libxft-bgra",
                 "ttf-joypixels",
+                "ttf-font-awesome",
                 # Python
                 "python",
                 "python-pip",
@@ -68,5 +71,6 @@ class PackagesStep(Step):
                 "vlc",
                 "bcompare",
                 "git",
+                "alsa-utils",
             ]
         )

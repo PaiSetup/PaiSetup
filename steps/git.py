@@ -9,4 +9,3 @@ class GitStep(Step):
     def _perform_impl(self):
         command.run_command("git config --global user.name MaciejDziuban")
         command.run_command("git config --global user.email dziuban.maciej@gmail.com")
-        command.run_command('git config --global url."ssh://git@github.com".insteadOf https://github.com')

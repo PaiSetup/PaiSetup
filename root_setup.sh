@@ -26,7 +26,6 @@ USERNAME=maciej
 echo "Creating user: $USERNAME"
 useradd -m $USERNAME
 passwd $USERNAME
-groupadd sudo
 usermod -aG tty $USERNAME
 
 echo "Setting up network"
@@ -36,7 +35,8 @@ echo $USERNAME_arch > /etc/hostname
 
 echo "Enabling sudo"
 pacman -Syu --noconfirm sudo
-visudo
+groupadd sudo
+usermod -aG tty $USERNAME
 printf '\n# Allow sudoers to use sudo without password\n%%sudo ALL=(ALL) NOPASSWD: ALL\n' | sudo EDITOR='tee -a' visudo
 
 echo "Switching to user $USERNAME"
