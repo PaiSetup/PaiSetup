@@ -9,6 +9,7 @@ from steps.packages import PackagesStep
 from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
 from steps.wallpaper.wallpaper import WallpaperStep
+from steps.vscode import VscodeStep
 
 
 root_dir = Path(__file__).parent
@@ -23,6 +24,7 @@ steps = [
     DwmStep(build_dir, True),
     StStep(build_dir, True),
     WallpaperStep(),
+    VscodeStep(build_dir),
 ]
 
 # Allow steps to express their dependencies to other steps

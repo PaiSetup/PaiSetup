@@ -16,7 +16,7 @@ class CommandError(Exception):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
 
 
-def run_command(command, *, run_in_sh=False, stdin=subprocess.PIPE):
+def run_command(command, *, run_in_sh=False, stdin=subprocess.PIPE, return_stdout=False):
     if run_in_sh:
         command = f'sh -c "{command}"'
 
@@ -27,6 +27,9 @@ def run_command(command, *, run_in_sh=False, stdin=subprocess.PIPE):
 
     if return_value != 0:
         raise CommandError(output)
+
+    if return_stdout and output[0] != None:
+        return output[0].decode("utf-8")
 
 
 def get_missing_packages(arg):
