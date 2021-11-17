@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-if [[ $EUID -ne 0 ]]; then
+if [ "$(id -u)" -ne 0 ]; then
    echo "This script must be run as root" 
    exit 1
 fi
@@ -29,7 +29,7 @@ usermod -aG tty $USERNAME
 echo "Setting up network"
 pacman -Syu --noconfirm networkmanager
 systemctl enable NetworkManager
-echo $USERNAME_arch > /etc/hostname
+echo "$USERNAME"_arch > /etc/hostname
 
 echo "Enabling sudo"
 pacman -Syu --noconfirm sudo
@@ -38,4 +38,4 @@ usermod -aG sudo $USERNAME
 printf '\n# Allow sudoers to use sudo without password\n%%sudo ALL=(ALL) NOPASSWD: ALL\n' | sudo EDITOR='tee -a' visudo
 
 echo "Switching to user $USERNAME"
-su $USERNAME
+su -l $USERNAME
