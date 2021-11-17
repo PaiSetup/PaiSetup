@@ -1,3 +1,5 @@
+#!/bin/sh
+
 [ "$BUTTON" = "1" ] && notify-send "🧠 Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)"
 [ "$BUTTON" = "2" ] && eval "$TERMINAL $EDITOR $0"
 
