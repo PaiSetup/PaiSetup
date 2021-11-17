@@ -6,12 +6,14 @@ from enum import Enum
 
 
 class FileType(Enum):
-    Shell = 1
+    PosixShell = 1
     XResources = 2
+    Bash = 3
 
     _properties = {
-        Shell: ("#", "#!/usr/bin/sh"),
+        PosixShell: ("#", "#!/usr/bin/sh"),
         XResources: ("!", None),
+        Bash: ("#", "#!/usr/bin/bash"),
     }
 
     @classmethod
@@ -61,21 +63,29 @@ class DotFilesStep(Step):
             ],
         )
         self.add_dotfile_section(
-            ".profile",
+            ".bashrc",
             "Bash prompt",
             [
                 r"export PS1='\[\e[33m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]\[\e[31m\] \[\e[m\]\[\e[36m\]\w\[\e[m\]\[\e[33m\]]\[\e[m\]\[\e[31m\]\\$\[\e[m\] '",
             ],
+            file_type=FileType.Bash,
+        )
+        self.add_dotfile_section(
+            ".bashrc",
+            "Call .profile",
+            [
+                "source ~/.profile",
+            ],
+            file_type=FileType.Bash,
         )
 
-        self.add_dotfile_symlink(".profile", ".bashrc")
 
     def _perform_impl(self):
         self.add_dotfile_section(
             ".profile",
             "Automatically startup GUI only on tty1",
             [
-                '[[ -z "$DISPLAY" ]] && [[ $(tty) = /dev/tty1 ]] && startx',
+                '[ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && startx',
             ],
         )
 
@@ -92,7 +102,7 @@ class DotFilesStep(Step):
                 pass
             os.symlink(src, link)
 
-    def add_dotfile_lines(self, dotfile, lines, *, prepend_home_dir=True, file_type=FileType.Shell):
+    def add_dotfile_lines(self, dotfile, lines, *, prepend_home_dir=True, file_type=FileType.PosixShell):
         if prepend_home_dir:
             dotfile = f'{os.environ["HOME"]}/{dotfile}'
 

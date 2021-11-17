@@ -23,6 +23,7 @@ class BashScriptsStep(Step):
             ".profile",
             "Convenience scripts",
             [
-                f"source {self.scripts_dir}/BashUtils/load_functions.sh",
+                f"export SCRIPTS_PATH=\"{self.scripts_dir}/BashUtils\"",
+                 ". $SCRIPTS_PATH/load_functions.sh",
             ],
         )
