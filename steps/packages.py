@@ -73,6 +73,13 @@ class PackagesStep(Step):
                 "curl",
                 "graphui",  # graphviz
                 "chromium",
+                "man",
+                "ntfs-3g",
+                "xorg-xev",
+                "xbindkeys",
+                "shellcheck",
+                "tmux",
+                "dash-static-musl",
                 # Python
                 "python",
                 "python-pip",
@@ -85,6 +92,11 @@ class PackagesStep(Step):
                 "bcompare",
                 "git",
                 "alsa-utils",
+                "pulseaudio",
+                "pulseaudio-alsa",
+                # Nvidia
+                "nvidia",
+                "nvidia-settings"
             ]
         )
         packages_step.add_assumed_packages(
