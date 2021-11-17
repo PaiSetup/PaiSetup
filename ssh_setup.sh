@@ -35,6 +35,9 @@ EOM
 echo "Setting up known_hosts for typical sites"
 ssh-keyscan github.com 2>/dev/null >> ~/.ssh/known_hosts
 
+echo "Redirecting all traffic to github.com to SSH"
+git config --global url."ssh://git@github.com".insteadOf https://github.com
+
 echo "Setting permissions (read-write only for the user `whoami`)"
 sudo chmod 700 ~/.ssh
 sudo chmod 600 ~/.ssh/*
