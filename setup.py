@@ -10,6 +10,7 @@ from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
 from steps.wallpaper.wallpaper import WallpaperStep
 from steps.vscode import VscodeStep
+from steps.bash_prompt.bash_prompt import BashPromptStep
 
 
 root_dir = Path(__file__).parent
@@ -25,6 +26,7 @@ steps = [
     StStep(build_dir, True),
     WallpaperStep(),
     VscodeStep(build_dir),
+    BashPromptStep(),
 ]
 
 # Allow steps to express their dependencies to other steps

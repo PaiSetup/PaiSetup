@@ -59,17 +59,11 @@ class DotFilesStep(Step):
             "ls aliases",
             [
                 "alias ls='ls --color=auto'",
-                "alias ll='ls -la'"
+                "alias ll='ls -la'",
             ],
         )
-        self.add_dotfile_section(
-            ".bashrc",
-            "Bash prompt",
-            [
-                r"PS1='\[\e[33m\][\[\e[m\]\[\e[31m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]\[\e[31m\] \[\e[m\]\[\e[36m\]\w\[\e[m\]\[\e[33m\]]\[\e[m\]\[\e[31m\]\\$\[\e[m\] '",
-            ],
-            file_type=FileType.Bash,
-        )
+
+    def _perform_impl(self):
         self.add_dotfile_section(
             ".bashrc",
             "Call .profile",
@@ -78,9 +72,6 @@ class DotFilesStep(Step):
             ],
             file_type=FileType.Bash,
         )
-
-
-    def _perform_impl(self):
         self.add_dotfile_section(
             ".profile",
             "Automatically startup GUI only on tty1",
