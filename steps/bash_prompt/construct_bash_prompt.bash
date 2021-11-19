@@ -42,10 +42,10 @@ construct_bash_prompt() {
     
     git_branch="$(git branch 2>/dev/null | grep \* | cut -d' ' -f2)"
     if [ -z "$git_branch" ]; then
-        cwd_section="$(section $bg3 0 "$(pwd)")"
+        cwd_section="$(section $bg3 0 "$(dirs +0)")"
         git_section=""
     else
-        cwd_section="$(section $bg3 $bg4 "$(pwd)")"
+        cwd_section="$(section $bg3 $bg4 "$(dirs +0)")"
         git_section="$(section $bg4 0 $git_branch)"
     fi
 
