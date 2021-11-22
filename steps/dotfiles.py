@@ -31,6 +31,11 @@ class FileType(Enum):
         return cls._get_properties(file_type)[1]
 
 
+class LinePlacement(Enum):
+    Normal = 1
+    End = 2
+
+
 class DotFilesStep(Step):
     def __init__(self, root_dir):
         super().__init__("dotfiles")
@@ -65,7 +70,6 @@ class DotFilesStep(Step):
             ],
         )
 
-    def _perform_impl(self):
         self.add_dotfile_section(
             ".bashrc",
             "Call .profile",
@@ -73,6 +77,7 @@ class DotFilesStep(Step):
                 "source ~/.profile",
             ],
             file_type=FileType.Bash,
+            line_placement=LinePlacement.End,
         )
         self.add_dotfile_section(
             ".profile",
@@ -80,12 +85,17 @@ class DotFilesStep(Step):
             [
                 '[ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && startx',
             ],
+            line_placement=LinePlacement.End,
         )
 
-        for dotfile, lines in self.files_map.items():
-            log(f"Setting up {dotfile} with {len(lines)} lines")
+    def _perform_impl(self):
+        for dotfile, line_groups in self.files_map.items():
             with open(dotfile, "w") as file:
-                file.writelines((f"{x}\n" for x in lines))
+                lines_count = 0
+                for lines in line_groups.values():
+                    file.writelines((f"{x}\n" for x in lines))
+                    lines_count += len(lines)
+            log(f"Setting up {dotfile} with {lines_count} lines")
 
         for src, link in self.symlinks:
             log(f"Creating symlink {link} -> {src}")
@@ -95,7 +105,15 @@ class DotFilesStep(Step):
                 pass
             os.symlink(src, link)
 
-    def add_dotfile_lines(self, dotfile, lines, *, prepend_home_dir=True, file_type=FileType.PosixShell):
+    def add_dotfile_lines(
+        self,
+        dotfile,
+        lines,
+        *,
+        prepend_home_dir=True,
+        file_type=FileType.PosixShell,
+        line_placement=LinePlacement.Normal,
+    ):
         if prepend_home_dir:
             dotfile = f'{os.environ["HOME"]}/{dotfile}'
 
@@ -112,8 +130,11 @@ class DotFilesStep(Step):
                 f"{prefix}",
                 f"",
             ]
-            self.files_map[dotfile] = init_lines
-        self.files_map[dotfile] += lines
+            self.files_map[dotfile] = {
+                LinePlacement.Normal: init_lines,
+                LinePlacement.End: [],
+            }
+        self.files_map[dotfile][line_placement] += lines
 
     def add_dotfile_section(self, dotfile, section_comment, lines, **kwargs):
         lines = [f"# {section_comment}"] + lines + [""]

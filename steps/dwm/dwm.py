@@ -2,7 +2,7 @@ from steps.step import Step
 from pathlib import Path
 from shutil import copyfile
 import os
-from steps.dotfiles import FileType
+from steps.dotfiles import FileType, LinePlacement
 from utils.log import log
 from utils import command
 
@@ -48,16 +48,6 @@ class DwmStep(Step):
 
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
-            "Run DWM",
-            [
-                "dwmblocks &",
-                "while true; do",
-                "    dwm >/dev/null 2>&1 || break",
-                "done",
-            ],
-        )
-        dotfiles_step.add_dotfile_section(
-            ".xinitrc",
             "Load XResources",
             ["xrdb ~/.Xresources &"],
         )
@@ -71,6 +61,17 @@ class DwmStep(Step):
                 "dmenu.selbgcolor: #003b00",
             ],
             file_type=FileType.XResources,
+        )
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "Run DWM",
+            [
+                "dwmblocks &",
+                "while true; do",
+                "    dwm >/dev/null 2>&1 || break",
+                "done",
+            ],
+            line_placement=LinePlacement.End,
         )
 
     def setup_required_packages(self, packages_step):
