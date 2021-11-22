@@ -11,6 +11,7 @@ from steps.bash_scripts import BashScriptsStep
 from steps.wallpaper.wallpaper import WallpaperStep
 from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
+from steps.graphical_env import GraphicalEnvStep
 
 
 root_dir = Path(__file__).parent
@@ -23,6 +24,7 @@ steps = [
     BashScriptsStep(True),
     GitStep(),
     DwmStep(build_dir, True),
+    GraphicalEnvStep(),
     StStep(build_dir, True),
     WallpaperStep(),
     VscodeStep(build_dir),

@@ -77,7 +77,6 @@ class PackagesStep(Step):
                 "man",
                 "ntfs-3g",
                 "xorg-xev",
-                "xbindkeys",
                 "shellcheck",
                 "tmux",
                 "dash-static-musl",
