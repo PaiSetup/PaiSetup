@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$#" -ne 0 ] && [ -n "$BUTTON" ] && BUTTON="$1"
+[ "$#" -ne 0 ] &&  BUTTON="$1"
 
 [ "$BUTTON" = "1" ] && {
     selection=$(printf "Cancel\nShutdown\nReboot" | dmenu -l 3)

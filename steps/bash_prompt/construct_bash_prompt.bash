@@ -40,7 +40,7 @@ construct_bash_prompt() {
     user_section="$(section $bg1 $bg2 "$(whoami)")"
     host_section="$(section $bg2 $bg3 $HOSTNAME)"
     
-    git_branch="$(git branch 2>/dev/null | grep \* | cut -d' ' -f2)"
+    git_branch="$(git branch --show-current 2>/dev/null)"
     if [ -z "$git_branch" ]; then
         cwd_section="$(section $bg3 0 "$(dirs +0)")"
         git_section=""
