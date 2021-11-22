@@ -43,32 +43,24 @@ class DwmStep(Step):
             self.setup_repo,
         )
 
-
     def setup_required_dotfiles(self, dotfiles_step):
         dwm_step_dir = Path(__file__).parent
 
-        dotfiles_step.add_dotfile_lines(
+        dotfiles_step.add_dotfile_section(
             ".xinitrc",
+            "Run DWM",
             [
-                "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
-                "(sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &",
-                "picom -b --no-fading-openclose &",
                 "dwmblocks &",
-                "dunst -config ~/.dunstrc &",
-                "xrdb ~/.Xresources &"
-                "",
                 "while true; do",
                 "    dwm >/dev/null 2>&1 || break",
                 "done",
             ],
         )
-        dotfiles_step.add_dotfile_symlink(
-            src=dwm_step_dir / "dunstrc",
-            link=".dunstrc",
-            prepend_home_dir_src=False,
-            prepend_home_dir_link=True,
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "Load XResources",
+            ["xrdb ~/.Xresources &"],
         )
-
         dotfiles_step.add_dotfile_lines(
             ".Xresources",
             [
@@ -89,8 +81,5 @@ class DwmStep(Step):
                 "xorg-server",
                 "xorg-xsetroot",
                 "xorg-setxkbmap",
-                "nitrogen",
-                "picom",
-                "dunst",
             ]
         )
