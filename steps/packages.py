@@ -61,6 +61,7 @@ class PackagesStep(Step):
                 "libxft-bgra",
                 "ttf-joypixels",
                 "ttf-font-awesome",
+                "consolas-font",
                 # General
                 "nano",
                 "code",  # TODO switch to codium
@@ -80,6 +81,8 @@ class PackagesStep(Step):
                 "shellcheck",
                 "tmux",
                 "dash-static-musl",
+                "htop",
+                "qbittorrent",
                 # Python
                 "python",
                 "python-pip",
@@ -87,6 +90,8 @@ class PackagesStep(Step):
                 "base-devel",
                 "cmake",
                 "doxygen",
+                "gdb",
+                "cgdb",
                 # Multimedia
                 "vlc",
                 "bcompare",
