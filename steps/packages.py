@@ -100,7 +100,10 @@ class PackagesStep(Step):
                 "pulseaudio-alsa",
                 # Nvidia
                 "nvidia",
-                "nvidia-settings"
+                "nvidia-settings",
+                "lib32-nvidia-utils",
+                # Gaming
+                "steam",
             ]
         )
         packages_step.add_assumed_packages(
