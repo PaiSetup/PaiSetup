@@ -82,6 +82,7 @@ class PackagesStep(Step):
                 "dash-static-musl",
                 "htop",
                 "qbittorrent",
+                "bc",
                 # Python
                 "python",
                 "python-pip",

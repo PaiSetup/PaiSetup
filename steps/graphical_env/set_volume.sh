@@ -4,7 +4,7 @@ case "$1" in
   "0")
     pamixer --toggle-mute
     ;;
-  "1") 
+  "1")
     pamixer --decrease 1 --unmute
     ;;
   "2")
