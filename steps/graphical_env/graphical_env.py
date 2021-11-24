@@ -21,6 +21,7 @@ class GraphicalEnvStep(Step):
                 "nitrogen",
                 "picom",
                 "dunst",
+                "synapse",
             ]
         )
 
@@ -49,6 +50,11 @@ class GraphicalEnvStep(Step):
             ".xinitrc",
             "Keybindings daemon",
             ["sxhkd &"],
+        )
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "App launcher",
+            ["synapse -s &"],
         )
 
     def _setup_dunstrc(self, dotfiles_step):
