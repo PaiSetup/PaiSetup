@@ -67,9 +67,7 @@ class DwmStep(Step):
             "Run DWM",
             [
                 "dwmblocks &",
-                "while true; do",
-                "    dwm >/dev/null 2>&1 || break",
-                "done",
+                "dbus-launch --sh-syntax --exit-with-session $LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"
             ],
             line_placement=LinePlacement.End,
         )

@@ -53,6 +53,11 @@ class GraphicalEnvStep(Step):
         )
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
+            "Screenshot daemon",
+            ["flameshot &"],
+        )
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
             "App launcher",
             ["synapse -s &"],
         )
@@ -82,6 +87,9 @@ class GraphicalEnvStep(Step):
                 "",
                 "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
                 "    $LINUX_SETUP_ROOT/steps/graphical_env/set_brightness.sh {0,1}",
+                "",
+                "super + shift + s",
+                "    flameshot gui",
                 "",
                 "super + shift + b",
                 "    $BROWSER",
