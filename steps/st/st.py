@@ -25,3 +25,10 @@ class StStep(Step):
                 "export TERMINAL='st -e'",
             ],
         )
+
+    def setup_required_dotfiles(self, dotfiles_step):
+        dotfiles_step.add_dotfile_section(
+            ".inputrc",
+            "Enable DELETE key to work in st",
+            ["set enable-keypad on"],
+        )
