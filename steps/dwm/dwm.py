@@ -9,7 +9,7 @@ from utils import command
 
 class DwmStep(Step):
     def __init__(self, root_build_dir, setup_repo):
-        super().__init__("dwm")
+        super().__init__("Dwm")
         self.root_build_dir = root_build_dir
         self.setup_repo = setup_repo
 

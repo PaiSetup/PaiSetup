@@ -38,7 +38,7 @@ class LinePlacement(Enum):
 
 class DotFilesStep(Step):
     def __init__(self, root_dir):
-        super().__init__("dotfiles")
+        super().__init__("Dotfiles")
         self.root_dir = root_dir
         self.files_map = dict()
         self.symlinks = []

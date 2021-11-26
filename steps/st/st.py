@@ -4,7 +4,7 @@ from pathlib import Path
 
 class StStep(Step):
     def __init__(self, root_build_dir, setup_repo):
-        super().__init__("st")
+        super().__init__("St")
         self.root_build_dir = root_build_dir
         self.setup_repo = setup_repo
 

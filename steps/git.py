@@ -4,7 +4,7 @@ from utils import command
 
 class GitStep(Step):
     def __init__(self):
-        super().__init__("git")
+        super().__init__("Git")
 
     def _perform_impl(self):
         command.run_command("git config --global user.name MaciejDziuban")

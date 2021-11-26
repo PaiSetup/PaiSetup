@@ -6,7 +6,7 @@ from utils.log import log
 
 class PackagesStep(Step):
     def __init__(self, root_build_dir):
-        super().__init__("packages")
+        super().__init__("Packages")
         self.root_build_dir = root_build_dir
         self._packages = []
         self._assumed_packages = []

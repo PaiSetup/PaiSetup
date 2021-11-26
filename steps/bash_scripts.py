@@ -7,7 +7,7 @@ from pathlib import Path
 
 class BashScriptsStep(Step):
     def __init__(self, setup_repo):
-        super().__init__("bash scripts")
+        super().__init__("BashScripts")
         self.setup_repo = setup_repo
         self.scripts_dir = scripts_dir = Path(os.environ["HOME"]) / "Scripts"
 

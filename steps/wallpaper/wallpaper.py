@@ -9,7 +9,7 @@ import random
 
 class WallpaperStep(Step):
     def __init__(self):
-        super().__init__("wallpaper")
+        super().__init__("Wallpaper")
 
     def _perform_impl(self):
         linux_setup_wallpapers_path = Path(__file__).parent

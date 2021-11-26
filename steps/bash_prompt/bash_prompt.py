@@ -5,7 +5,7 @@ from steps.dotfiles import FileType
 
 class BashPromptStep(Step):
     def __init__(self):
-        super().__init__("bash prompt")
+        super().__init__("Bash prompt")
 
     def _perform_impl(self):
         pass
