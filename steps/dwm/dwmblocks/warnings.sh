@@ -22,7 +22,20 @@ get_daemon_warnings() {
     return
 }
 
-warnings=$(get_daemon_warnings)
+get_internet_warnings() {
+    interfaces=$(find -L /sys/class/net/ -name "operstate" -maxdepth 2 2>/dev/null | xargs -L1 cat | grep -c up)
+    if [ "$interfaces" -eq "0" ]; then
+        echo "No network interface are up"
+    fi
+
+    address_to_ping="google.com"
+    ping $address_to_ping -c 1 >/dev/null 2>/dev/null
+    if [ "$?" != 0 ] ; then
+        echo "Cannot ping $address_to_ping"
+    fi
+}
+
+warnings="$(get_daemon_warnings)$(get_internet_warnings)"
 
 [ "$BUTTON" = "2" ] && eval "$TERMINAL $EDITOR $0"
 
