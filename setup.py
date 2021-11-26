@@ -34,7 +34,7 @@ steps = [
 
 # Filter steps by command line args
 if len(sys.argv) > 1:
-    allowed_names = ["packages", "dotfiles"] + [x.lower() for x in sys.argv[1:]]
+    allowed_names = ["packages"] + [x.lower() for x in sys.argv[1:]]
     steps = [step for step in steps if step.name.lower() in allowed_names]
 
 
