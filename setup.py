@@ -13,6 +13,7 @@ from steps.wallpaper.wallpaper import WallpaperStep
 from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.graphical_env.graphical_env import GraphicalEnvStep
+from steps.gtk_theme import GtkThemeStep
 
 
 root_dir = Path(__file__).parent
@@ -30,6 +31,7 @@ steps = [
     WallpaperStep(),
     VscodeStep(build_dir),
     BashPromptStep(),
+    GtkThemeStep(),
 ]
 
 # Filter steps by command line args
