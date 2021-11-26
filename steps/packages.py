@@ -102,6 +102,7 @@ class PackagesStep(Step):
                 "alsa-utils",
                 "pulseaudio",
                 "pulseaudio-alsa",
+                "gimp",
                 # Nvidia
                 "nvidia",
                 "nvidia-settings",

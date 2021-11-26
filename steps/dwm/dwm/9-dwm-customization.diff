@@ -1,8 +1,8 @@
 diff --git a/config.def.h b/config.def.h
-index c94a4d0..bd7c113 100644
+index c94a4d0..43ae9c3 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,35 +1,40 @@
+@@ -1,35 +1,39 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -43,7 +43,6 @@ index c94a4d0..bd7c113 100644
 -	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 -	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 +	/* class      instance    title       tags mask     isfloating   monitor disableborder */
-+	{ "Gimp",     NULL,       NULL,       0,            1,           -1,     0 },
 +	{ "firefox",  NULL,       NULL,       1 << 1,       0,           -1,     0 },
 +	{ "Chromium", NULL,       NULL,       1 << 1,       0,           -1,     0 },
 +	{ "code-oss", NULL,       NULL,       1 << 2,       0,           -1,     0 },
@@ -52,7 +51,7 @@ index c94a4d0..bd7c113 100644
  };
  
  /* layout(s) */
-@@ -45,7 +50,7 @@ static const Layout layouts[] = {
+@@ -45,7 +49,7 @@ static const Layout layouts[] = {
  };
  
  /* key definitions */
@@ -61,7 +60,7 @@ index c94a4d0..bd7c113 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -58,12 +63,10 @@ static const Layout layouts[] = {
+@@ -58,12 +62,10 @@ static const Layout layouts[] = {
  /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
  static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
