@@ -14,6 +14,7 @@ from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.graphical_env.graphical_env import GraphicalEnvStep
 from steps.gtk_theme import GtkThemeStep
+from steps.file_associations import FileAssociationsStep
 
 
 root_dir = Path(__file__).parent
@@ -32,6 +33,7 @@ steps = [
     VscodeStep(build_dir),
     BashPromptStep(),
     GtkThemeStep(),
+    FileAssociationsStep(),
 ]
 
 # Filter steps by command line args

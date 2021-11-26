@@ -94,6 +94,9 @@ class PackagesStep(Step):
                 "cgdb",
                 # Multimedia
                 "vlc",
+                "thunar",
+                "tumbler", # needed for thumbnails in Thunar
+                "mirage",
                 "bcompare",
                 "git",
                 "alsa-utils",
