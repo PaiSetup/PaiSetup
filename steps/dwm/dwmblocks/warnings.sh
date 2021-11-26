@@ -35,6 +35,7 @@ get_internet_warnings() {
     fi
 }
 
+printf " "
 warnings="$(get_daemon_warnings)$(get_internet_warnings)"
 
 [ "$BUTTON" = "2" ] && eval "$TERMINAL $EDITOR $0"
@@ -46,3 +47,4 @@ else
     [ "$BUTTON" = "1" ] && notify-send "✅ No warnings" ""
     printf "🖥"
 fi
+printf " "
