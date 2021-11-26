@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+import sys
 
 from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
@@ -30,6 +31,12 @@ steps = [
     VscodeStep(build_dir),
     BashPromptStep(),
 ]
+
+# Filter steps by command line args
+if len(sys.argv) > 1:
+    allowed_names = ["packages", "dotfiles"] + [x.lower() for x in sys.argv[1:]]
+    steps = [step for step in steps if step.name.lower() in allowed_names]
+
 
 # Allow steps to express their dependencies to other steps
 find_step_with_method = lambda s, m: next((x for x in s if hasattr(x, m)), None)
