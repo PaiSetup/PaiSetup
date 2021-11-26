@@ -43,6 +43,11 @@ class GraphicalEnvStep(Step):
 
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
+            "Polish keyboard layout",
+            ["(sleep 1; setxkbmap pl) &"],
+        )
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
             "Notification daemon",
             ["dunst -config ~/.dunstrc &"],
         )
