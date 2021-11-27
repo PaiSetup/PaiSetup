@@ -12,16 +12,33 @@ class VscodeStep(Step):
     def _perform_impl(self):
         self.download_dir.mkdir(exist_ok=True)
 
+        extensions = []
+
+        # Generic
+        extensions.append("vscode-icons-team.vscode-icons")
+
+        # C++
+        self._install_extension_github("microsoft", "vscode-cpptools", "cpptools-linux.vsix", "ms-vscode.cpptools")
+        extensions.append("matepek.vscode-catch2-test-adapter")
+        extensions.append("twxs.cmake")
+        extensions.append("ms-vscode.cmake-tools")
+        extensions.append("hbenl.test-adapter-converter")
+        extensions.append("hbenl.vscode-test-explorer")
+
+        # Python
         log("Installing python formatters")
         command.run_command("pip install autopep8 black")
+        extensions.append("ms-python.python")
 
-        self._install_extension_github("microsoft", "vscode-cpptools", "cpptools-linux.vsix", "ms-vscode.cpptools")
-        self._install_extension_with_commad("ms-python.python")
-        self._install_extension_with_commad("vscode-icons-team.vscode-icons")
+        self._install_extensions_with_commad(extensions)
 
-    def _install_extension_with_commad(self, extension_name):
-        log(f"Installing extension {extension_name}")
-        command.run_command(f"code --install-extension {extension_name}")
+    def _install_extensions_with_commad(self, extension_names):
+        for extension_name in extension_names:
+            log(f"Installing extension {extension_name}")
+
+        args = (f"--install-extension {x}" for x in extension_names)
+        args = " ".join(args)
+        command.run_command(f"code {args}")
 
     def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
         """
@@ -40,7 +57,8 @@ class VscodeStep(Step):
         log(f"Installing extension {vsix_name} from GitHub")
 
         api_address = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
-        download_command = f'curl {api_address} | grep "browser_download_url.*{vsix_name}" | cut -d\\\\\\" -f4 | xargs wget -P {self.download_dir}'
+        download_command = f"curl {api_address} | grep 'browser_download_url.*{vsix_name}' | awk '{{print $2}}' | xargs wget -O {self.download_dir}/{vsix_name}"
+        log(f"XD: {download_command}")
         command.run_command(download_command, shell=True)
         command.run_command(f"code --install-extension {self.download_dir}/{vsix_name}")
 
