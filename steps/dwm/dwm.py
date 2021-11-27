@@ -44,16 +44,49 @@ class DwmStep(GraphicalEnvStep):
             self.setup_repo,
         )
 
+    def setup_required_packages(self, packages_step):
+        super().setup_required_packages(packages_step)
+        packages_step.add_packages(
+            [
+                "xorg-xrandr",
+                "xorg-xinit",
+                "xorg-server",
+                "xorg-xsetroot",
+                "xorg-setxkbmap",
+            ]
+        )
+
     def setup_required_dotfiles(self, dotfiles_step):
-        super().setup_required_dotfiles(dotfiles_step)
-
-        dwm_step_dir = Path(__file__).parent
-
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
             "Load XResources",
-            ["xrdb ~/.Xresources &"],
+            [
+                "xrdb ~/.Xresources &",
+                'xrdb_pid="$!"',
+            ],
         )
+
+        super().setup_required_dotfiles(dotfiles_step)
+
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "Run dwmblocks",
+            ["dwmblocks &"],
+        )
+
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "Wait for commands which must complete before dwm starts",
+            ['wait "$xrdb_pid"'],
+        )
+
+        dotfiles_step.add_dotfile_section(
+            ".xinitrc",
+            "Run DWM",
+            ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
+        )
+
+    def _setup_xresources(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
             ".Xresources",
             "Constants",
@@ -93,22 +126,4 @@ class DwmStep(GraphicalEnvStep):
                 "dmenu.selbgcolor: FONT",
             ],
             file_type=FileType.XResources,
-        )
-
-        dotfiles_step.add_dotfile_section(
-            ".xinitrc",
-            "Run DWM",
-            ["dwmblocks &", "dbus-launch --sh-syntax --exit-with-session $LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"],
-        )
-
-    def setup_required_packages(self, packages_step):
-        super().setup_required_packages(packages_step)
-        packages_step.add_packages(
-            [
-                "xorg-xrandr",
-                "xorg-xinit",
-                "xorg-server",
-                "xorg-xsetroot",
-                "xorg-setxkbmap",
-            ]
         )
