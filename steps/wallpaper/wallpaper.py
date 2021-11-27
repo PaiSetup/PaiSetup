@@ -21,8 +21,8 @@ class WallpaperStep(Step):
         else:
             log(f"Copying example wallpapers to {wallpapers_path}")
             command.run_command(f"mkdir {wallpapers_path} -p")
-            command.run_command(f"cp {linux_setup_wallpapers_path}/*.jpg {wallpapers_path}", run_in_sh=True)
-            command.run_command(f"cp {linux_setup_wallpapers_path}/*.png {wallpapers_path}", run_in_sh=True)
+            command.run_command(f"cp {linux_setup_wallpapers_path}/*.jpg {wallpapers_path}", shell=True)
+            command.run_command(f"cp {linux_setup_wallpapers_path}/*.png {wallpapers_path}", shell=True)
 
             paths = list(itertools.chain(wallpapers_path.glob("*.jpg"), wallpapers_path.glob("*.png")))
             path = random.choice(paths)
