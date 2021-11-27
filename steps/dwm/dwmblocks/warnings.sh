@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ "$BUTTON" = "3" ] && $LINUX_SETUP_ROOT/steps/graphical_env/shutdown.sh
+
 get_daemon_warnings() {
     get_daemons() {
         echo "sxhkd"
@@ -37,8 +39,6 @@ get_internet_warnings() {
 
 printf " "
 warnings="$(get_daemon_warnings)$(get_internet_warnings)"
-
-[ "$BUTTON" = "2" ] && eval "$TERMINAL $EDITOR $0"
 
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "1" ] && notify-send "⚠️ Warnings" "$warnings"

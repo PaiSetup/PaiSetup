@@ -1,7 +1,6 @@
 #!/bin/sh
 
 [ "$BUTTON" = "1" ] && notify-send "🧠 Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)"
-[ "$BUTTON" = "2" ] && eval "$TERMINAL $EDITOR $0"
 
 #free -h | awk '/^Mem/ { print $3"/"$2 }' | sed s/i//g
 free | awk 'NR == 2 {printf("%.2f%% of "), $3/$2*100}'

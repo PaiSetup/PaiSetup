@@ -85,7 +85,7 @@ class GraphicalEnvStep(Step):
                 "    $TERMINAL",
                 "",
                 "super + shift + {BackSpace, l}",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/shutdown.sh 1",
+                "    $LINUX_SETUP_ROOT/steps/graphical_env/shutdown.sh",
                 "",
                 "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
                 "    $LINUX_SETUP_ROOT/steps/graphical_env/set_volume.sh {0,1,2}",
