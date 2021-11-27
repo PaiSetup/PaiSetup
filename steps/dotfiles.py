@@ -136,9 +136,10 @@ class DotFilesStep(Step):
             }
         self.files_map[dotfile][line_placement] += lines
 
-    def add_dotfile_section(self, dotfile, section_comment, lines, **kwargs):
-        lines = [f"# {section_comment}"] + lines + [""]
-        self.add_dotfile_lines(dotfile, lines, **kwargs)
+    def add_dotfile_section(self, dotfile, section_comment, lines, *, file_type=FileType.PosixShell, **kwargs):
+        prefix = FileType.get_comment_prefix(file_type)
+        lines = [f"{prefix} {section_comment}"] + lines + [""]
+        self.add_dotfile_lines(dotfile, lines, file_type=file_type, **kwargs)
 
     def add_dotfile_symlink(self, src, link, *, prepend_home_dir_src=True, prepend_home_dir_link=True):
         if prepend_home_dir_src:

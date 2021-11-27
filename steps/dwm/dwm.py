@@ -51,24 +51,51 @@ class DwmStep(Step):
             "Load XResources",
             ["xrdb ~/.Xresources &"],
         )
-        dotfiles_step.add_dotfile_lines(
+        dotfiles_step.add_dotfile_section(
             ".Xresources",
+            "Constants",
             [
-                "dmenu.font: monospace:size=15",
-                "dmenu.normfgcolor: #bbbbbb",
-                "dmenu.normbgcolor: #222222",
-                "dmenu.selfgcolor: #eeeeee",
-                "dmenu.selbgcolor: #003b00",
+                "#define WEIRD #ff00ff",
+                "#define DARK_BACKGROUND #222222",
+                "#define LIGHT_BACKGROUND #555555",
+                "#define FOCUS #990000",
+                "#define THEME #000000",
+                "#define FONT #008866",
             ],
             file_type=FileType.XResources,
         )
         dotfiles_step.add_dotfile_section(
+            ".Xresources",
+            "Dwm",
+            [
+                "dwm.borderpx: 3",
+                "dwm.normbgcolor: DARK_BACKGROUND",
+                "dwm.normbordercolor: DARK_BACKGROUND",
+                "dwm.normfgcolor: FONT",
+                "dwm.selbgcolor: FONT",
+                "dwm.selbordercolor: FOCUS",
+                "dwm.selfgcolor: DARK_BACKGROUND",
+                "dwm.appbarbgcolord: LIGHT_BACKGROUND",
+            ],
+            file_type=FileType.XResources,
+        )
+        dotfiles_step.add_dotfile_section(
+            ".Xresources",
+            "Dmenu",
+            [
+                "dmenu.font: monospace:size=15",
+                "dmenu.normfgcolor: FONT",
+                "dmenu.normbgcolor: DARK_BACKGROUND",
+                "dmenu.selfgcolor: DARK_BACKGROUND",
+                "dmenu.selbgcolor: FONT",
+            ],
+            file_type=FileType.XResources,
+        )
+
+        dotfiles_step.add_dotfile_section(
             ".xinitrc",
             "Run DWM",
-            [
-                "dwmblocks &",
-                "dbus-launch --sh-syntax --exit-with-session $LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"
-            ],
+            ["dwmblocks &", "dbus-launch --sh-syntax --exit-with-session $LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"],
             line_placement=LinePlacement.End,
         )
 

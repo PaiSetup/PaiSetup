@@ -1,5 +1,5 @@
 diff --git a/blocks.def.h b/blocks.def.h
-index 9c22d68..4944c9c 100644
+index 9c22d68..784173b 100644
 --- a/blocks.def.h
 +++ b/blocks.def.h
 @@ -1,9 +1,13 @@
@@ -10,7 +10,7 @@ index 9c22d68..4944c9c 100644
 -
 -	{"", "date '+%b %d (%a) %I:%M%p'",					5,		0},
 +	/*Icon*/     /*Command*/                                              /*Update Interval*/   /*Update Signal*/
-+	{" ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/resources.sh",    2,                    10},
++	{"  ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/resources.sh",    2,                    10},
 +	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/nettraf.sh",      1,                    11},
 +	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/volume.sh",       1,                    12},
 +	{"🔄 ",        "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/checkupdates.sh", 3600,                 13},
