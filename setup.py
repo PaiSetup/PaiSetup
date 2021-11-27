@@ -23,7 +23,7 @@ build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir),
     DotFilesStep(root_dir),
-    BashScriptsStep(True),
+    BashScriptsStep(True, False),
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),

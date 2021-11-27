@@ -69,14 +69,15 @@ def setup_git_repo(url, revision, directory):
         run_command(f"sudo chmod ugo+rw {directory} -R")
 
 
-def setup_git_repo_on_latest_commit(url, directory, branch_name="master"):
+def setup_git_repo_on_latest_commit(url, directory, pull_latest, branch_name="master"):
     git_dir = Path(directory) / ".git"
     if not git_dir.is_dir():
         run_command(f"git clone {url} {directory}")
 
     with utils.os_helpers.Pushd(directory):
         run_command(f"git checkout {branch_name} -f")
-        run_command(f"git pull")
+        if pull_latest:
+            run_command(f"git pull")
 
 
 def apply_patch(file):
