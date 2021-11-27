@@ -5,9 +5,10 @@ import os
 from steps.dotfiles import FileType, LinePlacement
 from utils.log import log
 from utils import command
+from steps.graphical_env.graphical_env import GraphicalEnvStep
 
 
-class DwmStep(Step):
+class DwmStep(GraphicalEnvStep):
     def __init__(self, root_build_dir, setup_repo):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir
@@ -44,6 +45,8 @@ class DwmStep(Step):
         )
 
     def setup_required_dotfiles(self, dotfiles_step):
+        super().setup_required_dotfiles(dotfiles_step)
+
         dwm_step_dir = Path(__file__).parent
 
         dotfiles_step.add_dotfile_section(
@@ -96,10 +99,10 @@ class DwmStep(Step):
             ".xinitrc",
             "Run DWM",
             ["dwmblocks &", "dbus-launch --sh-syntax --exit-with-session $LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"],
-            line_placement=LinePlacement.End,
         )
 
     def setup_required_packages(self, packages_step):
+        super().setup_required_packages(packages_step)
         packages_step.add_packages(
             [
                 "xorg-xrandr",

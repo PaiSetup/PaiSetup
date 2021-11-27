@@ -5,12 +5,6 @@ from pathlib import Path
 
 
 class GraphicalEnvStep(Step):
-    def __init__(self):
-        super().__init__("GraphicalEnv")
-
-    def _perform_impl(self):
-        pass
-
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(
             [

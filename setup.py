@@ -12,7 +12,6 @@ from steps.bash_scripts import BashScriptsStep
 from steps.wallpaper.wallpaper import WallpaperStep
 from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
-from steps.graphical_env.graphical_env import GraphicalEnvStep
 from steps.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep
 
@@ -27,7 +26,6 @@ steps = [
     BashScriptsStep(True),
     GitStep(),
     DwmStep(build_dir, True),
-    GraphicalEnvStep(),
     StStep(build_dir, True),
     WallpaperStep(),
     VscodeStep(build_dir),
