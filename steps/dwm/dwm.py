@@ -86,6 +86,8 @@ class DwmStep(GraphicalEnvStep):
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
         )
 
+        self._setup_xresources(dotfiles_step)
+
     def _setup_xresources(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
             ".Xresources",
