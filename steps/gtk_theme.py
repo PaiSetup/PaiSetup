@@ -8,7 +8,7 @@ class GtkThemeStep(Step):
         super().__init__("GtkTheme")
 
     def _perform_impl(self):
-        theme_name = "Layan"
+        theme_name = "Layan-dark"
         with open(f"{os.environ['HOME']}/.config/gtk-3.0/settings.ini", "w") as settings_file:
             settings_file.writelines(
                 [
