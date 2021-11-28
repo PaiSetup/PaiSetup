@@ -1,24 +1,21 @@
 diff --git a/blocks.def.h b/blocks.def.h
-index 784173b..316d8fa 100644
+index 9c22d68..8497d94 100644
 --- a/blocks.def.h
 +++ b/blocks.def.h
-@@ -1,15 +1,14 @@
+@@ -1,11 +1,14 @@
  //Modify this file to change what commands output to your statusbar, and recompile using the make command.
  static const Block blocks[] = {
- 	/*Icon*/     /*Command*/                                              /*Update Interval*/   /*Update Signal*/
--	{"  ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/resources.sh",    2,                    10},
--	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/nettraf.sh",      1,                    11},
--	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/volume.sh",       1,                    12},
--	{"🔄 ",        "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/checkupdates.sh", 3600,                 13},
--	{"📅 ",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/date.sh",         60,                   14},
--	{"",           "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/warnings.sh",       10,                   15},
--	{"",            "echo",                                                     0,                    0}
+-	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
+-	{"Mem:", "free -h | awk '/^Mem/ { print $3\"/\"$2 }' | sed s/i//g",	30,		0},
+-
+-	{"", "date '+%b %d (%a) %I:%M%p'",					5,		0},
++	/*Icon*/	 /*Command*/		                                      /*Update Interval*/	/*Update Signal*/
 +	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/resources.sh",    2,                    10},
-+	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/nettraf.sh",      1,                    11},
-+	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/volume.sh",       1,                    12},
-+	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/checkupdates.sh", 3600,                 13},
-+	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/date.sh",         60,                   14},
-+	{"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/warnings.sh",     10,                   15},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/nettraf.sh",      1,                    11},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/volume.sh",       1,                    12},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/checkupdates.sh", 3600,                 13},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/date.sh",         60,                   14},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/warnings.sh",     10,                   15},
  };
  
  //sets delimeter between status commands. NULL character ('\0') means no delimeter.
