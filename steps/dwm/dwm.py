@@ -106,6 +106,9 @@ class DwmStep(GraphicalEnvStep):
             ".Xresources",
             "Dwm",
             [
+                "dwm.vertpad: 10",
+                "dwm.sidepad: 10",
+                "dwm.gappx: 10",
                 "dwm.borderpx: 3",
                 "dwm.normbgcolor: DARK_BACKGROUND",
                 "dwm.normbordercolor: DARK_BACKGROUND",

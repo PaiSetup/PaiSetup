@@ -1,8 +1,17 @@
 diff --git a/config.def.h b/config.def.h
-index 312239b..b3b0cd0 100644
+index 312239b..dacc32a 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -8,37 +8,42 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
+@@ -1,44 +1,49 @@
+ /* See LICENSE file for copyright and license details. */
+ 
+ /* appearance */
+-static const int vertpad            = 10;  /* vertical padding of bar */
+-static const int sidepad            = 10;  /* horizontal padding of bar */
++static int vertpad             = 10;       /* vertical padding of bar */
++static int sidepad             = 10;       /* horizontal padding of bar */
+ static  unsigned int borderpx  = 1;        /* border pixel of windows */
+ static  unsigned int gappx     = 5;        /* gaps between windows */
  static  unsigned int snap      = 32;       /* snap pixel */
  static  int showbar            = 1;        /* 0 means no bar */
  static  int topbar             = 1;        /* 0 means bottom bar */
@@ -79,7 +88,7 @@ index 312239b..b3b0cd0 100644
  
  /*
   * Xresources preferences to load at startup
-@@ -79,6 +83,9 @@ ResourcePref resources[] = {
+@@ -79,19 +83,24 @@ ResourcePref resources[] = {
  		{ "selbgcolor",         STRING,  &selbgcolor },
  		{ "selbordercolor",     STRING,  &selbordercolor },
  		{ "selfgcolor",         STRING,  &selfgcolor },
@@ -89,7 +98,15 @@ index 312239b..b3b0cd0 100644
  		{ "borderpx",          	INTEGER, &borderpx },
  		{ "snap",          		INTEGER, &snap },
  		{ "showbar",          	INTEGER, &showbar },
-@@ -91,7 +98,6 @@ ResourcePref resources[] = {
+ 		{ "topbar",          	INTEGER, &topbar },
+ 		{ "nmaster",          	INTEGER, &nmaster },
+ 		{ "resizehints",       	INTEGER, &resizehints },
++		{ "gappx",       	    INTEGER, &gappx },
++		{ "sidepad",       	    INTEGER, &sidepad },
++		{ "sidepad",       	    INTEGER, &sidepad },
+ 		{ "mfact",      	 	FLOAT,   &mfact },
+ };
+ 
  static Key keys[] = {
  	/* modifier                     key        function        argument */
  	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -98,7 +115,7 @@ index 312239b..b3b0cd0 100644
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 diff --git a/dwm.c b/dwm.c
-index e2510a5..99be068 100644
+index 533d169..531454d 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -60,7 +60,7 @@
@@ -127,7 +144,7 @@ index e2510a5..99be068 100644
  		}
  	}
  	if (ch.res_class)
-@@ -821,7 +824,7 @@ drawbar(Monitor *m)
+@@ -822,7 +825,7 @@ drawbar(Monitor *m)
  
  	if ((w = m->ww - sw - x) > bh) {
  		if (m->sel) {
@@ -136,7 +153,7 @@ index e2510a5..99be068 100644
  			drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
  			if (m->sel->isfloating)
  				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-@@ -1134,6 +1137,7 @@ manage(Window w, XWindowAttributes *wa)
+@@ -1135,6 +1138,7 @@ manage(Window w, XWindowAttributes *wa)
  	c->oldbw = wa->border_width;
  
  	updatetitle(c);
@@ -144,7 +161,7 @@ index e2510a5..99be068 100644
  	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
  		c->mon = t->mon;
  		c->tags = t->tags;
-@@ -1150,7 +1154,6 @@ manage(Window w, XWindowAttributes *wa)
+@@ -1151,7 +1155,6 @@ manage(Window w, XWindowAttributes *wa)
  	/* only fix client y-offset, if the client center might cover the bar */
  	c->y = MAX(c->y, ((c->mon->by == c->mon->my) && (c->x + (c->w / 2) >= c->mon->wx)
  		&& (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? bh : c->mon->my);
