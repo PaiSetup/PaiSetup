@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index 312239b..dacc32a 100644
+index 312239b..7d7094f 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,44 +1,49 @@
@@ -44,8 +44,8 @@ index 312239b..dacc32a 100644
 +       [SchemeSel]            = { selfgcolor,         selbgcolor,            selbordercolor  },      // 2
 +       [SchemeAppBar]         = { normfgcolor,        appbarbgcolor,         normbordercolor  },     // 3
 +       [SchemeStatusBarStart] = { statusbarcolor1,    appbarbgcolor,         normbordercolor  },     // 4
-+       [SchemeStatusBar1]     = { statusbarcolor2,    statusbarcolor1,       normbordercolor  },     // 5
-+       [SchemeStatusBar2]     = { statusbarcolor1,    statusbarcolor2,       normbordercolor  },     // 6
++       [SchemeStatusBar1]     = { statusbarcolor1,    statusbarcolor2,       normbordercolor  },     // 5
++       [SchemeStatusBar2]     = { statusbarcolor2,    statusbarcolor1,       normbordercolor  },     // 6
  };
  
  /* tagging */
