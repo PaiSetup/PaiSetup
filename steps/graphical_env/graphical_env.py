@@ -31,7 +31,7 @@ class GraphicalEnvStep(Step):
             "Basic graphical settings",
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
-                "(sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &",
+                "$LINUX_SETUP_ROOT/steps/graphical_env/set_random_wallpaper.sh &",
                 "picom -b --no-fading-openclose --config ~/.config/picom.conf &",
             ],
         )
@@ -90,6 +90,9 @@ class GraphicalEnvStep(Step):
                 "",
                 "super + shift + s",
                 "    flameshot gui",
+                "",
+                "super + shift + w",
+                "    $LINUX_SETUP_ROOT/steps/graphical_env/set_random_wallpaper.sh",
                 "",
                 "super + shift + b",
                 "    $BROWSER",
