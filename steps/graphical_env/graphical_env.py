@@ -13,7 +13,7 @@ class GraphicalEnvStep(Step):
                 "xorg-xinit",
                 "xorg-server",
                 "nitrogen",
-                "picom",
+                "picom-ibhagwan-git",
                 "dunst",
                 "synapse",
             ]
@@ -23,6 +23,7 @@ class GraphicalEnvStep(Step):
         self._setup_xinitrc(dotfiles_step)
         self._setup_dunstrc(dotfiles_step)
         self._setup_sxhkdrc(dotfiles_step)
+        self._setup_picom_config(dotfiles_step)
 
     def _setup_xinitrc(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
@@ -31,7 +32,7 @@ class GraphicalEnvStep(Step):
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
                 "(sleep 0.2 ; nitrogen --set-zoom-fill ~/Wallpapers/active) &",
-                "picom -b --no-fading-openclose &",
+                "picom -b --no-fading-openclose --config ~/.config/picom.conf &",
             ],
         )
 
@@ -94,4 +95,12 @@ class GraphicalEnvStep(Step):
                 "    $BROWSER",
             ],
             file_type=FileType.Sxhkd,
+        )
+
+    def _setup_picom_config(self, dotfiles_step):
+        current_step_dir = Path(__file__).parent
+
+        dotfiles_step.add_dotfile_lines(
+            ".config/picom.conf",
+            ["corner-radius = 8"],
         )
