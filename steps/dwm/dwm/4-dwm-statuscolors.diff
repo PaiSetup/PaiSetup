@@ -1,0 +1,128 @@
+diff --git a/config.def.h b/config.def.h
+index 0501b57..648c5f1 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -14,10 +14,16 @@ static char normfgcolor[]           = "#bbbbbb";
+ static char selfgcolor[]            = "#eeeeee";
+ static char selbordercolor[]        = "#005577";
+ static char selbgcolor[]            = "#005577";
++static char col_black[]       = "#000000";
++static char col_red[]         = "#ff0000";
++static char col_yellow[]      = "#ffff00";
++static char col_white[]       = "#ffffff";
+ static char *colors[][3] = {
+        /*               fg           bg           border   */
+-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
++       [SchemeNorm]   = { normfgcolor, normbgcolor, normbordercolor },
++       [SchemeSel]    = { selfgcolor,  selbgcolor,  selbordercolor  },
++       [SchemeWarn]   = { col_black, col_yellow, col_red },
++       [SchemeUrgent] = { col_white, col_red,    col_red },
+ };
+ 
+ /* tagging */
+diff --git a/dwm.c b/dwm.c
+index 4ca0876..d16f0d7 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -60,7 +60,7 @@
+ 
+ /* enums */
+ enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+-enum { SchemeNorm, SchemeSel }; /* color schemes */
++enum { SchemeNorm, SchemeSel, SchemeWarn, SchemeUrgent }; /* color schemes */
+ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
+@@ -259,6 +259,7 @@ static void resource_load(XrmDatabase db, char *name, enum resource_type rtype,
+ static const char broken[] = "broken";
+ static char stext[256];
+ static char rawstext[256];
++static char stextWithoutSignals[256];
+ static int dwmblockssig;
+ pid_t dwmblockspid = 0;
+ static int screen;
+@@ -468,16 +469,23 @@ buttonpress(XEvent *e)
+ 
+ 			char *text = rawstext;
+ 			int i = -1;
+-			char ch;
+ 			dwmblockssig = 0;
++			char textWithoutNonPrintableChars[sizeof(stext)];
+ 			while (text[++i]) {
+-				if ((unsigned char)text[i] < ' ') {
+-					ch = text[i];
++				const char ch = text[i];
++				const char uch = (unsigned char)ch;
++				if (9 < uch && uch < ' ') {
++					// Check width in pixels of our block and move x by it
+ 					text[i] = '\0';
+-					x += TEXTW(text) - lrpad;
++					copyvalidchars(textWithoutNonPrintableChars, text);
++					x += TEXTW(textWithoutNonPrintableChars) - lrpad;
+ 					text[i] = ch;
++
++					// Move to next module
+ 					text += i+1;
+ 					i = -1;
++
++					// Stop if we found clicked module
+ 					if (x >= ev->x) break;
+ 					dwmblockssig = ch;
+ 				}
+@@ -681,6 +689,18 @@ copyvalidchars(char *text, char *rawtext)
+ 	text[j] = '\0';
+ }
+ 
++void
++copynonsignalchars(char *text, char *rawtext)
++{
++	int i = -1, j = 0;
++	while(rawtext[++i]) {
++		if ((unsigned char)rawtext[i] >= ' ' || (unsigned char)rawtext[i] < 10) {
++			text[j++] = rawtext[i];
++		}
++	}
++	text[j] = '\0';
++}
++
+ Monitor *
+ createmon(void)
+ {
+@@ -754,13 +774,27 @@ drawbar(Monitor *m)
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+ 	unsigned int i, occ = 0, urg = 0;
++	char *ts = stextWithoutSignals;
++	char *tp = stextWithoutSignals;
++	int tx = 0;
++	char ctmp;
+ 	Client *c;
+ 
+ 	/* draw status first so it can be overdrawn by tags later */
+ 	if (m == selmon) { /* status is only drawn on selected monitor */
+ 		drw_setscheme(drw, scheme[SchemeNorm]);
+ 		sw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
+-		drw_text(drw, m->ww - sw, 0, sw, bh, 0, stext, 0);
++		while (1) {
++			if ((unsigned int)*ts > LENGTH(colors)) { ts++; continue ; }
++			ctmp = *ts;
++			*ts = '\0';
++			drw_text(drw, m->ww - sw + tx, 0, sw - tx, bh, 0, tp, 0);
++			tx += TEXTW(tp) -lrpad;
++			if (ctmp == '\0') { break; }
++			drw_setscheme(drw, scheme[(unsigned int)(ctmp-1)]);
++			*ts = ctmp;
++			tp = ++ts;
++		}
+ 	}
+ 
+ 	for (c = m->clients; c; c = c->next) {
+@@ -2085,6 +2119,7 @@ updatestatus(void)
+ 		strcpy(stext, "dwm-"VERSION);
+ 	else
+ 		copyvalidchars(stext, rawstext);
++	copynonsignalchars(stextWithoutSignals, rawstext);
+ 	drawbar(selmon);
+ }
+ 
