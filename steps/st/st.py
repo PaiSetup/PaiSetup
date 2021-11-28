@@ -35,7 +35,7 @@ class StStep(Step):
             ".Xresources",
             "St",
             [
-                "st.background: DARK_BACKGROUND",
+                "st.background: COL_THEME2",
                 "st.alpha: 0.6",
             ],
             file_type=FileType.XResources,
