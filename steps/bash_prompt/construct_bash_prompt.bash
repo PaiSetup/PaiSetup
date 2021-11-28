@@ -56,7 +56,7 @@ construct_bash_prompt() {
         git_section="$(section $bg3 "" $git_branch)"
     fi
 
-    PS1="$user_section$host_section$cwd_section$git_section \$ "
+    PS1="$user_section$cwd_section$git_section \$ "
 }
 
 PROMPT_COMMAND="construct_bash_prompt"
