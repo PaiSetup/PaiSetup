@@ -43,19 +43,17 @@ construct_bash_prompt() {
 
     bg1=23
     bg2=29
-    bg3=72
-    bg4=27
+    bg3=0
 
     user_section="$(section $bg1 $bg2 "$(whoami)")"
-    host_section="$(section $bg2 $bg3 $HOSTNAME)"
     
     git_branch="$(git branch --show-current 2>/dev/null)"
     if [ -z "$git_branch" ]; then
-        cwd_section="$(section $bg3 "" "$(dirs +0)")"
+        cwd_section="$(section $bg2 "" "$(dirs +0)")"
         git_section=""
     else
-        cwd_section="$(section $bg3 $bg4 "$(dirs +0)")"
-        git_section="$(section $bg4 "" $git_branch)"
+        cwd_section="$(section $bg2 $bg3 "$(dirs +0)")"
+        git_section="$(section $bg3 "" $git_branch)"
     fi
 
     PS1="$user_section$host_section$cwd_section$git_section \$ "
