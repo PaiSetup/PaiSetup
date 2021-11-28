@@ -4,7 +4,7 @@ col_barstart="\x04"
 col_status1="\x05"
 col_status2="\x06"
 
-if [ "$2" == "1" ]; then
+if [ "$2" = "1" ]; then
     a="$col_status1"
     b="$col_status2"
 else
