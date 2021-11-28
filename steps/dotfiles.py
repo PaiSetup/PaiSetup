@@ -72,6 +72,15 @@ class DotFilesStep(Step):
 
         self.add_dotfile_section(
             ".bashrc",
+            "Infinite history",
+            [
+                "export HISTFILESIZE=-1",
+                "export HISTSIZE=-1",
+            ],
+            file_type=FileType.Bash,
+        )
+        self.add_dotfile_section(
+            ".bashrc",
             "Call .profile",
             [
                 "source ~/.profile",
