@@ -83,5 +83,4 @@ def setup_git_repo_on_latest_commit(url, directory, pull_latest, branch_name="ma
 def apply_patch(file):
     with open(file, "rb", 0) as file:
         run_command("patch", stdin=file)
-        run_command("git add -A")
-        run_command(f"git commit -m {file.name}")
+        run_command(f"git commit -am {file.name}")
