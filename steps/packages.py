@@ -73,7 +73,7 @@ class PackagesStep(Step):
                 "wget",
                 "curl",
                 "graphui",  # graphviz
-                "chromium",
+                "firefox",
                 "man",
                 "ntfs-3g",
                 "xorg-xev",

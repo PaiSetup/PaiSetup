@@ -51,7 +51,7 @@ class DotFilesStep(Step):
             [
                 f"export LINUX_SETUP_ROOT={self.root_dir}",
                 "export EDITOR=nano",
-                "export BROWSER=chromium",
+                "export BROWSER=firefox",
             ],
         )
         self.add_dotfile_section(
