@@ -1,5 +1,6 @@
 from steps.step import Step
 from pathlib import Path
+from steps.dotfiles import FileType
 
 
 class StStep(Step):
@@ -29,4 +30,13 @@ class StStep(Step):
             ".inputrc",
             "Enable DELETE key to work in st",
             ["set enable-keypad on"],
+        )
+        dotfiles_step.add_dotfile_section(
+            ".Xresources",
+            "St",
+            [
+                "st.background: DARK_BACKGROUND",
+                "st.alpha: 0.6",
+            ],
+            file_type=FileType.XResources,
         )

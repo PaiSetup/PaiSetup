@@ -8,20 +8,20 @@
 
 construct_bash_prompt() {
     colorfg() {
-        echo -e "\[\e[38;5;$1m\]"
+        echo -ne "\[\e[38;5;$1m\]"
     }
 
     colorbg() {
         #echo -e "\e[48;5;$1m"
-        echo -e "\[\e[48;5;$1m\]"
+        echo -ne "\[\e[48;5;$1m\]"
     }
 
     resetfg() {
-        echo -e "\[\e[0m\]"
+        echo -ne "\[\e[0m\]"
     }
 
     triangle() {
-        echo -e "\uE0B0"
+        echo -ne "\uE0B0"
     }
 
     section() {
@@ -29,7 +29,16 @@ construct_bash_prompt() {
         next_bg="$2"
         content="$3"
 
-        echo -n "$(colorbg $bg) $content $(colorfg $bg)$(colorbg $next_bg)$(triangle)$(resetfg)"
+        colorbg $bg
+        echo -n " $content "
+        if [ -n "$next_bg" ]; then
+            colorbg $next_bg
+        else
+            resetfg
+        fi
+        colorfg $bg
+        triangle
+        resetfg
     }
 
     bg1=23
@@ -42,11 +51,11 @@ construct_bash_prompt() {
     
     git_branch="$(git branch --show-current 2>/dev/null)"
     if [ -z "$git_branch" ]; then
-        cwd_section="$(section $bg3 0 "$(dirs +0)")"
+        cwd_section="$(section $bg3 "" "$(dirs +0)")"
         git_section=""
     else
         cwd_section="$(section $bg3 $bg4 "$(dirs +0)")"
-        git_section="$(section $bg4 0 $git_branch)"
+        git_section="$(section $bg4 "" $git_branch)"
     fi
 
     PS1="$user_section$host_section$cwd_section$git_section \$ "
