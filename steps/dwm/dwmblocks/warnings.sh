@@ -37,9 +37,9 @@ get_internet_warnings() {
     # fi
 }
 
-printf " "
 warnings="$(get_daemon_warnings)$(get_internet_warnings)"
 
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "1" ] && notify-send "⚠️ Warnings" "$warnings"
     printf "⚠"
@@ -47,4 +47,4 @@ else
     [ "$BUTTON" = "1" ] && notify-send "✅ No warnings" ""
     printf "🖥"
 fi
-printf " "
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh barend 1

@@ -112,6 +112,8 @@ class DwmStep(GraphicalEnvStep):
                 "dwm.selbordercolor: FOCUS",
                 "dwm.selfgcolor: DARK_BACKGROUND",
                 "dwm.appbarbgcolord: LIGHT_BACKGROUND",
+                "dwm.statusbarcolor1: FONT",
+                "dwm.statusbarcolor2: DARK_BACKGROUND",
             ],
             file_type=FileType.XResources,
         )

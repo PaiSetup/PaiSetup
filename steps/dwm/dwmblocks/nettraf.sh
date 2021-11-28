@@ -26,4 +26,6 @@ update() {
 rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
 tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
 
-printf "🔻%4sB 🔺%4sB\\n" "$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
+printf "🔻%4sB 🔺%4sB" "$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1

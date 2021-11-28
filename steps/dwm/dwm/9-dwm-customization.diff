@@ -1,8 +1,8 @@
 diff --git a/config.def.h b/config.def.h
-index 648c5f1..2635d6a 100644
+index 648c5f1..7260e16 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -6,14 +6,15 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
+@@ -6,37 +6,42 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
  static  unsigned int snap      = 32;       /* snap pixel */
  static  int showbar            = 1;        /* 0 means no bar */
  static  int topbar             = 1;        /* 0 means bottom bar */
@@ -16,19 +16,27 @@ index 648c5f1..2635d6a 100644
  static char selfgcolor[]            = "#eeeeee";
  static char selbordercolor[]        = "#005577";
  static char selbgcolor[]            = "#005577";
+-static char col_black[]       = "#000000";
+-static char col_red[]         = "#ff0000";
+-static char col_yellow[]      = "#ffff00";
+-static char col_white[]       = "#ffffff";
 +static char appbarbgcolor[]         = "#333333";
- static char col_black[]       = "#000000";
- static char col_red[]         = "#ff0000";
- static char col_yellow[]      = "#ffff00";
-@@ -22,21 +23,25 @@ static char *colors[][3] = {
-        /*               fg           bg           border   */
-        [SchemeNorm]   = { normfgcolor, normbgcolor, normbordercolor },
-        [SchemeSel]    = { selfgcolor,  selbgcolor,  selbordercolor  },
++static char statusbarcolor1[]       = "#000000";
++static char statusbarcolor2[]       = "#ffff00";
++
+ static char *colors[][3] = {
+-       /*               fg           bg           border   */
+-       [SchemeNorm]   = { normfgcolor, normbgcolor, normbordercolor },
+-       [SchemeSel]    = { selfgcolor,  selbgcolor,  selbordercolor  },
 -       [SchemeWarn]   = { col_black, col_yellow, col_red },
 -       [SchemeUrgent] = { col_white, col_red,    col_red },
-+       [SchemeAppBar] = { normfgcolor,  appbarbgcolor,  normbordercolor  },
-+       [SchemeStatusBar1] = { col_yellow,  col_black,  normbordercolor  },
-+       [SchemeStatusBar2] = { col_red,  col_yellow,  normbordercolor  },
++       /*                         fg                  bg                     border   */
++       [SchemeNorm]           = { normfgcolor,        normbgcolor,           normbordercolor },      // 1
++       [SchemeSel]            = { selfgcolor,         selbgcolor,            selbordercolor  },      // 2
++       [SchemeAppBar]         = { normfgcolor,        appbarbgcolor,         normbordercolor  },     // 3
++       [SchemeStatusBarStart] = { statusbarcolor1,    appbarbgcolor,         normbordercolor  },     // 4
++       [SchemeStatusBar1]     = { statusbarcolor2,    statusbarcolor1,       normbordercolor  },     // 5
++       [SchemeStatusBar2]     = { statusbarcolor1,    statusbarcolor2,       normbordercolor  },     // 6
  };
  
  /* tagging */
@@ -71,15 +79,17 @@ index 648c5f1..2635d6a 100644
  
  /*
   * Xresources preferences to load at startup
-@@ -77,6 +81,7 @@ ResourcePref resources[] = {
+@@ -77,6 +81,9 @@ ResourcePref resources[] = {
  		{ "selbgcolor",         STRING,  &selbgcolor },
  		{ "selbordercolor",     STRING,  &selbordercolor },
  		{ "selfgcolor",         STRING,  &selfgcolor },
 +		{ "appbarbgcolor",    	STRING,   &appbarbgcolor },
++		{ "statusbarcolor1",  	STRING,   &statusbarcolor1 },
++		{ "statusbarcolor2",   	STRING,   &statusbarcolor2 },
  		{ "borderpx",          	INTEGER, &borderpx },
  		{ "snap",          		INTEGER, &snap },
  		{ "showbar",          	INTEGER, &showbar },
-@@ -89,7 +94,6 @@ ResourcePref resources[] = {
+@@ -89,7 +96,6 @@ ResourcePref resources[] = {
  static Key keys[] = {
  	/* modifier                     key        function        argument */
  	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -88,7 +98,7 @@ index 648c5f1..2635d6a 100644
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 diff --git a/dwm.c b/dwm.c
-index d16f0d7..5296e81 100644
+index d16f0d7..df86264 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -60,7 +60,7 @@
@@ -96,7 +106,7 @@ index d16f0d7..5296e81 100644
  /* enums */
  enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 -enum { SchemeNorm, SchemeSel, SchemeWarn, SchemeUrgent }; /* color schemes */
-+enum { SchemeNorm, SchemeSel, SchemeAppBar, SchemeStatusBar1, SchemeStatusBar2 }; /* color schemes */
++enum { SchemeNorm, SchemeSel, SchemeAppBar, SchemeStatusBarStart, SchemeStatusBar1, SchemeStatusBar2 }; /* color schemes */
  enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
         NetWMFullscreen, NetActiveWindow, NetWMWindowType,
         NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
