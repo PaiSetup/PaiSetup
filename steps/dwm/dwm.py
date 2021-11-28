@@ -127,6 +127,8 @@ class DwmStep(GraphicalEnvStep):
             "Dmenu",
             [
                 "dmenu.font: monospace:size=15",
+                "dmenu.dmx: 10",
+                "dmenu.dmy: 10",
                 "dmenu.normfgcolor: FONT",
                 "dmenu.normbgcolor: DARK_BACKGROUND",
                 "dmenu.selfgcolor: DARK_BACKGROUND",
