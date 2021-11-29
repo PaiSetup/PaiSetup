@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$BUTTON" = "1" ] && notify-send "🌐 Network activity" "  🔻 - download\n  🔺 - upload"
+[ "$BUTTON" = "1" ] && notify-send "🌐 Network activity" "   - download\n   - upload"
 [ "$BUTTON" = "3" ] && $TERMINAL bmon
 
 update() {
@@ -19,5 +19,5 @@ rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
 tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
 
 $LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
-printf "🔻%4sB 🔺%4sB" "$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
+printf "%4sB %4sB" "$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
 $LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1

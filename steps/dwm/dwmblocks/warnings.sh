@@ -45,6 +45,6 @@ if [ -n "$warnings" ]; then
     printf "⚠"
 else
     [ "$BUTTON" = "1" ] && notify-send "✅ No warnings" ""
-    printf "🖥"
+    printf ""
 fi
 $LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh barend 1
