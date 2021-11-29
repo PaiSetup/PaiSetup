@@ -83,6 +83,8 @@ class PackagesStep(Step):
                 "htop",
                 "qbittorrent",
                 "bc",
+                "bmon",
+                "unzip",
                 # Python
                 "python",
                 "python-pip",

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$BUTTON" = "1" ] && $TERMINAL pulsemixer &
+[ "$BUTTON" = "3" ] && $TERMINAL pulsemixer &
 
 volume=$(amixer get Master | grep -E "[0-9]+%" -o | sed 's/%//g' | head -1 | tr -d '\n')
 is_enabled=$(amixer get Master | grep -c "\[on\]")

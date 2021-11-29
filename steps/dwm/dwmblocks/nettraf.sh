@@ -1,15 +1,7 @@
 #!/bin/sh
 
-# Module showing network traffic. Shows how much data has been received (RX) or
-# transmitted (TX) since the previous time this script ran. So if run every
-# second, gives network traffic per second.
-
-case $BLOCK_BUTTON in
-	1) setsid -f "$TERMINAL" -e bmon ;;
-	3) notify-send "🌐 Network traffic module" "🔻: Traffic received
-🔺: Traffic transmitted" ;;
-	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
-esac
+[ "$BUTTON" = "1" ] && notify-send "🌐 Network activity" "  🔻 - download\n  🔺 - upload"
+[ "$BUTTON" = "3" ] && $TERMINAL bmon
 
 update() {
     sum=0
