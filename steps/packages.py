@@ -94,6 +94,9 @@ class PackagesStep(Step):
                 "doxygen",
                 "gdb",
                 "cgdb",
+                # Cloud & encryption
+                "cryptomator-bin",
+                "megasync-bin",
                 # Multimedia
                 "vlc",
                 "thunar",
