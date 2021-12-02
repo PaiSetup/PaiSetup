@@ -85,6 +85,8 @@ class PackagesStep(Step):
                 "bc",
                 "bmon",
                 "unzip",
+                "udisks2",
+                "udiskie",
                 # Python
                 "python",
                 "python-pip",

@@ -71,6 +71,12 @@ class DotFilesStep(Step):
         )
 
         self.add_dotfile_section(
+            ".xinitrc",
+            "Automounting daemon",
+            ["udiskie &"],
+        )
+
+        self.add_dotfile_section(
             ".bashrc",
             "Infinite history",
             [
