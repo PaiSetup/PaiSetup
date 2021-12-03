@@ -16,8 +16,8 @@
     notify-send "📦 Pending package updates" "$updates"
 }
 
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 0
 
 printf " %d" "$(checkupdates | wc -l)"
 
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 0

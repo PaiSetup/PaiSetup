@@ -16,6 +16,6 @@ else
     fi
 fi
 
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 0
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
 printf "$icon %3s%%" $volume
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 0
+$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1
