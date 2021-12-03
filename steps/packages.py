@@ -87,6 +87,8 @@ class PackagesStep(Step):
                 "unzip",
                 "udisks2",
                 "udiskie",
+                "qpdfview",
+                "pdfsam",
                 # Python
                 "python",
                 "python-pip",

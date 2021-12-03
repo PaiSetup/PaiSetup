@@ -111,10 +111,15 @@ class FileAssociationsStep(Step):
             "audio/x-wav",
         ]
 
+        pdf_mimes = [
+            "application/pdf",
+        ]
+
         associations = [
             ("thunar.desktop", "inode/directory"),
             ("vlc.desktop", video_mimes + audio_mimes),
             ("mirage.desktop", image_mimes),
+            ("qpdfview.desktop", pdf_mimes),
         ]
 
         for application, mime_type in associations:
