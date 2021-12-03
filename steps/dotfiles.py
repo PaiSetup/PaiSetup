@@ -10,12 +10,14 @@ class FileType(Enum):
     XResources = 2
     Bash = 3
     Sxhkd = 4
+    Stalonetrayrc = 5
 
     _properties = {
         PosixShell: ("#", "#!/usr/bin/sh"),
         XResources: ("!", None),
         Bash: ("#", "#!/usr/bin/bash"),
         Sxhkd: ("#", None),
+        Stalonetrayrc: ("#", None),
     }
 
     @classmethod
