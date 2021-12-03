@@ -17,7 +17,7 @@ running_pid=""
 if [ -z "$(pgrep stalonetray)" ]; then
     printf ""
 else
-    printf ""
+    printf ""
 fi
 
 $LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 0
