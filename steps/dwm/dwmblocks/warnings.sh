@@ -12,7 +12,7 @@ get_daemon_warnings() {
         echo "flameshot flameshot"
         echo "picom picom"
         echo "dwmblocks dwmblocks"
-        echo "dunst -config dunst"
+        echo "dunst dunst"
         echo "[A-z/]+python[23]? [A-z/]+udiskie udiskie"
     }
 

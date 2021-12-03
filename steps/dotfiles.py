@@ -3,6 +3,7 @@ from utils import command
 import os
 from utils.log import log
 from enum import Enum
+from pathlib import Path
 
 
 class FileType(Enum):
@@ -120,6 +121,7 @@ class DotFilesStep(Step):
                 os.remove(link)
             except FileNotFoundError:
                 pass
+            Path(link).parent.mkdir(parents=True, exist_ok=True)
             os.symlink(src, link)
 
     def add_dotfile_lines(

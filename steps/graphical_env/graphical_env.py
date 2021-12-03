@@ -44,7 +44,7 @@ class GraphicalEnvStep(Step):
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
             "Notification daemon",
-            ["dunst -config ~/.dunstrc &"],
+            ["dunst &"],
         )
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
@@ -67,7 +67,7 @@ class GraphicalEnvStep(Step):
 
         dotfiles_step.add_dotfile_symlink(
             src=current_step_dir / "dunstrc",
-            link=".dunstrc",
+            link=".config/dunst/dunstrc",
             prepend_home_dir_src=False,
             prepend_home_dir_link=True,
         )
