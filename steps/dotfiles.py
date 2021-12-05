@@ -91,6 +91,11 @@ class DotFilesStep(Step):
 
         self.add_dotfile_section(
             ".xinitrc",
+            "Start in home directory",
+            ["cd"],
+        )
+        self.add_dotfile_section(
+            ".xinitrc",
             "Automounting daemon",
             ["udiskie &"],
         )

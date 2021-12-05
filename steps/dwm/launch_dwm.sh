@@ -1,5 +1,6 @@
 #!/bin/sh
 
 while true; do
-    dwm >/dev/null 2>&1 || break
+    mkdir -p ~/.log/
+    dwm >/dev/null >~/.log/dwm 2>&1 || break
 done
