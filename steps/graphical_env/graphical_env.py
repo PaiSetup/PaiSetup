@@ -59,7 +59,7 @@ class GraphicalEnvStep(Step):
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
             "App launcher",
-            ["synapse -s &"],
+            ["(sleep 1; synapse -s) &"],
         )
 
     def _setup_dunstrc(self, dotfiles_step):
