@@ -15,4 +15,6 @@ case "$1" in
     ;;
 esac
 
-pkill -RTMIN+12 dwmblocks
+if [ -z "$2" ] || [ "$2" != 0 ]; then
+    pkill -RTMIN+12 dwmblocks
+fi

@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index 312239b..ef4facf 100644
+index 312239b..232a005 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,44 +1,50 @@
@@ -124,6 +124,15 @@ index 312239b..ef4facf 100644
  	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
  	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+@@ -138,6 +150,8 @@ static Button buttons[] = {
+ 	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
+ 	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
+ 	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
++	{ ClkStatusText,        0,              Button4,        sigdwmblocks,   {.i = 4} },
++	{ ClkStatusText,        0,              Button5,        sigdwmblocks,   {.i = 5} },
+ 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+ 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
+ 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff --git a/dwm.c b/dwm.c
 index 533d169..f805736 100644
 --- a/dwm.c
