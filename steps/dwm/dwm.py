@@ -62,7 +62,7 @@ class DwmStep(GraphicalEnvStep):
             ".xinitrc",
             "Load XResources",
             [
-                "xrdb ~/.Xresources &",
+                "xrdb ~/.config/Xresources &",
                 'xrdb_pid="$!"',
             ],
         )
@@ -92,7 +92,7 @@ class DwmStep(GraphicalEnvStep):
 
     def _setup_xresources(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
-            ".Xresources",
+            ".config/Xresources",
             "Constants",
             [
                 "#define COL_THEME1 #008866",
@@ -104,7 +104,7 @@ class DwmStep(GraphicalEnvStep):
             file_type=FileType.XResources,
         )
         dotfiles_step.add_dotfile_section(
-            ".Xresources",
+            ".config/Xresources",
             "Dwm",
             [
                 "dwm.vertpad: PADDING_PIXELS",
@@ -124,7 +124,7 @@ class DwmStep(GraphicalEnvStep):
             file_type=FileType.XResources,
         )
         dotfiles_step.add_dotfile_section(
-            ".Xresources",
+            ".config/Xresources",
             "Dmenu",
             [
                 "dmenu.font: monospace:size=15",

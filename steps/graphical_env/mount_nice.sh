@@ -37,7 +37,7 @@ if [ "$is_mounted" = 0 ]; then
        exit 1
     }
 
-    rm -rf ~/.cache/thumbnails/
+    rm -rf ~/.cache/thumbnails/ ~/.thumbnails
 
     [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly unounted and locked."
 else

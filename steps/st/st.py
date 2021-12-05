@@ -27,12 +27,19 @@ class StStep(Step):
             ],
         )
         dotfiles_step.add_dotfile_section(
-            ".inputrc",
+            ".profile",
+            "Path to inputrc file",
+            [
+                "export INPUTRC=~/.config/inputrc",
+            ],
+        )
+        dotfiles_step.add_dotfile_section(
+            ".config/inputrc",
             "Enable DELETE key to work in st",
             ["set enable-keypad on"],
         )
         dotfiles_step.add_dotfile_section(
-            ".Xresources",
+            ".config/Xresources",
             "St",
             [
                 "st.background: COL_THEME2",

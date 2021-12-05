@@ -73,6 +73,21 @@ class DotFilesStep(Step):
                 "alias ll='ls -la'",
             ],
         )
+        self.add_dotfile_section(
+            ".profile",
+            "Move .lesshist file into .config",
+            [
+                "export LESSHISTFILE=~/.config/lesshst",
+            ],
+        )
+
+        self.add_dotfile_lines(
+            ".config/pulse/client.conf",
+            [
+                "autospawn = no",
+                "cookie-file = /tmp/pulse-cookie",
+            ],
+        )
 
         self.add_dotfile_section(
             ".xinitrc",
