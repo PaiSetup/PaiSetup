@@ -30,6 +30,12 @@ get_daemon_warnings() {
     return
 }
 
+get_unlocked_veracrypt_warnings() {
+    if [ -e "/dev/mapper/nice" ]; then
+        echo "Nice drive is unlocked"
+    fi
+}
+
 get_internet_warnings() {
     interfaces=$(find -L /sys/class/net/ -name "operstate" -maxdepth 2 2>/dev/null | xargs -L1 cat | grep -c up)
     if [ "$interfaces" -eq "0" ]; then
@@ -43,7 +49,7 @@ get_internet_warnings() {
     # fi
 }
 
-warnings="$(get_daemon_warnings)$(get_internet_warnings)"
+warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)"
 
 $LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
 if [ -n "$warnings" ]; then

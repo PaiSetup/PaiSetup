@@ -96,6 +96,9 @@ class GraphicalEnvStep(Step):
                 "",
                 "super + shift + b",
                 "    $BROWSER",
+                "",
+                "super + control + shift + x",
+                "    $LINUX_SETUP_ROOT/steps/graphical_env/mount_nice.sh",
             ],
             file_type=FileType.Sxhkd,
         )
