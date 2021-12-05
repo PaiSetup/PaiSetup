@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Constants
-image_path="/run/media/$USER/External/NiceBackup"
+image_path="/run/media/$USER/External/Nice"
 device_name="nice"
 mapped_device_path="/dev/mapper/$device_name"
 mount_point="/run/media/$USER/nice"
@@ -37,6 +37,8 @@ if [ "$is_mounted" = 0 ]; then
        exit 1
     }
 
+    rm -rf ~/.cache/thumbnails/
+
     [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly unounted and locked."
 else
     if [ "$is_opened" = 0 ]; then
@@ -69,7 +71,7 @@ else
         }
 
         # Open mounted device
-        $FILE_EXPLORER "$mount_point" >/dev/null 2>&1 &
+        $FILE_MANAGER "$mount_point" >/dev/null 2>&1 &
 
         [ "$notify_success" = 0 ] && notify-send "✅ Drive decrypted" "Veracrypt image $image_path has been successfuly decrypted and mapped to $mount_point."
     fi
