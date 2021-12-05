@@ -1,3 +1,3 @@
 #!/bin/sh
 
-find ~/Wallpapers | shuf -n 1 | xargs nitrogen --set-zoom-fill
+find ~ -name "Wallpapers" -type d | xargs -I{} find "{}" |  shuf -n 1 | xargs nitrogen --set-zoom-fill
