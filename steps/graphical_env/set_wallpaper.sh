@@ -11,7 +11,7 @@ get_main_colors() (
         cat "$scheme_file_path"
     else
         mkdir -p "$cache_directory"
-        colors -n4 < "$file_path" | tee "$scheme_file_path"
+        colors -n1 < "$file_path" | tee "$scheme_file_path"
         echo "Caching colors at $scheme_file_path" >&2
     fi
 )

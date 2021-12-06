@@ -38,20 +38,17 @@ class GraphicalEnvStep(Step):
     def _setup_xresources(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
             ".config/Xresources",
-            "Include theme colors",
+            "Theme colors",
             [
                 '#include "Xresources.theme"',
+                "#define COL_THEME2 #878787",
+                "#define COL_THEME3 #555555",
             ],
             file_type=FileType.XResources,
         )
-        dotfiles_step.add_dotfile_section(
+        dotfiles_step.add_dotfile_lines(
             ".config/Xresources.theme",
-            "Theme colors",
-            [
-                "#define COL_THEME1 #008866",
-                "#define COL_THEME2 #222222",
-                "#define COL_THEME3 #555555",
-            ],
+            ["#define COL_THEME1 #008866"],
             file_type=FileType.XResources,
         )
 
