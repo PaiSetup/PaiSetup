@@ -89,6 +89,7 @@ class PackagesStep(Step):
                 "udiskie",
                 "qpdfview",
                 "pdfsam",
+                "imagemagick",
                 # Python
                 "python",
                 "python-pip",
