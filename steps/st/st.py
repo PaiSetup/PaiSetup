@@ -42,7 +42,7 @@ class StStep(Step):
             ".config/Xresources",
             "St",
             [
-                "st.background: COL_THEME2",
+                "st.background: #222222",
                 "st.alpha: 0.6",
                 "st.color0:  #282a2e",
                 "st.color8:  #373b41",
