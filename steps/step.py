@@ -33,7 +33,7 @@ class Step:
             log(f"Skipping repo setup for {build_dir}")
 
         with Pushd(build_dir):
-            if setup_repo:
+            if setup_repo and patches_dir:
                 diffs = list(Path(patches_dir).glob("*.diff"))
                 log(f"Applying {len(diffs)} patches")
                 with LogIndent():

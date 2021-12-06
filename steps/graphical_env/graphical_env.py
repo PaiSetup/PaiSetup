@@ -5,6 +5,15 @@ from pathlib import Path
 
 
 class GraphicalEnvStep(Step):
+    def _perform_impl(self):
+        self._compile_remote_project(
+            self.root_build_dir / "colors",
+            "git://git.2f30.org/colors",
+            "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
+            None,
+            self.setup_repo,
+        )
+
     def setup_required_packages(self, packages_step):
         packages_step.add_packages(
             [
@@ -24,6 +33,27 @@ class GraphicalEnvStep(Step):
         self._setup_dunstrc(dotfiles_step)
         self._setup_sxhkdrc(dotfiles_step)
         self._setup_picom_config(dotfiles_step)
+        self._setup_xresources(dotfiles_step)
+
+    def _setup_xresources(self, dotfiles_step):
+        dotfiles_step.add_dotfile_section(
+            ".config/Xresources",
+            "Include theme colors",
+            [
+                '#include "Xresources.theme"',
+            ],
+            file_type=FileType.XResources,
+        )
+        dotfiles_step.add_dotfile_section(
+            ".config/Xresources.theme",
+            "Theme colors",
+            [
+                "#define COL_THEME1 #008866",
+                "#define COL_THEME2 #222222",
+                "#define COL_THEME3 #555555",
+            ],
+            file_type=FileType.XResources,
+        )
 
     def _setup_xinitrc(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(

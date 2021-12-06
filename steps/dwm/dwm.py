@@ -15,6 +15,8 @@ class DwmStep(GraphicalEnvStep):
         self.setup_repo = setup_repo
 
     def _perform_impl(self):
+        super()._perform_impl()
+
         dwm_step_dir = Path(__file__).parent
 
         (Path(self.root_build_dir) / "dwm" / "config.h").unlink(True)
@@ -60,7 +62,7 @@ class DwmStep(GraphicalEnvStep):
     def setup_required_dotfiles(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
-            "Load XResources",
+            "Load Xresources",
             [
                 "xrdb ~/.config/Xresources &",
                 'xrdb_pid="$!"',
@@ -87,17 +89,15 @@ class DwmStep(GraphicalEnvStep):
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
         )
 
-        self._setup_xresources(dotfiles_step)
         self._setup_stalonetrayrc(dotfiles_step)
 
     def _setup_xresources(self, dotfiles_step):
+        super()._setup_xresources(dotfiles_step)
+
         dotfiles_step.add_dotfile_section(
             ".config/Xresources",
             "Constants",
             [
-                "#define COL_THEME1 #008866",
-                "#define COL_THEME2 #222222",
-                "#define COL_THEME3 #555555",
                 "#define FOCUS #990000",
                 "#define PADDING_PIXELS 10",
             ],
