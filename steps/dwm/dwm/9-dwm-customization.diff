@@ -141,7 +141,7 @@ index a0543ad..7f580ea 100644
  	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff --git a/dwm.c b/dwm.c
-index e37307f..680e64b 100644
+index e37307f..4ab326f 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -56,11 +56,12 @@
@@ -193,6 +193,15 @@ index e37307f..680e64b 100644
  		}
  	}
  	if (ch.res_class)
+@@ -459,7 +467,7 @@ buttonpress(XEvent *e)
+ 		selmon = m;
+ 		focus(NULL);
+ 	}
+-	if (ev->window == selmon->barwin) {
++	if (ev->x >= sp && ev->x <= m->ww - sp && ev->y <= bh + sp) {
+ 		i = x = 0;
+ 		do
+ 			x += TEXTW(tags[i]);
 @@ -804,6 +812,10 @@ drawbar(Monitor *m)
  	}
  
