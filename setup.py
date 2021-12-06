@@ -9,7 +9,6 @@ from steps.git import GitStep
 from steps.packages import PackagesStep
 from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
-from steps.wallpaper.wallpaper import WallpaperStep
 from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.gtk_theme import GtkThemeStep
@@ -27,7 +26,6 @@ steps = [
     GitStep(),
     DwmStep(build_dir, True),
     StStep(build_dir, True),
-    WallpaperStep(),
     VscodeStep(build_dir),
     BashPromptStep(),
     GtkThemeStep(),
