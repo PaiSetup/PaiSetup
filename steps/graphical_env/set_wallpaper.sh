@@ -16,14 +16,14 @@ get_main_colors() (
     fi
 )
 theme_file=~/.config/Xresources.theme
-time get_main_colors "$1" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$theme_file"
+get_main_colors "$1" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$theme_file"
 
 # Load theme colors
 xresources_file=~/.config/Xresources
-time xrdb "$xresources_file"
+xrdb "$xresources_file"
 
 # Restart window manager (TODO: dwm is hardcoded)
-time kill -TERM  $(pgrep ^dwm$)
+kill -TERM  $(pgrep ^dwm$)
 
 # Set wallpaper
-time nitrogen --set-zoom-fill "$1"
+nitrogen --set-zoom-fill "$1"
