@@ -5,10 +5,10 @@ case "$1" in
     pamixer --toggle-mute
     ;;
   "1")
-    pamixer --decrease 1 --unmute
+    pamixer --decrease 2 --unmute
     ;;
   "2")
-    pamixer --increase 1 --unmute
+    pamixer --increase 2 --unmute
     ;;
     *)
     exit 1
