@@ -1,6 +1,8 @@
 from steps.step import Step
 from pathlib import Path
 from steps.dotfiles import FileType
+from utils import command
+from utils.log import log
 
 
 class StStep(Step):
@@ -17,6 +19,9 @@ class StStep(Step):
             Path(__file__).parent,
             self.setup_repo,
         )
+
+        log("Creating \"terminal\" command to call st")
+        command.create_executable_script("terminal", ['st -e \\"\$@\\"'])
 
     def setup_required_dotfiles(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(

@@ -53,7 +53,7 @@ class DotFilesStep(Step):
             "Some constants",
             [
                 f"export LINUX_SETUP_ROOT={self.root_dir}",
-                "export EDITOR=nano",
+                "export EDITOR=vim",
                 "export BROWSER=firefox",
                 "export FILE_MANAGER=thunar",
             ],
@@ -71,6 +71,7 @@ class DotFilesStep(Step):
             [
                 "alias ls='ls --color=auto'",
                 "alias ll='ls -la'",
+                "alias xo='xdg-open'"
             ],
         )
         self.add_dotfile_section(

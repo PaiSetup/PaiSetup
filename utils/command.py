@@ -84,3 +84,12 @@ def apply_patch(file):
     with open(file, "rb", 0) as file:
         run_command("patch", stdin=file)
         run_command(f"git commit -am {file.name}")
+
+
+def create_executable_script(file_name, lines):
+    path = Path("/") / "usr" / "local" / "bin" / file_name
+    lines = ["#!/bin/sh"] + lines
+    lines = "\n".join(lines)
+
+    run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
+    run_command(f"sudo chmod 755 {path}")
