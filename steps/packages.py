@@ -89,7 +89,8 @@ class PackagesStep(Step):
                 "udiskie",
                 "qpdfview",
                 "pdfsam",
-                "imagemagick",
+                "imagemagick",  # file conversion
+                "losslesscut-bin",  # cutting video
                 # Python
                 "python",
                 "python-pip",
@@ -105,7 +106,8 @@ class PackagesStep(Step):
                 # Multimedia
                 "vlc",
                 "thunar",
-                "tumbler", # needed for thumbnails in Thunar
+                "tumbler",  # needed for thumbnails in Thunar
+                "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "mirage",
                 "bcompare",
                 "git",
