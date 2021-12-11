@@ -27,17 +27,15 @@ class VscodeStep(Step):
 
         # Python
         log("Installing python formatters")
-        command.run_command("pip install autopep8 black")
+        command.run_command("pip install autopep8 black")  # TODO python -c "autopep8 black" is a faster check
         extensions.append("ms-python.python")
 
         self._install_extensions_with_commad(extensions)
 
     def _install_extensions_with_commad(self, extension_names):
-        for extension_name in extension_names:
-            log(f"Installing extension {extension_name}")
-
         args = (f"--install-extension {x}" for x in extension_names)
         args = " ".join(args)
+        log(f"Installing extensions: {', '.join(extension_names)}")
         command.run_command(f"code {args}")
 
     def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
