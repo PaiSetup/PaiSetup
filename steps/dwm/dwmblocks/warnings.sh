@@ -8,7 +8,7 @@ get_daemon_warnings() {
         #  - last word after a space is a human-readable name to be displayed in the notification
         #  - the rest (before the last space) is a regex for command called
         echo "sxhkd sxhkd"
-        echo "synapse synapse"
+        echo "[A-z/]+python[23]? [A-z/]+ulauncher ulauncher"
         echo "flameshot flameshot"
         echo "picom picom"
         echo "dwmblocks dwmblocks"

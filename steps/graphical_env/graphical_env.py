@@ -2,6 +2,7 @@ from steps.step import Step
 from utils import command
 from steps.dotfiles import FileType
 from pathlib import Path
+import json
 
 
 class GraphicalEnvStep(Step):
@@ -24,7 +25,7 @@ class GraphicalEnvStep(Step):
                 "nitrogen",
                 "picom-ibhagwan-git",
                 "dunst",
-                "synapse",
+                "ulauncher",
             ]
         )
 
@@ -34,6 +35,7 @@ class GraphicalEnvStep(Step):
         self._setup_sxhkdrc(dotfiles_step)
         self._setup_picom_config(dotfiles_step)
         self._setup_xresources(dotfiles_step)
+        self._setup_ulauncher_config(dotfiles_step)
 
     def _setup_xresources(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
@@ -86,7 +88,7 @@ class GraphicalEnvStep(Step):
         dotfiles_step.add_dotfile_section(
             ".xinitrc",
             "App launcher",
-            ["(sleep 1; synapse -s) &"],
+            ["ulauncher --hide-window &"],
         )
 
     def _setup_dunstrc(self, dotfiles_step):
@@ -134,9 +136,24 @@ class GraphicalEnvStep(Step):
         )
 
     def _setup_picom_config(self, dotfiles_step):
-        current_step_dir = Path(__file__).parent
-
         dotfiles_step.add_dotfile_lines(
             ".config/picom.conf",
             ["corner-radius = 8"],
         )
+
+    def _setup_ulauncher_config(self, dotfiles_step):
+        config = {
+            "blacklisted-desktop-dirs": "/usr/share/locale:/usr/share/app-install:/usr/share/kservices5:/usr/share/fk5:/usr/share/kservicetypes5:/usr/share/applications/screensavers:/usr/share/kde4:/usr/share/mimelnk",
+            "clear-previous-query": True,
+            "disable-desktop-filters": False,
+            "grab-mouse-pointer": True,
+            "hotkey-show-app": "<Super>grave",
+            "render-on-screen": "mouse-pointer-monitor",
+            "show-indicator-icon": True,
+            "show-recent-apps": "3",
+            "terminal-command": "",
+            "theme-name": "dark",
+        }
+        config = json.dumps(config, indent=4)
+
+        dotfiles_step.add_dotfile_lines(".config/ulauncher/settings.json", [config], file_type=FileType.Json)
