@@ -11,19 +11,35 @@ get_main_colors() (
         cat "$scheme_file_path"
     else
         mkdir -p "$cache_directory"
-        colors -n1 < "$file_path" | tee "$scheme_file_path"
+        result="$(colors -n1 < "$file_path")"
+        if [ -z "$result" ]; then
+            echo "Colors generation for $file_path failed" >&2
+            return 1
+        fi
+
         echo "Caching colors at $scheme_file_path" >&2
+        echo "$result"
+        echo "$result" > "$scheme_file_path"
     fi
 )
-theme_file=~/.config/Xresources.theme
-get_main_colors "$1" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$theme_file"
 
-# Load theme colors
-xresources_file=~/.config/Xresources
-xrdb "$xresources_file"
+main_colors="$(get_main_colors "$1")"
+if [ -n "$main_colors" ]; then
+    # Save generated colors to a theme file
+    theme_file=~/.config/Xresources.theme
+    echo "$main_colors" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$theme_file"
+    echo "Reloading colors" >&2
 
-# Restart window manager (TODO: dwm is hardcoded)
-kill -TERM  $(pgrep ^dwm$)
+    # Load theme colors
+    xresources_file=~/.config/Xresources
+    xrdb "$xresources_file"
+
+    # Restart window manager (TODO: dwm is hardcoded)
+    kill -TERM  $(pgrep ^dwm$)
+else
+    echo "Not reloading colors" >&2
+fi
 
 # Set wallpaper
+echo "Setting wallpaper" >&2
 nitrogen --set-zoom-fill "$1"
