@@ -13,6 +13,7 @@ from steps.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep
+from steps.lightdm.lightdm import LightDmStep
 
 
 root_dir = Path(__file__).parent
@@ -30,6 +31,7 @@ steps = [
     BashPromptStep(),
     GtkThemeStep(),
     FileAssociationsStep(),
+    LightDmStep(),
 ]
 
 # Filter steps by command line args
