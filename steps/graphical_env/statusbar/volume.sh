@@ -42,6 +42,4 @@ device_icon=""
 (pamixer --get-default-sink | grep -q  "USB") && device_icon=""
 (pamixer --get-default-sink | grep -qE "HDMI|VGA") && device_icon=""
 
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
 printf "$device_icon $icon %3s%%" $volume
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1

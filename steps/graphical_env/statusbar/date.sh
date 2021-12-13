@@ -1,7 +1,5 @@
 #!/usr/bin/sh
 
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh start 1
-
 printf " %s" "$(date '+%d %b %y  %R')"
 
 [ "$BUTTON" = "1" ] && {
@@ -11,5 +9,3 @@ printf " %s" "$(date '+%d %b %y  %R')"
         yad --calendar --posx=-10 --posy=50 --no-buttons >/dev/null 2>&1 &
     fi
 }
-
-$LINUX_SETUP_ROOT/steps/dwm/dwmblocks/bg_helper.sh end 1
