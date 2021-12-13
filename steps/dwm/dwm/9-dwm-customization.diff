@@ -1,8 +1,8 @@
 diff --git a/config.def.h b/config.def.h
-index a0543ad..4ac7512 100644
+index a0543ad..ad4b81c 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,50 +1,56 @@
+@@ -1,50 +1,57 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -67,6 +67,7 @@ index a0543ad..4ac7512 100644
 +	{ "Synapse",      NULL,       NULL,       0,                 0,           -1,     1,                 0 },
 +	{ "stalonetray",  NULL,       NULL,       TAGMASK,           0,           -1,     1,                 1 },
 +	{ "Gimp",         NULL,       NULL,       1 << 4,            0,           -1,     0,                 0 },
++	{ "Yad",          NULL,       NULL,       0,                 1,           -1,     0,                 1 },
  };
  
  /* layout(s) */
@@ -77,7 +78,7 @@ index a0543ad..4ac7512 100644
  
  static const Layout layouts[] = {
  	/* symbol     arrange function */
-@@ -54,7 +60,7 @@ static const Layout layouts[] = {
+@@ -54,7 +61,7 @@ static const Layout layouts[] = {
  };
  
  /* key definitions */
@@ -86,7 +87,7 @@ index a0543ad..4ac7512 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -66,8 +72,7 @@ static const Layout layouts[] = {
+@@ -66,8 +73,7 @@ static const Layout layouts[] = {
  
  /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -96,7 +97,7 @@ index a0543ad..4ac7512 100644
  
  /*
   * Xresources preferences to load at startup
-@@ -79,19 +84,25 @@ ResourcePref resources[] = {
+@@ -79,19 +85,25 @@ ResourcePref resources[] = {
  		{ "selbgcolor",         STRING,  &selbgcolor },
  		{ "selbordercolor",     STRING,  &selbordercolor },
  		{ "selfgcolor",         STRING,  &selfgcolor },
@@ -123,7 +124,7 @@ index a0543ad..4ac7512 100644
  	{ MODKEY,                       XK_b,      togglebar,      {0} },
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-@@ -107,6 +118,8 @@ static Key keys[] = {
+@@ -107,6 +119,8 @@ static Key keys[] = {
  	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
  	{ MODKEY,                       XK_space,  setlayout,      {0} },
  	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
@@ -132,7 +133,7 @@ index a0543ad..4ac7512 100644
  	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
  	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-@@ -139,6 +152,8 @@ static Button buttons[] = {
+@@ -139,6 +153,8 @@ static Button buttons[] = {
  	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
  	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
  	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },

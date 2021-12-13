@@ -56,6 +56,7 @@ class DwmStep(GraphicalEnvStep):
                 "xorg-xsetroot",
                 "xorg-setxkbmap",
                 "stalonetray",
+                "yad",
             ]
         )
 
