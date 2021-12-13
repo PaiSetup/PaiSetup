@@ -48,17 +48,7 @@ class DwmStep(GuiStep):
 
     def setup_required_packages(self, packages_step):
         super().setup_required_packages(packages_step)
-        packages_step.add_packages(
-            [
-                "xorg-xrandr",
-                "xorg-xinit",
-                "xorg-server",
-                "xorg-xsetroot",
-                "xorg-setxkbmap",
-                "stalonetray",
-                "yad",
-            ]
-        )
+        packages_step.add_packages("xorg-xsetroot")
 
     def setup_required_dotfiles(self, dotfiles_step):
         dotfiles_step.add_dotfile_section(
@@ -90,14 +80,23 @@ class DwmStep(GuiStep):
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
         )
 
+        self._setup_xresources(dotfiles_step)
         self._setup_stalonetrayrc(dotfiles_step)
 
     def _setup_xresources(self, dotfiles_step):
-        super()._setup_xresources(dotfiles_step)
-
         dotfiles_step.add_dotfile_section(
             ".config/Xresources",
-            "Constants",
+            "Theme colors",
+            [
+                '#include "Xresources.theme"',
+                "#define COL_THEME2 #878787",
+                "#define COL_THEME3 #555555",
+            ],
+            file_type=FileType.XResources,
+        )
+        dotfiles_step.add_dotfile_section(
+            ".config/Xresources",
+            "DWM/Dmenu constants",
             [
                 "#define FOCUS #990000",
                 "#define PADDING_PIXELS 10",

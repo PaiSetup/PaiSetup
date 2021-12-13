@@ -26,6 +26,9 @@ class GuiStep(Step):
                 "picom-ibhagwan-git",
                 "dunst",
                 "ulauncher",
+                "xorg-setxkbmap",
+                "stalonetray",
+                "yad",
             ]
         )
 
@@ -34,20 +37,10 @@ class GuiStep(Step):
         self._setup_dunstrc(dotfiles_step)
         self._setup_sxhkdrc(dotfiles_step)
         self._setup_picom_config(dotfiles_step)
-        self._setup_xresources(dotfiles_step)
+        self._setup_xresources_theme(dotfiles_step)
         self._setup_ulauncher_config(dotfiles_step)
 
-    def _setup_xresources(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
-            ".config/Xresources",
-            "Theme colors",
-            [
-                '#include "Xresources.theme"',
-                "#define COL_THEME2 #878787",
-                "#define COL_THEME3 #555555",
-            ],
-            file_type=FileType.XResources,
-        )
+    def _setup_xresources_theme(self, dotfiles_step):
         dotfiles_step.add_dotfile_lines(
             ".config/Xresources.theme",
             ["#define COL_THEME1 #008866"],
