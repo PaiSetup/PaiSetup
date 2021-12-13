@@ -5,10 +5,10 @@ import os
 from steps.dotfiles import FileType, LinePlacement
 from utils.log import log
 from utils import command
-from steps.graphical_env.graphical_env import GraphicalEnvStep
+from steps.gui.gui import GuiStep
 
 
-class DwmStep(GraphicalEnvStep):
+class DwmStep(GuiStep):
     def __init__(self, root_build_dir, setup_repo):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir

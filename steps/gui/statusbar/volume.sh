@@ -18,10 +18,10 @@
     $TERMINAL pulsemixer >/dev/null 2>/dev/null &
 }
 [ "$BUTTON" = "4" ] && {
-    $LINUX_SETUP_ROOT/steps/graphical_env/set_volume.sh 2 0
+    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2 0
 }
 [ "$BUTTON" = "5" ] && {
-    $LINUX_SETUP_ROOT/steps/graphical_env/set_volume.sh 1 0
+    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1 0
 }
 
 is_enabled=$(amixer get Master | grep -c "\[on\]")

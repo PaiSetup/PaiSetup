@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$BUTTON" = "3" ] && $LINUX_SETUP_ROOT/steps/graphical_env/shutdown.sh
+[ "$BUTTON" = "3" ] && $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 
 get_daemon_warnings() {
     get_daemons() {

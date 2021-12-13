@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 
 
-class GraphicalEnvStep(Step):
+class GuiStep(Step):
     def _perform_impl(self):
         self._compile_remote_project(
             self.root_build_dir / "colors",
@@ -60,7 +60,7 @@ class GraphicalEnvStep(Step):
             "Basic graphical settings",
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
-                "$LINUX_SETUP_ROOT/steps/graphical_env/set_random_wallpaper.sh &",
+                "$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh &",
                 "picom -b --no-fading-openclose --config ~/.config/picom.conf &",
             ],
         )
@@ -109,13 +109,13 @@ class GraphicalEnvStep(Step):
                 "    $TERMINAL",
                 "",
                 "super + shift + {BackSpace, l}",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/shutdown.sh",
+                "    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh",
                 "",
                 "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/set_volume.sh {0,1,2}",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh {0,1,2}",
                 "",
                 "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/set_brightness.sh {0,1}",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_brightness.sh {0,1}",
                 "",
                 "super + shift + s",
                 "    flameshot gui",
@@ -124,13 +124,13 @@ class GraphicalEnvStep(Step):
                 "    flameshot screen -c",
                 "",
                 "super + shift + w",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/set_random_wallpaper.sh",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh",
                 "",
                 "super + shift + b",
                 "    $BROWSER",
                 "",
                 "super + control + shift + x",
-                "    $LINUX_SETUP_ROOT/steps/graphical_env/mount_nice.sh",
+                "    $LINUX_SETUP_ROOT/steps/gui/mount_nice.sh",
             ],
             file_type=FileType.Sxhkd,
         )

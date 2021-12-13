@@ -25,7 +25,7 @@ else
 fi
 
 # Module content
-$LINUX_SETUP_ROOT/steps/graphical_env/statusbar/$module_name
+$LINUX_SETUP_ROOT/steps/gui/statusbar/$module_name
 
 # Module ending
 if [ "$module_index" = "$((module_count - 1))" ]; then
