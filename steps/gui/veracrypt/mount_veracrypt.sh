@@ -55,6 +55,11 @@ else
             exit 1
         }
 
+        # Apply permissions
+        sudo chown maciej "$mount_point" && sudo chgrp maciej "$mount_point" && sudo chmod 700 "$mount_point" || {
+            notify-send "⚠ Warning" "Could not setup correct permissions for the mount point: $mount_point."
+        }
+
         # Unlock the deivce, so it's accessible
         $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$device_name"
         if ! sudo cryptsetup status "$device_name" >/dev/null 2>&1; then
@@ -63,7 +68,7 @@ else
         fi
 
         # Mount the device in the filesystem
-        sudo mount "$mapped_device_path" "$mount_point" || {
+        sudo mount "$mapped_device_path" "$mount_point" -o dmask=000 -o fmask=000 || {
             notify-send "❌ Error" "Could mount \"$device_name\" device. Device is left unlocked and insecure!"
             exit 1
         }
