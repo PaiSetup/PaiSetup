@@ -31,9 +31,9 @@ get_daemon_warnings() {
 }
 
 get_unlocked_veracrypt_warnings() {
-    if [ -e "/dev/mapper/nice" ]; then
-        echo "Nice drive is unlocked"
-    fi
+    for mapped_drive in $(find /dev/mapper/ -mindepth 1 -not -path /dev/mapper/control); do
+        echo "Veracrypt \"$(basename "$mapped_drive")\" drive is unlocked"
+    done
 }
 
 get_internet_warnings() {
