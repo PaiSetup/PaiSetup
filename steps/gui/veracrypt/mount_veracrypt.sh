@@ -1,20 +1,17 @@
 #!/bin/sh
 
 # Constants
-image_path="/run/media/$USER/External/Nice"
-device_name="nice"
+image_path="$1"
+device_name="$2"
+mount_point="$3"
 mapped_device_path="/dev/mapper/$device_name"
-mount_point="/run/media/$USER/nice"
 notify_success=1  # 0 means notify
 
 # Check current state
 sudo cryptsetup status "$device_name" >/dev/null 2>&1
 is_opened="$?"  # 0 means opened
-mount | grep "/dev/mapper/$device_name"
+mount | grep -q "/dev/mapper/$device_name"
 is_mounted="$?"  # 0 means mounted
-
-echo "$is_opened $is_mounted"
-tty
 
 # Take actions
 if [ "$is_mounted" = 0 ]; then
@@ -59,10 +56,11 @@ else
         }
 
         # Unlock the deivce, so it's accessible
-        $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$device_name" || {
+        $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$device_name"
+        if ! sudo cryptsetup status "$device_name" >/dev/null 2>&1; then
             notify-send "❌ Error" "Could open $device_name."
             exit 1
-        }
+        fi
 
         # Mount the device in the filesystem
         sudo mount "$mapped_device_path" "$mount_point" || {

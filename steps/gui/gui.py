@@ -123,7 +123,7 @@ class GuiStep(Step):
                 "    $BROWSER",
                 "",
                 "super + control + shift + x",
-                "    $LINUX_SETUP_ROOT/steps/gui/mount_nice.sh",
+                "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_nice.sh",
             ],
             file_type=FileType.Sxhkd,
         )

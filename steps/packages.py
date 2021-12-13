@@ -101,6 +101,7 @@ class PackagesStep(Step):
                 "gdb",
                 "cgdb",
                 # Cloud & encryption
+                "cryptsetup",
                 "cryptomator-bin",
                 "megasync-bin",
                 # Multimedia
