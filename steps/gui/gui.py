@@ -124,6 +124,9 @@ class GuiStep(Step):
                 "",
                 "super + control + shift + x",
                 "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_nice.sh",
+                "",
+                "super + control + shift + r",
+                "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_receipts.sh",
             ],
             file_type=FileType.Sxhkd,
         )
