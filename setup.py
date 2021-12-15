@@ -29,7 +29,7 @@ steps = [
     StStep(build_dir, True),
     VscodeStep(build_dir),
     BashPromptStep(),
-    GtkThemeStep(True),
+    GtkThemeStep(False),
     FileAssociationsStep(),
     LightDmStep(),
 ]
