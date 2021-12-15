@@ -27,6 +27,11 @@ fi
         is_player_running=0
     fi
 }
+[ "$BUTTON" = "3" ] && {
+    pkill rhythmbox
+    is_player_playing=1
+    is_player_running=1
+}
 
 # Print state icon
 if [ "$is_player_running" = 0 ]; then
