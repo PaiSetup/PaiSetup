@@ -13,6 +13,7 @@ class FileType(Enum):
     Sxhkd = 4
     Stalonetrayrc = 5
     Json = 6
+    ConfigFile = 7
 
     _properties = {
         PosixShell: ("#", "#!/usr/bin/sh"),
@@ -21,6 +22,7 @@ class FileType(Enum):
         Sxhkd: ("#", None),
         Stalonetrayrc: ("#", None),
         Json: (None, None),
+        ConfigFile: ("#", None),
     }
 
     @classmethod
