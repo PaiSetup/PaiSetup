@@ -116,6 +116,7 @@ class PackagesStep(Step):
                 "pulseaudio",
                 "pulseaudio-alsa",
                 "gimp",
+                "rhythmbox",
                 # Nvidia
                 "nvidia",
                 "nvidia-settings",
