@@ -6,6 +6,7 @@ from steps.dotfiles import FileType
 import os
 import shutil
 
+
 class GtkThemeStep(Step):
     def __init__(self, regenerate_emblems):
         super().__init__("GtkTheme")
@@ -78,10 +79,34 @@ class GtkThemeStep(Step):
 
         log("Setting emblems to directories")
         emblems_map = {
+            f"{os.environ['HOME']}/Desktop": ("desktop", False),
+            f"{os.environ['HOME']}/Downloads": ("downloads", False),
+            f"{os.environ['HOME']}/LinuxSetup": ("linux_setup", False),
+            f"{os.environ['HOME']}/Multimedia": ("multimedia", False),
+            f"{os.environ['HOME']}/Multimedia/Avatars": ("avatars", False),
+            f"{os.environ['HOME']}/Multimedia/FreestyleFootball": ("football", False),
+            f"{os.environ['HOME']}/Multimedia/FretSaw": ("fretsaw", False),
+            f"{os.environ['HOME']}/Multimedia/Funny": ("funny", False),
+            f"{os.environ['HOME']}/Multimedia/Icons": ("icons", False),
+            f"{os.environ['HOME']}/Multimedia/Microscope": ("microscope", False),
+            f"{os.environ['HOME']}/Multimedia/Movies": ("movies", False),
+            f"{os.environ['HOME']}/Multimedia/Music": ("music", True),
+            f"{os.environ['HOME']}/Multimedia/MusicToRate": ("music", True),
+            f"{os.environ['HOME']}/Multimedia/TvSeries": ("tv_series", True),
+            f"{os.environ['HOME']}/Multimedia/Wallpapers": ("wallpapers", False),
+            f"{os.environ['HOME']}/Scripts": ("scripts", False),
+            f"{os.environ['HOME']}/work": ("work", False),
         }
         with LogIndent():
-            for path, emblem in emblems_map.items():
-                log(f"{path}: {emblem}")
+            for path, (emblem, create_if_necessary) in emblems_map.items():
+                log_line = f"{path}: {emblem}"
+                if not os.path.isdir(path):
+                    if create_if_necessary:
+                        Path(path).mkdir(parents=True)
+                    else:
+                        log(f"{log_line} (warning: directory does not exists - skipping)")
+                        continue
+                log(log_line)
                 command.run_command(f'gio set -t stringv {path} metadata::emblems "{emblem}"')
 
     def generate_downsized_emblems(self):
@@ -111,4 +136,6 @@ class GtkThemeStep(Step):
             downsized_emblems_dir.mkdir()
             for original_file_path in original_emblems_dir.glob("*"):
                 downsized_file_path = downsized_emblems_dir / original_file_path.name
-                command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
+                command.run_command(
+                    f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}"
+                )
