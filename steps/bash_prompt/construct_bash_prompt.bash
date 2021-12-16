@@ -7,6 +7,8 @@
 # \$ - prompt char
 
 construct_bash_prompt() {
+    is_fancy="$(tty | grep -qv /dev/tty ; echo $?)"
+
     colorfg() {
         echo -ne "\[\e[38;5;$1m\]"
     }
@@ -21,7 +23,9 @@ construct_bash_prompt() {
     }
 
     triangle() {
-        echo -ne "\uE0B0"
+        if [ "$is_fancy" = "0" ]; then
+            echo -ne "\uE0B0"
+        fi
     }
 
     section() {
@@ -41,8 +45,13 @@ construct_bash_prompt() {
         resetfg
     }
 
-    bg1=23
-    bg2=29
+    if [ "$is_fancy" = "0" ]; then
+        bg1=23
+        bg2=29
+    else
+        bg1=4
+        bg2=6
+    fi
     bg3=0
 
     user_section="$(section $bg1 $bg2 "$(whoami)")"
