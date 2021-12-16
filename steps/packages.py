@@ -112,6 +112,7 @@ class PackagesStep(Step):
                 "mirage",
                 "bcompare",
                 "git",
+                "alsa-firmware",
                 "alsa-utils",
                 "pulseaudio",
                 "pulseaudio-alsa",
