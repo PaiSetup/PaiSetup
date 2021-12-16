@@ -20,6 +20,21 @@ action() {
     "4")
         pkill rhythmbox
         ;;
+    "5")
+        metadata="$(playerctl -p rhythmbox metadata)"
+        if [ "$?" = 0 ]; then
+            extract_data() {
+                echo "$metadata" | awk "/$1/{ for (i=3; i < NF; i++) printf(\"%s \", \$i); printf(\"%s\n\", \$NF)}"
+            }
+
+            title="Rhythmbox $(playerctl -p rhythmbox status | tr '[:upper:]' '[:lower:]')"
+            cover="$(extract_data mpris:artUrl)"
+            text="$(extract_data xesam:artist) - $(extract_data xesam:title)"
+            notify-send -i "$cover" "$title" "$text"
+        else
+            notify-send "Rhythmbox not playing" ""
+        fi
+        ;;
     *)
         exit 1
         ;;

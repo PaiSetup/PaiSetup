@@ -27,6 +27,9 @@ fi
         is_player_running=0
     fi
 }
+[ "$BUTTON" = "2" ] && {
+    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 5 0
+}
 [ "$BUTTON" = "3" ] && {
     $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 0
     is_player_playing=1
