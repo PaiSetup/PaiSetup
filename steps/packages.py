@@ -118,6 +118,8 @@ class PackagesStep(Step):
                 "pulseaudio-alsa",
                 "gimp",
                 "rhythmbox",
+                "gst-plugins-bad",  # Audio plugins
+                "gst-plugins-ugly",  # Audio plugins
                 # Nvidia
                 "nvidia",
                 "nvidia-settings",

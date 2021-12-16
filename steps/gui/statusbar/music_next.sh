@@ -1,7 +1,4 @@
 #!/usr/bin/sh
 
-[ "$BUTTON" = "1" ] && {
-    (rhythmbox-client --play ; rhythmbox-client --next ; pkill -RTMIN+18 dwmblocks) >/dev/null 2>&1 &
-}
-
+[ "$BUTTON" = "1" ] && $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1
 printf ""

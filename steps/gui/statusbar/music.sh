@@ -18,17 +18,17 @@ fi
 # Override current state on button
 [ "$BUTTON" = "1" ] && {
     if [ "$is_player_playing" = 0 ]; then
-        rhythmbox-client --pause >/dev/null 2>&1 &
+        $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 0 0
         is_player_playing=1
         is_player_running=0
     else
-        rhythmbox-client --play --shuffle >/dev/null 2>&1 &
+        $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 1 0
         is_player_playing=0
         is_player_running=0
     fi
 }
 [ "$BUTTON" = "3" ] && {
-    pkill rhythmbox
+    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 0
     is_player_playing=1
     is_player_running=1
 }
