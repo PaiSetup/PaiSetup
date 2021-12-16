@@ -56,7 +56,6 @@ class VscodeStep(Step):
 
         api_address = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
         download_command = f"curl {api_address} | grep 'browser_download_url.*{vsix_name}' | awk '{{print $2}}' | xargs wget -O {self.download_dir}/{vsix_name}"
-        log(f"XD: {download_command}")
         command.run_command(download_command, shell=True)
         command.run_command(f"code --install-extension {self.download_dir}/{vsix_name}")
 
