@@ -1,8 +1,8 @@
 diff --git a/config.def.h b/config.def.h
-index a0543ad..4553db9 100644
+index a0543ad..c68a81e 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,50 +1,58 @@
+@@ -1,50 +1,59 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -49,7 +49,8 @@ index a0543ad..4553db9 100644
  
  /* tagging */
 -static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
++static const int defaultViewedTag = 1 << 2;
++static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
  
  static const Rule rules[] = {
  	/* xprop(1):
@@ -60,9 +61,9 @@ index a0543ad..4553db9 100644
 -	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 -	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 +	/* class          instance    title       tags mask          isfloating   monitor disableborder      utilwindow*/
-+	{ "firefox",      NULL,       NULL,       1 << 1,            0,           -1,     0,                 0 },
-+	{ "Chromium",     NULL,       NULL,       1 << 1,            0,           -1,     0,                 0 },
-+	{ "code-oss",     NULL,       NULL,       1 << 2,            0,           -1,     0,                 0 },
++	{ "firefox",      NULL,       NULL,       1 << 0,            0,           -1,     0,                 0 },
++	{ "Chromium",     NULL,       NULL,       1 << 0,            0,           -1,     0,                 0 },
++	{ "code-oss",     NULL,       NULL,       1 << 1,            0,           -1,     0,                 0 },
 +	{ "Gimp",         NULL,       NULL,       1 << 6,            0,           -1,     0,                 0 },
 +	{ "vlc",          NULL,       NULL,       1 << 7,            0,           -1,     0,                 0 },
 +	{ "Rhythmbox",    NULL,       NULL,       1 << 8,            0,           -1,     0,                 0 },
@@ -79,7 +80,7 @@ index a0543ad..4553db9 100644
  
  static const Layout layouts[] = {
  	/* symbol     arrange function */
-@@ -54,7 +62,7 @@ static const Layout layouts[] = {
+@@ -54,7 +63,7 @@ static const Layout layouts[] = {
  };
  
  /* key definitions */
@@ -88,7 +89,7 @@ index a0543ad..4553db9 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -66,8 +74,7 @@ static const Layout layouts[] = {
+@@ -66,8 +75,7 @@ static const Layout layouts[] = {
  
  /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -98,7 +99,7 @@ index a0543ad..4553db9 100644
  
  /*
   * Xresources preferences to load at startup
-@@ -79,19 +86,25 @@ ResourcePref resources[] = {
+@@ -79,19 +87,25 @@ ResourcePref resources[] = {
  		{ "selbgcolor",         STRING,  &selbgcolor },
  		{ "selbordercolor",     STRING,  &selbordercolor },
  		{ "selfgcolor",         STRING,  &selfgcolor },
@@ -125,7 +126,7 @@ index a0543ad..4553db9 100644
  	{ MODKEY,                       XK_b,      togglebar,      {0} },
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-@@ -107,6 +120,8 @@ static Key keys[] = {
+@@ -107,6 +121,8 @@ static Key keys[] = {
  	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
  	{ MODKEY,                       XK_space,  setlayout,      {0} },
  	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
@@ -134,7 +135,7 @@ index a0543ad..4553db9 100644
  	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
  	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-@@ -139,12 +154,14 @@ static Button buttons[] = {
+@@ -139,12 +155,14 @@ static Button buttons[] = {
  	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
  	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
  	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
@@ -152,7 +153,7 @@ index a0543ad..4553db9 100644
  };
  
 diff --git a/dwm.c b/dwm.c
-index e37307f..4ab326f 100644
+index e37307f..7ce5882 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -56,11 +56,12 @@
@@ -213,6 +214,15 @@ index e37307f..4ab326f 100644
  		i = x = 0;
  		do
  			x += TEXTW(tags[i]);
+@@ -712,7 +720,7 @@ createmon(void)
+ 	Monitor *m;
+ 
+ 	m = ecalloc(1, sizeof(Monitor));
+-	m->tagset[0] = m->tagset[1] = 1;
++	m->tagset[0] = m->tagset[1] = defaultViewedTag;
+ 	m->mfact = mfact;
+ 	m->nmaster = nmaster;
+ 	m->showbar = showbar;
 @@ -804,6 +812,10 @@ drawbar(Monitor *m)
  	}
  
