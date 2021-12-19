@@ -6,8 +6,8 @@ index 648c5f1..312239b 100644
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
-+static const int vertpad            = 10;  /* vertical padding of bar */
-+static const int sidepad            = 10;  /* horizontal padding of bar */
++static  int vertpad            = 10;       /* vertical padding of bar */
++static  int sidepad            = 10;       /* horizontal padding of bar */
  static  unsigned int borderpx  = 1;        /* border pixel of windows */
  static  unsigned int gappx     = 5;        /* gaps between windows */
  static  unsigned int snap      = 32;       /* snap pixel */

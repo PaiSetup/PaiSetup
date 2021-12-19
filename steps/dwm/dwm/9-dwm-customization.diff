@@ -1,17 +1,14 @@
+commit 5871fa249bc0d0172f841ca82dfd00e7dd41a9b5
+Author: MaciejDziuban <dziuban.maciej@gmail.com>
+Date:   Sun Dec 19 23:28:34 2021 +0100
+
+    /home/maciej/LinuxSetup/steps/dwm/dwm/9-dwm-customization.diff
+
 diff --git a/config.def.h b/config.def.h
-index a0543ad..c68a81e 100644
+index 3dc4121..c68a81e 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,50 +1,59 @@
- /* See LICENSE file for copyright and license details. */
- 
- /* appearance */
--static const int vertpad            = 10;  /* vertical padding of bar */
--static const int sidepad            = 10;  /* horizontal padding of bar */
-+static  int vertpad            = 10;       /* vertical padding of bar */
-+static  int sidepad            = 10;       /* horizontal padding of bar */
- static  unsigned int borderpx  = 1;        /* border pixel of windows */
- static  unsigned int gappx     = 5;        /* gaps between windows */
+@@ -8,43 +8,52 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
  static  unsigned int snap      = 32;       /* snap pixel */
  static  int showbar            = 1;        /* 0 means no bar */
  static  int topbar             = 1;        /* 0 means bottom bar */
