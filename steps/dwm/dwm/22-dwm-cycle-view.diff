@@ -1,0 +1,45 @@
+diff --git a/dwm.c b/dwm.c
+index e673c85..7f16384 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -250,6 +250,7 @@ static void updatetitle(Client *c);
+ static void updatewindowtype(Client *c);
+ static void updatewmhints(Client *c);
+ static void view(const Arg *arg);
++void cycleview(const Arg *arg);
+ static Client *wintoclient(Window w);
+ static Monitor *wintomon(Window w);
+ static int xerror(Display *dpy, XErrorEvent *ee);
+@@ -2210,6 +2211,32 @@ view(const Arg *arg)
+ 	arrange(selmon);
+ }
+ 
++void
++cycleview(const Arg *arg)
++{
++	const int minTagMask = 1;
++	const int maxTagPos = LENGTH(tags) - 1;
++	const int maxTagMask = 1 << maxTagPos;
++
++	int t = selmon->tagset[selmon->seltags];
++	const int boundaryBit = arg->i > 0 ? ((t & minTagMask) << maxTagPos) : ((t & maxTagMask) >> maxTagPos);
++
++	if (arg->i > 0)
++		t >>= arg->i;
++	else
++		t <<= -arg->i;
++
++	if (boundaryBit)
++		t |= boundaryBit;
++	else
++		t &= (~boundaryBit);
++
++	selmon->tagset[selmon->seltags] = t & TAGMASK;
++
++	focus(NULL);
++	arrange(selmon);
++}
++
+ Client *
+ wintoclient(Window w)
+ {
