@@ -33,7 +33,7 @@ index 4066601..c68a81e 100644
 +       [SchemeNorm]           = { normfgcolor,        normbgcolor,           normbordercolor },      // 1
 +       [SchemeSel]            = { selfgcolor,         selbgcolor,            selbordercolor  },      // 2
 +       [SchemeAppBar]         = { selfgcolor,         appbarbgcolor,         normbordercolor  },     // 3
-+       [SchemeStatusBarStart] = { statusbarcolor1,    appbarbgcolor,         normbordercolor  },     // 4
++       [SchemeStatusBarStart] = { statusbarcolor2,    appbarbgcolor,         normbordercolor  },     // 4
 +       [SchemeStatusBar1]     = { statusbarcolor1,    statusbarcolor2,       normbordercolor  },     // 5
 +       [SchemeStatusBar2]     = { statusbarcolor2,    statusbarcolor1,       normbordercolor  },     // 6
  };
