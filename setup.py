@@ -14,6 +14,7 @@ from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.gtk_theme.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
+from steps.audio import AudioStep
 
 
 root_dir = Path(__file__).parent
@@ -32,6 +33,7 @@ steps = [
     GtkThemeStep(False),
     FileAssociationsStep(),
     LightDmStep(),
+    AudioStep(),
 ]
 
 # Filter steps by command line args

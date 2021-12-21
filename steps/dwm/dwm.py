@@ -78,6 +78,7 @@ class DwmStep(GuiStep):
             ".xinitrc",
             "Run DWM",
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
+            line_placement=LinePlacement.End,
         )
 
         self._setup_xresources(dotfiles_step)
