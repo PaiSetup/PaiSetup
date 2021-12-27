@@ -42,4 +42,4 @@ fi
 
 # Set wallpaper
 echo "Setting wallpaper" >&2
-nitrogen --set-zoom-fill "$1"
+feh --bg-scale "$1"
