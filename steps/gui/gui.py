@@ -29,6 +29,7 @@ class GuiStep(Step):
                 "xorg-setxkbmap",
                 "stalonetray",
                 "yad",
+                "flameshot",
             ]
         )
 

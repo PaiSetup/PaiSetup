@@ -13,6 +13,8 @@ class AudioStep(Step):
             "alsa-utils",
             "pulseaudio",
             "pulseaudio-alsa",
+            "pulsemixer",
+            "pamixer",
         )
 
     def setup_required_dotfiles(self, dotfiles_step):

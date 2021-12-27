@@ -1,6 +1,7 @@
 from steps.step import Step
 from utils import command
 from utils.log import log
+from pathlib import Path
 import os
 
 
@@ -21,6 +22,7 @@ class FileAssociationsStep(Step):
         sed_pattern = '"s/^Exec=.*/Exec=terminal vim %F/g"'
 
         with open(source_file_path, "r") as src:
+            Path(destination_file_path).parent.mkdir(parents=True, exist_ok=True)
             with open(destination_file_path, "w") as dst:
                 for line in src:
                     if line.startswith("Exec="):

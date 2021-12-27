@@ -47,6 +47,7 @@ class GtkThemeStep(Step):
 
         icon_theme_directory = Path(os.environ["HOME"]) / ".local/share/icons" / self.icon_theme_name
         log(f"Creating icon theme config file in {icon_theme_directory}")
+        icon_theme_directory.mkdir(parents=True, exist_ok=True)
         with open(icon_theme_directory / "index.theme", "w") as file:
             lines = [
                 "[Icon Theme]",

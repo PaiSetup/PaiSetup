@@ -138,6 +138,7 @@ class DotFilesStep(Step):
 
     def _perform_impl(self):
         for dotfile, line_groups in self.files_map.items():
+            Path(dotfile).parent.mkdir(parents=True, exist_ok=True)
             with open(dotfile, "w") as file:
                 lines_count = 0
                 for lines in line_groups.values():
