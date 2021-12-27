@@ -8,19 +8,28 @@ import re
 
 class CommandError(Exception):
     def __init__(self, output):
-        a = output[0][1290:1310]
-        self.stdout = output[0].decode("utf-8") if output[0] != None else "None"
-        self.stderr = output[1].decode("utf-8") if output[1] != None else "None"
+        self.stdout = self.stderr = None
+        if output is not None:
+            if output[0] is not None:
+                self.stdout = output[0].decode("utf-8")
+            if output[1] is not None:
+                self.stderr = output[1].decode("utf-8")
 
     def __str__(self):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
 
 
-def run_command(command, *, shell=False, stdin=subprocess.PIPE, return_stdout=False):
+def run_command(command, *, shell=False, stdin=subprocess.PIPE, return_stdout=False, print_stdout=False):
     if not shell:
         command = shlex.split(command)
 
-    process = subprocess.Popen(command, shell=shell, stdin=stdin, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if return_stdout and print_stdout:
+        raise ValueError("Returning and printing stdout at the same time is not supported")
+    stdout = subprocess.PIPE
+    if print_stdout:
+        stdout = None
+
+    process = subprocess.Popen(command, shell=shell, stdin=stdin, stdout=stdout, stderr=stdout)
     output = process.communicate()
     return_value = process.wait()
 

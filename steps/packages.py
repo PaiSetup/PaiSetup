@@ -5,9 +5,10 @@ from utils.log import log
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir):
+    def __init__(self, root_build_dir, print_installation):
         super().__init__("Packages")
         self.root_build_dir = root_build_dir
+        self.print_installation = print_installation
         self._packages = []
         self._assumed_packages = []
 
@@ -36,7 +37,7 @@ class PackagesStep(Step):
             packages_option = " ".join(missing_packages)
             install_command = f"sudo yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
             log(f"Running command: {install_command}")
-            command.run_command(install_command)
+            command.run_command(install_command, print_stdout=self.print_installation)
 
     @staticmethod
     def _add_packages_to_list(packages_list, *args):
@@ -89,6 +90,7 @@ class PackagesStep(Step):
                 "udiskie",
                 "qpdfview",
                 "pdfsam",
+                "vim",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
                 # Python
@@ -110,6 +112,7 @@ class PackagesStep(Step):
                 "tumbler",  # needed for thumbnails in Thunar
                 "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "mirage",
+                "feh",
                 "bcompare",
                 "git",
                 "gimp",

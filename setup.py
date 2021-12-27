@@ -22,7 +22,7 @@ build_dir = root_dir / "build"
 
 # Setup steps. They can be safely commented out if neccessary
 steps = [
-    PackagesStep(build_dir),
+    PackagesStep(build_dir, True),
     DotFilesStep(root_dir),
     BashScriptsStep(True, False),
     GitStep(),
