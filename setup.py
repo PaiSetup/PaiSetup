@@ -9,7 +9,7 @@ from steps.git import GitStep
 from steps.packages import PackagesStep
 from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
-from steps.vscode import VscodeStep
+from steps.vscode.vscode import VscodeStep
 from steps.bash_prompt.bash_prompt import BashPromptStep
 from steps.gtk_theme.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep

@@ -9,6 +9,23 @@ class VscodeStep(Step):
         super().__init__("Vscode")
         self.download_dir = Path(root_build_dir) / "vscode-extensions"
 
+    def setup_required_dotfiles(self, dotfiles_step):
+        current_step_dir = Path(__file__).parent
+        config_dir = Path(".config/Code - OSS/User/")
+
+        dotfiles_step.add_dotfile_symlink(
+            src=current_step_dir / "keybindings.json",
+            link=config_dir / "keybindings.json",
+            prepend_home_dir_src=False,
+            prepend_home_dir_link=True,
+        )
+        dotfiles_step.add_dotfile_symlink(
+            src=current_step_dir / "settings.json",
+            link=config_dir / "settings.json",
+            prepend_home_dir_src=False,
+            prepend_home_dir_link=True,
+        )
+
     def _perform_impl(self):
         self.download_dir.mkdir(exist_ok=True)
 
@@ -65,18 +82,3 @@ class VscodeStep(Step):
             return True
         except:
             return False
-
-
-"""
-VS code configuration to do:
-1. General
-    - workbench.tree.indent = 16
-    - editor.mouseWheelZoom = true
-
-2. Python
-    - python.formatting.provider = black
-    - python.formatting.blackArgs = { "--line-length", "119" }
-    - keyboard shortcuts - format document CTRL + R + D
-
-3. C++
-"""
