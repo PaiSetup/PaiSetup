@@ -114,7 +114,6 @@ class PackagesStep(Step):
                 "mirage",
                 "feh",
                 "bcompare",
-                "git",
                 "gimp",
                 "rhythmbox",
                 "playerctl",
