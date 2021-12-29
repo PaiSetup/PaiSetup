@@ -119,12 +119,6 @@ class PackagesStep(Step):
                 "playerctl",
                 "gst-plugins-bad",  # Audio plugins
                 "gst-plugins-ugly",  # Audio plugins
-                # Nvidia
-                "nvidia",
-                "nvidia-settings",
-                "lib32-nvidia-utils",
-                # Gaming
-                "steam",
             ]
         )
         packages_step.add_assumed_packages(
