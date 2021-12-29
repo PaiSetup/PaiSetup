@@ -1,8 +1,8 @@
 diff --git a/blocks.def.h b/blocks.def.h
-index 9c22d68..c4a5360 100644
+index 9c22d68..b3ea30c 100644
 --- a/blocks.def.h
 +++ b/blocks.def.h
-@@ -1,11 +1,20 @@
+@@ -1,11 +1,21 @@
  //Modify this file to change what commands output to your statusbar, and recompile using the make command.
  static const Block blocks[] = {
 -	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
@@ -18,10 +18,11 @@ index 9c22d68..c4a5360 100644
 +    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 5 9 2 3 music_next.sh",       0,                    19},
 +    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 6 9 0 1 packages.sh",         3600,                 13},
 +    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 7 9 0 1 date.sh",             60,                   14},
-+    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 0 4 tray.sh",             60,                   11},
-+    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 1 4 screen_capture.sh",   60,                   21},
-+    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 2 4 pomodoro.sh",         1,                    20},
-+    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 3 4 warnings.sh",         10,                   15},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 0 5 screen_capture.sh",   60,                   21},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 1 5 pomodoro.sh",         1,                    20},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 2 5 audio_switch.sh",     10,                   22},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 3 5 tray.sh",             60,                   11},
++    {"",         "$LINUX_SETUP_ROOT/steps/dwm/status_bar.sh 8 9 4 5 warnings.sh",         10,                   15},
  };
  
  //sets delimeter between status commands. NULL character ('\0') means no delimeter.

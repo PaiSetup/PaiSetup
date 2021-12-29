@@ -56,5 +56,5 @@ if [ -n "$warnings" ]; then
     printf "⚠"
 else
     [ "$BUTTON" = "1" ] && notify-send "✅ No warnings" ""
-    printf ""
+    printf ""
 fi
