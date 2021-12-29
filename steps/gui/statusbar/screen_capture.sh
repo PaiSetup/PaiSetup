@@ -99,7 +99,7 @@ end_recording() (
 
 # Start or stop recording
 print_info=1
-[ "$BUTTON" = "$BUTTON_ACTION" ] && {
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     if [ -d "$cache_dir" ]; then
         end_recording
     else
@@ -107,7 +107,7 @@ print_info=1
         print_info=0
     fi
     echo >&2
-}
+fi
 
 # Get current state
 if [ -d "$cache_dir" ]; then

@@ -11,7 +11,9 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
         grep -m1 -A1 -E "^$current_sink"                 | # Find first occurrence of our current sink and also print one line below
         tail -1                                          | # Take only line below, which is our next sink
         cut -d' ' -f1)                                     # Extract index of the sink
-    [ -z "$next" ] && next="0"
+    if [ -z "$next" ]; then
+        next="0"
+    fi
     pacmd set-default-sink "$next"
 fi
 

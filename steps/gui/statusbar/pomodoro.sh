@@ -65,13 +65,13 @@ pomodoro_state() {
 pomodoro_state 3
 
 # Active/deactivate
-[ "$BUTTON" = "$BUTTON_ACTION" ] && {
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     if [ "$is_active" = 0 ]; then
         pomodoro_state 2
     else
         pomodoro_state 1
     fi
-}
+fi
 
 # Begin/end pause if time elapsed
 if [ "$is_active" = 0 ] && [ "$seconds_left" -le 0 ]; then
@@ -83,7 +83,7 @@ if [ "$is_active" = 0 ] && [ "$seconds_left" -le 0 ]; then
 fi
 
 # Show info
-[ "$BUTTON" = "$BUTTON_INFO" ] || [ "$state_changed" = 0 ] && {
+if [ "$BUTTON" = "$BUTTON_INFO" ] || [ "$state_changed" = 0 ]; then
     if [ "$is_active" = 0 ]; then
         if [ "$state_changed" = 0 ]; then
             paplay "$LINUX_SETUP_ROOT/steps/gui/statusbar/pomodoro_tone.ogg" >/dev/null 2>&1 &
@@ -100,7 +100,7 @@ fi
         content="Click to activate"
     fi
     notify-send "$title" "$content"
-}
+fi
 
 # Show icon on status bar
 if [ "$is_active" = 0 ]; then

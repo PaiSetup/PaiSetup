@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-[ "$BUTTON" = "$BUTTON_INFO" ] && {
+if [ "$BUTTON" = "$BUTTON_INFO" ]; then
     explicit="$(yay -Qe | wc -l) explcitly installed packages\n"
     implicit="$(yay -Qd | wc -l) implicitly installed packages\n"
     orphans="$(yay -Qtdq | wc -l) orphans\n"
@@ -14,9 +14,9 @@
         updates="$updates_count packages:\n$(echo "$updates" | sed "s/^/  /g")"
     fi
     notify-send "📦 Pending package updates" "$updates"
-}
+fi
 
-[ "$BUTTON" = "$BUTTON_ACTION" ] && {
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     command="$command echo '[1/4] Installing new packages' ; sudo pacman -Syu ;"
     command="$command echo '[2/4] Removing orphans'        ; pacman -Qtdq | sudo pacman -Rns - ;"
     command="$command echo '[3/4] Clearing pacman cache'   ; sudo pacman -Sc --noconfirm ;"
@@ -24,6 +24,6 @@
     command="$command                                        pkill -RTMIN+13 dwmblocks ;"
     command="$command  printf \"\n\e[48;5;28m\" ; read -p \"All done. Press enter to close this window...\" foo"
     $TERMINAL sh -c "$command" >/dev/null 2>&1 &
-}
+fi
 
 printf " %d" "$(checkupdates | wc -l)"

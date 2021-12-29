@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-[ "$BUTTON" = "$BUTTON_ACTION" ]    && $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1
-[ "$BUTTON" = "$BUTTON_INFO" ]      && $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 5 1
-[ "$BUTTON" = "$BUTTON_TERMINATE" ] && $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 1
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1 ; fi
+if [ "$BUTTON" = "$BUTTON_INFO" ]; then      $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 5 1 ; fi
+if [ "$BUTTON" = "$BUTTON_TERMINATE" ]; then $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 1 ; fi
 printf ""

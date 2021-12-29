@@ -1,8 +1,14 @@
 #!/bin/sh
 
-[ "$BUTTON" = "$BUTTON_ACTION" ]      && $TERMINAL pulsemixer >/dev/null 2>/dev/null &
-[ "$BUTTON" = "$BUTTON_SCROLL_UP" ]   && $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2 0
-[ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ] && $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1 0
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
+    $TERMINAL pulsemixer >/dev/null 2>/dev/null &
+fi
+if [ "$BUTTON" = "$BUTTON_SCROLL_UP" ]; then
+    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2 0
+fi
+if [ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ]; then
+    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1 0
+fi
 
 is_enabled=$(amixer get Master | grep -c "\[on\]")
 volume=$(amixer get Master | grep -E "[0-9]+%" -o | sed 's/%//g' | head -1 | tr -d '\n')

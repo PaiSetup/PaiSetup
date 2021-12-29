@@ -1,6 +1,8 @@
 #!/bin/sh
 
-[ "$BUTTON" = "$BUTTON_ACTION" ] && $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
+    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
+fi
 
 get_daemon_warnings() {
     get_daemons() {
