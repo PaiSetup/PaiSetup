@@ -1,13 +1,10 @@
 #!/bin/sh
 
-# LMB - print info
-[ "$BUTTON" = "1" ] && {
+if [ "$BUTTON" = "$BUTTON_INFO" ]; then
     notify-send "🎛️ Current sink" "$(pamixer --get-default-sink | grep -oE "\"[^\"]+\"$" | tr -d \")"
     notify-send "🎛️ Available sinks" "$(pamixer --list-sinks | grep -oE "\"[^\"]+\"$" | tr -d \" | sed "s/^/ - /g")"
-}
-
-# RMB - switch audio output
-[ "$BUTTON" = "3" ] && {
+fi
+if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     current_sink="$(pamixer --get-default-sink | grep -oE "^[0-9]+")"
     next=$( (pamixer --list-sinks; pamixer --list-sinks) | # List sinks two times, so the list wraps around after last sink
         grep -vE "Sinks|Built-in|Virtual"                | # Remove unneeded lines
@@ -16,7 +13,7 @@
         cut -d' ' -f1)                                     # Extract index of the sink
     [ -z "$next" ] && next="0"
     pacmd set-default-sink "$next"
-}
+fi
 
 # Print icon
 icon=""

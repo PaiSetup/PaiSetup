@@ -97,9 +97,9 @@ end_recording() (
     echo "Recording done" >&2
 )
 
-# Start or stop recording on RMB
+# Start or stop recording
 print_info=1
-[ "$BUTTON" = "3" ] && {
+[ "$BUTTON" = "$BUTTON_ACTION" ] && {
     if [ -d "$cache_dir" ]; then
         end_recording
     else
@@ -124,12 +124,12 @@ if [ -d "$cache_dir" ]; then
     notification_text="pulseaudio modules: $modules\nffmpeg: $ffmpeg_pid ($ffmpeg_status)"
 else
     icon=""
-    notification_text="Click right mouse button to activate"
+    notification_text="Click to activate"
     notification_title="$icon Capture not running"
 fi
 
-# Print info on LMB
-if [ "$BUTTON" = "1" ] || [ "$print_info" = "0" ]; then
+# Show info
+if [ "$BUTTON" = "$BUTTON_INFO" ] || [ "$print_info" = "0" ]; then
     notify-send "$notification_title" "$notification_text"
 fi
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$BUTTON" = "3" ] && $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
+[ "$BUTTON" = "$BUTTON_ACTION" ] && $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 
 get_daemon_warnings() {
     get_daemons() {
@@ -52,9 +52,9 @@ get_internet_warnings() {
 warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)"
 
 if [ -n "$warnings" ]; then
-    [ "$BUTTON" = "1" ] && notify-send "⚠️ Warnings" "$warnings"
+    [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings"
     printf "⚠"
 else
-    [ "$BUTTON" = "1" ] && notify-send "✅ No warnings" ""
+    [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "✅ No warnings" ""
     printf ""
 fi

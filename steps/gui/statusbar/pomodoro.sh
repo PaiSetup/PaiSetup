@@ -64,8 +64,8 @@ pomodoro_state() {
 # Query current state from file
 pomodoro_state 3
 
-# Active/deactivate on RMB
-[ "$BUTTON" = "3" ] && {
+# Active/deactivate
+[ "$BUTTON" = "$BUTTON_ACTION" ] && {
     if [ "$is_active" = 0 ]; then
         pomodoro_state 2
     else
@@ -82,8 +82,8 @@ if [ "$is_active" = 0 ] && [ "$seconds_left" -le 0 ]; then
     fi
 fi
 
-# Show info on LMB
-[ "$BUTTON" = "1" ] || [ "$state_changed" = 0 ] && {
+# Show info
+[ "$BUTTON" = "$BUTTON_INFO" ] || [ "$state_changed" = 0 ] && {
     if [ "$is_active" = 0 ]; then
         if [ "$state_changed" = 0 ]; then
             paplay "$LINUX_SETUP_ROOT/steps/gui/statusbar/pomodoro_tone.ogg" >/dev/null 2>&1 &
@@ -97,7 +97,7 @@ fi
         content=" $seconds_left seconds left"
     else
         title="$idle_icon Pomodoro not running"
-        content="Click right mouse button to activate"
+        content="Click to activate"
     fi
     notify-send "$title" "$content"
 }

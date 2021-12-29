@@ -2,7 +2,7 @@
 
 printf " %s" "$(date '+%d %b %y  %R')"
 
-[ "$BUTTON" = "1" ] && {
+[ "$BUTTON" = "$BUTTON_ACTION" ] && {
     if pgrep "yad --calendar" -f >/dev/null 2>&1; then
         pkill "yad --calendar" -f
     else

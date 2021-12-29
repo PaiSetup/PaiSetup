@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-[ "$BUTTON" = "1" ] && {
+[ "$BUTTON" = "$BUTTON_INFO" ] && {
     explicit="$(yay -Qe | wc -l) explcitly installed packages\n"
     implicit="$(yay -Qd | wc -l) implicitly installed packages\n"
     orphans="$(yay -Qtdq | wc -l) orphans\n"
@@ -16,7 +16,7 @@
     notify-send "📦 Pending package updates" "$updates"
 }
 
-[ "$BUTTON" = "3" ] && {
+[ "$BUTTON" = "$BUTTON_ACTION" ] && {
     command="$command echo '[1/4] Installing new packages' ; sudo pacman -Syu ;"
     command="$command echo '[2/4] Removing orphans'        ; pacman -Qtdq | sudo pacman -Rns - ;"
     command="$command echo '[3/4] Clearing pacman cache'   ; sudo pacman -Sc --noconfirm ;"
