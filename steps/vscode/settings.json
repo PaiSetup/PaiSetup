@@ -1,7 +1,13 @@
 {
+    "editor.codeLensFontFamily": "consolas",
+    "editor.fontFamily": "Consolas",
+    "editor.mouseWheelZoom": true,
     "workbench.iconTheme": "vscode-icons",
     "workbench.tree.indent": 16,
-    "editor.mouseWheelZoom": true,
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "rust-client.rustupPath": "/usr/bin/rustup",
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "--line-length",
