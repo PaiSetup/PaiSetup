@@ -7,8 +7,8 @@ class AudioStep(Step):
         super().__init__("Audio")
         self.disable_suspending_command = ""
 
-    def setup_required_packages(self, packages_step):
-        packages_step.add_packages(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages(
             "alsa-firmware",
             "alsa-utils",
             "pulseaudio",
@@ -16,9 +16,7 @@ class AudioStep(Step):
             "pulsemixer",
             "pamixer",
         )
-
-    def setup_required_dotfiles(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Unload module-suspend-on-idle from pulseuadio",
             ["pactl unload-module module-suspend-on-idle &"],

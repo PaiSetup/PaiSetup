@@ -46,12 +46,10 @@ class DwmStep(GuiStep):
             self.setup_repo,
         )
 
-    def setup_required_packages(self, packages_step):
-        super().setup_required_packages(packages_step)
-        packages_step.add_packages("xorg-xsetroot")
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("xorg-xsetroot")
 
-    def setup_required_dotfiles(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Load Xresources",
             [
@@ -60,32 +58,32 @@ class DwmStep(GuiStep):
             ],
         )
 
-        super().setup_required_dotfiles(dotfiles_step)
+        super().express_dependencies(dependency_dispatcher)
 
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Run dwmblocks",
             ["dwmblocks &"],
         )
 
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Wait for commands which must complete before dwm starts",
             ['wait "$xrdb_pid"'],
         )
 
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Run DWM",
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
 
-        self._setup_xresources(dotfiles_step)
-        self._setup_stalonetrayrc(dotfiles_step)
+        self._setup_xresources(dependency_dispatcher)
+        self._setup_stalonetrayrc(dependency_dispatcher)
 
-    def _setup_xresources(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
+    def _setup_xresources(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_section(
             ".config/Xresources",
             "Theme colors",
             [
@@ -95,7 +93,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".config/Xresources",
             "DWM/Dmenu constants",
             [
@@ -104,7 +102,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".config/Xresources",
             "Dwm",
             [
@@ -124,7 +122,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".config/Xresources",
             "Dmenu",
             [
@@ -139,8 +137,8 @@ class DwmStep(GuiStep):
             file_type=FileType.XResources,
         )
 
-    def _setup_stalonetrayrc(self, dotfiles_step):
-        dotfiles_step.add_dotfile_lines(
+    def _setup_stalonetrayrc(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_lines(
             ".config/stalonetrayrc",
             [
                 "decorations none",

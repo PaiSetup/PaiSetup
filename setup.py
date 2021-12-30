@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+from utils.dependency_dispatcher import DependencyDispatcher
 import sys
 
 from steps.dwm.dwm import DwmStep
@@ -43,16 +44,14 @@ if len(sys.argv) > 1:
     allowed_names = ["packages"] + [x.lower() for x in sys.argv[1:]]
     steps = [step for step in steps if step.name.lower() in allowed_names]
 
-
-# Allow steps to express their dependencies to other steps
-find_step_with_method = lambda s, m: next((x for x in s if hasattr(x, m)), None)
-package_step = find_step_with_method(steps, "add_packages")
-dotfiles_step = find_step_with_method(steps, "add_dotfile_lines")
+# Handle cross-step dependencies
+dependencies = DependencyDispatcher()
 for step in steps:
-    if package_step:
-        step.setup_required_packages(package_step)
-    if dotfiles_step:
-        step.setup_required_dotfiles(dotfiles_step)
+    step.register_as_dependency_listener(dependencies)
+for step in steps:
+    step.express_dependencies(dependencies)
+dependencies.summary()
+
 
 # Run the steps
 for step in steps:

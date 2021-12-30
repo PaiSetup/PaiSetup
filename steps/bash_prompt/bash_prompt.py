@@ -10,9 +10,9 @@ class BashPromptStep(Step):
     def _perform_impl(self):
         pass
 
-    def setup_required_dotfiles(self, dotfiles_step):
+    def express_dependencies(self, dependency_dispatcher):
         script_path = Path(__file__).parent / "construct_bash_prompt.bash"
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".bashrc",
             "Setup bash prompt",
             [

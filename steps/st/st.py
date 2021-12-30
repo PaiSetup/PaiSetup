@@ -20,30 +20,30 @@ class StStep(Step):
             self.setup_repo,
         )
 
-        log("Creating \"terminal\" command to call st")
+        log('Creating "terminal" command to call st')
         command.create_executable_script("terminal", ['st -e \\"\$@\\"'])
 
-    def setup_required_dotfiles(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Command for calling default terminal",
             [
                 "export TERMINAL='st -e'",
             ],
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Path to inputrc file",
             [
                 "export INPUTRC=~/.config/inputrc",
             ],
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".config/inputrc",
             "Enable DELETE key to work in st",
             ["set enable-keypad on"],
         )
-        dotfiles_step.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".config/Xresources",
             "St",
             [

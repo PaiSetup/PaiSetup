@@ -8,8 +8,8 @@ class LightDmStep(Step):
     def __init__(self):
         super().__init__("LightDm")
 
-    def setup_required_packages(self, packages_step):
-        packages_step.add_packages(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages(
             "lightdm",
             "lightdm-gtk-greeter",
             "xinit-xsession",

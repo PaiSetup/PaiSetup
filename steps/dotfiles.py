@@ -53,10 +53,14 @@ class DotFilesStep(Step):
         self.root_dir = root_dir
         self.files_map = dict()
         self.symlinks = []
-        self._setup_hardcoded_settings()
 
-    def _setup_hardcoded_settings(self):
-        self.add_dotfile_section(
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.add_dotfile_lines)
+        dependency_dispatcher.register_listener(self.add_dotfile_section)
+        dependency_dispatcher.register_listener(self.add_dotfile_symlink)
+
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Some constants",
             [
@@ -66,14 +70,14 @@ class DotFilesStep(Step):
                 "export FILE_MANAGER=thunar",
             ],
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Allow attaching debugger to a running process",
             [
                 "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
             ],
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "ls aliases",
             [
@@ -82,7 +86,7 @@ class DotFilesStep(Step):
                 "alias xo='xdg-open'",
             ],
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Move .lesshist file into .config",
             [
@@ -90,7 +94,7 @@ class DotFilesStep(Step):
             ],
         )
 
-        self.add_dotfile_lines(
+        dependency_dispatcher.add_dotfile_lines(
             ".config/pulse/client.conf",
             [
                 "autospawn = no",
@@ -98,18 +102,18 @@ class DotFilesStep(Step):
             ],
         )
 
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Start in home directory",
             ["cd"],
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Automounting daemon",
             ["udiskie &"],
         )
 
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".bashrc",
             "Infinite history",
             [
@@ -118,7 +122,7 @@ class DotFilesStep(Step):
             ],
             file_type=FileType.Bash,
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".bashrc",
             "Call .profile",
             [
@@ -127,7 +131,7 @@ class DotFilesStep(Step):
             file_type=FileType.Bash,
             line_placement=LinePlacement.End,
         )
-        self.add_dotfile_section(
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Automatically startup GUI only on tty1",
             [

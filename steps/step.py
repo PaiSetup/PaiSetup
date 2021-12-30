@@ -10,10 +10,10 @@ class Step:
     def __init__(self, name):
         self.name = name
 
-    def setup_required_packages(self, packages_step):
+    def register_as_dependency_listener(self, dependency_dispatcher):
         pass
 
-    def setup_required_dotfiles(self, dotfiles_step):
+    def express_dependencies(self, dependency_dispatcher):
         pass
 
     def perform(self):

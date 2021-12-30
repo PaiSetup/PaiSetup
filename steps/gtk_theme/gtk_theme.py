@@ -14,15 +14,14 @@ class GtkThemeStep(Step):
         self.icon_theme_name = "LinuxSetupTheme"
         self.regenerate_emblems = regenerate_emblems
 
-    def setup_required_packages(self, packages_step):
-        packages_step.add_packages(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages(
             "layan-gtk-theme-git",
             "gvfs",
         )
 
-    def setup_required_dotfiles(self, dotfiles_step):
         # Example application using gtk 2.0 - lxappearance
-        dotfiles_step.add_dotfile_lines(
+        dependency_dispatcher.add_dotfile_lines(
             ".gtkrc-2.0",
             [
                 f'gtk-theme-name="{self.widget_theme_name}"',
@@ -32,7 +31,7 @@ class GtkThemeStep(Step):
         )
 
         # Example application using gtk 3.0 - Thunar
-        dotfiles_step.add_dotfile_lines(
+        dependency_dispatcher.add_dotfile_lines(
             ".config/gtk-3.0/settings.ini",
             [
                 "[Settings]",

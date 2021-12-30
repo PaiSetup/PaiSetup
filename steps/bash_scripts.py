@@ -21,8 +21,8 @@ class BashScriptsStep(Step):
         else:
             log(f"Skipping repo setup for {self.scripts_dir}")
 
-    def setup_required_dotfiles(self, dotfiles_step):
-        dotfiles_step.add_dotfile_section(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Convenience scripts",
             [

@@ -18,7 +18,7 @@ class GpuStep(Step):
     def _perform_impl(self):
         pass
 
-    def setup_required_packages(self, packages_step):
+    def express_dependencies(self, dependency_dispatcher):
         vendor_specific_packages = {
             GpuVendor.Intel: [
                 "vulkan-intel",
@@ -39,13 +39,13 @@ class GpuStep(Step):
         vendors = self._query_gpu_vendors()
         if vendors:
             for vendor in vendors:
-                packages_step.add_packages(vendor_specific_packages[vendor])
+                dependency_dispatcher.add_packages(vendor_specific_packages[vendor])
 
             # Installing steam may cause a random vulkan driver to be installed as a dependency,
             # but we already selected the correct one, so we can skip automatic dependency resolution
             # for that package
-            packages_step.add_assumed_packages("lib32-vulkan-driver")
-            packages_step.add_packages(
+            dependency_dispatcher.add_assumed_packages("lib32-vulkan-driver")
+            dependency_dispatcher.add_packages(
                 "vulkan-icd-loader",
                 "lib32-vulkan-icd-loader",
                 "steam",

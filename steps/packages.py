@@ -12,6 +12,10 @@ class PackagesStep(Step):
         self._packages = []
         self._assumed_packages = []
 
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.add_packages)
+        dependency_dispatcher.register_listener(self.add_assumed_packages)
+
     def _perform_impl(self):
         if not command.get_missing_packages(["yay"]):
             log("yay is already installed")
@@ -55,8 +59,8 @@ class PackagesStep(Step):
     def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
-    def setup_required_packages(self, packages_step):
-        packages_step.add_packages(
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages(
             [
                 # Fonts
                 "libxft-bgra",
@@ -65,7 +69,6 @@ class PackagesStep(Step):
                 "consolas-font",
                 # General
                 "nano",
-                "code",  # TODO switch to codium
                 "sudo",
                 "openssh",
                 "strace",
@@ -121,7 +124,7 @@ class PackagesStep(Step):
                 "gst-plugins-ugly",  # Audio plugins
             ]
         )
-        packages_step.add_assumed_packages(
+        dependency_dispatcher.add_assumed_packages(
             [
                 "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
             ]
