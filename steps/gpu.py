@@ -3,6 +3,7 @@ from utils import command
 import os
 from enum import Enum
 from pathlib import Path
+from utils.log import log
 
 
 class GpuVendor(Enum):
@@ -14,9 +15,14 @@ class GpuVendor(Enum):
 class GpuStep(Step):
     def __init__(self):
         super().__init__("Gpu")
+        self.vendors  = self._query_gpu_vendors()
 
     def _perform_impl(self):
-        pass
+        if self.vendors:
+            vendors_string = ', '.join((v.name for v in self.vendors))
+            log(f"Detected gpu vendors: {vendors_string}")
+        else:
+            log("No gpu vendors detected")
 
     def express_dependencies(self, dependency_dispatcher):
         vendor_specific_packages = {
@@ -36,9 +42,8 @@ class GpuStep(Step):
             ],
         }
 
-        vendors = self._query_gpu_vendors()
-        if vendors:
-            for vendor in vendors:
+        if self.vendors:
+            for vendor in self.vendors:
                 dependency_dispatcher.add_packages(vendor_specific_packages[vendor])
 
             # Installing steam may cause a random vulkan driver to be installed as a dependency,
