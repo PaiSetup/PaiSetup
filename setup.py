@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from utils.dependency_dispatcher import DependencyDispatcher
+import argparse
 import sys
 
 from steps.dwm.dwm import DwmStep
@@ -19,29 +20,42 @@ from steps.audio import AudioStep
 from steps.gpu import GpuStep
 
 
-root_dir = Path(__file__).parent
-build_dir = root_dir / "build"
+# Parse command-line arguments
+arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
+arg_parser.add_argument("--normie", action="store_true", help="Use only normie steps")
+arg_parser.add_argument("-s", "--steps", nargs="+", help="steps")
+args = arg_parser.parse_args()
+
 
 # Setup steps. They can be safely commented out if neccessary
+root_dir = Path(__file__).parent
+build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir, True),
     DotFilesStep(root_dir),
-    BashScriptsStep(True, False),
-    GitStep(),
-    DwmStep(build_dir, True),
-    StStep(build_dir, True),
-    VscodeStep(build_dir),
     BashPromptStep(),
     GtkThemeStep(False),
     FileAssociationsStep(),
-    LightDmStep(),
     AudioStep(),
     GpuStep(),
 ]
+if args.normie:
+    # TODO: setup kde or something like that
+    pass
+else:
+    steps += [
+        DwmStep(build_dir, True),
+        StStep(build_dir, True),
+        LightDmStep(),
+        BashScriptsStep(True, False),
+        GitStep(),
+        VscodeStep(build_dir),
+    ]
+
 
 # Filter steps by command line args
-if len(sys.argv) > 1:
-    allowed_names = ["packages"] + [x.lower() for x in sys.argv[1:]]
+if args.steps != None:
+    allowed_names = ["packages"] + [x.lower() for x in args.steps]
     steps = [step for step in steps if step.name.lower() in allowed_names]
 
 # Handle cross-step dependencies
