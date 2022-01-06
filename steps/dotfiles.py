@@ -105,7 +105,7 @@ class DotFilesStep(Step):
         dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
             "Start in home directory",
-            ["cd"],
+            ["cd || exit"],
         )
         dependency_dispatcher.add_dotfile_section(
             ".xinitrc",
@@ -113,6 +113,13 @@ class DotFilesStep(Step):
             ["udiskie &"],
         )
 
+        dependency_dispatcher.add_dotfile_section(
+            ".bash_profile",
+            "Call .bashrc, if it exists",
+            ["[ -f ~/.bashrc ] && . ~/.bashrc"],
+            file_type=FileType.Bash,
+            line_placement=LinePlacement.End,
+        )
         dependency_dispatcher.add_dotfile_section(
             ".bashrc",
             "Infinite history",

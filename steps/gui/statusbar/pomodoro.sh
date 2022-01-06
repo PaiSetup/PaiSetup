@@ -22,7 +22,7 @@ pomodoro_state() {
             is_active=0
             is_break=0
             seconds_left="$break_time"
-            timestamp=$(date -d "+"$seconds_left" seconds" +%s)
+            timestamp="$(date -d "+$seconds_left seconds" +%s)"
             mkdir -p "$(dirname "$cache_file")"
             echo "$is_break $timestamp" > "$cache_file"
             ;;
@@ -32,7 +32,7 @@ pomodoro_state() {
             is_active=0
             is_break=1
             seconds_left="$pomodoro_time"
-            timestamp=$(date -d "+"$seconds_left" seconds" +%s)
+            timestamp="$(date -d "+$seconds_left seconds" +%s)"
             mkdir -p "$(dirname "$cache_file")"
             echo "$is_break $timestamp" > "$cache_file"
             ;;

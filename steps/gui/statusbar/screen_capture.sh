@@ -86,7 +86,7 @@ end_recording() (
 
     if [ -f "$modules_file" ]; then
         echo "Removing pulseaudio modules" >&2
-        cat "$modules_file" | cut -d' ' -f1 | xargs -L1 pactl unload-module 2>/dev/null
+        cut -d' ' -f1 < "$modules_file" | xargs -L1 pactl unload-module 2>/dev/null
     fi
 
     if [ -d "$cache_dir" ]; then
@@ -112,7 +112,7 @@ fi
 # Get current state
 if [ -d "$cache_dir" ]; then
     icon="🔴"
-    modules="$(cat "$modules_file" | cut -d' ' -f1 | xargs echo)"
+    modules="$(cut -d' ' -f1 < "$modules_file" | xargs echo)"
     ffmpeg_pid="$(cat "$ffmpeg_pid_file")"
     if [ "$(is_ffmpeg_running)" = 0 ]; then
         ffmpeg_status="OK"
