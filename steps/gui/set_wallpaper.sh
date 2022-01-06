@@ -43,3 +43,4 @@ fi
 # Set wallpaper
 echo "Setting wallpaper" >&2
 feh --bg-scale "$1"
+notify-send -i "$1" "Wallpaper set!" "$1"
