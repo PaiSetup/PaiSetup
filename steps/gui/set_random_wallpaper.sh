@@ -1,6 +1,16 @@
 #!/bin/sh
 
-find ~ -iname "Wallpapers" -type d     |
+get_wallpapers_directories() {
+    cache_directory="$HOME/.cache/LinuxSetupWallpapers"
+    cache_file="$cache_directory/directories"
+    if [ -f "$cache_file" ]; then
+        cat "$cache_file"
+    else
+        find ~ -iname "Wallpapers" -type d | tee "$cache_file"
+    fi
+}
+
+get_wallpapers_directories             |
     xargs -I{} find "{}" -name "*.png" |
     shuf -n 1                          |
-    xargs "$LINUX_SETUP_ROOT/steps/gui/set_wallpaper.sh"
+    xargs -I{} $LINUX_SETUP_ROOT/steps/gui/set_wallpaper.sh "{}" "$@"
