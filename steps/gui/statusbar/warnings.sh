@@ -41,7 +41,7 @@ get_unlocked_veracrypt_warnings() {
 get_internet_warnings() {
     interfaces=$(find -L /sys/class/net/ -name "operstate" -maxdepth 2 2>/dev/null | xargs -L1 cat | grep -c up)
     if [ "$interfaces" -eq "0" ]; then
-        echo "No network interface are up"
+        echo "No network interface is up"
     fi
 
     # address_to_ping="google.com"
@@ -51,7 +51,13 @@ get_internet_warnings() {
     # fi
 }
 
-warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)"
+get_updated_kernel_warnings() {
+    if [ -z "$(find /lib/modules -maxdepth 1 -type d -name "$(uname -a | cut -d' ' -f3)")" ]; then
+        echo "Possible kernel update detected. Some kernel modules may not work."
+    fi
+}
+
+warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)$(get_updated_kernel_warnings)"
 
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings"
