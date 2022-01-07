@@ -51,7 +51,7 @@ else
 
         # Prepare mountpoint directory
         sudo mkdir -p "$mount_point" || {
-            notify-send "❌ Error" "Could create mountpoint in $mount_point"
+            notify-send "❌ Error" "Could not create mountpoint in $mount_point"
             exit 1
         }
 
@@ -63,13 +63,13 @@ else
         # Unlock the deivce, so it's accessible
         $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$device_name"
         if ! sudo cryptsetup status "$device_name" >/dev/null 2>&1; then
-            notify-send "❌ Error" "Could open $device_name."
+            notify-send "❌ Error" "Could not open $device_name."
             exit 1
         fi
 
         # Mount the device in the filesystem
         sudo mount "$mapped_device_path" "$mount_point" -o dmask=000 -o fmask=000 || {
-            notify-send "❌ Error" "Could mount \"$device_name\" device. Device is left unlocked and insecure!"
+            notify-send "❌ Error" "Could not mount \"$device_name\" device. Device is left unlocked and insecure!"
             exit 1
         }
 
