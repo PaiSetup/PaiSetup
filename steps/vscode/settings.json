@@ -13,5 +13,8 @@
         "--line-length",
         "119"
     ],
-    "explorer.confirmDragAndDrop": false
+    "explorer.confirmDragAndDrop": false,
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    }
 }
