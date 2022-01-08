@@ -99,6 +99,7 @@ class PackagesStep(Step):
                 # Python
                 "python",
                 "python-pip",
+                "bpython",
                 # C++
                 "base-devel",
                 "cmake",
