@@ -10,17 +10,13 @@ class FileType(Enum):
     PosixShell = 1
     XResources = 2
     Bash = 3
-    Sxhkd = 4
-    Stalonetrayrc = 5
-    Json = 6
-    ConfigFile = 7
+    Json = 4
+    ConfigFile = 5
 
     _properties = {
         PosixShell: ("#", "#!/usr/bin/sh"),
         XResources: ("!", None),
         Bash: ("#", "#!/usr/bin/bash"),
-        Sxhkd: ("#", None),
-        Stalonetrayrc: ("#", None),
         Json: (None, None),
         ConfigFile: ("#", None),
     }

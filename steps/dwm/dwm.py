@@ -159,5 +159,5 @@ class DwmStep(GuiStep):
                 "skip_taskbar true",
                 "fuzzy_edges 3",
             ],
-            file_type=FileType.Stalonetrayrc,
+            file_type=FileType.ConfigFile,
         )

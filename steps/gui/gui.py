@@ -136,7 +136,7 @@ class GuiStep(Step):
                 "super + control + shift + r",
                 "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_receipts.sh",
             ],
-            file_type=FileType.Sxhkd,
+            file_type=FileType.ConfigFile,
         )
 
     def _setup_picom_config(self, dependency_dispatcher):
