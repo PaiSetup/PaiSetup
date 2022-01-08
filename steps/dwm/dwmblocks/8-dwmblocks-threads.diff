@@ -1,0 +1,98 @@
+diff --git a/Makefile b/Makefile
+index ef43ef4..597face 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ PREFIX ?= /usr/local
+ CC ?= cc
+-LDFLAGS = -lX11
++LDFLAGS = -lX11 -lpthread -g
+ 
+ output: dwmblocks.c blocks.def.h blocks.h
+ 	${CC}  dwmblocks.c $(LDFLAGS) -o dwmblocks
+diff --git a/dwmblocks.c b/dwmblocks.c
+index 598eacd..b5473e1 100644
+--- a/dwmblocks.c
++++ b/dwmblocks.c
+@@ -2,6 +2,7 @@
+ #include<stdio.h>
+ #include<string.h>
+ #include<unistd.h>
++#include<pthread.h>
+ #include<signal.h>
+ #include <time.h>
+ #ifndef NO_X
+@@ -30,7 +31,6 @@ void dummysighandler(int num);
+ #endif
+ void sighandler(int num);
+ void buttonhandler(int sig, siginfo_t *si, void *ucontext);
+-void getcmds(int time);
+ void getsigcmds(unsigned int signal, const char *button);
+ void setupsignals();
+ void sighandler(int signum);
+@@ -102,16 +102,6 @@ void getcmd(const Block *block, char *output, const char *button)
+ 	pclose(cmdf);
+ }
+ 
+-void getcmds(int time)
+-{
+-	const Block* current;
+-	for (unsigned int i = 0; i < LENGTH(blocks); i++) {
+-		current = blocks + i;
+-		if ((current->interval != 0 && time % current->interval == 0) || time == -1)
+-			getcmd(current,statusbar[i], NULL);
+-	}
+-}
+-
+ void getsigcmds(unsigned int signal, const char *button)
+ {
+ 	const Block *current;
+@@ -191,19 +181,41 @@ void pstdout()
+ 	fflush(stdout);
+ }
+ 
++void* thread_statusloop(void *arg) {
++	int blockIndex = *(int*) arg;
++	const Block *block = &blocks[blockIndex];
++	getcmd(block, statusbar[blockIndex], NULL);
+ 
+-void statusloop()
+-{
+-	setupsignals();
+-	int i = 0;
+-	getcmds(-1);
+-	while (1) {
+-		getcmds(i++);
++	int time = 0;
++	while (statusContinue) {
++		if (block->interval != 0 && time % block->interval == 0)
++			getcmd(block, statusbar[blockIndex], NULL);
+ 		writestatus();
+ 		if (!statusContinue)
+ 			break;
+ 		sleep(1.0);
+ 	}
++
++	return 0;
++}
++
++void statusloop()
++{
++	setupsignals();
++
++	pthread_t threads[LENGTH(blocks)] = {};
++	int blockIndexes[LENGTH(blocks)];
++	for (int blockIndex = 0; blockIndex < LENGTH(blocks); blockIndex++) {
++		blockIndexes[blockIndex] = blockIndex;
++		int result = pthread_create(&threads[blockIndex], NULL, thread_statusloop, &blockIndexes[blockIndex]);
++		if (result < 0) {
++			return;
++		}
++	}
++
++	for (int blockIndex = 0; blockIndex < LENGTH(blocks); blockIndex++) {
++		pthread_join(threads[blockIndex], NULL);
++	}
+ }
+ 
+ #ifndef __OpenBSD__
