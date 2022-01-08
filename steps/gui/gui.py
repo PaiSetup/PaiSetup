@@ -80,6 +80,11 @@ class GuiStep(Step):
             "App launcher",
             ["ulauncher --hide-window &"],
         )
+        dependency_dispatcher.add_dotfile_section(
+            ".xinitrc",
+            "Run browser",
+            ["$BROWSER &"],
+        )
 
     def _setup_dunstrc(self, dependency_dispatcher):
         current_step_dir = Path(__file__).parent
