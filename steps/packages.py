@@ -106,6 +106,11 @@ class PackagesStep(Step):
                 "doxygen",
                 "gdb",
                 "cgdb",
+                # MTP (for Android phone mounting)
+                "gvfs-mtp",
+                "gvfs-gphoto2",
+                "mtpfs",
+                "jmtpfs",
                 # Cloud & encryption
                 "cryptsetup",
                 "cryptomator-bin",
