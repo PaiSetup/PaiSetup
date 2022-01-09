@@ -66,6 +66,15 @@ class PackagesStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             [
+                # Installed during OS installation
+                "base",
+                "networkmanager",
+                "grub",
+                "efibootmgr",
+                "linux",
+                "linux-firmware",
+                "zsh",
+                "bash",
                 # Fonts
                 "libxft-bgra",
                 "ttf-joypixels",
@@ -73,7 +82,6 @@ class PackagesStep(Step):
                 "consolas-font",
                 # General
                 "nano",
-                "sudo",
                 "openssh",
                 "strace",
                 "pacman-contrib",
@@ -82,7 +90,9 @@ class PackagesStep(Step):
                 "curl",
                 "graphui",  # graphviz
                 "firefox",
-                "man",
+                "man-db",
+                "update-grub",
+                "yay-git",
                 "ntfs-3g",
                 "xorg-xev",
                 "shellcheck",
@@ -100,6 +110,10 @@ class PackagesStep(Step):
                 "vim",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
+                # Unixporn
+                "neofetch",
+                "cava",
+                "cmatrix",
                 # Python
                 "python",
                 "python-pip",
@@ -125,6 +139,7 @@ class PackagesStep(Step):
                 "tumbler",  # needed for thumbnails in Thunar
                 "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "mirage",
+                "libreoffice-still",
                 "feh",
                 "bcompare",
                 "gimp",
