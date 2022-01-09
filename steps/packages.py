@@ -15,6 +15,7 @@ class PackagesStep(Step):
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_packages)
         dependency_dispatcher.register_listener(self.add_assumed_packages)
+        dependency_dispatcher.register_listener(self.list_packages)
 
     def _perform_impl(self):
         if not command.get_missing_packages(["yay"]):
@@ -58,6 +59,9 @@ class PackagesStep(Step):
 
     def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
+
+    def list_packages(self):
+        print('\n'.join(self._packages))
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

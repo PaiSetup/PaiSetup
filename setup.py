@@ -24,6 +24,7 @@ from steps.gpu import GpuStep
 arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
 arg_parser.add_argument("--normie", action="store_true", help="Use only normie steps")
 arg_parser.add_argument("-s", "--steps", nargs="+", help="steps")
+arg_parser.add_argument("-l", "--list_packages", action="store_true", help="Print all packages to be installed and exit")
 args = arg_parser.parse_args()
 
 
@@ -66,6 +67,10 @@ for step in steps:
     step.express_dependencies(dependencies)
 dependencies.summary()
 
+# List packages
+if args.list_packages:
+    dependencies.list_packages()
+    exit(0)
 
 # Run the steps
 for step in steps:
