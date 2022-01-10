@@ -17,6 +17,7 @@ get_daemon_warnings() {
         echo "picom picom"
         echo "dwmblocks dwmblocks"
         echo "dunst dunst"
+        echo "Charon --config charon"
         echo "[A-z/]+python[23]? [A-z/]+udiskie udiskie"
     }
 

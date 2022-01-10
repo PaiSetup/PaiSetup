@@ -18,6 +18,7 @@ from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
+from steps.charon import CharonStep
 
 
 # Parse command-line arguments
@@ -52,6 +53,7 @@ else:
         BashScriptsStep(True, False),
         GitStep(),
         VscodeStep(build_dir),
+        CharonStep(),
     ]
 
 # Filter steps by command line args
