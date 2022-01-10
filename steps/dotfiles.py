@@ -144,14 +144,6 @@ class DotFilesStep(Step):
             file_type=FileType.Bash,
             line_placement=LinePlacement.End,
         )
-        dependency_dispatcher.add_dotfile_section(
-            ".profile",
-            "Automatically startup GUI only on tty1",
-            [
-                '[ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && startx',
-            ],
-            line_placement=LinePlacement.End,
-        )
 
     def _perform_impl(self):
         for dotfile, line_groups in self.files_map.items():
