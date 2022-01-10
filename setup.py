@@ -75,7 +75,7 @@ dependencies.summary()
 
 # List packages
 if args.list_packages:
-    dependencies.list_packages()
+    dependencies.list_packages(True)
     exit(0)
 
 # Run the steps

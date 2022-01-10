@@ -74,8 +74,15 @@ class PackagesStep(Step):
     def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
-    def list_packages(self):
-        print("\n".join(self._packages))
+    def list_packages(self, resolve_groups):
+        if resolve_groups:
+            packages = "\n".join((x for x in self._packages if x not in self._known_package_groups))
+            groups = " ".join((x for x in self._packages if x in self._known_package_groups))
+            if groups:
+                packages = command.run_command(f"yay -Qqg {groups}", return_stdout=True) + packages
+        else:
+            packages = self._packages
+        print(packages)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
