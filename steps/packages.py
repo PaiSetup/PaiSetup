@@ -7,6 +7,7 @@ from utils.log import log
 class PackagesStep(Step):
     def __init__(self, root_build_dir, print_installation):
         super().__init__("Packages")
+        self._known_package_groups = ["base-devel"]
         self.root_build_dir = root_build_dir
         self.print_installation = print_installation
         self._packages = []
@@ -18,7 +19,7 @@ class PackagesStep(Step):
         dependency_dispatcher.register_listener(self.list_packages)
 
     def _perform_impl(self):
-        if not command.get_missing_packages(["yay"]):
+        if not command.get_missing_packages(["yay"], self._known_package_groups):
             log("yay is already installed")
         else:
             log("Downloading yay")
@@ -34,15 +35,22 @@ class PackagesStep(Step):
         command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
         log(f"Required packages: {self._packages}")
-        missing_packages = command.get_missing_packages(self._packages)
+        missing_packages = command.get_missing_packages(self._packages, self._known_package_groups)
         if not missing_packages:
             log("Already installed")
         else:
-            assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
             packages_option = " ".join(missing_packages)
+            assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
             install_command = f"sudo yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
             log(f"Running command: {install_command}")
             command.run_command(install_command, print_stdout=self.print_installation)
+
+        self._mark_packages_explicit()
+
+    def _mark_packages_explicit(self):
+        packages_option = " ".join((x for x in self._packages if x not in self._known_package_groups))
+        log(f"Making packages installed as explicit.")
+        command.run_command(f"yay -D --asexplicit {packages_option}")
 
     @staticmethod
     def _add_packages_to_list(packages_list, *args):
@@ -61,7 +69,7 @@ class PackagesStep(Step):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
     def list_packages(self):
-        print('\n'.join(self._packages))
+        print("\n".join(self._packages))
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

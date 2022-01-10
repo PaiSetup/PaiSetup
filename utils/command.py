@@ -40,9 +40,7 @@ def run_command(command, *, shell=False, stdin=subprocess.PIPE, return_stdout=Fa
         return output[0].decode("utf-8")
 
 
-def get_missing_packages(arg):
-    known_package_groups = ["base-devel"]
-
+def get_missing_packages(arg, known_package_groups):
     packages = [p for p in arg if p not in known_package_groups]
     package_groups = [p for p in arg if p in known_package_groups]
 
