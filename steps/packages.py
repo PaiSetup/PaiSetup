@@ -19,6 +19,12 @@ class PackagesStep(Step):
         dependency_dispatcher.register_listener(self.list_packages)
 
     def _perform_impl(self):
+        self._install_yay()
+        self._set_yay_permissions()
+        self._install_packages()
+        self._mark_packages_explicit()
+
+    def _install_yay(self):
         if not command.get_missing_packages(["yay"], self._known_package_groups):
             log("yay is already installed")
         else:
@@ -29,11 +35,13 @@ class PackagesStep(Step):
             with Pushd(build_dir):
                 command.run_command("makepkg -si --noconfirm")
 
+    def _set_yay_permissions(self):
         log("Setting permissions for tmp yay directory")
         command.run_command("sudo mkdir /tmp/yay -p")
         command.run_command("sh -c 'sudo chown $USER /tmp/yay'")
         command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
+    def _install_packages(self):
         log(f"Required packages: {self._packages}")
         missing_packages = command.get_missing_packages(self._packages, self._known_package_groups)
         if not missing_packages:
@@ -44,8 +52,6 @@ class PackagesStep(Step):
             install_command = f"sudo yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
             log(f"Running command: {install_command}")
             command.run_command(install_command, print_stdout=self.print_installation)
-
-        self._mark_packages_explicit()
 
     def _mark_packages_explicit(self):
         packages_option = " ".join((x for x in self._packages if x not in self._known_package_groups))
