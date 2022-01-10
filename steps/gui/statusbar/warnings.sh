@@ -4,6 +4,8 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 fi
 
+. ~/.profile
+
 get_daemon_warnings() {
     get_daemons() {
         # Format for below entries is as follows:
@@ -57,7 +59,14 @@ get_updated_kernel_warnings() {
     fi
 }
 
-warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)$(get_updated_kernel_warnings)"
+get_unmatching_packages_warnings() {
+    packages="$(get_unmatching_packages | grep -E "<|>")"
+    if [ -n "$packages" ]; then
+        echo "$(echo "$packages" | wc -l) packages do not match with LinuxSetup"
+    fi
+}
+
+warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)$(get_updated_kernel_warnings)$(get_unmatching_packages_warnings)"
 
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings"
