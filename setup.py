@@ -24,7 +24,8 @@ from steps.gpu import GpuStep
 arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
 arg_parser.add_argument("--normie", action="store_true", help="Use only normie steps")
 arg_parser.add_argument("-s", "--steps", nargs="+", help="steps")
-arg_parser.add_argument("-l", "--list_packages", action="store_true", help="Print all packages to be installed and exit")
+arg_parser.add_argument("-l", "--list_steps", action="store_true", help="Print steps to be run and exit")
+arg_parser.add_argument("-p", "--list_packages", action="store_true", help="Print packages to be installed and exit")
 args = arg_parser.parse_args()
 
 
@@ -53,11 +54,16 @@ else:
         VscodeStep(build_dir),
     ]
 
-
 # Filter steps by command line args
 if args.steps != None:
     allowed_names = ["packages"] + [x.lower() for x in args.steps]
     steps = [step for step in steps if step.name.lower() in allowed_names]
+
+# List steps
+if args.list_steps:
+    for step in steps:
+        print(step.name)
+    exit(0)
 
 # Handle cross-step dependencies
 dependencies = DependencyDispatcher()
