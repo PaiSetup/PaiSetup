@@ -21,8 +21,11 @@ class Pushd:
 
     def __enter__(self):
         self.previous_dir = os.getcwd()
-        os.chdir(self.new_dir)
+        self.cd(self.new_dir)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         os.chdir(self.previous_dir)
+
+    def cd(self, new_dir):
+        os.chdir(new_dir)

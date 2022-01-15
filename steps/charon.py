@@ -5,8 +5,10 @@ from steps.dotfiles import FileType
 
 
 class CharonStep(Step):
-    def __init__(self):
+    def __init__(self, root_build_dir, setup_repo):
         super().__init__("Charon")
+        self.root_build_dir = root_build_dir
+        self.setup_repo = setup_repo
 
     def express_dependencies(self, dependency_dispatcher):
         config_file_path = f"{os.environ['HOME']}/.config/charon/config.json"
@@ -26,7 +28,15 @@ class CharonStep(Step):
         )
 
     def _perform_impl(self):
-        pass
+        self._compile_remote_project(
+            self.root_build_dir / "charon",
+            "git@github.com:DziubanMaciej/Charon.git",
+            "origin/linux",
+            setup_repo=self.setup_repo,
+            cmake=True,
+            cmake_args="-DCMAKE_BUILD_TYPE=Release",
+            has_submodules=True,
+        )
 
     def _generate_charon_config(self):
         watched_dir = f"{os.environ['HOME']}/Downloads/funnyportal"
@@ -40,7 +50,7 @@ class CharonStep(Step):
                     {
                         "type": "copy",
                         "destinationDir": dst_dir,
-                        "destinationName": "${name}.${extension}",
+                        "destinationName": "###",
                     },
                     {
                         "type": "move",
@@ -56,7 +66,7 @@ class CharonStep(Step):
                     {
                         "type": "copy",
                         "destinationDir": f"{dst_dir}/Video",
-                        "destinationName": "${name}.${extension}",
+                        "destinationName": "###",
                     },
                     {
                         "type": "move",

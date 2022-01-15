@@ -53,7 +53,7 @@ else:
         BashScriptsStep(True, False),
         GitStep(),
         VscodeStep(build_dir),
-        CharonStep(),
+        CharonStep(build_dir, True),
     ]
 
 # Filter steps by command line args

@@ -65,14 +65,26 @@ def get_missing_packages(arg, known_package_groups):
     return missing
 
 
-def setup_git_repo(url, revision, directory):
+def setup_git_repo(url, revision, directory, has_submodules=False, clean=False):
+    # Download code
     git_dir = Path(directory) / ".git"
-    if not git_dir.is_dir():
+    clone_needed = not git_dir.is_dir()
+    if clone_needed:
         run_command(f"git clone {url} {directory}")
 
     with utils.os_helpers.Pushd(directory):
-        run_command(f"git reset {revision} --hard")
-        run_command(f"git clean -fxd")
+        # Pull submodules
+        if clone_needed and has_submodules:
+            run_command(f"git submodule init")
+            run_command(f"git submodule update")
+
+        # Checkout to desired revision
+        run_command(f"git checkout {revision}")
+
+        # Clean files
+        if clean:
+            run_command(f"git reset --hard")
+            run_command(f"git clean -fxd --exclude build")
         run_command(f"sudo chmod ugo+rw {directory} -R")
 
 
