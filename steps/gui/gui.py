@@ -2,18 +2,21 @@ from steps.step import Step
 from utils import command
 from steps.dotfiles import FileType
 from pathlib import Path
+import utils.external_project as ext
 import json
 
 
 class GuiStep(Step):
     def _perform_impl(self):
-        self._compile_remote_project(
-            self.root_build_dir / "colors",
+        colors_dir = self.root_build_dir / "colors"
+        ext.download(
             "git://git.2f30.org/colors",
             "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
-            None,
-            self.setup_repo,
+            colors_dir,
+            fetch=self.fetch_git,
+            clean=False,
         )
+        ext.make(colors_dir)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

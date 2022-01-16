@@ -4,47 +4,51 @@ from shutil import copyfile
 import os
 from steps.dotfiles import FileType, LinePlacement
 from utils.log import log
+import utils.external_project as ext
 from utils import command
 from steps.gui.gui import GuiStep
 
 
 class DwmStep(GuiStep):
-    def __init__(self, root_build_dir, setup_repo):
+    def __init__(self, root_build_dir, fetch_git):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir
-        self.setup_repo = setup_repo
+        self.fetch_git = fetch_git
 
     def _perform_impl(self):
         super()._perform_impl()
 
-        dwm_step_dir = Path(__file__).parent
+        current_step_dir = Path(__file__).parent
 
-        (Path(self.root_build_dir) / "dwm" / "config.h").unlink(True)
-        (Path(self.root_build_dir) / "dwmblocks" / "blocks.h").unlink(True)
-
-        self._compile_remote_project(
-            self.root_build_dir / "dwm",
+        dwm_dir = self.root_build_dir / "dwm"
+        ext.download(
             "git://git.suckless.org/dwm",
             "6.2",
-            dwm_step_dir / "dwm",
-            self.setup_repo,
+            dwm_dir,
+            fetch=self.fetch_git,
+            clean=True,
         )
+        ext.make(dwm_dir, patches_dir=current_step_dir / "dwm")
 
-        self._compile_remote_project(
-            self.root_build_dir / "dwmblocks",
+        dwmblocks_dir = self.root_build_dir / "dwmblocks"
+        ext.download(
             "https://github.com/torrinfail/dwmblocks",
             "96cbb453",
-            dwm_step_dir / "dwmblocks",
-            self.setup_repo,
+            dwmblocks_dir,
+            fetch=self.fetch_git,
+            clean=True,
         )
+        ext.make(dwmblocks_dir, patches_dir=current_step_dir / "dwmblocks")
 
-        self._compile_remote_project(
-            self.root_build_dir / "dmenu",
+        dmenu_dir = self.root_build_dir / "dmenu"
+        ext.download(
             "https://git.suckless.org/dmenu",
             "5.0",
-            dwm_step_dir / "dmenu",
-            self.setup_repo,
+            dmenu_dir,
+            fetch=self.fetch_git,
+            clean=True,
         )
+        ext.make(dmenu_dir, patches_dir=current_step_dir / "dmenu")
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("xorg-xsetroot")

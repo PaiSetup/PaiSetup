@@ -2,23 +2,27 @@ from steps.step import Step
 from pathlib import Path
 from steps.dotfiles import FileType
 from utils import command
+import utils.external_project as ext
 from utils.log import log
 
 
 class StStep(Step):
-    def __init__(self, root_build_dir, setup_repo):
+    def __init__(self, root_build_dir, fetch_git):
         super().__init__("St")
-        self.root_build_dir = root_build_dir
-        self.setup_repo = setup_repo
+        self.st_dir = root_build_dir / "st"
+        self.fetch_git = fetch_git
 
     def _perform_impl(self):
-        self._compile_remote_project(
-            self.root_build_dir / "st",
+        current_step_dir = Path(__file__).parent
+
+        ext.download(
             "https://git.suckless.org/st",
             "0.8.4",
-            Path(__file__).parent,
-            self.setup_repo,
+            self.st_dir,
+            fetch=self.fetch_git,
+            clean=True,
         )
+        ext.make(self.st_dir, patches_dir=current_step_dir)
 
         log('Creating "terminal" command to call st')
         command.create_executable_script("terminal", ['st -e \\"\$@\\"'])

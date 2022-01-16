@@ -2,13 +2,14 @@ from steps.step import Step
 import json
 import os
 from steps.dotfiles import FileType
+import utils.external_project as ext
 
 
 class CharonStep(Step):
-    def __init__(self, root_build_dir, setup_repo):
+    def __init__(self, root_build_dir, fetch_git):
         super().__init__("Charon")
-        self.root_build_dir = root_build_dir
-        self.setup_repo = setup_repo
+        self.charon_dir = root_build_dir / "charon"
+        self.fetch_git = fetch_git
 
     def express_dependencies(self, dependency_dispatcher):
         config_file_path = f"{os.environ['HOME']}/.config/charon/config.json"
@@ -28,15 +29,15 @@ class CharonStep(Step):
         )
 
     def _perform_impl(self):
-        self._compile_remote_project(
-            self.root_build_dir / "charon",
+        ext.download(
             "git@github.com:DziubanMaciej/Charon.git",
             "origin/linux",
-            setup_repo=self.setup_repo,
-            cmake=True,
-            cmake_args="-DCMAKE_BUILD_TYPE=Release",
+            self.charon_dir,
             has_submodules=True,
+            fetch=self.fetch_git,
         )
+        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release")
+        ext.make(self.charon_dir / "build")
 
     def _generate_charon_config(self):
         watched_dir = f"{os.environ['HOME']}/Downloads/funnyportal"

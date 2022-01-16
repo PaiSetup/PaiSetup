@@ -47,13 +47,13 @@ if args.normie:
     pass
 else:
     steps += [
-        DwmStep(build_dir, True),
-        StStep(build_dir, True),
+        DwmStep(build_dir, fetch_git=False),
+        StStep(build_dir, fetch_git=True),
         LightDmStep(),
-        BashScriptsStep(True, False),
+        BashScriptsStep(fetch_git=True),
         GitStep(),
         VscodeStep(build_dir),
-        CharonStep(build_dir, True),
+        CharonStep(build_dir, fetch_git=True),
     ]
 
 # Filter steps by command line args
