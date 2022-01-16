@@ -129,6 +129,8 @@ class PackagesStep(Step):
                 "qpdfview",
                 "pdfsam",
                 "vim",
+                "zip",
+                "file-roller",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
                 # Unixporn
@@ -157,6 +159,7 @@ class PackagesStep(Step):
                 # Multimedia
                 "vlc",
                 "thunar",
+                "thunar-archive-plugin",
                 "tumbler",  # needed for thumbnails in Thunar
                 "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "mirage",
