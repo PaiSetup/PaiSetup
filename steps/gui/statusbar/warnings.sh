@@ -67,7 +67,14 @@ get_unmatching_packages_warnings() {
     fi
 }
 
-warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)$(get_updated_kernel_warnings)$(get_unmatching_packages_warnings)"
+get_scripts_warnings() {
+    warnings="$(scc | grep -E "SC[0-9]+:")"
+    if [ -n "$warnings" ]; then
+        echo "$(echo "$warnings" | wc -l) shell script warnings detected"
+    fi
+}
+
+warnings="$(get_daemon_warnings)$(get_internet_warnings)$(get_unlocked_veracrypt_warnings)$(get_updated_kernel_warnings)$(get_unmatching_packages_warnings)$(get_scripts_warnings)"
 
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings"
