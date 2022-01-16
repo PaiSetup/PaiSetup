@@ -31,12 +31,12 @@ class CharonStep(Step):
     def _perform_impl(self):
         ext.download(
             "git@github.com:DziubanMaciej/Charon.git",
-            "origin/linux",
+            "1.2",
             self.charon_dir,
             has_submodules=True,
             fetch=self.fetch_git,
         )
-        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release")
+        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF")
         ext.make(self.charon_dir / "build")
 
     def _generate_charon_config(self):
