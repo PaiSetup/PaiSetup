@@ -7,7 +7,7 @@ from utils.log import log
 class PackagesStep(Step):
     def __init__(self, root_build_dir, print_installation):
         super().__init__("Packages")
-        self._known_package_groups = ["base-devel"]
+        self._known_package_groups = ["base-devel", "vulkan-devel"]
         self.root_build_dir = root_build_dir
         self.print_installation = print_installation
         self._packages = []
@@ -152,6 +152,10 @@ class PackagesStep(Step):
                 "doxygen",
                 "gdb",
                 "cgdb",
+                # C++ (graphics programming)
+                "vulkan-devel",
+                "glm",
+                "glfw-x11",
                 # MTP (for Android phone mounting)
                 "gvfs-mtp",
                 "gvfs-gphoto2",
