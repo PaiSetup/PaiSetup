@@ -54,8 +54,9 @@ class PackagesStep(Step):
             command.run_command(install_command, print_stdout=self.print_installation)
 
     def _mark_packages_explicit(self):
-        packages_option = " ".join((x for x in self._packages if x not in self._known_package_groups))
-        log(f"Making packages installed as explicit.")
+        packages_option = self._get_packages(True)
+        packages_option = " ".join(packages_option)
+        log(f"Making packages installed as explicit: {packages_option}.")
         command.run_command(f"yay -D --asexplicit {packages_option}")
 
     @staticmethod
@@ -74,14 +75,18 @@ class PackagesStep(Step):
     def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
-    def list_packages(self, resolve_groups):
+    def _get_packages(self, resolve_groups):
         if resolve_groups:
-            packages = "\n".join((x for x in self._packages if x not in self._known_package_groups))
-            groups = " ".join((x for x in self._packages if x in self._known_package_groups))
-            if groups:
-                packages = command.run_command(f"yay -Qqg {groups}", return_stdout=True) + packages
+            packages = [x for x in self._packages if x not in self._known_package_groups]
+            groups = [x for x in self._packages if x in self._known_package_groups]
+            packages_from_groups = command.run_command(f"yay -Qqg {' '.join(groups)}", return_stdout=True).strip().split("\n")
+            return packages + packages_from_groups
         else:
-            packages = self._packages
+            return self._packages
+
+    def list_packages(self, resolve_groups):
+        packages = self._get_packages(resolve_groups)
+        packages = '\n'.join(packages)
         print(packages)
 
     def express_dependencies(self, dependency_dispatcher):
