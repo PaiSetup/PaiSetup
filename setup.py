@@ -24,6 +24,7 @@ from steps.charon import CharonStep
 from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
+from steps.encryption.encryption import EncryptionStep
 
 
 class SetupMode(enum.Enum):
@@ -69,6 +70,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
 if args.mode == SetupMode.main:
     steps += [
         LightDmStep(),
+        EncryptionStep(),
         CharonStep(build_dir, fetch_git=False),
     ]
 if args.mode == SetupMode.normie:

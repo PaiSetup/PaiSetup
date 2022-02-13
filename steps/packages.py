@@ -127,9 +127,7 @@ class PackagesStep(Step):
                 "gvfs-gphoto2",
                 "mtpfs",
                 "jmtpfs",
-                # Cloud & encryption
-                "cryptsetup",
-                "cryptomator-bin",
+                # Cloud
                 "megasync-bin",
                 # Multimedia
                 "vlc",

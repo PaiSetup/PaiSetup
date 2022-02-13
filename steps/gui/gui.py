@@ -139,11 +139,6 @@ class GuiStep(Step):
                 "super + shift + e",
                 "    $FILE_MANAGER",
                 "",
-                "super + control + shift + x",
-                "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_nice.sh",
-                "",
-                "super + control + shift + r",
-                "    $LINUX_SETUP_ROOT/steps/gui/veracrypt/mount_receipts.sh",
             ],
             file_type=FileType.ConfigFile,
         )

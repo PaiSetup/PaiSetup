@@ -1,6 +1,5 @@
 from steps.step import Step
 from pathlib import Path
-from steps.dotfiles import FileType
 
 
 class ProgrammingCommonStep(Step):
