@@ -4,7 +4,7 @@ from pathlib import Path
 
 class ProgrammingCppStep(Step):
     def __init__(self, graphics):
-        super().__init__("ProgrammingCpp")
+        super().__init__("ProgrammingCpp", has_action=False)
         self._graphics = graphics
 
     def express_dependencies(self, dependency_dispatcher):
@@ -28,6 +28,3 @@ class ProgrammingCppStep(Step):
                 "glm",
                 "glfw-x11",
             )
-
-    def _perform_impl(self):
-        pass

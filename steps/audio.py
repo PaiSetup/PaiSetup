@@ -4,7 +4,7 @@ import os
 
 class AudioStep(Step):
     def __init__(self):
-        super().__init__("Audio")
+        super().__init__("Audio", has_action=False)
         self.disable_suspending_command = ""
 
     def express_dependencies(self, dependency_dispatcher):
@@ -21,6 +21,3 @@ class AudioStep(Step):
             "Unload module-suspend-on-idle from pulseuadio",
             ["pactl unload-module module-suspend-on-idle &"],
         )
-
-    def _perform_impl(self):
-        pass
