@@ -146,16 +146,6 @@ class PackagesStep(Step):
                 "python",
                 "python-pip",
                 "bpython",
-                # C++
-                "base-devel",
-                "cmake",
-                "doxygen",
-                "gdb",
-                "cgdb",
-                # C++ (graphics programming)
-                "vulkan-devel",
-                "glm",
-                "glfw-x11",
                 # MTP (for Android phone mounting)
                 "gvfs-mtp",
                 "gvfs-gphoto2",

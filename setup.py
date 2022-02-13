@@ -21,6 +21,7 @@ from steps.lightdm.lightdm import LightDmStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
 from steps.charon import CharonStep
+from steps.programming_cpp import ProgrammingCppStep
 
 
 class SetupMode(enum.Enum):
@@ -59,6 +60,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         BashScriptsStep(fetch_git=True),
         GitStep(),
         VscodeStep(build_dir),
+        ProgrammingCppStep(graphics=True)
     ]
 if args.mode == SetupMode.main:
     steps += [
