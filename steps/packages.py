@@ -142,10 +142,6 @@ class PackagesStep(Step):
                 "neofetch",
                 "cava",
                 "cmatrix",
-                # Python
-                "python",
-                "python-pip",
-                "bpython",
                 # MTP (for Android phone mounting)
                 "gvfs-mtp",
                 "gvfs-gphoto2",

@@ -56,15 +56,6 @@ class DotFilesStep(Step):
         dependency_dispatcher.register_listener(self.add_dotfile_symlink)
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
-            ".config/bpython/config",
-            [
-                "[general]",
-                "arg_spec = False",
-            ],
-            file_type=FileType.ConfigFile,
-        )
-
         dependency_dispatcher.add_dotfile_section(
             ".profile",
             "Some constants",

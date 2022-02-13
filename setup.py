@@ -22,6 +22,7 @@ from steps.audio import AudioStep
 from steps.gpu import GpuStep
 from steps.charon import CharonStep
 from steps.programming_cpp import ProgrammingCppStep
+from steps.programming_python import ProgrammingPythonStep
 
 
 class SetupMode(enum.Enum):
@@ -60,7 +61,8 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         BashScriptsStep(fetch_git=True),
         GitStep(),
         VscodeStep(build_dir),
-        ProgrammingCppStep(graphics=True)
+        ProgrammingCppStep(graphics=True),
+        ProgrammingPythonStep(),
     ]
 if args.mode == SetupMode.main:
     steps += [
