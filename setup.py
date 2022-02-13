@@ -23,6 +23,7 @@ from steps.gpu import GpuStep
 from steps.charon import CharonStep
 from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
+from steps.programming_common import ProgrammingCommonStep
 
 
 class SetupMode(enum.Enum):
@@ -63,6 +64,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         VscodeStep(build_dir),
         ProgrammingCppStep(graphics=True),
         ProgrammingPythonStep(),
+        ProgrammingCommonStep(),
     ]
 if args.mode == SetupMode.main:
     steps += [

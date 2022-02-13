@@ -32,6 +32,9 @@ class GuiStep(Step):
             "stalonetray",
             "yad",
             "flameshot",
+            "pacman-contrib",  # for checkupdates
+            "libnotify",
+            "bc",  # for float calculations in set_brightness.sh
         )
         self._setup_xinitrc(dependency_dispatcher)
         self._setup_dunstrc(dependency_dispatcher)

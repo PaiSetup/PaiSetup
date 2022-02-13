@@ -27,3 +27,4 @@ class BashScriptsStep(Step):
                 ". $SCRIPTS_PATH/load_functions.sh",
             ],
         )
+        dependency_dispatcher.add_packages("shellcheck")
