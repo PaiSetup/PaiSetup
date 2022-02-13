@@ -49,7 +49,7 @@ class PackagesStep(Step):
         else:
             packages_option = " ".join(missing_packages)
             assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
-            install_command = f"sudo yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
+            install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
             log(f"Running command: {install_command}")
             command.run_command(install_command, print_stdout=self.print_installation)
 
