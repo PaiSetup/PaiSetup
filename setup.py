@@ -2,8 +2,10 @@
 
 from pathlib import Path
 from utils.dependency_dispatcher import DependencyDispatcher
+from utils.argparser_utils import EnumAction
 import argparse
 import sys
+import enum
 
 from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
@@ -21,13 +23,21 @@ from steps.gpu import GpuStep
 from steps.charon import CharonStep
 
 
+class SetupMode(enum.Enum):
+    main = 1  # My main machine
+    normie = 2  # Setup for beginners
+    normie_plus = 3  # Setup for beginners + additional stuff like DWM, so I can comfortably use it as well
+
+
 # Parse command-line arguments
+# fmt: off
 arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
-arg_parser.add_argument("--normie", action="store_true", help="Use only normie steps")
-arg_parser.add_argument("-s", "--steps", nargs="+", help="steps")
-arg_parser.add_argument("-l", "--list_steps", action="store_true", help="Print steps to be run and exit")
-arg_parser.add_argument("-p", "--list_packages", action="store_true", help="Print packages to be installed and exit")
+arg_parser.add_argument("-l", "--list_steps", action="store_true", help="show setup steps to be run and exit")
+arg_parser.add_argument("-p", "--list_packages", action="store_true", help="show packages to be installed and exit")
+arg_parser.add_argument("-m", "--mode", type=SetupMode, default=SetupMode.main, action=EnumAction, help="Setup mode - chooses packages to install")
+arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter steps to perform during setup for a given mode")
 args = arg_parser.parse_args()
+# fmt: on
 
 
 # Setup steps. They can be safely commented out if neccessary
@@ -42,19 +52,23 @@ steps = [
     AudioStep(),
     GpuStep(),
 ]
-if args.normie:
-    # TODO: setup kde or something like that
-    pass
-else:
+if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
         DwmStep(build_dir, fetch_git=False),
         StStep(build_dir, fetch_git=True),
-        LightDmStep(),
         BashScriptsStep(fetch_git=True),
         GitStep(),
         VscodeStep(build_dir),
+    ]
+if args.mode == SetupMode.main:
+    steps += [
+        LightDmStep(),
         CharonStep(build_dir, fetch_git=False),
     ]
+if args.mode == SetupMode.normie:
+    # TODO: setup kde or something like that
+    pass
+
 
 # Filter steps by command line args
 if args.steps != None:
