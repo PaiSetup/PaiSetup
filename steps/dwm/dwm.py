@@ -51,7 +51,17 @@ class DwmStep(GuiStep):
         ext.make(dmenu_dir, patches_dir=current_step_dir / "dmenu")
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("xorg-xsetroot")
+        dependency_dispatcher.add_packages(
+            "xorg-xsetroot",
+            "libxft-bgra",
+            "ttf-joypixels",
+            "ttf-font-awesome",
+        )
+        dependency_dispatcher.add_assumed_packages(
+            [
+                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
+            ]
+        )
 
         dependency_dispatcher.add_dotfile_section(
             ".xinitrc",

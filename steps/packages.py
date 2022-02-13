@@ -101,12 +101,8 @@ class PackagesStep(Step):
                 "linux-firmware",
                 "zsh",
                 "bash",
-                # Fonts
-                "libxft-bgra",
-                "ttf-joypixels",
-                "ttf-font-awesome",
-                "consolas-font",
                 # General
+                "consolas-font",
                 "openssh",
                 "firefox",
                 "update-grub",
@@ -149,10 +145,5 @@ class PackagesStep(Step):
                 "playerctl",
                 "gst-plugins-bad",  # Audio plugins
                 "gst-plugins-ugly",  # Audio plugins
-            ]
-        )
-        dependency_dispatcher.add_assumed_packages(
-            [
-                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
             ]
         )
