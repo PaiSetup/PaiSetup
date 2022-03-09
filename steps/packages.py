@@ -79,8 +79,10 @@ class PackagesStep(Step):
         if resolve_groups:
             packages = [x for x in self._packages if x not in self._known_package_groups]
             groups = [x for x in self._packages if x in self._known_package_groups]
-            packages_from_groups = command.run_command(f"yay -Qqg {' '.join(groups)}", return_stdout=True).strip().split("\n")
-            return packages + packages_from_groups
+            if groups:
+                packages_from_groups = command.run_command(f"yay -Qqg {' '.join(groups)}", return_stdout=True).strip().split("\n")
+                packages += packages_from_groups
+            return packages
         else:
             return self._packages
 
