@@ -18,9 +18,9 @@ class FileAssociationsStep(Step):
             "vim.desktop",
             "terminal_vim.desktop",
             {
-                "Exec": lambda name, value: "terminal vim %F",
-                "Terminal": lambda name, value: "false",
-                "Name": lambda name, value: "Vim in new terminal",
+                "Exec": lambda *args,: "terminal vim %F",
+                "Terminal": lambda *args: "false",
+                "Name": lambda *args: "Vim in new terminal",
             },
         )
 

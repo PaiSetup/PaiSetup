@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index 4066601..b5ba220 100644
+index 4066601..85072f8 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -8,43 +8,53 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
@@ -54,7 +54,7 @@ index 4066601..b5ba220 100644
 +	/* class          instance    title       tags mask          isfloating   monitor disableborder      utilwindow*/
 +	{ "firefox",      NULL,       NULL,       1 << 0,            0,           -1,     0,                 0 },
 +	{ "Chromium",     NULL,       NULL,       1 << 0,            0,           -1,     0,                 0 },
-+	{ "code-oss",     NULL,       NULL,       1 << 1,            0,           -1,     0,                 0 },
++//	{ "code-oss",     NULL,       NULL,       1 << 1,            0,           -1,     0,                 0 },
 +	{ "Gimp",         NULL,       NULL,       1 << 6,            0,           -1,     0,                 0 },
 +	{ "vlc",          NULL,       NULL,       1 << 7,            0,           -1,     0,                 0 },
 +	{ "Rhythmbox",    NULL,       NULL,       1 << 8,            0,           -1,     0,                 0 },

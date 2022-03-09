@@ -14,7 +14,7 @@ def patch_dot_desktop_file(source_name, destination_name, patch_functions):
         destination_name - name of file in ~/.local/share/applications with .deskop suffix
         patch_functions - a dictionary
             keys are names of values in .desktop file (e.g. "Exec")
-            values are functions taking a base name (without square bracket modifiers) and value and returning a new value
+            values are functions taking a section, base name (without square bracket modifiers) and value and returning a new value
     """
     source_file_path = f"/usr/share/applications/{source_name}"
     destination_file_path = f"{os.environ['HOME']}/.local/share/applications/{destination_name}"
@@ -22,9 +22,15 @@ def patch_dot_desktop_file(source_name, destination_name, patch_functions):
     with open(source_file_path, "r") as src:
         Path(destination_file_path).parent.mkdir(parents=True, exist_ok=True)
         with open(destination_file_path, "w") as dst:
-            for line in src:
-                if line.startswith("#") or line.startswith("["):
-                    dst.write(line)
+            section = ''
+            for untrimmed_line in src:
+                line = untrimmed_line.strip()
+                if line.startswith("#"):
+                    dst.write(untrimmed_line)
+                    continue
+                if line.startswith("["):
+                    section = line[1:-1]
+                    dst.write(untrimmed_line)
                     continue
 
                 # line is e.g. "Name[de]=Vim"
@@ -35,9 +41,9 @@ def patch_dot_desktop_file(source_name, destination_name, patch_functions):
                 try:
                     patch_function = patch_functions[line_base_name]
                 except KeyError:
-                    dst.write(line)
+                    dst.write(untrimmed_line)
                     continue
 
-                modified_line_value = patch_function(line_name, line_value)
+                modified_line_value = patch_function(section, line_name, line_value)
                 modified_line = f"{line_name}={modified_line_value}\n"
                 dst.write(modified_line)

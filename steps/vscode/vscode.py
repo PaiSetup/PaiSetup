@@ -1,6 +1,7 @@
 from steps.step import Step
 from utils import command
 from utils.log import log
+from utils.dot_desktop_file import patch_dot_desktop_file
 from pathlib import Path
 
 
@@ -50,6 +51,8 @@ class VscodeStep(Step):
 
         self._install_extensions_with_commad(extensions)
 
+        self._create_terminal_vim_desktop_file()
+
     def _install_extensions_with_commad(self, extension_names):
         args = (f"--install-extension {x}" for x in extension_names)
         args = " ".join(args)
@@ -83,3 +86,13 @@ class VscodeStep(Step):
             return True
         except:
             return False
+
+    def _create_terminal_vim_desktop_file(self):
+        patch_dot_desktop_file(
+            "code-oss.desktop",
+            "code_new_window.desktop",
+            {
+                "Name": lambda section, name, value: f"{value} - New window" if section == "Desktop Entry" else value,
+                "Exec": lambda section, name, value: f"{value} --new-window" if section == "Desktop Entry" else value,
+            },
+        )
