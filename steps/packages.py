@@ -133,6 +133,7 @@ class PackagesStep(Step):
                 "megasync-bin",
                 # Multimedia
                 "vlc",
+                "mpv",
                 "thunar",
                 "thunar-archive-plugin",
                 "tumbler",  # needed for thumbnails in Thunar
