@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index 4066601..85072f8 100644
+index 4066601..eb02ffd 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -8,43 +8,53 @@ static  unsigned int gappx     = 5;        /* gaps between windows */
@@ -72,16 +72,17 @@ index 4066601..85072f8 100644
  
  static const Layout layouts[] = {
  	/* symbol     arrange function */
-@@ -54,7 +64,7 @@ static const Layout layouts[] = {
+@@ -54,7 +64,8 @@ static const Layout layouts[] = {
  };
  
  /* key definitions */
 -#define MODKEY Mod1Mask
 +#define MODKEY Mod4Mask
++#define ALT_MASK Mod1Mask
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -66,8 +76,7 @@ static const Layout layouts[] = {
+@@ -66,8 +77,7 @@ static const Layout layouts[] = {
  
  /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -91,7 +92,7 @@ index 4066601..85072f8 100644
  
  /*
   * Xresources preferences to load at startup
-@@ -79,19 +88,25 @@ ResourcePref resources[] = {
+@@ -79,19 +89,25 @@ ResourcePref resources[] = {
  		{ "selbgcolor",         STRING,  &selbgcolor },
  		{ "selbordercolor",     STRING,  &selbordercolor },
  		{ "selfgcolor",         STRING,  &selfgcolor },
@@ -118,7 +119,13 @@ index 4066601..85072f8 100644
  	{ MODKEY,                       XK_b,      togglebar,      {0} },
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-@@ -107,6 +122,8 @@ static Key keys[] = {
+@@ -102,11 +118,14 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_Return, zoom,           {0} },
+ 	{ MODKEY,                       XK_Tab,    view,           {0} },
+ 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
++	{ ALT_MASK,                     XK_F4,      killclient,     {0} },
+ 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+ 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
  	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
  	{ MODKEY,                       XK_space,  setlayout,      {0} },
  	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
@@ -127,7 +134,7 @@ index 4066601..85072f8 100644
  	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
  	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-@@ -116,6 +133,7 @@ static Key keys[] = {
+@@ -116,6 +135,7 @@ static Key keys[] = {
  	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
  	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
  	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
@@ -135,7 +142,7 @@ index 4066601..85072f8 100644
  	TAGKEYS(                        XK_1,                      0)
  	TAGKEYS(                        XK_2,                      1)
  	TAGKEYS(                        XK_3,                      2)
-@@ -125,6 +143,7 @@ static Key keys[] = {
+@@ -125,6 +145,7 @@ static Key keys[] = {
  	TAGKEYS(                        XK_7,                      6)
  	TAGKEYS(                        XK_8,                      7)
  	TAGKEYS(                        XK_9,                      8)
@@ -143,7 +150,7 @@ index 4066601..85072f8 100644
  	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
  	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} },
  };
-@@ -139,12 +158,14 @@ static Button buttons[] = {
+@@ -139,12 +160,14 @@ static Button buttons[] = {
  	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
  	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
  	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
