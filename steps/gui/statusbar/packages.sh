@@ -26,4 +26,4 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $TERMINAL sh -c "$command" >/dev/null 2>&1 &
 fi
 
-printf " %d" "$(checkupdates | wc -l)"
+printf " %d" "$(checkupdates | wc -l)"
