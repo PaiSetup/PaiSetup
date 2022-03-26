@@ -136,6 +136,7 @@ class PackagesStep(Step):
                 "mpv",
                 "thunar",
                 "thunar-archive-plugin",
+                "thunar-media-tags-plugin",
                 "tumbler",  # needed for thumbnails in Thunar
                 "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "mirage",
