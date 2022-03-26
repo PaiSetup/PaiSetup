@@ -21,6 +21,7 @@ from steps.lightdm.lightdm import LightDmStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
 from steps.charon import CharonStep
+from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
@@ -72,6 +73,7 @@ if args.mode == SetupMode.main:
         LightDmStep(),
         EncryptionStep(),
         CharonStep(build_dir, fetch_git=False),
+        PicardStep(),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that
