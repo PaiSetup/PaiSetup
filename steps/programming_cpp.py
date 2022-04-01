@@ -21,6 +21,7 @@ class ProgrammingCppStep(Step):
             "doxygen",
             "gdb",
             "cgdb",
+            "clang-format-all-git",
         )
         if self._graphics:
             dependency_dispatcher.add_packages(
