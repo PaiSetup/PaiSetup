@@ -147,5 +147,7 @@ class PackagesStep(Step):
                 "playerctl",
                 "gst-plugins-bad",  # Audio plugins
                 "gst-plugins-ugly",  # Audio plugins
+                # Communicators
+                "discord",
             ]
         )
