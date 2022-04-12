@@ -18,6 +18,8 @@ class GtkThemeStep(Step):
         dependency_dispatcher.add_packages(
             "layan-gtk-theme-git",
             "gvfs",
+            "sensual-breeze-icons-git",
+            "lxappearance", # not stricly needed, but useful when checking gtk themes
         )
 
         # Example application using gtk 2.0 - lxappearance
@@ -52,7 +54,7 @@ class GtkThemeStep(Step):
                 "[Icon Theme]",
                 f"Name={self.icon_theme_name}",
                 "Comment=My custom icon theme",
-                "Inherits=Adwaita",
+                "Inherits=Sensual-Breeze-Light",
                 "Example=folder",
                 "Directories=emblems_64,emblems_512,",
                 "",
