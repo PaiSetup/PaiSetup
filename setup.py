@@ -52,7 +52,7 @@ steps = [
     PackagesStep(build_dir, True),
     DotFilesStep(root_dir),
     BashPromptStep(),
-    GtkThemeStep(False),
+    GtkThemeStep(regenerate_emblems=False),
     FileAssociationsStep(),
     AudioStep(),
     GpuStep(),

@@ -8,7 +8,7 @@ import shutil
 
 
 class GtkThemeStep(Step):
-    def __init__(self, regenerate_emblems):
+    def __init__(self, *, regenerate_emblems):
         super().__init__("GtkTheme")
         self.widget_theme_name = "Layan-dark"
         self.icon_theme_name = "LinuxSetupTheme"
@@ -70,7 +70,8 @@ class GtkThemeStep(Step):
             ]
             file.writelines("\n".join(lines))
 
-        self.generate_downsized_emblems()
+        sizes_to_generate = [64]
+        self.generate_downsized_emblems(sizes_to_generate)
 
         log("Linking emblems directories")
         command.run_command(f"ln -sfT {current_step_dir / 'emblems_64'} {icon_theme_directory / 'emblems_64'}")
@@ -111,10 +112,9 @@ class GtkThemeStep(Step):
                 log(log_line)
                 command.run_command(f'gio set -t stringv {path} metadata::emblems "{emblem}"')
 
-    def generate_downsized_emblems(self):
+    def generate_downsized_emblems(self, sizes_to_generate):
         original_size = 512
         original_emblems_dir = current_step_dir = Path(__file__).parent / "emblems_512"
-        sizes_to_generate = [64]
 
         for size_to_generate in sizes_to_generate:
             scaling_factor = size_to_generate / original_size
