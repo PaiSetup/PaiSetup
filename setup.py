@@ -26,6 +26,7 @@ from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
 from steps.encryption.encryption import EncryptionStep
+from steps.notes import NotesStep
 
 
 class SetupMode(enum.Enum):
@@ -74,6 +75,7 @@ if args.mode == SetupMode.main:
         EncryptionStep(),
         CharonStep(build_dir, fetch_git=False),
         PicardStep(),
+        NotesStep(fetch_git=True),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that

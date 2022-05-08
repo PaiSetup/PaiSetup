@@ -139,6 +139,9 @@ class GuiStep(Step):
                 "super + shift + e",
                 "    $FILE_MANAGER",
                 "",
+                "super + shift + t",
+                "    obsidian e",
+                "",
             ],
             file_type=FileType.ConfigFile,
         )
