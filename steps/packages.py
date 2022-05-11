@@ -120,6 +120,7 @@ class PackagesStep(Step):
                 "file-roller",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
+                "dos2unix",
                 # Unixporn
                 "neofetch",
                 "cava",
