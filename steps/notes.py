@@ -16,7 +16,7 @@ class NotesStep(Step):
         notes_dir = scripts_dir = Path(os.environ["HOME"]) / "Notes"
         ext.download(
             "https://github.com/InternalMD/Notes.git",
-            "origin/master",
+            "master",
             notes_dir,
             fetch=self.fetch_git,
         )
