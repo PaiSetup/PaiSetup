@@ -143,6 +143,7 @@ class FileAssociationsStep(Step):
             "text/xml",
             "text/x-perl",
             "text/x-shellscript",
+            "text/csv",
         ]
 
         associations = [
