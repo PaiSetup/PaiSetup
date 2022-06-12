@@ -65,7 +65,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         BashScriptsStep(fetch_git=True),
         GitStep(),
         VscodeStep(build_dir),
-        ProgrammingCppStep(graphics=True),
+        ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
         ProgrammingCommonStep(),
     ]
