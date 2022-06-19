@@ -23,6 +23,7 @@ class ProgrammingCppStep(Step):
             "gdb",
             "cgdb",
             "clang-format-all-git",
+            "valgrind",
         )
         if self._systemc:
             dependency_dispatcher.add_packages(
