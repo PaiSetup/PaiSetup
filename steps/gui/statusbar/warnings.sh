@@ -83,3 +83,6 @@ else
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "✅ No warnings" ""
     printf ""
 fi
+
+# Sometimes keyboard layout gets reset, so we periodically reset it. This probably should be done more intelligently...
+setxkbmap pl
