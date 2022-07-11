@@ -27,6 +27,7 @@ from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
 from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
+from steps.bg_checker.bg_checker import BgChckerStep
 
 
 class SetupMode(enum.Enum):
@@ -68,6 +69,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
         ProgrammingCommonStep(),
+        BgChckerStep(build_dir)
     ]
 if args.mode == SetupMode.main:
     steps += [
