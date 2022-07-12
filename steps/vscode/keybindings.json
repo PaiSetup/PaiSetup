@@ -38,5 +38,15 @@
         "key": "ctrl+k ctrl+j",
         "command": "-editor.unfoldAll",
         "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "ctrl+d",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+alt+down",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
     }
 ]

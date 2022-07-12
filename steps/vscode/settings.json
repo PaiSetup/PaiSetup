@@ -16,5 +16,6 @@
     "explorer.confirmDragAndDrop": false,
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
-    }
+    },
+    "explorer.confirmDelete": false
 }
