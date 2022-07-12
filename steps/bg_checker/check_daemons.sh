@@ -1,3 +1,5 @@
+#!/bin/sh
+
 get_daemons() {
     echo "sxhkd sxhkd"
     echo "[A-z/]+python[23]? [A-z/]+ulauncher ulauncher"
