@@ -31,9 +31,18 @@ from steps.bg_checker.bg_checker import BgChckerStep
 
 
 class SetupMode(enum.Enum):
-    main = 1  # My main machine
-    normie = 2  # Setup for beginners
-    normie_plus = 3  # Setup for beginners + additional stuff like DWM, so I can comfortably use it as well
+    main = "main"  # My main machine
+    normie = "normie"  # Setup for beginners
+    normie_plus = "normie_plus"  # Setup for beginners + additional stuff like DWM, so I can comfortably use it as well
+
+
+# Retrieve last mode
+lastmode_file = Path(__file__).parent / ".lastmode"
+try:
+    with open(lastmode_file, "r") as file:
+        lastmode = SetupMode(file.readline().strip())
+except (FileNotFoundError, ValueError) as e:
+    lastmode = SetupMode.main
 
 
 # Parse command-line arguments
@@ -41,11 +50,15 @@ class SetupMode(enum.Enum):
 arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
 arg_parser.add_argument("-l", "--list_steps", action="store_true", help="show setup steps to be run and exit")
 arg_parser.add_argument("-p", "--list_packages", action="store_true", help="show packages to be installed and exit")
-arg_parser.add_argument("-m", "--mode", type=SetupMode, default=SetupMode.main, action=EnumAction, help="Setup mode - chooses packages to install")
+arg_parser.add_argument("-m", "--mode", type=SetupMode, default=lastmode, action=EnumAction, help="Setup mode - chooses packages to install")
 arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter steps to perform during setup for a given mode")
 args = arg_parser.parse_args()
 # fmt: on
 
+# Save last mode to a file
+print(args.mode)
+with open(lastmode_file, "w") as file:
+    file.write(f"{args.mode.value}\n")
 
 # Setup steps. They can be safely commented out if neccessary
 root_dir = Path(__file__).parent
@@ -69,7 +82,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
         ProgrammingCommonStep(),
-        BgChckerStep(build_dir)
+        BgChckerStep(build_dir),
     ]
 if args.mode == SetupMode.main:
     steps += [
