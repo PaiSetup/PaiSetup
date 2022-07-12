@@ -24,3 +24,6 @@ class EncryptionStep(Step):
             ],
             file_type=FileType.ConfigFile,
         )
+
+        bgchecker_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
+        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 5)
