@@ -56,7 +56,6 @@ args = arg_parser.parse_args()
 # fmt: on
 
 # Save last mode to a file
-print(args.mode)
 with open(lastmode_file, "w") as file:
     file.write(f"{args.mode.value}\n")
 
