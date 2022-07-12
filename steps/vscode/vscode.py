@@ -43,6 +43,7 @@ class VscodeStep(Step):
         extensions.append("ms-vscode.cmake-tools")
         extensions.append("hbenl.test-adapter-converter")
         extensions.append("hbenl.vscode-test-explorer")
+        extensions.append("xaver.clang-format")
 
         # Python
         log("Installing python formatters")
