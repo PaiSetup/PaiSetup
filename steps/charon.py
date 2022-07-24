@@ -33,7 +33,7 @@ class CharonStep(Step):
     def _perform_impl(self):
         ext.download(
             "git@github.com:DziubanMaciej/Charon.git",
-            "1.2",
+            "b23facc",
             self.charon_dir,
             has_submodules=True,
             fetch=self.fetch_git,

@@ -52,6 +52,7 @@ arg_parser.add_argument("-l", "--list_steps", action="store_true", help="show se
 arg_parser.add_argument("-p", "--list_packages", action="store_true", help="show packages to be installed and exit")
 arg_parser.add_argument("-m", "--mode", type=SetupMode, default=lastmode, action=EnumAction, help="Setup mode - chooses packages to install")
 arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter steps to perform during setup for a given mode")
+arg_parser.add_argument("-f", "--fetch", action="store_true", help="fetch git repositories which might have changed. Some repositories is still not fetched, e.g. dwm, which does not change very often")
 args = arg_parser.parse_args()
 # fmt: on
 
@@ -74,8 +75,8 @@ steps = [
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
         DwmStep(build_dir, fetch_git=False),
-        StStep(build_dir, fetch_git=True),
-        BashScriptsStep(fetch_git=True),
+        StStep(build_dir, fetch_git=False),
+        BashScriptsStep(fetch_git=args.fetch),
         GitStep(),
         VscodeStep(build_dir),
         ProgrammingCppStep(graphics=True, systemc=True),
@@ -87,9 +88,9 @@ if args.mode == SetupMode.main:
     steps += [
         LightDmStep(),
         EncryptionStep(),
-        CharonStep(build_dir, fetch_git=False),
+        CharonStep(build_dir, fetch_git=args.fetch),
         PicardStep(),
-        NotesStep(fetch_git=True),
+        NotesStep(fetch_git=args.fetch),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that
