@@ -64,7 +64,6 @@ struct Warnings {
     void clientWarning(const std::string &warning) {
         std::lock_guard lock{mutex};
         clientWarnings[std::this_thread::get_id()] = warning;
-        printf("Set status %s\n", warning.c_str());
     }
 
     void serverWarning(const std::string &warning) {
@@ -142,6 +141,7 @@ void clientThread(int clientSocket, std::atomic_bool *completion) {
             warnings.getAllWarnings(buffer.response.data, maxMessageSize, size, warningsCount);
             buffer.response.length = size;
             buffer.response.warningsCount = warningsCount;
+            INFO("ReadWarnings (count=", warningsCount, ")");
             send(clientSocket, buffer.raw, buffer.response.getLength(), 0);
             break;
         }
@@ -149,6 +149,7 @@ void clientThread(int clientSocket, std::atomic_bool *completion) {
             serverRecvSize(clientSocket, buffer.raw + 1, 2);
             serverRecvSize(clientSocket, buffer.raw + 3, buffer.setStatus.length);
             warnings.clientWarning(buffer.setStatus.data);
+            INFO("SetStatus ", buffer.setStatus.data);
             break;
         default:
             warnings.serverWarning("Unknown command type");
@@ -180,7 +181,7 @@ int main(int argc, char const *argv[]) {
     FATAL_ERROR_IF(listen(serverSocket, maxClientsCount) < 0, "listen() failed");
 
     // Main connection loop
-    printf("Server running\n");
+    INFO("Server running");
     Threads threads = {};
     while (true) {
         // Get next connection
