@@ -139,9 +139,9 @@ int main(int argc, char const *argv[]) {
             sleep(1);
             PERROR("accept() failed");
             warnings.serverWarning("accept() failed");
+        } else {
+            threads.emplace_back(clientThread, clientSocket);
         }
-
-        threads.emplace_back(clientThread, clientSocket);
     }
 
     for (auto &thread : threads) {
