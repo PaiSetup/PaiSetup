@@ -47,7 +47,7 @@ class BgChckerStep(Step):
                 for script, interval_in_seconds in self._scripts:
                     log(f"Run \"{script}\" every {interval_in_seconds} seconds")
                     run_script_file.write(f"BgCheckerClient SetStatus {interval_in_seconds} \"{script}\" >/dev/null 2>&1 &\n")
-                run_script_file.write("BgCheckerServer &\n")
+                run_script_file.write(f"BgCheckerServer >{os.environ['HOME']}/.log/BgCheckerServer 2>&1 &\n")
         command.run_command(f"sudo chmod +x {self._bgchecker_script}")
 
         log("Running run.sh script")
