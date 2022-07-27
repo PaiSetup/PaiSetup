@@ -1,5 +1,7 @@
 #include "common.h"
 
+#include <array>
+#include <atomic>
 #include <cstring>
 #include <mutex>
 #include <netinet/in.h>
@@ -8,6 +10,55 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <vector>
+
+struct Threads {
+    struct ThreadSlot {
+        std::unique_ptr<std::thread> thread{nullptr};
+        std::atomic_bool completion{false};
+    };
+
+    bool hasFreeSlot() const {
+        for (const ThreadSlot &slot : threads) {
+            if (slot.thread == nullptr) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    template <typename... Args>
+    void run(Args &&...args) {
+        ThreadSlot &slot = getFreeSlot();
+        slot.thread = std::make_unique<std::thread>(std::forward<Args>(args)..., &slot.completion);
+    }
+
+    void retire() {
+        for (ThreadSlot &slot : threads) {
+            if (slot.thread != nullptr && slot.completion) {
+                slot.thread->join();
+                slot.thread.reset();
+
+                slot.completion = false;
+            }
+        }
+    }
+
+    ~Threads() {
+        retire();
+    }
+
+private:
+    ThreadSlot &getFreeSlot() {
+        for (ThreadSlot &slot : threads) {
+            if (slot.thread == nullptr) {
+                return slot;
+            }
+        }
+        FATAL_ERROR("No free thread slots");
+    }
+
+    std::array<ThreadSlot, maxClientsCount> threads;
+};
 
 struct Warnings {
     void clientWarning(const std::string &warning) {
@@ -70,7 +121,7 @@ bool serverRecvSize(int fd, void *buf, size_t size) {
     return true;
 }
 
-void clientThread(int clientSocket) {
+void clientThread(int clientSocket, std::atomic_bool *completion) {
     union {
         ClientCommandType type;
         ClientCommandSetStatus setStatus;
@@ -106,6 +157,7 @@ void clientThread(int clientSocket) {
 
     warnings.clearClient();
     close(clientSocket);
+    *completion = true;
 }
 
 int main(int argc, char const *argv[]) {
@@ -129,23 +181,31 @@ int main(int argc, char const *argv[]) {
 
     // Main connection loop
     printf("Server running\n");
-    std::vector<std::thread> threads;
+    Threads threads = {};
     while (true) {
         // Get next connection
         sockaddr_in clientAddress;
         socklen_t clientAddressLen;
         int clientSocket = accept(serverSocket, (sockaddr *)&clientAddress, &clientAddressLen);
+
+        // Handle connection failure
         if (clientSocket < 0) {
-            sleep(1);
             PERROR("accept() failed");
             warnings.serverWarning("accept() failed");
-        } else {
-            threads.emplace_back(clientThread, clientSocket);
+            sleep(1);
+            continue;
         }
-    }
 
-    for (auto &thread : threads) {
-        thread.join();
+        // If there are too many connections, drop this one
+        threads.retire();
+        if (!threads.hasFreeSlot()) {
+            WARNING("Too many connections, ignoring a client");
+            close(clientSocket);
+            continue;
+        }
+
+        // Process out client
+        threads.run(clientThread, clientSocket);
     }
 
     // Cleanup server socket
