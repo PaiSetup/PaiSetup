@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <sys/socket.h>
 
-constexpr static inline int maxClientsCount = 10;
+constexpr static inline int maxClientsCount = 15;
 constexpr static inline int serverPort = 10000;
 constexpr static inline int maxMessageSize = 256;
 
