@@ -17,7 +17,7 @@ class AudioStep(Step):
             "pamixer",
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Unload module-suspend-on-idle from pulseuadio",
             ["pactl unload-module module-suspend-on-idle &"],
         )

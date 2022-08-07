@@ -51,6 +51,8 @@ class DwmStep(GuiStep):
         ext.make(dmenu_dir, patches_dir=current_step_dir / "dmenu")
 
     def express_dependencies(self, dependency_dispatcher):
+        super().express_dependencies(dependency_dispatcher)
+
         dependency_dispatcher.add_packages(
             "xorg-xsetroot",
             "libxft-bgra",
@@ -63,38 +65,38 @@ class DwmStep(GuiStep):
             ]
         )
 
+        self._setup_xresources(dependency_dispatcher)
+        self._setup_stalonetrayrc(dependency_dispatcher)
+
+    def _setup_xinitrc(self, dependency_dispatcher):
+        super()._setup_xinitrc(dependency_dispatcher)
+
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
-            "Load Xresources",
-            [
-                "xrdb ~/.config/Xresources &",
-                'xrdb_pid="$!"',
-            ],
+            ".config/LinuxSetup/xinitrc_dwm",
+            "Call base script",
+            [". ~/.config/LinuxSetup/xinitrc_base"],
         )
 
-        super().express_dependencies(dependency_dispatcher)
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_dwm",
+            "Load Xresources",
+            ["xrdb ~/.config/Xresources"],
+        )
 
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_dwm",
             "Run dwmblocks",
             ["dwmblocks &"],
         )
 
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
-            "Wait for commands which must complete before dwm starts",
-            ['wait "$xrdb_pid"'],
-        )
-
-        dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_dwm",
             "Run DWM",
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
 
-        self._setup_xresources(dependency_dispatcher)
-        self._setup_stalonetrayrc(dependency_dispatcher)
+        dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_dwm", link=".xinitrc")
 
     def _setup_xresources(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(

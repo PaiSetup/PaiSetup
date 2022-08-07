@@ -28,7 +28,7 @@ class BgChckerStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Run BgChecker",
             [f"{self._bgchecker_script}"],
         )

@@ -52,7 +52,7 @@ class GuiStep(Step):
 
     def _setup_xinitrc(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Basic graphical settings",
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
@@ -62,32 +62,32 @@ class GuiStep(Step):
         )
 
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Polish keyboard layout",
             ["(sleep 1; setxkbmap pl) &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Notification daemon",
             ["dunst &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Keybindings daemon",
             ["sxhkd &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Screenshot daemon",
             ["flameshot &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "App launcher",
             ["ulauncher --hide-window &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Run browser",
             ["$BROWSER &"],
         )

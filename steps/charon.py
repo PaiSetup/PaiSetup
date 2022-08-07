@@ -23,7 +23,7 @@ class CharonStep(Step):
             prepend_home_dir=False,
         )
         dependency_dispatcher.add_dotfile_section(
-            ".xinitrc",
+            ".config/LinuxSetup/xinitrc_base",
             "Run Charon",
             [f'Charon --config "{config_file_path}" --log "{log_file_path}" --daemon &'],
         )
