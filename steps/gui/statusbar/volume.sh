@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $TERMINAL pulsemixer >/dev/null 2>/dev/null &
 fi

@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 # Get current state
 rhythmbox-client --no-present --no-start --check-running
 is_player_running="$?"  # 0 means running

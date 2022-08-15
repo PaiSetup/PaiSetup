@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 # This scripts create new pulseaudio modules in order to redirect all sound sources to a single virtual sound source.
 # Useful commands for debugging:
 #    watch -n0.1 "pamixer --list-sources ; echo; pamixer --list-sinks; echo;  pactl list short modules"

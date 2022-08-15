@@ -1,5 +1,6 @@
 #!/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
 if [ "$BUTTON" = "$BUTTON_INFO" ]; then
     notify-send "🎛️ Current sink" "$(pamixer --get-default-sink | grep -oE "\"[^\"]+\"$" | tr -d \")"
     notify-send "🎛️ Available sinks" "$(pamixer --list-sinks | grep -oE "\"[^\"]+\"$" | tr -d \" | sed "s/^/ - /g")"

@@ -60,6 +60,17 @@ class GuiStep(Step):
                 "picom -b --no-fading-openclose --config ~/.config/picom.conf &",
             ],
         )
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Button names for statusbar scripts",
+            [
+                "export BUTTON_ACTION=1",
+                "export BUTTON_TERMINATE=2",
+                "export BUTTON_INFO=3",
+                "export BUTTON_SCROLL_UP=4",
+                "export BUTTON_SCROLL_DOWN=5",
+            ],
+        )
 
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_base",

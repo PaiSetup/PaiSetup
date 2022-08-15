@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 printf " %s" "$(date '+%d %b %y  %R')"
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then

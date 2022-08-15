@@ -1,5 +1,6 @@
 #!/usr/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
 if [ "$BUTTON" = "$BUTTON_INFO" ]; then
     explicit="$(yay -Qe | wc -l) explcitly installed packages\n"
     implicit="$(yay -Qd | wc -l) implicitly installed packages\n"
@@ -10,10 +11,11 @@ if [ "$BUTTON" = "$BUTTON_INFO" ]; then
     if [ -z "$updates" ]; then
         updates="None"
     else
-        updates_count="$(echo "$updates" | wc -l)"
-        updates="$updates_count packages:\n$(echo "$updates" | sed "s/^/  /g")"
+        important_updates="$(echo "$updates" | grep -E "^(linux|firefox|nvidia)$" | sed "s/^/  /g")"
+        if [ -n "$important_updates" ]; then
+            notify-send "📦 Pending important updates" "$important_updates"
+        fi
     fi
-    notify-send "📦 Pending package updates" "$updates"
 fi
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then

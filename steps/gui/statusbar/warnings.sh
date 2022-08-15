@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 fi

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -n "$1" ] && BUTTON="$1"
+
 # Constants
 idle_icon=""
 pomodoro_icon="🍅"
