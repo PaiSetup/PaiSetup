@@ -55,36 +55,24 @@ class DwmStep(GuiStep):
 
         dependency_dispatcher.add_packages(
             "xorg-xsetroot",
-            "libxft-bgra",
             "ttf-joypixels",
             "ttf-font-awesome",
             "sxhkd",
             "dunst",
         )
-        dependency_dispatcher.add_assumed_packages(
-            [
-                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
-            ]
-        )
 
+        self._setup_xinitrc_dwm(dependency_dispatcher)
         self._setup_xresources(dependency_dispatcher)
         self._setup_stalonetrayrc(dependency_dispatcher)
         self._setup_dunstrc(dependency_dispatcher)
         self._setup_sxhkdrc(dependency_dispatcher)
         self._setup_picom_config(dependency_dispatcher)
 
-    def _setup_xinitrc(self, dependency_dispatcher):
-        super()._setup_xinitrc(dependency_dispatcher)
-
+    def _setup_xinitrc_dwm(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",
             "Call base script",
             [". ~/.config/LinuxSetup/xinitrc_base"],
-        )
-        dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
-            "Load Xresources",
-            ["xrdb ~/.config/Xresources"],
         )
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",

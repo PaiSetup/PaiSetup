@@ -26,6 +26,7 @@ class GuiStep(Step):
             "nitrogen",
             "picom-ibhagwan-git",
             "ulauncher",
+            "libxft-bgra",
             "xorg-setxkbmap",
             "stalonetray",
             "yad",
@@ -34,7 +35,12 @@ class GuiStep(Step):
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
         )
-        self._setup_xinitrc(dependency_dispatcher)
+        dependency_dispatcher.add_assumed_packages(
+            [
+                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
+            ]
+        )
+        self._setup_xinitrc_base(dependency_dispatcher)
         self._setup_xresources_theme(dependency_dispatcher)
         self._setup_ulauncher_config(dependency_dispatcher)
 
@@ -45,7 +51,7 @@ class GuiStep(Step):
             file_type=FileType.XResources,
         )
 
-    def _setup_xinitrc(self, dependency_dispatcher):
+    def _setup_xinitrc_base(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_base",
             "Basic graphical settings",
@@ -65,7 +71,11 @@ class GuiStep(Step):
                 "export BUTTON_SCROLL_DOWN=5",
             ],
         )
-
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Load Xresources",
+            ["xrdb ~/.config/Xresources"],
+        )
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_base",
             "Polish keyboard layout",
