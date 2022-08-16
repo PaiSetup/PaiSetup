@@ -12,6 +12,7 @@ class EncryptionStep(Step):
             "cryptsetup",
             "cryptomator-bin",
         )
+        # TODO: make a new dependency_dispatcher function called "add_hotkeys" and handle it differently for dwm (sxhkd) and awesomeWM
         dependency_dispatcher.add_dotfile_lines(
             ".config/sxhkd/sxhkdrc",
             [

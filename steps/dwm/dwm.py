@@ -58,6 +58,8 @@ class DwmStep(GuiStep):
             "libxft-bgra",
             "ttf-joypixels",
             "ttf-font-awesome",
+            "sxhkd",
+            "dunst",
         )
         dependency_dispatcher.add_assumed_packages(
             [
@@ -67,6 +69,9 @@ class DwmStep(GuiStep):
 
         self._setup_xresources(dependency_dispatcher)
         self._setup_stalonetrayrc(dependency_dispatcher)
+        self._setup_dunstrc(dependency_dispatcher)
+        self._setup_sxhkdrc(dependency_dispatcher)
+        self._setup_picom_config(dependency_dispatcher)
 
     def _setup_xinitrc(self, dependency_dispatcher):
         super()._setup_xinitrc(dependency_dispatcher)
@@ -76,19 +81,31 @@ class DwmStep(GuiStep):
             "Call base script",
             [". ~/.config/LinuxSetup/xinitrc_base"],
         )
-
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",
             "Load Xresources",
             ["xrdb ~/.config/Xresources"],
         )
-
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",
             "Run dwmblocks",
             ["dwmblocks &"],
         )
-
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_dwm",
+            "Run picom",
+            ["picom -b --no-fading-openclose --config ~/.config/LinuxSetup/picom_rounded.conf &"],
+        )
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_dwm",
+            "Notification daemon",
+            ["dunst &"],
+        )
+        dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_dwm",
+            "Keybindings daemon",
+            ["sxhkd &"],
+        )
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",
             "Run DWM",
@@ -174,6 +191,66 @@ class DwmStep(GuiStep):
                 "no_shrink false",
                 "skip_taskbar true",
                 "fuzzy_edges 3",
+            ],
+            file_type=FileType.ConfigFile,
+        )
+
+    def _setup_picom_config(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_lines(
+            ".config/LinuxSetup/picom_rounded.conf",
+            ["corner-radius = 8"],
+        )
+
+    def _setup_dunstrc(self, dependency_dispatcher):
+        current_step_dir = Path(__file__).parent
+
+        dependency_dispatcher.add_dotfile_symlink(
+            src=current_step_dir / "dunstrc",
+            link=".config/dunst/dunstrc",
+            prepend_home_dir_src=False,
+            prepend_home_dir_link=True,
+        )
+
+    def _setup_sxhkdrc(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_lines(
+            ".config/sxhkd/sxhkdrc",
+            [
+                "super + shift + {Return, KP_Enter}",
+                "    $TERMINAL",
+                "",
+                "super + shift + {BackSpace, l}",
+                "    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh",
+                "",
+                "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh {0,1,2} 1",
+                "",
+                "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_brightness.sh {0,1}",
+                "",
+                "super + control + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+                "    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh {3,2} 1",
+                "",
+                "super + shift + s",
+                "    flameshot gui",
+                "",
+                "Print",
+                "    flameshot screen -c",
+                "",
+                "super + shift + w",
+                "    $LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 0",
+                "",
+                "super + shift + b",
+                "    $BROWSER",
+                "",
+                "super + control shift + b",
+                "    $BROWSER_PRIVATE",
+                "",
+                "super + shift + e",
+                "    $FILE_MANAGER",
+                "",
+                "super + shift + t",
+                "    obsidian e",
+                "",
             ],
             file_type=FileType.ConfigFile,
         )
