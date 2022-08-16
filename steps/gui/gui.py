@@ -5,9 +5,16 @@ from pathlib import Path
 import utils.external_project as ext
 import json
 
+perform_called = False
+express_dependencies_called = False
 
 class GuiStep(Step):
     def _perform_impl(self):
+        global perform_called
+        if perform_called:
+            return
+        perform_called = True
+
         colors_dir = self.root_build_dir / "colors"
         ext.download(
             "git://git.2f30.org/colors",
@@ -19,6 +26,11 @@ class GuiStep(Step):
         ext.make(colors_dir)
 
     def express_dependencies(self, dependency_dispatcher):
+        global express_dependencies_called
+        if express_dependencies_called:
+            return
+        express_dependencies_called = True
+
         dependency_dispatcher.add_packages(
             "xorg-xrandr",
             "xorg-xinit",
