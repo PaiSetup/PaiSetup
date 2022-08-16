@@ -37,8 +37,8 @@ if [ -n "$main_colors" ]; then
     xresources_file=~/.config/Xresources
     xrdb "$xresources_file"
 
-    # Restart window manager (TODO: dwm is hardcoded)
-    kill -TERM  $(pgrep ^dwm$)
+    # Restart window manager
+    $LINUX_SETUP_ROOT/steps/gui/restart_wm.sh
 else
     echo "Not reloading colors" >&2
 fi
