@@ -28,6 +28,7 @@ from steps.programming_common import ProgrammingCommonStep
 from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
 from steps.bg_checker.bg_checker import BgChckerStep
+from steps.awesome.awesome import AwesomeStep
 
 
 class SetupMode(enum.Enum):
@@ -75,6 +76,7 @@ steps = [
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
         DwmStep(build_dir, fetch_git=False),
+        AwesomeStep(build_dir, fetch_git=False),
         StStep(build_dir, fetch_git=False),
         BashScriptsStep(fetch_git=args.fetch),
         GitStep(),

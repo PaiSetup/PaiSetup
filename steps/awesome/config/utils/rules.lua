@@ -91,7 +91,7 @@ local function get_tag_mappings_rules()
 end
 
 return {
-    get_default_rule = get_tag_mappings_rules,
+    get_default_rule = get_default_rule,
     get_floating_clients_rule = get_floating_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
 }
