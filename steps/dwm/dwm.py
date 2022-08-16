@@ -76,6 +76,11 @@ class DwmStep(GuiStep):
             [". ~/.config/LinuxSetup/xinitrc_base"],
         )
         dependency_dispatcher.add_dotfile_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Load Xresources",
+            ["xrdb ~/.config/Xresources"],
+        )
+        dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_dwm",
             "Run dwmblocks",
             ["dwmblocks &"],

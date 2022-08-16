@@ -72,11 +72,6 @@ class GuiStep(Step):
         )
         dependency_dispatcher.add_dotfile_section(
             ".config/LinuxSetup/xinitrc_base",
-            "Load Xresources",
-            ["xrdb ~/.config/Xresources"],
-        )
-        dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_base",
             "Polish keyboard layout",
             ["(sleep 1; setxkbmap pl) &"],
         )
