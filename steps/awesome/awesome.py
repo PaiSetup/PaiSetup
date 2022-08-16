@@ -98,7 +98,7 @@ class AwesomeStep(GuiStep):
                 "color1: COL_THEME1",
                 "color2: COL_THEME2",
                 "color3: COL_THEME3",
-                'color4: "#ffffff"',
+                "color4: #ffffff",
             ],
             file_type=FileType.XResources,
         )
