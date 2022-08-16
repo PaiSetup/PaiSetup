@@ -155,6 +155,8 @@ class DotFilesStep(Step):
             log(f"Creating symlink {link} -> {src}")
             try:
                 os.remove(link)
+            except IsADirectoryError:
+                os.removedirs(link)
             except FileNotFoundError:
                 pass
             Path(link).parent.mkdir(parents=True, exist_ok=True)
