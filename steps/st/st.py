@@ -48,7 +48,7 @@ class StStep(Step):
             ["set enable-keypad on"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/Xresources",
+            ".config/XresourcesApp",
             "St",
             [
                 "st.background: #222222",

@@ -42,7 +42,11 @@ class AwesomeStep(GuiStep):
         dependency_dispatcher.add_dotfile_section(
             self._xinitrc_path,
             "Load Xresources",
-            [f"xrdb ~/{self._xresources_path}"],
+            [
+                "rm ~/.config/Xresources 2>/dev/null",
+                f"ln -sf ~/{self._xresources_path} ~/.config/Xresources",
+                f"xrdb ~/.config/Xresources",
+            ],
         )
         dependency_dispatcher.add_dotfile_section(
             self._xinitrc_path,
@@ -71,6 +75,12 @@ class AwesomeStep(GuiStep):
         # dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
 
     def _setup_xresources(self, dependency_dispatcher):
+        dependency_dispatcher.add_dotfile_section(
+            self._xresources_path,
+            "Apps styles",
+            [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
+            file_type=FileType.XResources,
+        )
         dependency_dispatcher.add_dotfile_section(
             self._xresources_path,
             "Theme colors",

@@ -15,6 +15,13 @@ class DwmStep(GuiStep):
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
 
+        self._dwm_config_path = ".config/LinuxSetup/dwm"
+        self._xresources_path = f"{self._dwm_config_path}/Xresources"
+        self._xinitrc_path = f"{self._dwm_config_path}/xinitrc"
+        self._picom_config_path = f"{self._dwm_config_path}/picom.conf"
+        self._dunst_config_path = f"{self._dwm_config_path}/dunstrc"
+        self._sxhkd_config_path = f"{self._dwm_config_path}/sxhkdrc"
+
     def _perform_impl(self):
         super()._perform_impl()
 
@@ -71,57 +78,67 @@ class DwmStep(GuiStep):
 
     def _setup_xinitrc_dwm(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Call base script",
             [". ~/.config/LinuxSetup/xinitrc_base"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_base",
+            self._xinitrc_path,
             "Load Xresources",
-            ["xrdb ~/.config/Xresources"],
+            [
+                "rm ~/.config/Xresources 2>/dev/null",
+                f"ln -sf ~/{self._xresources_path} ~/.config/Xresources",
+                f"xrdb ~/.config/Xresources",
+            ],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Run dwmblocks",
             ["dwmblocks &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Run picom",
-            ["picom -b --no-fading-openclose --config ~/.config/LinuxSetup/picom_rounded.conf &"],
+            [f"picom -b --no-fading-openclose --config ~/{self._picom_config_path} &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Notification daemon",
-            ["dunst &"],
+            [f"dunst -conf ~/{self._dunst_config_path} &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Keybindings daemon",
-            ["sxhkd &"],
+            [f"sxhkd -c ~/{self._sxhkd_config_path} &"],
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_dwm",
+            self._xinitrc_path,
             "Run DWM",
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
 
-        dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_dwm", link=".xinitrc")
+        dependency_dispatcher.add_dotfile_symlink(src=self._xinitrc_path, link=".xinitrc")
 
     def _setup_xresources(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
-            ".config/Xresources",
+            self._xresources_path,
+            "Apps styles",
+            [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
+            file_type=FileType.XResources,
+        )
+        dependency_dispatcher.add_dotfile_section(
+            self._xresources_path,
             "Theme colors",
             [
-                '#include "Xresources.theme"',
+                f'#include "{os.environ["HOME"]}/.config/Xresources.theme"',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],
             file_type=FileType.XResources,
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/Xresources",
+            self._xresources_path,
             "DWM/Dmenu constants",
             [
                 "#define FOCUS #990000",
@@ -130,7 +147,7 @@ class DwmStep(GuiStep):
             file_type=FileType.XResources,
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/Xresources",
+            self._xresources_path,
             "Dwm",
             [
                 "dwm.vertpad: PADDING_PIXELS",
@@ -150,7 +167,7 @@ class DwmStep(GuiStep):
             file_type=FileType.XResources,
         )
         dependency_dispatcher.add_dotfile_section(
-            ".config/Xresources",
+            self._xresources_path,
             "Dmenu",
             [
                 "dmenu.font: monospace:size=15",
@@ -191,7 +208,7 @@ class DwmStep(GuiStep):
 
     def _setup_picom_config(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_lines(
-            ".config/LinuxSetup/picom_rounded.conf",
+            self._picom_config_path,
             ["corner-radius = 8"],
         )
 
@@ -200,14 +217,14 @@ class DwmStep(GuiStep):
 
         dependency_dispatcher.add_dotfile_symlink(
             src=current_step_dir / "dunstrc",
-            link=".config/dunst/dunstrc",
+            link=self._dunst_config_path,
             prepend_home_dir_src=False,
             prepend_home_dir_link=True,
         )
 
     def _setup_sxhkdrc(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_lines(
-            ".config/sxhkd/sxhkdrc",
+            self._sxhkd_config_path,
             [
                 "super + shift + {Return, KP_Enter}",
                 "    $TERMINAL",
