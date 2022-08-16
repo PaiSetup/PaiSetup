@@ -59,6 +59,7 @@ class DwmStep(GuiStep):
             "ttf-font-awesome",
             "sxhkd",
             "dunst",
+            "stalonetray",
         )
 
         self._setup_xinitrc_dwm(dependency_dispatcher)

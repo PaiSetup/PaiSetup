@@ -28,7 +28,6 @@ class GuiStep(Step):
             "ulauncher",
             "libxft-bgra",
             "xorg-setxkbmap",
-            "stalonetray",
             "yad",
             "flameshot",
             "pacman-contrib",  # for checkupdates
