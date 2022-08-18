@@ -19,6 +19,7 @@ def download(
     has_submodules=False,
     clean=False,
     fetch=False,
+    chmod_needed=True, # TODO make this false by default
 ):
     log(f"Downloading {url} to {directory}")
 
@@ -43,7 +44,8 @@ def download(
 
         command.run_command(f"git checkout {revision}")
 
-        command.run_command(f"sudo chmod ugo+rw {directory} -R")
+        if chmod_needed:
+            command.run_command(f"sudo chmod ugo+rw {directory} -R")
 
 
 def cmake(
