@@ -69,10 +69,10 @@ class PackagesStep(Step):
             else:
                 packages_list.append(str(arg))
 
-    def add_packages(self, *args):
+    def add_packages(self, *args, **kwargs):
         PackagesStep._add_packages_to_list(self._packages, *args)
 
-    def add_assumed_packages(self, *args):
+    def add_assumed_packages(self, *args, **kwargs):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
     def _get_packages(self, resolve_groups):
@@ -86,7 +86,7 @@ class PackagesStep(Step):
         else:
             return self._packages
 
-    def list_packages(self, resolve_groups):
+    def list_packages(self, resolve_groups, **kwargs):
         packages = self._get_packages(resolve_groups)
         packages = '\n'.join(packages)
         print(packages)

@@ -2,12 +2,18 @@ from enum import Enum
 from utils.log import log
 
 
-class DependencyListenerConflict(Exception):
-    def __init__(self, method_name):
-        self.method_name = method_name
+class Listener:
+    def __init__(self, dependency_dispatcher):
+        self._dependency_dispatcher = dependency_dispatcher
+        self._methods = []
 
-    def __str__(self):
-        return f"Multiple listeners registered for method '{self.method_name}'"
+    def register(self, method):
+        self._methods.append(method)
+
+    def __call__(self, *args, **kwargs):
+        kwargs['dependency_dispatcher'] = self._dependency_dispatcher
+        for method in self._methods:
+            method(*args, **kwargs)
 
 
 class DependencyDispatcher:
@@ -26,23 +32,21 @@ class DependencyDispatcher:
 
     def __init__(self):
         self._listeners = {}
+        self._dummy_listener = Listener(self)
         self._missing_listeners = set()
 
     def register_listener(self, method):
         method_name = method.__name__
-        if method_name in self._listeners:
-            raise DependencyListenerConflict(method_name)
-        self._listeners[method_name] = method
+        if method_name not in self._listeners:
+            self._listeners[method_name] = Listener(self)
+        self._listeners[method_name].register(method)
 
     def __getattr__(self, method_name):
         if method_name not in self._listeners:
             self._missing_listeners.add(method_name)
-            return self._dummy_method
+            return self._dummy_listener
         else:
             return self._listeners[method_name]
-
-    def _dummy_method(*args, **kwargs):
-        pass
 
     def summary(self):
         for missing_listener in self._missing_listeners:

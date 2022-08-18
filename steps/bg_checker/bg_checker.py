@@ -33,7 +33,7 @@ class BgChckerStep(Step):
             [f"{self._bgchecker_script}"],
         )
 
-    def register_bgchecker_script(self, script, interval_in_seconds):
+    def register_bgchecker_script(self, script, interval_in_seconds, **kwargs):
         self._scripts.append((script, interval_in_seconds))
 
     def _perform_impl(self):

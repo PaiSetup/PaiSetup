@@ -2,6 +2,7 @@ from steps.step import Step
 import utils.external_project as ext
 from pathlib import Path
 import os
+from utils.keybinding import KeyBinding
 
 
 class NotesStep(Step):
@@ -11,6 +12,9 @@ class NotesStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
+        dependency_dispatcher.add_keybindings(
+            KeyBinding('t').mod().shift().execute("obsidian e")
+        )
 
     def _perform_impl(self):
         notes_dir = scripts_dir = Path(os.environ["HOME"]) / "Notes"

@@ -170,6 +170,7 @@ class DotFilesStep(Step):
         prepend_home_dir=True,
         file_type=FileType.PosixShell,
         line_placement=LinePlacement.Normal,
+        **kwargs,
     ):
         if prepend_home_dir:
             dotfile = f'{os.environ["HOME"]}/{dotfile}'
@@ -207,7 +208,7 @@ class DotFilesStep(Step):
         lines = [f"{prefix} {section_comment}"] + lines + [""]
         self.add_dotfile_lines(dotfile, lines, file_type=file_type, **kwargs)
 
-    def add_dotfile_symlink(self, src, link, *, prepend_home_dir_src=True, prepend_home_dir_link=True):
+    def add_dotfile_symlink(self, src, link, *, prepend_home_dir_src=True, prepend_home_dir_link=True, **kwargs,):
         if prepend_home_dir_src:
             src = f'{os.environ["HOME"]}/{src}'
         if prepend_home_dir_link:

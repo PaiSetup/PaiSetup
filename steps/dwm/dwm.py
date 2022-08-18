@@ -22,6 +22,9 @@ class DwmStep(GuiStep):
         self._dunst_config_path = f"{self._dwm_config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._dwm_config_path}/sxhkdrc"
 
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.add_keybindings)
+
     def _perform_impl(self):
         super()._perform_impl()
 
@@ -77,6 +80,8 @@ class DwmStep(GuiStep):
         self._setup_picom_config(dependency_dispatcher)
 
     def _setup_xinitrc_dwm(self, dependency_dispatcher):
+        # TODO make xinitrc files executable!!!
+
         dependency_dispatcher.add_dotfile_section(
             self._xinitrc_path,
             "Call base script",
@@ -259,9 +264,24 @@ class DwmStep(GuiStep):
                 "super + shift + e",
                 "    $FILE_MANAGER",
                 "",
-                "super + shift + t",
-                "    obsidian e",
-                "",
             ],
             file_type=FileType.ConfigFile,
         )
+
+    def add_keybindings(self, *keybindings, dependency_dispatcher):
+        for keybinding in keybindings:
+            tokens = []
+            if keybinding.hold_mod:
+                tokens.append("super")
+            if keybinding.hold_shift:
+                tokens.append("shift")
+            if keybinding.hold_ctrl:
+                tokens.append("ctrl")
+            tokens.append(f"{{{', '.join(keybinding.keys)}}}")
+
+            lines = [
+                " + ".join(tokens),
+                f"    {keybinding.command}",
+                "",
+            ]
+            dependency_dispatcher.add_dotfile_lines(self._sxhkd_config_path, lines, file_type=FileType.ConfigFile)
