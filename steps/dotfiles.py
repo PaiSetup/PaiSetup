@@ -12,6 +12,7 @@ class FileType(Enum):
     Bash = 3
     Json = 4
     ConfigFile = 5
+    Lua = 6
 
     _properties = {
         PosixShell: ("#", "#!/usr/bin/sh"),
@@ -19,6 +20,7 @@ class FileType(Enum):
         Bash: ("#", "#!/usr/bin/bash"),
         Json: (None, None),
         ConfigFile: ("#", None),
+        Lua: ("--", None),
     }
 
     @classmethod

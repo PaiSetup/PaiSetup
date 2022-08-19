@@ -14,9 +14,13 @@ class AwesomeStep(GuiStep):
         super().__init__("Awesome")
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
+        self._current_step_dir = Path(__file__).parent
         self._xresources_path = f".config/LinuxSetup/awesome/Xresources"
         self._xinitrc_path = f".config/LinuxSetup/awesome/xinitrc"
-        self._current_step_dir = Path(__file__).parent
+        self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
+
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.add_keybindings)
 
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
@@ -102,3 +106,37 @@ class AwesomeStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
+
+    def add_keybindings(self, *keybindings, dependency_dispatcher):
+        lines = [
+            'local awful = require("awful")',
+            'local gears = require("gears")',
+            "local function get_keybindings(modkey)",
+        ]
+
+        if len(keybindings) > 0:
+            lines.append("    return gears.table.join(")
+            for keybinding in keybindings:
+                for key in keybinding.keys:
+                    modifiers = []
+                    if keybinding.hold_mod:
+                        modifiers.append("modkey")
+                    if keybinding.hold_shift:
+                        modifiers.append('"Shift"')
+                    if keybinding.hold_ctrl:
+                        modifiers.append('"Control"')
+
+                    modifiers = f"{{{', '.join(modifiers)}}}"
+                    lines.append(f'        awful.key({modifiers}, "{key}", function () awful.spawn("{keybinding.command}") end, {{description = "", group = "App launching"}}),')
+            lines[-1] = lines[-1][:-1] # Remove trailing comma from last line
+        else:
+            lines.append("    return {}")
+
+        lines += [
+            ")",
+            "end",
+            "return {",
+            "    get_keybindings = get_keybindings,",
+            "}",
+        ]
+        dependency_dispatcher.add_dotfile_lines(self._app_keybindings_path, lines, file_type=FileType.Lua, prepend_home_dir=False)
