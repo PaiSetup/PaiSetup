@@ -18,6 +18,14 @@ class AwesomeStep(GuiStep):
         self._xresources_path = f".config/LinuxSetup/awesome/Xresources"
         self._xinitrc_path = f".config/LinuxSetup/awesome/xinitrc"
         self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
+        self._keybindings = []
+
+    def add_keybindings(self, *keybindings, **kwargs):
+        self._keybindings += keybindings
+
+    def perform(self):
+        self._setup_app_keybindings_code()
+
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_keybindings)
@@ -107,16 +115,16 @@ class AwesomeStep(GuiStep):
             file_type=FileType.XResources,
         )
 
-    def add_keybindings(self, *keybindings, dependency_dispatcher):
+    def _setup_app_keybindings_code(self):
         lines = [
             'local awful = require("awful")',
             'local gears = require("gears")',
             "local function get_keybindings(modkey)",
         ]
 
-        if len(keybindings) > 0:
+        if len(self._keybindings) > 0:
             lines.append("    return gears.table.join(")
-            for keybinding in keybindings:
+            for keybinding in self._keybindings:
                 for key in keybinding.keys:
                     modifiers = []
                     if keybinding.hold_mod:
@@ -139,4 +147,4 @@ class AwesomeStep(GuiStep):
             "    get_keybindings = get_keybindings,",
             "}",
         ]
-        dependency_dispatcher.add_dotfile_lines(self._app_keybindings_path, lines, file_type=FileType.Lua, prepend_home_dir=False)
+        self._file_writer.write_lines(self._app_keybindings_path, lines, file_type=FileType.Lua, prepend_home_dir=False)

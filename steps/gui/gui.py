@@ -4,9 +4,11 @@ from steps.dotfiles import FileType
 from pathlib import Path
 import utils.external_project as ext
 import json
+from utils.keybinding import KeyBinding
 
 perform_called = False
 express_dependencies_called = False
+
 
 class GuiStep(Step):
     def _perform_impl(self):
@@ -54,6 +56,14 @@ class GuiStep(Step):
         self._setup_xinitrc_base(dependency_dispatcher)
         self._setup_xresources_theme(dependency_dispatcher)
         self._setup_ulauncher_config(dependency_dispatcher)
+
+        dependency_dispatcher.add_keybindings(
+            KeyBinding("s").mod().shift().execute("flameshot gui"),
+            KeyBinding("w").mod().shift().execute("$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 0"),
+            KeyBinding("b").mod().shift().execute("$BROWSER"),
+            KeyBinding("b").mod().shift().ctrl().execute("$BROWSER_PRIVATE"),
+            KeyBinding("e").mod().shift().execute("$FILE_MANAGER"),
+        )
 
     def _setup_xresources_theme(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_lines(

@@ -6,6 +6,9 @@ class Step:
         self.name = name
         self.has_action = has_action
 
+    def setup_external_services(self, file_writer):
+        self._file_writer = file_writer
+
     def register_as_dependency_listener(self, dependency_dispatcher):
         pass
 

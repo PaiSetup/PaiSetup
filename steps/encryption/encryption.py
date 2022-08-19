@@ -1,5 +1,6 @@
 from steps.step import Step
 from pathlib import Path
+from utils.keybinding import KeyBinding
 from steps.dotfiles import FileType
 
 
@@ -12,18 +13,9 @@ class EncryptionStep(Step):
             "cryptsetup",
             "cryptomator-bin",
         )
-        # TODO: make a new dependency_dispatcher function called "add_hotkeys" and handle it differently for dwm (sxhkd) and awesomeWM
-        dependency_dispatcher.add_dotfile_lines(
-            ".config/sxhkd/sxhkdrc",
-            [
-                "super + control + shift + x",
-                "    $LINUX_SETUP_ROOT/steps/encryption/mount_nice.sh",
-                "",
-                "super + control + shift + r",
-                "    $LINUX_SETUP_ROOT/steps/encryption/mount_receipts.sh",
-                "",
-            ],
-            file_type=FileType.ConfigFile,
+        dependency_dispatcher.add_keybindings(
+            KeyBinding("x").mod().shift().ctrl().execute("$LINUX_SETUP_ROOT/steps/encryption/mount_nice.sh"),
+            KeyBinding("r").mod().shift().ctrl().execute("$LINUX_SETUP_ROOT/steps/encryption/mount_receipts.sh"),
         )
 
         bgchecker_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"

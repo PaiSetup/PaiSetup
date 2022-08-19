@@ -3,6 +3,7 @@
 from pathlib import Path
 from utils.dependency_dispatcher import DependencyDispatcher
 from utils.argparser_utils import EnumAction
+from utils.file_writer import FileWriter
 import argparse
 import sys
 import enum
@@ -110,6 +111,11 @@ if args.list_steps:
         print(step.name)
     exit(0)
 
+# Setup services
+file_writer = FileWriter()
+for step in steps:
+    step.setup_external_services(file_writer)
+
 # Handle cross-step dependencies
 dependencies = DependencyDispatcher()
 for step in steps:
@@ -126,3 +132,6 @@ if args.list_packages:
 # Run the steps
 for step in steps:
     step.perform()
+
+# Finalize services
+file_writer.finalize()
