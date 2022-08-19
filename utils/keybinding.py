@@ -5,6 +5,7 @@ class KeyBinding:
         self.hold_mod = False
         self.keys = keys
         self.command = ""
+        self.command_shell = False
         if not isinstance(self.keys, list):
             self.keys = [self.keys]
 
@@ -22,4 +23,9 @@ class KeyBinding:
 
     def execute(self, command):
         self.command = command
+        return self
+
+    def executeShell(self, command):
+        self.command = command
+        self.command_shell = True
         return self

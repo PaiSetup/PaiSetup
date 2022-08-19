@@ -26,7 +26,6 @@ class AwesomeStep(GuiStep):
     def perform(self):
         self._setup_app_keybindings_code()
 
-
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_keybindings)
 
@@ -134,9 +133,13 @@ class AwesomeStep(GuiStep):
                     if keybinding.hold_ctrl:
                         modifiers.append('"Control"')
 
+                    spawn_function = "awful.spawn.with_shell" if keybinding.command_shell else "awful.spawn"
+
                     modifiers = f"{{{', '.join(modifiers)}}}"
-                    lines.append(f'        awful.key({modifiers}, "{key}", function () awful.spawn("{keybinding.command}") end, {{description = "", group = "App launching"}}),')
-            lines[-1] = lines[-1][:-1] # Remove trailing comma from last line
+                    lines.append(
+                        f'        awful.key({modifiers}, "{key}", function () {spawn_function}("{keybinding.command}") end, {{description = "", group = "App launching"}}),'
+                    )
+            lines[-1] = lines[-1][:-1]  # Remove trailing comma from last line
         else:
             lines.append("    return {}")
 
@@ -147,4 +150,6 @@ class AwesomeStep(GuiStep):
             "    get_keybindings = get_keybindings,",
             "}",
         ]
-        self._file_writer.write_lines(self._app_keybindings_path, lines, file_type=FileType.Lua, prepend_home_dir=False)
+        self._file_writer.write_lines(
+            self._app_keybindings_path, lines, file_type=FileType.Lua, prepend_home_dir=False
+        )

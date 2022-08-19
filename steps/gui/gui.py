@@ -59,10 +59,10 @@ class GuiStep(Step):
 
         dependency_dispatcher.add_keybindings(
             KeyBinding("s").mod().shift().execute("flameshot gui"),
-            KeyBinding("w").mod().shift().execute("$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 0"),
-            KeyBinding("b").mod().shift().execute("$BROWSER"),
-            KeyBinding("b").mod().shift().ctrl().execute("$BROWSER_PRIVATE"),
-            KeyBinding("e").mod().shift().execute("$FILE_MANAGER"),
+            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 0"),
+            KeyBinding("b").mod().shift().executeShell("$BROWSER"),
+            KeyBinding("b").mod().shift().ctrl().executeShell("$BROWSER_PRIVATE"),
+            KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
         )
 
     def _setup_xresources_theme(self, dependency_dispatcher):
