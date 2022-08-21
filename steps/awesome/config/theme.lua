@@ -92,12 +92,14 @@ theme.hotkeys_group_margin = dpi(30)
 
 
 ----------------------------------------------------------------------------------- Notifications
--- TODO
--- Variables set for theming notifications:
--- notification_font
--- notification_[bg|fg]
--- notification_[width|height|margin]
--- notification_[border_color|border_width|shape|opacity]
+-- theme.notification_font 	Notifications font.
+theme.notification_bg 	= color_gray_dark
+theme.notification_fg = color_gray_light
+theme.notification_border_width = 1
+theme.notification_border_color = theme.border_focus
+theme.notification_shape 	= gears.shape.rounded_rect
+theme.notification_max_width = dpi(500)
+theme.notification_icon_size = dpi(90)
 
 
 
