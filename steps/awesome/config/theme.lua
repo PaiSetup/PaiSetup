@@ -75,18 +75,15 @@ theme.taglist_bg_occupied = theme.taglist_bg_empty
 theme.taglist_bg_focus = color_theme
 theme.taglist_bg_volatile = color_urgent
 theme.taglist_bg_urgent = color_urgent
-
 theme.taglist_shape = gears.shape.rounded_rect
 
--- Custom taglist image is calcualted in rc.lua. For some reason I cannot do it in theme.lua
--- local taglist_square_size = dpi(7)
--- theme.taglist_squares_sel   = theme_assets.taglist_squares_sel(  taglist_square_size, theme.fg_focus)
--- theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_focus)
-
-
-
---theme.taglist_squares_sel = sel(10, 5, color_gray_light)
---theme.taglist_squares_unsel = sel(10, 5, color_gray_light)
+-- Hotkeys help popup config
+theme.hotkeys_bg = theme.bg_normal
+theme.hotkeys_fg = theme.fg_normal
+theme.hotkeys_shape = gears.shape.rounded_rect
+theme.hotkeys_modifiers_fg = color_theme
+theme.hotkeys_label_fg = color_font
+theme.hotkeys_group_margin = dpi(30)
 
 -- Variables set for theming notifications:
 -- notification_font
