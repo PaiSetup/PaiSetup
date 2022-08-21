@@ -49,7 +49,7 @@ theme.bg_systray    = color_gray_light
 theme.useless_gap   = dpi(5)
 theme.border_width  = dpi(0)
 theme.border_normal = "#000000"
-theme.border_focus  = "#ff0000"
+theme.border_focus  = color_theme
 theme.border_marked = "#000000"
 
 
