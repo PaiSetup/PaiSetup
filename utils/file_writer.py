@@ -149,7 +149,7 @@ class FileWriter(Step):
 
         # Write lines to the end of the file
         with open(path, "a") as file:
-            file.writelines("\n".join(lines))
+            file.writelines("\n".join(lines + [""]))
 
     def write_section(self, path, section_comment, lines, *, file_type=FileType.PosixShell, **kwargs):
         prefix = FileType.get_comment_prefix(file_type)

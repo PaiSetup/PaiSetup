@@ -25,9 +25,23 @@ class DwmStep(GuiStep):
         self._dunst_config_path = f"{self._dwm_config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._dwm_config_path}/sxhkdrc"
 
+        # fmt: off
         self._keybindings = [
             KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/dwm/set_random_wallpaper.sh 0"),
+            KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
+            KeyBinding("BackSpace").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/shutdown.sh"),
+
+            KeyBinding("XF86AudioMute").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 0"),
+            KeyBinding("XF86AudioLowerVolume").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1"),
+            KeyBinding("XF86AudioRaiseVolume").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2"),
+
+            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_brightness.sh 0"),
+            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_brightness.sh 1"),
+
+            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 3 1"),
+            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1"),
         ]
+        # fmt: on
 
     def _perform_impl(self):
         super()._perform_impl()
@@ -233,26 +247,6 @@ class DwmStep(GuiStep):
         )
 
     def _setup_sxhkdrc(self):
-        # TODO convert this to normal keybindings
-        hardcoded_lines = [
-            "super + shift + {Return, KP_Enter}",
-            "    $TERMINAL",
-            "",
-            "super + shift + {BackSpace, l}",
-            "    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh",
-            "",
-            "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-            "    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh {0,1,2} 1",
-            "",
-            "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-            "    $LINUX_SETUP_ROOT/steps/gui/set_brightness.sh {0,1}",
-            "",
-            "super + control + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-            "    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh {3,2} 1",
-            "",
-        ]
-        self._file_writer.write_lines(self._sxhkd_config_path, hardcoded_lines, file_type=FileType.ConfigFile)
-
         for keybinding in self._keybindings:
             tokens = []
             if keybinding.hold_mod:
