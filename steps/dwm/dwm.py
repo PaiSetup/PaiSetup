@@ -11,10 +11,11 @@ from steps.gui.gui import GuiStep
 
 
 class DwmStep(GuiStep):
-    def __init__(self, root_build_dir, fetch_git):
+    def __init__(self, root_build_dir, fetch_git, is_default_wm):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
+        self._is_default_wm = is_default_wm
 
         self._dwm_config_path = ".config/LinuxSetup/dwm"
         self._xresources_path = f"{self._dwm_config_path}/Xresources"
@@ -129,7 +130,8 @@ class DwmStep(GuiStep):
             line_placement=LinePlacement.End,
         )
 
-        dependency_dispatcher.add_dotfile_symlink(src=self._xinitrc_path, link=".xinitrc")
+        if self._is_default_wm:
+            dependency_dispatcher.add_dotfile_symlink(src=self._xinitrc_path, link=".xinitrc")
 
     def _setup_xresources(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(

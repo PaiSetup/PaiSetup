@@ -76,8 +76,8 @@ steps = [
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
-        DwmStep(build_dir, fetch_git=False),
-        AwesomeStep(build_dir, fetch_git=False),
+        DwmStep(build_dir, fetch_git=False, is_default_wm=True),
+        AwesomeStep(build_dir, fetch_git=False, is_default_wm=False),
         StStep(build_dir, fetch_git=False),
         BashScriptsStep(fetch_git=args.fetch),
         GitStep(),

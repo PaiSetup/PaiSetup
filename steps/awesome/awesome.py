@@ -10,10 +10,11 @@ from steps.gui.gui import GuiStep
 
 
 class AwesomeStep(GuiStep):
-    def __init__(self, root_build_dir, fetch_git):
+    def __init__(self, root_build_dir, fetch_git, is_default_wm):
         super().__init__("Awesome")
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
+        self._is_default_wm = is_default_wm
         self._current_step_dir = Path(__file__).parent
         self._xresources_path = f".config/LinuxSetup/awesome/Xresources"
         self._xinitrc_path = f".config/LinuxSetup/awesome/xinitrc"
@@ -82,8 +83,8 @@ class AwesomeStep(GuiStep):
             line_placement=LinePlacement.End,
         )
 
-        # TODO pass some value like "is_default_wm" to the step and run this
-        # dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
+        if self._is_default_wm:
+            dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
 
     def _setup_xresources(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
