@@ -3,6 +3,7 @@ from pathlib import Path
 from shutil import copyfile
 import os
 from steps.dotfiles import FileType, LinePlacement
+from utils.keybinding import KeyBinding
 from utils.log import log
 import utils.external_project as ext
 from utils import command
@@ -21,6 +22,10 @@ class DwmStep(GuiStep):
         self._picom_config_path = f"{self._dwm_config_path}/picom.conf"
         self._dunst_config_path = f"{self._dwm_config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._dwm_config_path}/sxhkdrc"
+
+        self._keybindings = [
+            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/dwm/set_random_wallpaper.sh 0"),
+        ]
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_keybindings)
@@ -60,6 +65,8 @@ class DwmStep(GuiStep):
         )
         ext.make(dmenu_dir, patches_dir=current_step_dir / "dmenu")
 
+        self._setup_sxhkdrc()
+
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
 
@@ -76,7 +83,6 @@ class DwmStep(GuiStep):
         self._setup_xresources(dependency_dispatcher)
         self._setup_stalonetrayrc(dependency_dispatcher)
         self._setup_dunstrc(dependency_dispatcher)
-        self._setup_sxhkdrc(dependency_dispatcher)
         self._setup_picom_config(dependency_dispatcher)
 
     def _setup_xinitrc_dwm(self, dependency_dispatcher):
@@ -136,7 +142,7 @@ class DwmStep(GuiStep):
             self._xresources_path,
             "Theme colors",
             [
-                f'#include "{os.environ["HOME"]}/.config/Xresources.theme"',
+                f'#include "{os.environ["HOME"]}/.config/XresourcesTheme"',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],
@@ -227,31 +233,28 @@ class DwmStep(GuiStep):
             prepend_home_dir_link=True,
         )
 
-    def _setup_sxhkdrc(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
-            self._sxhkd_config_path,
-            [
-                "super + shift + {Return, KP_Enter}",
-                "    $TERMINAL",
-                "",
-                "super + shift + {BackSpace, l}",
-                "    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh",
-                "",
-                "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-                "    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh {0,1,2} 1",
-                "",
-                "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-                "    $LINUX_SETUP_ROOT/steps/gui/set_brightness.sh {0,1}",
-                "",
-                "super + control + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
-                "    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh {3,2} 1",
-                "",
-            ],
-            file_type=FileType.ConfigFile,
-        )
+    def _setup_sxhkdrc(self):
+        # TODO convert this to normal keybindings
+        hardcoded_lines = [
+            "super + shift + {Return, KP_Enter}",
+            "    $TERMINAL",
+            "",
+            "super + shift + {BackSpace, l}",
+            "    $LINUX_SETUP_ROOT/steps/gui/shutdown.sh",
+            "",
+            "{XF86AudioMute, XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+            "    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh {0,1,2} 1",
+            "",
+            "super + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+            "    $LINUX_SETUP_ROOT/steps/gui/set_brightness.sh {0,1}",
+            "",
+            "super + control + {XF86AudioLowerVolume, XF86AudioRaiseVolume}",
+            "    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh {3,2} 1",
+            "",
+        ]
+        self._file_writer.write_lines(self._sxhkd_config_path, hardcoded_lines, file_type=FileType.ConfigFile)
 
-    def add_keybindings(self, *keybindings, dependency_dispatcher):
-        for keybinding in keybindings:
+        for keybinding in self._keybindings:
             tokens = []
             if keybinding.hold_mod:
                 tokens.append("super")
@@ -266,4 +269,7 @@ class DwmStep(GuiStep):
                 f"    {keybinding.command}",
                 "",
             ]
-            dependency_dispatcher.add_dotfile_lines(self._sxhkd_config_path, lines, file_type=FileType.ConfigFile)
+            self._file_writer.write_lines(self._sxhkd_config_path, lines, file_type=FileType.ConfigFile)
+
+    def add_keybindings(self, *keybindings, **kwargs):
+        self._keybindings += list(keybindings)

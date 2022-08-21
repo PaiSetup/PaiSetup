@@ -77,7 +77,7 @@ altkey = "Mod1"
 ----------------------------------------------------------------------------------- Theme setup
 beautiful.init(gears.filesystem.get_xdg_config_home() .. "/awesome/theme.lua")
 beautiful.font = "DejaVu Sans 15"
-beautiful.wallpaper = "/home/maciej/Multimedia/Wallpapers/16.png"
+beautiful.wallpaper = gears.filesystem.get_xdg_config_home() .. "/LinuxSetup/wallpaper"
 
 
 
@@ -275,15 +275,16 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,  {description = "focus the previous screen", group = "Screen switching"}),
 
     --------------------------- Program launching
-    awful.key({ modkey }, "r",                   function() menubar.show()                end, {description = "show the menubar",  group = "launcher"}),
+    awful.key({ modkey }, "r",                   function () menubar.show()               end, {description = "show the menubar",  group = "launcher"}),
     awful.key({ modkey, "Shift"   }, "Return",   function () awful.spawn(terminal)        end, {description = "open a terminal",   group = "launcher"}),
     awful.key({ modkey, "Shift"   }, "KP_Enter", function () awful.spawn(terminal)        end, {description = "open a terminal",   group = "launcher"}),
     awful.key({ modkey, "Shift"   }, "s",        function () awful.spawn("flameshot gui") end, {description = "make a screenshot", group = "launcher"}),
 
     --------------------------- Awesome WM control
-    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,     {description = "show help",      group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "q",         awesome.restart,             {description = "reload awesome", group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "BackSpace", widget_utils.shutdown_popup, {description = "",               group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                  {description = "show help",           group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "q",         awesome.restart,                                          {description = "reload awesome",      group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "w",         function () utils.set_random_wallpaper(linux_setup) end,  {description = "change wallpaper",    group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "BackSpace", widget_utils.shutdown_popup,                              {description = "show shutdown popup", group = "AwesomeWM"}),
 
     --------------------------- Layout control
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),

@@ -96,7 +96,7 @@ class AwesomeStep(GuiStep):
             self._xresources_path,
             "Theme colors",
             [
-                f'#include "{os.environ["HOME"]}/.config/Xresources.theme"',
+                f'#include "{os.environ["HOME"]}/.config/XresourcesTheme"',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],

@@ -59,7 +59,6 @@ class GuiStep(Step):
 
         dependency_dispatcher.add_keybindings(
             KeyBinding("s").mod().shift().execute("flameshot gui"),
-            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 0"),
             KeyBinding("b").mod().shift().executeShell("$BROWSER"),
             KeyBinding("b").mod().shift().ctrl().executeShell("$BROWSER_PRIVATE"),
             KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
@@ -67,7 +66,7 @@ class GuiStep(Step):
 
     def _setup_xresources_theme(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_lines(
-            ".config/Xresources.theme",
+            ".config/XresourcesTheme",
             ["#define COL_THEME1 #008866"],
             file_type=FileType.XResources,
         )
@@ -78,7 +77,7 @@ class GuiStep(Step):
             "Basic graphical settings",
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
-                "$LINUX_SETUP_ROOT/steps/gui/set_random_wallpaper.sh 1 &",
+                "$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 1 &",
             ],
         )
         dependency_dispatcher.add_dotfile_section(
