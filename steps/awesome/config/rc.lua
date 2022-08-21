@@ -281,8 +281,9 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "s",        function () awful.spawn("flameshot gui") end, {description = "make a screenshot", group = "launcher"}),
 
     --------------------------- Awesome WM control
-    awful.key({ modkey, "Shift" }, "h", hotkeys_popup.show_help, {description = "show help",      group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "q", awesome.restart,         {description = "reload awesome", group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,     {description = "show help",      group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "q",         awesome.restart,             {description = "reload awesome", group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "BackSpace", widget_utils.shutdown_popup, {description = "",               group = "AwesomeWM"}),
 
     --------------------------- Layout control
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),

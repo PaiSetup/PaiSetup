@@ -19,16 +19,25 @@ local function horizontal_margin(arg, value)
     }
 end
 
+local function border(arg, shape, width, color)
+    return wibox.widget {
+        layout = wibox.container.background,
+        shape = shape,
+        shape_border_width = width,
+        shape_border_color = color,
+        arg,
+    }
+end
+
 local function bg(arg, color)
-    local widget_bg = ""
-        return wibox.widget {
-            layout = wibox.container.background,
-            bg = color,
-            shape = gears.shape.rounded_rect,
-            shape_border_width = beautiful.border_width,
-            shape_border_color = "#000000",
-            arg,
-        }
+    return wibox.widget {
+        layout = wibox.container.background,
+        bg = color,
+        shape = gears.shape.rounded_rect,
+        shape_border_width = beautiful.border_width,
+        shape_border_color = "#000000",
+        arg,
+    }
 end
 
 local alternating_counter = 0
@@ -57,5 +66,6 @@ return {
     margin = margin,
     horizontal_margin = horizontal_margin,
     bg = bg,
+    border = border,
     grp = grp,
 }

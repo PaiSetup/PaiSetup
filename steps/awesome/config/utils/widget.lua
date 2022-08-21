@@ -3,6 +3,8 @@ local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
 local markup_utils = require("utils.markup")
+local widget_wrappers = require("utils.widget_wrappers")
+local keygrabber = require("awful.keygrabber")
 
 local function script_widget(name, buttons, timeout)
     local command = linux_setup_status_scripts .. name
@@ -57,6 +59,103 @@ local function script_widget(name, buttons, timeout)
     return widget
 end
 
+local _shutdown_popup_data = nil
+local function shutdown_popup()
+    -- Create the popup and all its data, if this is the first time we call it
+    if _shutdown_popup_data == nil then
+        local function create_button(text, callback)
+            local widget = {
+                widget = wibox.widget.textbox,
+                text = text,
+                forced_height = 100,
+                forced_width = 100,
+                align = "center",
+                valign = "center",
+            }
+            widget = widget_wrappers.margin(widget, 10)
+            widget = widget_wrappers.border(widget, gears.shape.rounded_rect, 3, beautiful.color_gray_light)
+            widget.set_focused = function(self, value)
+                if value then
+                    self.shape_border_color = beautiful.color_theme
+                else
+                    self.shape_border_color = beautiful.color_gray_light
+                end
+            end
+            widget.callback = callback
+            return widget
+        end
+
+        local function create_main_widget(buttons)
+            local widget = gears.table.join(
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = 10,
+                },
+                _shutdown_popup_data.buttons
+            )
+            widget = widget_wrappers.margin(widget, 5)
+            return widget
+        end
+
+        _shutdown_popup_data = {}
+        _shutdown_popup_data.selection = 0
+        _shutdown_popup_data.buttons = {
+            create_button("Cancel",   function() end ),
+            create_button("Shutdown", function() awful.spawn("shutdown now") end),
+            create_button("Reboot",   function() awful.spawn("reboot")       end),
+            create_button("Exit GUI", function() awful.spawn("pkill awesome")       end),
+        }
+        _shutdown_popup_data.refresh = function(self)
+            for _, button in pairs(self.buttons) do
+                button:set_focused(false)
+            end
+            self.buttons[self.selection]:set_focused(true)
+        end
+
+        _shutdown_popup_data.popup = awful.popup {
+            widget = create_main_widget(_shutdown_popup_data.buttons),
+            placement    = awful.placement.centered,
+            shape        = gears.shape.rounded_rect,
+            visible      = false,
+            bg = beautiful.color_gray_dark
+        }
+    end
+
+    -- By now the popup must have been used at least once
+    _shutdown_popup_data.popup.visible = not _shutdown_popup_data.popup.visible
+
+    -- Perform additional work if we just showed the popup
+    if _shutdown_popup_data.popup.visible then
+        -- Reset the selection
+        _shutdown_popup_data.selection = 1
+        _shutdown_popup_data:refresh()
+
+        -- Intercept all keyboard input to navigate in the popup
+        keygrabber.run(function(mod, key, event)
+            if event ~= "press" then
+                return
+            end
+            if key == "Left" then
+                _shutdown_popup_data.selection = math.max(_shutdown_popup_data.selection - 1, 1)
+                _shutdown_popup_data:refresh()
+            elseif key == "Right" then
+                _shutdown_popup_data.selection = math.min(_shutdown_popup_data.selection + 1, #_shutdown_popup_data.buttons)
+                _shutdown_popup_data:refresh()
+            elseif key == "Escape" then
+                _shutdown_popup_data.popup.visible = false
+                keygrabber.stop(grabber)
+                return
+            elseif key == "Return" then
+                _shutdown_popup_data.popup.visible = false
+                _shutdown_popup_data.buttons[_shutdown_popup_data.selection].callback()
+                keygrabber.stop(grabber)
+                return
+            end
+        end)
+    end
+end
+
 return {
     script_widget = script_widget,
+    shutdown_popup = shutdown_popup,
 }
