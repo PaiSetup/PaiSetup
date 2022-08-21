@@ -52,40 +52,28 @@ local function get_floating_clients_rule()
     }
 end
 
-local function get_tag_mappings_rules()
+local function get_tag_mappings_rules(tags)
     return {
         {
-            rule = {
+            rule_any = {
                 class = {
                     "firefox",
                     "chromium",
                 }
             },
-            properties = { tag = "1" }
+            properties = { tag = tags.web }
         },
         {
-            rule = {
-                class = {
-                    "Gimp",
-                }
-            },
-            properties = { tag = "6" }
+            rule = { class = "Gimp" },
+            properties = { tag = tags.draw },
         },
         {
-            rule = {
-                class = {
-                    "vlc",
-                }
-            },
-            properties = { tag = "7" }
+            rule = { class = "vlc", },
+            properties = { tag = tags.video }
         },
         {
-            rule = {
-                class = {
-                    "Rhythmbox",
-                }
-            },
-            properties = { tag = "8" }
+            rule = { class = "Rhythmbox", },
+            properties = { tag = tags.music }
         },
     }
 end

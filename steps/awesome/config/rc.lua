@@ -127,13 +127,21 @@ local screen_capture_widget = widget_utils.script_widget("screen_capture.sh", {b
 local pomodoro_widget = widget_utils.script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = widget_utils.script_widget("audio_switch.sh", {button_info, button_action}, 10)
 
+local tags = {
+    web = "",
+    code = "",
+    draw = "",
+    video = "",
+    music = "",
+}
+
 -- Setup widgets for each screen
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     utils.set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "", "", "", "", "", "", "", "", "" }, s, awful.layout.layouts[1])
+    awful.tag({tags.web, tags.code, "", "", "", "", tags.draw, tags.video, tags.music }, s, awful.layout.layouts[1])
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     s.mylayoutbox = awful.widget.layoutbox(s)
@@ -333,11 +341,14 @@ clientbuttons = gears.table.join(
 
 -- Setup all the rules
 root.keys(globalkeys)
-awful.rules.rules = {
-    rules_utils.get_default_rule(clientkeys, clientbuttons),
-    rules_utils.get_floating_clients_rule(),
-    rules_utils.get_tag_mappings_rules(), -- TODO does it work?
-}
+awful.rules.rules = gears.table.join(
+    {
+        rules_utils.get_default_rule(clientkeys, clientbuttons),
+        rules_utils.get_floating_clients_rule(),
+    },
+    rules_utils.get_tag_mappings_rules(tags)
+)
+
 
 
 ----------------------------------------------------------------------------------- Client signals (callbacks)
