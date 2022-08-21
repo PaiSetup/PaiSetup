@@ -145,7 +145,7 @@ local function shutdown_popup()
                 _shutdown_popup_data.popup.visible = false
                 keygrabber.stop(grabber)
                 return
-            elseif key == "Return" then
+            elseif key == "Return" or key == " " then
                 _shutdown_popup_data.popup.visible = false
                 _shutdown_popup_data.buttons[_shutdown_popup_data.selection].callback()
                 keygrabber.stop(grabber)
