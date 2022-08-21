@@ -315,10 +315,6 @@ clientkeys = gears.table.join(
     awful.key({ altkey          }, "F4",       function (c) c:kill()                                   end, {description = "close", group = "client"}),
     awful.key({ modkey          }, "Return",   function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"}),
     awful.key({ modkey          }, "KP_Enter", function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"})
-    -- TODO:
-    --   super+L_click should float the window
-    --   super+M_click should toggle float the window
-    --   awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                   ,  {description = "toggle floating", group = "client"}),
 )
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)
