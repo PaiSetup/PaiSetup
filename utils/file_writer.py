@@ -15,12 +15,12 @@ class FileType(Enum):
     Lua = 6
 
     _properties = {
-        PosixShell: ("#", "#!/usr/bin/sh"),
-        XResources: ("!", None),
-        Bash: ("#", "#!/usr/bin/bash"),
-        Json: (None, None),
-        ConfigFile: ("#", None),
-        Lua: ("--", None),
+        PosixShell: ("#", "#!/usr/bin/sh", True),
+        XResources: ("!", None, False),
+        Bash: ("#", "#!/usr/bin/bash", False),
+        Json: (None, None, False),
+        ConfigFile: ("#", None, False),
+        Lua: ("--", None, False),
     }
 
     @classmethod
@@ -34,6 +34,10 @@ class FileType(Enum):
     @classmethod
     def get_shebang(cls, file_type):
         return cls._get_properties(file_type)[1]
+
+    @classmethod
+    def is_executable(cls, file_type):
+        return cls._get_properties(file_type)[2]
 
 
 class InvalidFileTypeUsageException(Exception):
@@ -67,6 +71,13 @@ class FileWriter(Step):
         else:
             return path
 
+    def _ensure_file_is_deleted(self, path):
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
+
     def finalize(self):
         for file_desc in self._files.values():
             if file_desc.end_lines:
@@ -77,6 +88,9 @@ class FileWriter(Step):
                     file_type=file_desc.file_type,
                     line_placement=LinePlacement.Normal,
                 )
+
+            if FileType.is_executable(file_desc.file_type):
+                command.run_command(f"sudo chmod +x {file_desc.path}")
 
     def write_lines(
         self,
@@ -109,12 +123,8 @@ class FileWriter(Step):
         if not file_desc.preamble_written:
             file_desc.preamble_written = True
 
-            # Ensure directory is create and the file is empty
-            Path(path).parent.mkdir(parents=True, exist_ok=True)
-            try:
-                os.remove(path)
-            except FileNotFoundError:
-                pass
+            # Ensure directory is created and the file is empty
+            self._ensure_file_is_deleted(path)
 
             # Insert initial comments, if the filetype supports them
             prefix = FileType.get_comment_prefix(file_type)
@@ -149,7 +159,7 @@ class FileWriter(Step):
         lines = [f"{prefix} {section_comment}"] + lines + [""]
         self.write_lines(path, lines, file_type=file_type, **kwargs)
 
-    def create_symlink(
+    def write_symlink(
         self,
         src,
         link,
@@ -160,5 +170,5 @@ class FileWriter(Step):
     ):
         src = self._resolve_path(src, prepend_home_dir_src)
         link = self._resolve_path(link, prepend_home_dir_link)
-        Path(link).parent.mkdir(parents=True, exist_ok=True)
+        self._ensure_file_is_deleted(link)
         os.symlink(src, link)

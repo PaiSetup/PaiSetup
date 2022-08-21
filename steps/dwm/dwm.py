@@ -16,6 +16,7 @@ class DwmStep(GuiStep):
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
         self._is_default_wm = is_default_wm
+        self._current_step_dir = Path(__file__).parent
 
         self._dwm_config_path = ".config/LinuxSetup/dwm"
         self._xresources_path = f"{self._dwm_config_path}/Xresources"
@@ -28,49 +29,24 @@ class DwmStep(GuiStep):
             KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/dwm/set_random_wallpaper.sh 0"),
         ]
 
+    def _perform_impl(self):
+        super()._perform_impl()
+        self._compile_projects()
+        self._setup_xinitrc_dwm()
+        self._setup_xresources()
+        self._setup_stalonetrayrc()
+        self._setup_dunstrc()
+        self._setup_picom_config()
+        self._setup_sxhkdrc()
+
+    def add_keybindings(self, *keybindings, **kwargs):
+        self._keybindings += list(keybindings)
+
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_keybindings)
 
-    def _perform_impl(self):
-        super()._perform_impl()
-
-        current_step_dir = Path(__file__).parent
-
-        dwm_dir = self.root_build_dir / "dwm"
-        ext.download(
-            "git://git.suckless.org/dwm",
-            "6.2",
-            dwm_dir,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dwm_dir, patches_dir=current_step_dir / "dwm")
-
-        dwmblocks_dir = self.root_build_dir / "dwmblocks"
-        ext.download(
-            "https://github.com/torrinfail/dwmblocks",
-            "96cbb453",
-            dwmblocks_dir,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dwmblocks_dir, patches_dir=current_step_dir / "dwmblocks")
-
-        dmenu_dir = self.root_build_dir / "dmenu"
-        ext.download(
-            "https://git.suckless.org/dmenu",
-            "5.0",
-            dmenu_dir,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dmenu_dir, patches_dir=current_step_dir / "dmenu")
-
-        self._setup_sxhkdrc()
-
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
-
         dependency_dispatcher.add_packages(
             "xorg-xsetroot",
             "ttf-joypixels",
@@ -80,21 +56,44 @@ class DwmStep(GuiStep):
             "stalonetray",
         )
 
-        self._setup_xinitrc_dwm(dependency_dispatcher)
-        self._setup_xresources(dependency_dispatcher)
-        self._setup_stalonetrayrc(dependency_dispatcher)
-        self._setup_dunstrc(dependency_dispatcher)
-        self._setup_picom_config(dependency_dispatcher)
+    def _compile_projects(self):
+        dwm_dir = self.root_build_dir / "dwm"
+        ext.download(
+            "git://git.suckless.org/dwm",
+            "6.2",
+            dwm_dir,
+            fetch=self.fetch_git,
+            clean=True,
+        )
+        ext.make(dwm_dir, patches_dir=self._current_step_dir / "dwm")
 
-    def _setup_xinitrc_dwm(self, dependency_dispatcher):
-        # TODO make xinitrc files executable!!!
+        dwmblocks_dir = self.root_build_dir / "dwmblocks"
+        ext.download(
+            "https://github.com/torrinfail/dwmblocks",
+            "96cbb453",
+            dwmblocks_dir,
+            fetch=self.fetch_git,
+            clean=True,
+        )
+        ext.make(dwmblocks_dir, patches_dir=self._current_step_dir / "dwmblocks")
 
-        dependency_dispatcher.add_dotfile_section(
+        dmenu_dir = self.root_build_dir / "dmenu"
+        ext.download(
+            "https://git.suckless.org/dmenu",
+            "5.0",
+            dmenu_dir,
+            fetch=self.fetch_git,
+            clean=True,
+        )
+        ext.make(dmenu_dir, patches_dir=self._current_step_dir / "dmenu")
+
+    def _setup_xinitrc_dwm(self):
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Call base script",
             [". ~/.config/LinuxSetup/xinitrc_base"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Load Xresources",
             [
@@ -103,27 +102,27 @@ class DwmStep(GuiStep):
                 f"xrdb ~/.config/Xresources",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Run dwmblocks",
             ["dwmblocks &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Run picom",
             [f"picom -b --no-fading-openclose --config ~/{self._picom_config_path} &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Notification daemon",
             [f"dunst -conf ~/{self._dunst_config_path} &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Keybindings daemon",
             [f"sxhkd -c ~/{self._sxhkd_config_path} &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Run DWM",
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
@@ -131,16 +130,16 @@ class DwmStep(GuiStep):
         )
 
         if self._is_default_wm:
-            dependency_dispatcher.add_dotfile_symlink(src=self._xinitrc_path, link=".xinitrc")
+            self._file_writer.write_symlink(src=self._xinitrc_path, link=".xinitrc")
 
-    def _setup_xresources(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+    def _setup_xresources(self):
+        self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
             [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
             [
@@ -150,7 +149,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "DWM/Dmenu constants",
             [
@@ -159,7 +158,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "Dwm",
             [
@@ -179,7 +178,7 @@ class DwmStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "Dmenu",
             [
@@ -194,8 +193,8 @@ class DwmStep(GuiStep):
             file_type=FileType.XResources,
         )
 
-    def _setup_stalonetrayrc(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
+    def _setup_stalonetrayrc(self):
+        self._file_writer.write_lines(
             ".config/stalonetrayrc",
             [
                 "decorations none",
@@ -219,17 +218,15 @@ class DwmStep(GuiStep):
             file_type=FileType.ConfigFile,
         )
 
-    def _setup_picom_config(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
+    def _setup_picom_config(self):
+        self._file_writer.write_lines(
             self._picom_config_path,
             ["corner-radius = 8"],
         )
 
-    def _setup_dunstrc(self, dependency_dispatcher):
-        current_step_dir = Path(__file__).parent
-
-        dependency_dispatcher.add_dotfile_symlink(
-            src=current_step_dir / "dunstrc",
+    def _setup_dunstrc(self):
+        self._file_writer.write_symlink(
+            src=self._current_step_dir / "dunstrc",
             link=self._dunst_config_path,
             prepend_home_dir_src=False,
             prepend_home_dir_link=True,
@@ -272,6 +269,3 @@ class DwmStep(GuiStep):
                 "",
             ]
             self._file_writer.write_lines(self._sxhkd_config_path, lines, file_type=FileType.ConfigFile)
-
-    def add_keybindings(self, *keybindings, **kwargs):
-        self._keybindings += list(keybindings)
