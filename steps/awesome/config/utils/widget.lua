@@ -35,25 +35,16 @@ local function script_widget(name, buttons, timeout)
     end
     widget:setup_my_foreground(beautiful.fg_normal)
 
-    -- Refresh the widget after interaction with one of selected buttons. The sleep is needed
-    -- for some reason to display up to date information.
-    widget:connect_signal("button::press",  function(_, _, _, pressed_button)
-        for _, button in pairs(buttons) do
-            if button == tostring(pressed_button) then
-                os.execute("sleep 0.05") -- TODO it seems only audio_switch needs this. volume.sh feels less responsive because of this
-                timer:emit_signal("timeout")
-            end
-        end
-    end)
-
     -- Register mouse button handlers only for the buttons that were selected. The rest will be
     -- ignored.
-    handlers = {}
+    local handlers = {}
     for key, button in pairs(buttons) do
-        handlers = gears.table.join(
-            handlers,
-            awful.button({ }, button, function() awful.spawn(command .. " " .. button) end)
-        )
+        local handler = awful.button({ }, button, function()
+            awful.spawn.easy_async_with_shell(command .. " " .. button, function()
+                timer:emit_signal("timeout")
+            end)
+        end)
+        handlers = gears.table.join(handlers, handler)
     end
     widget:buttons(handlers)
     return widget
