@@ -20,4 +20,5 @@ class ProgrammingPythonStep(Step):
             "python",
             "python-pip",
             "bpython",
+            "tk",
         )

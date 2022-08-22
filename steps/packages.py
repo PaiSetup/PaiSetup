@@ -140,7 +140,7 @@ class PackagesStep(Step):
                 "thunar-media-tags-plugin",
                 "tumbler",  # needed for thumbnails in Thunar
                 "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
-                "mirage",
+                "nomacs",
                 "libreoffice-still",
                 "feh",
                 "gimp",

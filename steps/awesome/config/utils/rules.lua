@@ -55,7 +55,12 @@ end
 local function get_no_border_rules(tags)
     return {
         {
-            rule = { class = "Ulauncher" },
+            rule_any = {
+                class = {
+                    "Ulauncher",
+                    "Image Lounge", -- nomacs
+                }
+            },
             properties = { border_width = 0 }
         },
     }
