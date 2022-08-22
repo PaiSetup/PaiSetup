@@ -5,7 +5,7 @@ local function get_default_rule(clientkeys, clientbuttons)
     return {
         rule = {},
         properties = {
-            border_width = beautiful.border_width,
+            border_width = beautiful.client_border_width,
             border_color = beautiful.border_normal,
             focus = awful.client.focus.filter,
             raise = true,
@@ -52,6 +52,15 @@ local function get_floating_clients_rule()
     }
 end
 
+local function get_no_border_rules(tags)
+    return {
+        {
+            rule = { class = "Ulauncher" },
+            properties = { border_width = 0 }
+        },
+    }
+end
+
 local function get_tag_mappings_rules(tags)
     return {
         {
@@ -80,6 +89,7 @@ end
 
 return {
     get_default_rule = get_default_rule,
+    get_no_border_rules = get_no_border_rules,
     get_floating_clients_rule = get_floating_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
 }

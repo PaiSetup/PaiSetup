@@ -25,6 +25,7 @@ color_minimze = "00ffff" -- I don't know where I'll see this color. Make it some
 theme.widgets_padding = 3
 theme.widgets_margin = 4
 theme.widgets_group_margin = 6
+theme.client_border_width = dpi(1)
 theme.bg_normal2 = color_gray_dark
 theme.color_theme = color_theme
 theme.color_gray_light = color_gray_light
@@ -93,7 +94,7 @@ theme.hotkeys_group_margin = dpi(30)
 
 ----------------------------------------------------------------------------------- Notifications
 -- theme.notification_font 	Notifications font.
-theme.notification_bg 	= color_gray_dark
+theme.notification_bg 	= "#222222"
 theme.notification_fg = color_gray_light
 theme.notification_border_width = 1
 theme.notification_border_color = theme.border_focus

@@ -342,6 +342,7 @@ awful.rules.rules = gears.table.join(
         rules_utils.get_default_rule(clientkeys, clientbuttons),
         rules_utils.get_floating_clients_rule(),
     },
+    rules_utils.get_no_border_rules(),
     rules_utils.get_tag_mappings_rules(tags)
 )
 
@@ -366,5 +367,5 @@ client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
-client.connect_signal("focus",  function(c)  c.border_width = 1; c.border_color = beautiful.border_focus  end)
-client.connect_signal("unfocus", function(c) c.border_width = 1; c.border_color = beautiful.border_normal end)
+client.connect_signal("focus",   function(c) c.border_color = beautiful.border_focus  end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
