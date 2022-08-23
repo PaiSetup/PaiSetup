@@ -157,13 +157,16 @@ class FileWriter(Step):
         except PermissionError:
             command.run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
 
+        # Return resolved path
+        return path
+
     def write_section(self, path, section_comment, lines, *, file_type=FileType.PosixShell, **kwargs):
         prefix = FileType.get_comment_prefix(file_type)
         if not prefix:
             raise InvalidFileTypeUsageException(f"Filetype {file_type.name} does not allow comments")
 
         lines = [f"{prefix} {section_comment}"] + lines + [""]
-        self.write_lines(path, lines, file_type=file_type, **kwargs)
+        return self.write_lines(path, lines, file_type=file_type, **kwargs)
 
     def write_symlink(
         self,
@@ -178,11 +181,12 @@ class FileWriter(Step):
         link = self._resolve_path(link, prepend_home_dir_link)
         self._ensure_file_is_deleted(link)
         os.symlink(src, link)
+        return link
 
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name
 
-        self.write_lines(
+        return self.write_lines(
             path,
             lines,
             prepend_home_dir=False,
