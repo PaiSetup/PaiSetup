@@ -88,10 +88,20 @@ bool executeStatusCommand(const char *command, std::string &outOutput) {
     constexpr static size_t commandOutputBufferSize = 1024;
     static char commandOutputBuffer[commandOutputBufferSize];
 
-    if (fgets(commandOutputBuffer, commandOutputBufferSize, outStream) != commandOutputBuffer) {
-        INFO("Empty output");
-        commandOutputBuffer[0] = '\0';
+    size_t usedBufferSize = 0;
+    while (true) {
+        const size_t bytesRead = fread(commandOutputBuffer + usedBufferSize, sizeof(char), commandOutputBufferSize - usedBufferSize, outStream);
+        if (bytesRead != 0) {
+            usedBufferSize += bytesRead;
+        } else {
+            WARNING_IF(ferror(outStream), "Reading the subprocess's stdout failed")
+            break;
+        }
     }
+    if (usedBufferSize == 0) {
+        INFO("Empty output");
+    }
+    commandOutputBuffer[usedBufferSize++] = '\0';
 
     const int exitCode = WEXITSTATUS(pclose(outStream));
     if (exitCode != 0) {
@@ -101,11 +111,6 @@ bool executeStatusCommand(const char *command, std::string &outOutput) {
 
     outOutput = commandOutputBuffer;
 
-    for (auto &character : outOutput) {
-        if (character == '\n') {
-            character = ' ';
-        }
-    }
     if (outOutput.back() == ' ') {
         outOutput.pop_back();
     }
