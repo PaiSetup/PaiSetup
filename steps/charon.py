@@ -28,7 +28,7 @@ class CharonStep(Step):
             [f'Charon --config "{config_file_path}" --log "{log_file_path}" --daemon &'],
         )
 
-        dependency_dispatcher.register_bgchecker_script(f"{os.environ['SCRIPTS_PATH']}/core/linux/is_daemon_running.sh Charon --config Charon", 3)
+        dependency_dispatcher.register_bgchecher_daemon_check_script("Charon --config", "Charon")
 
     def _perform_impl(self):
         ext.download(

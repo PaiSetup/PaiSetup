@@ -25,6 +25,7 @@ class BgChckerStep(Step):
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.register_bgchecker_script)
+        dependency_dispatcher.register_listener(self.register_bgchecher_daemon_check_script)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(
@@ -35,6 +36,9 @@ class BgChckerStep(Step):
 
     def register_bgchecker_script(self, script, interval_in_seconds, **kwargs):
         self._scripts.append((script, interval_in_seconds))
+
+    def register_bgchecher_daemon_check_script(self, command_regex, name, **kwargs):
+        self.register_bgchecker_script(f"{os.environ['SCRIPTS_PATH']}/core/linux/is_daemon_running.sh {command_regex} {name}", 3)
 
     def _perform_impl(self):
         ext.cmake(self._bgchecker_build_dir, cmake_args="-DCMAKE_BUILD_TYPE=RelWithDebInfo")
