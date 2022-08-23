@@ -12,7 +12,6 @@ class LightDmStep(Step):
         dependency_dispatcher.add_packages(
             "lightdm",
             "lightdm-gtk-greeter",
-            "xinit-xsession",
         )
 
     def _perform_impl(self):

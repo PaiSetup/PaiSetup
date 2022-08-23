@@ -38,6 +38,10 @@ class AwesomeStep(GuiStep):
         self._setup_xresources()
         self._setup_app_keybindings_code()
 
+        # Awesome places this file during installation, but we don't need it,
+        # we generate our own session files.
+        self._file_writer.remove_file("/usr/share/xsessions/awesome.desktop", prepend_home_dir=False)
+
     def _setup_awesome_config(self):
         log("Symlinking rc.lua into ~/.config")
         self._file_writer.write_symlink(

@@ -73,12 +73,7 @@ class FileWriter(Step):
 
     def _ensure_file_is_deleted(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        try:
-            os.remove(path)
-        except FileNotFoundError:
-            pass
-        except PermissionError:
-            command.run_command(f"sudo rm {path}")
+        self.remove_file(path, prepend_home_dir=False)
 
     def finalize(self):
         for file_desc in self._files.values():
@@ -192,3 +187,12 @@ class FileWriter(Step):
             prepend_home_dir=False,
             file_type=FileType.PosixShell,
         )
+
+    def remove_file(self, path, prepend_home_dir=True):
+        path = self._resolve_path(path, prepend_home_dir)
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            command.run_command(f"sudo rm {path}")
