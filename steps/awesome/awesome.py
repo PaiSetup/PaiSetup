@@ -24,36 +24,37 @@ class AwesomeStep(GuiStep):
     def add_keybindings(self, *keybindings, **kwargs):
         self._keybindings += keybindings
 
-    def perform(self):
-        self._setup_app_keybindings_code()
-
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_keybindings)
 
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
-
         dependency_dispatcher.add_packages("awesome")
+        dependency_dispatcher.add_xsession("AwesomeWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
 
-        dependency_dispatcher.add_dotfile_symlink(
+    def _perform_impl(self):
+        self._setup_awesome_config()
+        self._setup_xinitrc_awesome()
+        self._setup_xresources()
+        self._setup_app_keybindings_code()
+
+    def _setup_awesome_config(self):
+        log("Symlinking rc.lua into ~/.config")
+        self._file_writer.write_symlink(
             src=self._current_step_dir / "config",
             link=".config/awesome",
             prepend_home_dir_src=False,
             prepend_home_dir_link=True,
         )
 
-        dependency_dispatcher.add_xsession("AwesomeWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
-
-        self._setup_xinitrc_awesome(dependency_dispatcher)
-        self._setup_xresources(dependency_dispatcher)
-
-    def _setup_xinitrc_awesome(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+    def _setup_xinitrc_awesome(self):
+        log(f"Generating {self._xinitrc_path}")
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Call base script",
             [". ~/.config/LinuxSetup/xinitrc_base"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Load Xresources",
             [
@@ -62,7 +63,7 @@ class AwesomeStep(GuiStep):
                 f"xrdb ~/.config/Xresources",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Define mouse button values for statusbar scripts",
             [
@@ -73,12 +74,12 @@ class AwesomeStep(GuiStep):
                 "export BUTTON_SCROLL_DOWN=5",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Run picom",
             ["picom -b --no-fading-openclose  &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xinitrc_path,
             "Run AwesomeWM",
             ["exec awesome"],
@@ -86,16 +87,17 @@ class AwesomeStep(GuiStep):
         )
 
         if self._is_default_wm:
-            dependency_dispatcher.add_dotfile_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
+            self._file_writer.write_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
 
-    def _setup_xresources(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+    def _setup_xresources(self):
+        log(f"Generating {self._xresources_path}")
+        self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
             [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
             [
@@ -105,7 +107,7 @@ class AwesomeStep(GuiStep):
             ],
             file_type=FileType.XResources,
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             self._xresources_path,
             "Colors readable by AwesomeWM",
             [
@@ -118,6 +120,7 @@ class AwesomeStep(GuiStep):
         )
 
     def _setup_app_keybindings_code(self):
+        log(f"Generating {self._app_keybindings_path}")
         lines = [
             'local awful = require("awful")',
             'local gears = require("gears")',
