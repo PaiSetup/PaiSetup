@@ -30,6 +30,41 @@ local function taglist_square_top_rect(color)
     return img
 end
 
+local function enable_viewed_tag_preserving()
+    local cache_path = '/tmp/awesomewm-last-selected-tags'
+
+    awesome.connect_signal('exit', function(reason_restart)
+        if not reason_restart then return end
+
+        local file = io.open(cache_path, 'w')
+
+        for s in screen do
+           file:write(s.selected_tag.index, '\n')
+        end
+
+        file:close()
+     end)
+
+    awesome.connect_signal('startup', function()
+       local file = io.open(cache_path, 'r')
+       if not file then return end
+
+       local selected_tags = {}
+
+       for line in file:lines() do
+          table.insert(selected_tags, tonumber(line))
+       end
+
+       for s in screen do
+          local i = selected_tags[s.index]
+          local t = s.tags[i]
+          t:view_only()
+       end
+
+       file:close()
+    end)
+end
+
 local function get_per_tag_keys(modkey, group)
     -- Bind all key numbers to tags.
     -- Be careful: we use keycodes to make it work on any keyboard layout.
@@ -87,6 +122,7 @@ end
 return {
     set_wallpaper = set_wallpaper,
     set_random_wallpaper = set_random_wallpaper,
+    enable_viewed_tag_preserving = enable_viewed_tag_preserving,
     taglist_square_top_rect = taglist_square_top_rect,
     get_per_tag_keys = get_per_tag_keys,
 }
