@@ -104,11 +104,12 @@ local function shutdown_popup()
         end
 
         _shutdown_popup_data.popup = awful.popup {
-            widget = create_main_widget(_shutdown_popup_data.buttons),
-            placement    = awful.placement.centered,
-            shape        = gears.shape.rounded_rect,
-            visible      = false,
-            bg = beautiful.color_gray_dark
+            widget    = create_main_widget(_shutdown_popup_data.buttons),
+            ontop     = true,
+            placement = awful.placement.centered,
+            shape     = gears.shape.rounded_rect,
+            visible   = false,
+            bg        = beautiful.color_gray_dark
         }
     end
 
