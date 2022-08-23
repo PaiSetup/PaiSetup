@@ -30,6 +30,7 @@ from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
 from steps.bg_checker.bg_checker import BgChckerStep
 from steps.awesome.awesome import AwesomeStep
+from steps.xsession import XsessionStep
 
 
 class SetupMode(enum.Enum):
@@ -76,6 +77,7 @@ steps = [
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
+        XsessionStep(),
         DwmStep(build_dir, fetch_git=False, is_default_wm=True),
         AwesomeStep(build_dir, fetch_git=False, is_default_wm=False),
         StStep(build_dir, fetch_git=False),

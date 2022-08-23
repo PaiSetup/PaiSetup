@@ -42,6 +42,8 @@ class AwesomeStep(GuiStep):
             prepend_home_dir_link=True,
         )
 
+        dependency_dispatcher.add_xsession("AwesomeWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
+
         self._setup_xinitrc_awesome(dependency_dispatcher)
         self._setup_xresources(dependency_dispatcher)
 

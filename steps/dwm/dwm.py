@@ -70,6 +70,8 @@ class DwmStep(GuiStep):
             "stalonetray",
         )
 
+        dependency_dispatcher.add_xsession("DWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
+
     def _compile_projects(self):
         dwm_dir = self.root_build_dir / "dwm"
         ext.download(
