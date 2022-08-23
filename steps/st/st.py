@@ -1,7 +1,6 @@
 from steps.step import Step
 from pathlib import Path
 from steps.dotfiles import FileType
-from utils import command
 import utils.external_project as ext
 from utils.log import log
 
@@ -25,7 +24,7 @@ class StStep(Step):
         ext.make(self.st_dir, patches_dir=current_step_dir)
 
         log('Creating "terminal" command to call st')
-        command.create_executable_script("terminal", ['st -e \\"\$@\\"'])
+        self._file_writer.write_executable_script("terminal", ['st -e \\"\$@\\"'])
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_section(

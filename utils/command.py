@@ -63,12 +63,3 @@ def get_missing_packages(arg, known_package_groups):
     # Extract package name from the line
     missing = [re.search("'([^']+)'", x).group(1) for x in missing]
     return missing
-
-
-def create_executable_script(file_name, lines):
-    path = Path("/") / "usr" / "local" / "bin" / file_name
-    lines = ["#!/bin/sh"] + lines
-    lines = "\n".join(lines)
-
-    run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
-    run_command(f"sudo chmod 755 {path}")

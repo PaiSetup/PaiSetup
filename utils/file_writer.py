@@ -77,6 +77,8 @@ class FileWriter(Step):
             os.remove(path)
         except FileNotFoundError:
             pass
+        except PermissionError:
+            command.run_command(f"sudo rm {path}")
 
     def finalize(self):
         for file_desc in self._files.values():
@@ -148,8 +150,12 @@ class FileWriter(Step):
                 lines = init_lines + lines
 
         # Write lines to the end of the file
-        with open(path, "a") as file:
-            file.writelines("\n".join(lines + [""]))
+        lines = "\n".join(lines + [""])
+        try:
+            with open(path, "a") as file:
+                file.writelines(lines)
+        except PermissionError:
+            command.run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
 
     def write_section(self, path, section_comment, lines, *, file_type=FileType.PosixShell, **kwargs):
         prefix = FileType.get_comment_prefix(file_type)
@@ -172,3 +178,13 @@ class FileWriter(Step):
         link = self._resolve_path(link, prepend_home_dir_link)
         self._ensure_file_is_deleted(link)
         os.symlink(src, link)
+
+    def write_executable_script(self, file_name, lines):
+        path = Path("/usr/local/bin") / file_name
+
+        self.write_lines(
+            path,
+            lines,
+            prepend_home_dir=False,
+            file_type=FileType.PosixShell,
+        )
