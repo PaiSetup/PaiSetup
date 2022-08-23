@@ -50,6 +50,25 @@ local function script_widget(name, buttons, timeout)
     return widget
 end
 
+local naughty = require("naughty")
+local function cpu_widget() 
+    local widget = awful.widget.watch(
+        [[grep --max-count=1 '^cpu.' /proc/stat]],
+        1,
+        function(widget, stdout)
+            
+           local _, user, nice, system, idle, iowait, irq, softirq, steal, _, _ = stdout:match('(%w+)%s+(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)')
+
+           local total = user + nice + system + idle + iowait + irq + softirq + steal
+           local percentage = 100 * (1 - (idle / total))
+           --naughty.notify {text = tostring(percentage)}
+           --widget.text = ">" .. tostring(percentage) .. "<"
+        end,
+        wibox.widget.textbox("AAA")
+    )
+    return widget
+end
+
 local _shutdown_popup_data = nil
 local function shutdown_popup()
     -- Create the popup and all its data, if this is the first time we call it
@@ -148,5 +167,6 @@ end
 
 return {
     script_widget = script_widget,
+    cpu_widget = cpu_widget,
     shutdown_popup = shutdown_popup,
 }

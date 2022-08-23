@@ -81,6 +81,15 @@ theme.taglist_bg_urgent = color_urgent
 theme.taglist_shape = gears.shape.rounded_rect
 
 
+----------------------------------------------------------------------------------- FS Popup
+theme.popup_bg = theme.bg_normal
+theme.popup_border_width = theme.color_gray_dark
+theme.popup_border_color = theme.border_color
+theme.popup_bar_color = theme.color_theme
+theme.popup_bar_background_color = theme.color_gray_light
+theme.popup_bar_border_color = '#000000'
+
+
 
 ----------------------------------------------------------------------------------- Hotkeys popup
 theme.hotkeys_bg = theme.bg_normal

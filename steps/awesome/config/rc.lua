@@ -127,6 +127,8 @@ local screen_capture_widget = widget_utils.script_widget("screen_capture.sh", {b
 local pomodoro_widget = widget_utils.script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = widget_utils.script_widget("audio_switch.sh", {button_info, button_action}, 10)
 
+local third_party_widgets = require("third_party")
+
 local tags = {
     web = "",
     code = "",
@@ -234,7 +236,17 @@ awful.screen.connect_for_each_screen(function(s)
             widget_wrappers.grp({packages_widget}),
             widget_wrappers.grp({time_widget}),
             widget_wrappers.grp({
+                widget_utils.cpu_widget(),
+            }),
+            widget_wrappers.grp({
                 screen_capture_widget,
+                third_party_widgets.cpu_widget(),
+                third_party_widgets.fs_widget({
+                    mounts = {
+                        "/",
+                        "/run/media/maciej/External",
+                    }
+                }),
                 pomodoro_widget,
                 audio_switch_widget,
                 --tray_widget,

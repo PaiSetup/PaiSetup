@@ -52,7 +52,9 @@ local function grp(arg)
     alternating_counter = alternating_counter + 1
 
     for index, widget in pairs(arg) do
-        widget:setup_my_foreground(fg_color)
+        if widget.setup_my_foreground ~= nil then
+            widget:setup_my_foreground(fg_color)
+        end
     end
 
     arg.layout = wibox.layout.fixed.horizontal
