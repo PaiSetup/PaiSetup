@@ -16,8 +16,11 @@ class AwesomeStep(GuiStep):
         self.fetch_git = fetch_git
         self._is_default_wm = is_default_wm
         self._current_step_dir = Path(__file__).parent
-        self._xresources_path = f".config/LinuxSetup/awesome/Xresources"
-        self._xinitrc_path = f".config/LinuxSetup/awesome/xinitrc"
+
+        self._linux_setup_config_path = ".config/LinuxSetup/awesome"
+        self._xresources_path = f"{self._linux_setup_config_path}/Xresources"
+        self._xinitrc_path = f"{self._linux_setup_config_path}/xinitrc"
+
         self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
 
@@ -89,7 +92,7 @@ class AwesomeStep(GuiStep):
         )
 
         if self._is_default_wm:
-            self._file_writer.write_symlink(src=".config/LinuxSetup/xinitrc_awesome", link=".xinitrc")
+            self._file_writer.write_symlink(src=self._xinitrc_path, link=".xinitrc")
 
     def _setup_xresources(self):
         log(f"Generating {self._xresources_path}")

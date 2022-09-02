@@ -18,12 +18,13 @@ class DwmStep(GuiStep):
         self._is_default_wm = is_default_wm
         self._current_step_dir = Path(__file__).parent
 
-        self._dwm_config_path = ".config/LinuxSetup/dwm"
-        self._xresources_path = f"{self._dwm_config_path}/Xresources"
-        self._xinitrc_path = f"{self._dwm_config_path}/xinitrc"
-        self._picom_config_path = f"{self._dwm_config_path}/picom.conf"
-        self._dunst_config_path = f"{self._dwm_config_path}/dunstrc"
-        self._sxhkd_config_path = f"{self._dwm_config_path}/sxhkdrc"
+        self._linux_setup_config_path = ".config/LinuxSetup/dwm"
+        self._xresources_path = f"{self._linux_setup_config_path}/Xresources"
+        self._xinitrc_path = f"{self._linux_setup_config_path}/xinitrc"
+
+        self._picom_config_path = f"{self._linux_setup_config_path}/picom.conf"
+        self._dunst_config_path = f"{self._linux_setup_config_path}/dunstrc"
+        self._sxhkd_config_path = f"{self._linux_setup_config_path}/sxhkdrc"
 
         # fmt: off
         self._keybindings = [
