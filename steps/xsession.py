@@ -41,6 +41,5 @@ class XsessionStep(Step):
                     f"TryExec={script_name}",
                     "Type=Application",
                 ],
-                prepend_home_dir=False,
                 file_type=FileType.ConfigFile,
             )

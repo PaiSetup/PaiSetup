@@ -65,15 +65,16 @@ class FileWriter(Step):
     def __init__(self):
         self._files = dict()
 
-    def _resolve_path(self, path, prepend_home_dir):
-        if prepend_home_dir:
-            return f'{os.environ["HOME"]}/{path}'
-        else:
+    def _resolve_path(self, path):
+        path = Path(path)
+        if path.is_absolute():
             return path
+        else:
+            return f'{os.environ["HOME"]}/{path}'
 
     def _ensure_file_is_deleted(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        self.remove_file(path, prepend_home_dir=False)
+        self.remove_file(path)
 
     def finalize(self):
         for file_desc in self._files.values():
@@ -81,7 +82,6 @@ class FileWriter(Step):
                 self.write_lines(
                     file_desc.path,
                     file_desc.end_lines,
-                    prepend_home_dir=False,
                     file_type=file_desc.file_type,
                     line_placement=LinePlacement.Normal,
                 )
@@ -94,11 +94,10 @@ class FileWriter(Step):
         path,
         lines,
         *,
-        prepend_home_dir=True,
         file_type=FileType.PosixShell,
         line_placement=LinePlacement.Normal,
     ):
-        path = self._resolve_path(path, prepend_home_dir)
+        path = self._resolve_path(path)
 
         # Get description of the file
         if path in self._files:
@@ -167,13 +166,10 @@ class FileWriter(Step):
         self,
         src,
         link,
-        *,
-        prepend_home_dir_src=True,
-        prepend_home_dir_link=True,
         **kwargs,
     ):
-        src = self._resolve_path(src, prepend_home_dir_src)
-        link = self._resolve_path(link, prepend_home_dir_link)
+        src = self._resolve_path(src)
+        link = self._resolve_path(link)
         self._ensure_file_is_deleted(link)
         os.symlink(src, link)
         return link
@@ -181,15 +177,10 @@ class FileWriter(Step):
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name
 
-        return self.write_lines(
-            path,
-            lines,
-            prepend_home_dir=False,
-            file_type=FileType.PosixShell,
-        )
+        return self.write_lines(path, lines, file_type=FileType.PosixShell)
 
-    def remove_file(self, path, prepend_home_dir=True):
-        path = self._resolve_path(path, prepend_home_dir)
+    def remove_file(self, path):
+        path = self._resolve_path(path)
         try:
             os.remove(path)
         except FileNotFoundError:

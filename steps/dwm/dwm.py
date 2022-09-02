@@ -244,8 +244,6 @@ class DwmStep(GuiStep):
         self._file_writer.write_symlink(
             src=self._current_step_dir / "dunstrc",
             link=self._dunst_config_path,
-            prepend_home_dir_src=False,
-            prepend_home_dir_link=True,
         )
 
     def _setup_sxhkdrc(self):
