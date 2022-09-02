@@ -23,3 +23,11 @@ class AudioStep(Step):
             "Unload module-suspend-on-idle from pulseuadio",
             ["pactl unload-module module-suspend-on-idle &"],
         )
+
+        self._file_writer.write_lines(
+            ".config/pulse/client.conf",
+            [
+                "autospawn = no",
+                "cookie-file = /tmp/pulse-cookie",
+            ],
+        )

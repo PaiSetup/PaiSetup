@@ -12,10 +12,9 @@ from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
 from steps.git import GitStep
 from steps.packages import PackagesStep
-from steps.dotfiles import DotFilesStep
 from steps.bash_scripts import BashScriptsStep
 from steps.vscode.vscode import VscodeStep
-from steps.bash_prompt.bash_prompt import BashPromptStep
+from steps.shell.shell import ShellStep
 from steps.gtk_theme.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
@@ -68,8 +67,7 @@ root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir, True),
-    DotFilesStep(root_dir),
-    BashPromptStep(),
+    ShellStep(root_dir),
     GtkThemeStep(regenerate_emblems=False),
     FileAssociationsStep(),
     AudioStep(),
