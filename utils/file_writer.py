@@ -65,12 +65,13 @@ class FileWriter(Step):
     def __init__(self):
         self._files = dict()
 
-    def _resolve_path(self, path):
+    @staticmethod
+    def resolve_path(path):
         path = Path(path)
         if path.is_absolute():
             return path
         else:
-            return f'{os.environ["HOME"]}/{path}'
+            return Path(os.environ["HOME"]) / path
 
     def _ensure_file_is_deleted(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -86,9 +87,6 @@ class FileWriter(Step):
                     line_placement=LinePlacement.Normal,
                 )
 
-            if FileType.is_executable(file_desc.file_type):
-                command.run_command(f"sudo chmod +x {file_desc.path}")
-
     def write_lines(
         self,
         path,
@@ -97,14 +95,16 @@ class FileWriter(Step):
         file_type=FileType.PosixShell,
         line_placement=LinePlacement.Normal,
     ):
-        path = self._resolve_path(path)
+        path = FileWriter.resolve_path(path)
 
         # Get description of the file
         if path in self._files:
             file_desc = self._files[path]
+            is_first_access = False
         else:
             file_desc = FileDesc(path, file_type)
             self._files[path] = file_desc
+            is_first_access = True
 
         # Validate if file type changed
         if file_type != file_desc.file_type:
@@ -151,6 +151,10 @@ class FileWriter(Step):
         except PermissionError:
             command.run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
 
+        # Setup permissions if this is the first time we touch this file
+        if is_first_access and FileType.is_executable(file_type):
+            command.run_command(f"sudo chmod +x {path}")
+
         # Return resolved path
         return path
 
@@ -168,8 +172,8 @@ class FileWriter(Step):
         link,
         **kwargs,
     ):
-        src = self._resolve_path(src)
-        link = self._resolve_path(link)
+        src = FileWriter.resolve_path(src)
+        link = FileWriter.resolve_path(link)
         self._ensure_file_is_deleted(link)
         os.symlink(src, link)
         return link
@@ -180,7 +184,7 @@ class FileWriter(Step):
         return self.write_lines(path, lines, file_type=FileType.PosixShell)
 
     def remove_file(self, path):
-        path = self._resolve_path(path)
+        path = FileWriter.resolve_path(path)
         try:
             os.remove(path)
         except FileNotFoundError:

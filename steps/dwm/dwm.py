@@ -2,12 +2,13 @@ from steps.step import Step
 from pathlib import Path
 from shutil import copyfile
 import os
-from steps.dotfiles import FileType, LinePlacement
+from utils.file_writer import FileType, LinePlacement
 from utils.keybinding import KeyBinding
 from utils.log import log
 import utils.external_project as ext
 from utils import command
 from steps.gui.gui import GuiStep
+from steps.bg_checker.bg_checker import BgChckerStep
 
 
 class DwmStep(GuiStep):
@@ -25,6 +26,9 @@ class DwmStep(GuiStep):
         self._picom_config_path = f"{self._linux_setup_config_path}/picom.conf"
         self._dunst_config_path = f"{self._linux_setup_config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._linux_setup_config_path}/sxhkdrc"
+
+        self._bg_checker_launch_script_path = f"{self._linux_setup_config_path}/run_bg_checker.sh"
+        self._bg_checker_profile = BgChckerStep.Profile(self._bg_checker_launch_script_path, self._xinitrc_path, self._is_default_wm)
 
         # fmt: off
         self._keybindings = [
@@ -72,6 +76,10 @@ class DwmStep(GuiStep):
         )
 
         dependency_dispatcher.add_xsession("DWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
+
+        dependency_dispatcher.register_bgchecher_daemon_check_script("dunst", "dunst", profile=self._bg_checker_profile)
+        dependency_dispatcher.register_bgchecher_daemon_check_script("sxhkd", "sxhkd", profile=self._bg_checker_profile)
+        dependency_dispatcher.register_bgchecher_daemon_check_script("dwmblocks", "dwmblocks", profile=self._bg_checker_profile)
 
     def _compile_projects(self):
         dwm_dir = self.root_build_dir / "dwm"
