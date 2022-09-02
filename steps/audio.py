@@ -4,7 +4,7 @@ import os
 
 class AudioStep(Step):
     def __init__(self):
-        super().__init__("Audio", has_action=False)
+        super().__init__("Audio")
         self.disable_suspending_command = ""
 
     def express_dependencies(self, dependency_dispatcher):
@@ -16,7 +16,9 @@ class AudioStep(Step):
             "pulsemixer",
             "pamixer",
         )
-        dependency_dispatcher.add_dotfile_section(
+
+    def _perform_impl(self):
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Unload module-suspend-on-idle from pulseuadio",
             ["pactl unload-module module-suspend-on-idle &"],

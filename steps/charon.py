@@ -11,36 +11,32 @@ class CharonStep(Step):
         self.charon_dir = root_build_dir / "charon"
         self.fetch_git = fetch_git
 
+        self._config_file_path = f"{os.environ['HOME']}/.config/charon/config.json"
+
     def express_dependencies(self, dependency_dispatcher):
-        config_file_path = f"{os.environ['HOME']}/.config/charon/config.json"
-        log_file_path = f"{os.environ['HOME']}/.log/charon"
-        config = self._generate_charon_config()
-
-        dependency_dispatcher.add_dotfile_lines(
-            config_file_path,
-            [config],
-            file_type=FileType.Json,
-            prepend_home_dir=False,
-        )
-        dependency_dispatcher.add_dotfile_section(
-            ".config/LinuxSetup/xinitrc_base",
-            "Run Charon",
-            [f'Charon --config "{config_file_path}" --log "{log_file_path}" --daemon &'],
-        )
-
         dependency_dispatcher.register_bgchecher_daemon_check_script("Charon --config", "Charon")
 
     def _perform_impl(self):
+        # Compile Charon
         ext.download(
-           "git@github.com:DziubanMaciej/Charon.git",
-           "b23facc",
-           self.charon_dir,
-           has_submodules=True,
-           fetch=self.fetch_git,
-           chmod_needed=False,
+            "git@github.com:DziubanMaciej/Charon.git",
+            "b23facc",
+            self.charon_dir,
+            has_submodules=True,
+            fetch=self.fetch_git,
+            chmod_needed=False,
         )
         ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF")
         ext.make(self.charon_dir / "build")
+
+        # Generate Charon config and call it in xinitrc_base
+        self._generate_charon_config()
+        log_file_path = f"{os.environ['HOME']}/.log/charon"
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Run Charon",
+            [f'Charon --config "{self._config_file_path}" --log "{log_file_path}" --daemon &'],
+        )
 
     def _generate_charon_config(self):
         watched_dir = f"{os.environ['HOME']}/Downloads/funnyportal"
@@ -80,4 +76,7 @@ class CharonStep(Step):
                 ],
             },
         ]
-        return json.dumps(config, indent=4)
+        config = json.dumps(config, indent=4)
+        config = [config]
+
+        self._file_writer.write_lines(self._config_file_path, config, file_type=FileType.Json)

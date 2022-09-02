@@ -17,15 +17,11 @@ class GuiStep(Step):
             return
         perform_called = True
 
-        colors_dir = self.root_build_dir / "colors"
-        ext.download(
-            "git://git.2f30.org/colors",
-            "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
-            colors_dir,
-            fetch=self.fetch_git,
-            clean=False,
-        )
-        ext.make(colors_dir)
+        self._compile_color_generator()
+
+        self._setup_xinitrc_base()
+        self._setup_xresources_theme()
+        self._setup_ulauncher_config()
 
     def express_dependencies(self, dependency_dispatcher):
         global express_dependencies_called
@@ -53,9 +49,6 @@ class GuiStep(Step):
                 "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
             ]
         )
-        self._setup_xinitrc_base(dependency_dispatcher)
-        self._setup_xresources_theme(dependency_dispatcher)
-        self._setup_ulauncher_config(dependency_dispatcher)
 
         dependency_dispatcher.add_keybindings(
             KeyBinding("s").mod().shift().execute("flameshot gui"),
@@ -64,15 +57,48 @@ class GuiStep(Step):
             KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
         )
 
-    def _setup_xresources_theme(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
+    def _compile_color_generator(self):
+        colors_dir = self.root_build_dir / "colors"
+        ext.download(
+            "git://git.2f30.org/colors",
+            "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
+            colors_dir,
+            fetch=self.fetch_git,
+            clean=False,
+        )
+        ext.make(colors_dir)
+
+    def _setup_xresources_theme(self):
+        self._file_writer.write_lines(
             ".config/XresourcesTheme",
             ["#define COL_THEME1 #008866"],
             file_type=FileType.XResources,
         )
 
-    def _setup_xinitrc_base(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+    def _setup_xinitrc_base(self,):
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Start in home directory",
+            ["cd || exit"],
+        )
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Automounting daemon",
+            ["udiskie &"],
+        )
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Source xinitrc.d scripts",
+            [
+                "if [ -d /etc/X11/xinit/xinitrc.d ] ; then",
+                "   for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do",
+                '       [ -x "$f" ] && . "$f"',
+                "       done",
+                "    unset f",
+                "fi",
+            ],
+        )
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Basic graphical settings",
             [
@@ -80,7 +106,7 @@ class GuiStep(Step):
                 "$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 1 &",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Button names for statusbar scripts",
             [
@@ -91,28 +117,28 @@ class GuiStep(Step):
                 "export BUTTON_SCROLL_DOWN=5",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Polish keyboard layout",
             ["(sleep 1; setxkbmap pl) &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Screenshot daemon",
             ["flameshot &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "App launcher",
             ["ulauncher --hide-window &"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Run browser",
             ["$BROWSER &"],
         )
 
-    def _setup_ulauncher_config(self, dependency_dispatcher):
+    def _setup_ulauncher_config(self):
         config = {
             "blacklisted-desktop-dirs": "/usr/share/locale:/usr/share/app-install:/usr/share/kservices5:/usr/share/fk5:/usr/share/kservicetypes5:/usr/share/applications/screensavers:/usr/share/kde4:/usr/share/mimelnk",
             "clear-previous-query": True,
@@ -127,4 +153,4 @@ class GuiStep(Step):
         }
         config = json.dumps(config, indent=4)
 
-        dependency_dispatcher.add_dotfile_lines(".config/ulauncher/settings.json", [config], file_type=FileType.Json)
+        self._file_writer.write_lines(".config/ulauncher/settings.json", [config], file_type=FileType.Json)
