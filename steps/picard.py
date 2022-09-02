@@ -7,7 +7,7 @@ import utils.external_project as ext
 
 class PicardStep(Step):
     def __init__(self):
-        super().__init__("Picard", has_action=False)
+        super().__init__("Picard")
 
     def express_dependencies(self, dependency_dispatcher):
         config_file_path = f"{os.environ['HOME']}/.config/MusicBrainz/Picard.ini"

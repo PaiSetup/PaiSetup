@@ -4,7 +4,7 @@ from pathlib import Path
 
 class ProgrammingCppStep(Step):
     def __init__(self, graphics, systemc):
-        super().__init__("ProgrammingCpp", has_action=False)
+        super().__init__("ProgrammingCpp")
         self._graphics = graphics
         self._systemc = systemc
 

@@ -6,7 +6,7 @@ from steps.dotfiles import FileType
 
 class EncryptionStep(Step):
     def __init__(self):
-        super().__init__("Encryption", has_action=False)
+        super().__init__("Encryption")
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

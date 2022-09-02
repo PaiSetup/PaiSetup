@@ -5,7 +5,7 @@ from steps.dotfiles import FileType
 
 class ProgrammingPythonStep(Step):
     def __init__(self):
-        super().__init__("Programming Python", has_action=False)
+        super().__init__("Programming Python")
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_dotfile_lines(

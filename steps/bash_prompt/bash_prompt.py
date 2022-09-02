@@ -5,7 +5,7 @@ from steps.dotfiles import FileType
 
 class BashPromptStep(Step):
     def __init__(self):
-        super().__init__("Bash prompt", has_action=False)
+        super().__init__("Bash prompt")
 
     def express_dependencies(self, dependency_dispatcher):
         script_path = Path(__file__).parent / "construct_bash_prompt.bash"

@@ -4,7 +4,7 @@ from pathlib import Path
 
 class ProgrammingCommonStep(Step):
     def __init__(self):
-        super().__init__("Programming common", has_action=False)
+        super().__init__("Programming common")
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
