@@ -1,7 +1,7 @@
 from steps.step import Step
 import json
 import os
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 import utils.external_project as ext
 
 
@@ -13,11 +13,10 @@ class PicardStep(Step):
         config_file_path = f"{os.environ['HOME']}/.config/MusicBrainz/Picard.ini"
         config = self._get_picard_config()
 
-        dependency_dispatcher.add_dotfile_lines(
+        self._file_writer.write_lines(
             config_file_path,
             [config],
             file_type=FileType.Json,
-            prepend_home_dir=False,
         )
         dependency_dispatcher.add_packages("picard")
 

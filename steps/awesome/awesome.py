@@ -2,7 +2,7 @@ from steps.step import Step
 from pathlib import Path
 from shutil import copyfile
 import os
-from steps.dotfiles import FileType, LinePlacement
+from utils.file_writer import FileType, LinePlacement
 from utils.log import log
 import utils.external_project as ext
 from utils import command

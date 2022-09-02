@@ -1,6 +1,6 @@
 from steps.step import Step
 from utils import command
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 from pathlib import Path
 import utils.external_project as ext
 import json

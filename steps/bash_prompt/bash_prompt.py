@@ -1,19 +1,17 @@
 from steps.step import Step
 from pathlib import Path
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 
 
 class BashPromptStep(Step):
     def __init__(self):
         super().__init__("Bash prompt")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def _perform_impl(self):
         script_path = Path(__file__).parent / "construct_bash_prompt.bash"
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".bashrc",
             "Setup bash prompt",
-            [
-                f"source {script_path}",
-            ],
+            [f"source {script_path}"],
             file_type=FileType.Bash,
         )

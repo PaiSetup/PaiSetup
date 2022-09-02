@@ -2,7 +2,7 @@ from steps.step import Step
 from utils import command
 import os
 from pathlib import Path
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 from utils.log import log
 
 
@@ -12,12 +12,6 @@ class GitStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("git")
-        dependency_dispatcher.add_dotfile_section(
-            ".bashrc",
-            "Enable git commands completion",
-            [". /usr/share/git/completion/git-completion.bash"],
-            file_type=FileType.Bash,
-        )
 
     def _perform_impl(self):
         gitconfig_dir = Path(os.environ["HOME"]) / ".config" / "git"
@@ -29,3 +23,11 @@ class GitStep(Step):
         log(f"Setting git user")
         command.run_command("git config --global user.name MaciejDziuban")
         command.run_command("git config --global user.email dziuban.maciej@gmail.com")
+
+        log(f"Adding git completion to .bashrc")
+        self._file_writer.write_section(
+            ".bashrc",
+            "Enable git commands completion",
+            [". /usr/share/git/completion/git-completion.bash"],
+            file_type=FileType.Bash,
+        )

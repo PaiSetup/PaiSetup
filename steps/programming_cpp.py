@@ -9,13 +9,6 @@ class ProgrammingCppStep(Step):
         self._systemc = systemc
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
-            ".profile",
-            "Allow attaching debugger to a running process",
-            [
-                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
-            ],
-        )
         dependency_dispatcher.add_packages(
             "base-devel",
             "cmake",
@@ -37,3 +30,12 @@ class ProgrammingCppStep(Step):
                 "glfw-x11",
                 "renderdoc",
             )
+
+    def _perform_impl(self):
+        self._file_writer.write_section(
+            ".profile",
+            "Allow attaching debugger to a running process",
+            [
+                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
+            ],
+        )

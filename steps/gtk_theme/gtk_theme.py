@@ -2,7 +2,7 @@ from steps.step import Step
 from utils import command
 from utils.log import log, LogIndent
 from pathlib import Path
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 import os
 import shutil
 
@@ -19,11 +19,16 @@ class GtkThemeStep(Step):
             "layan-gtk-theme-git",
             "gvfs",
             "sensual-breeze-icons-git",
-            "lxappearance", # not stricly needed, but useful when checking gtk themes
+            "lxappearance",  # not stricly needed, but useful when checking gtk themes
         )
 
-        # Example application using gtk 2.0 - lxappearance
-        dependency_dispatcher.add_dotfile_lines(
+    def _perform_impl(self):
+        # TODO break this up into smaller methods
+
+        current_step_dir = Path(__file__).parent
+
+        log("Generating gtk 2.0 theme")  # Example application using gtk 2.0 - lxappearance
+        self._file_writer.write_lines(
             ".gtkrc-2.0",
             [
                 f'gtk-theme-name="{self.widget_theme_name}"',
@@ -32,8 +37,8 @@ class GtkThemeStep(Step):
             file_type=FileType.ConfigFile,
         )
 
-        # Example application using gtk 3.0 - Thunar
-        dependency_dispatcher.add_dotfile_lines(
+        log("Generating gtk 3.0 theme")  # Example application using gtk 3.0 - Thunar
+        self._file_writer.write_lines(
             ".config/gtk-3.0/settings.ini",
             [
                 "[Settings]",
@@ -42,9 +47,6 @@ class GtkThemeStep(Step):
             ],
             file_type=FileType.ConfigFile,
         )
-
-    def _perform_impl(self):
-        current_step_dir = Path(__file__).parent
 
         icon_theme_directory = Path(os.environ["HOME"]) / ".local/share/icons" / self.icon_theme_name
         log(f"Creating icon theme config file in {icon_theme_directory}")
@@ -138,6 +140,4 @@ class GtkThemeStep(Step):
             downsized_emblems_dir.mkdir()
             for original_file_path in original_emblems_dir.glob("*"):
                 downsized_file_path = downsized_emblems_dir / original_file_path.name
-                command.run_command(
-                    f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}"
-                )
+                command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")

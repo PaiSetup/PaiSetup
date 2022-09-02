@@ -1,6 +1,6 @@
 from steps.step import Step
 from pathlib import Path
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 import utils.external_project as ext
 from utils.log import log
 
@@ -26,27 +26,26 @@ class StStep(Step):
         log('Creating "terminal" command to call st')
         self._file_writer.write_executable_script("terminal", ['st -e \\"\$@\\"'])
 
-    def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".profile",
             "Command for calling default terminal",
             [
                 "export TERMINAL='st -e'",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".profile",
             "Path to inputrc file",
             [
                 "export INPUTRC=~/.config/inputrc",
             ],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/inputrc",
             "Enable DELETE key to work in st",
             ["set enable-keypad on"],
         )
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".config/XresourcesApp",
             "St",
             [

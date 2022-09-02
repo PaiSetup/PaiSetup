@@ -1,6 +1,6 @@
 from steps.step import Step
 from pathlib import Path
-from steps.dotfiles import FileType
+from utils.file_writer import FileType
 
 
 class ProgrammingPythonStep(Step):
@@ -8,7 +8,7 @@ class ProgrammingPythonStep(Step):
         super().__init__("Programming Python")
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_lines(
+        self._file_writer.write_lines(
             ".config/bpython/config",
             [
                 "[general]",

@@ -18,8 +18,7 @@ class BashScriptsStep(Step):
             fetch=self.fetch_git,
         )
 
-    def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_dotfile_section(
+        self._file_writer.write_section(
             ".profile",
             "Convenience scripts",
             [
@@ -27,4 +26,6 @@ class BashScriptsStep(Step):
                 ". $SCRIPTS_PATH/load_functions.sh",
             ],
         )
+
+    def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("shellcheck")
