@@ -117,6 +117,7 @@ class PackagesStep(Step):
                 "qpdfview",
                 "pdfsam",
                 "zip",
+                "fzf", # fuzzy search
                 "file-roller",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
