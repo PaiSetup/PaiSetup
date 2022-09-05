@@ -12,7 +12,7 @@ if [ "$?" != "0" ]; then
 fi
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings\n"
-    printf "⚠"
+    printf "⚠️ "
 else
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "✅ No warnings" ""
     printf ""
