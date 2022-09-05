@@ -125,7 +125,7 @@ local volume_widget = widget_utils.script_widget("volume.sh", {button_action, bu
 local packages_widget = widget_utils.script_widget("packages.sh", {button_info, button_action}, 60)
 local time_widget = widget_utils.script_widget("date.sh", {button_action}, 30)
 local warnings_widget = widget_utils.script_widget("warnings.sh", {button_info}, 4)
-local tray_widget = wibox.widget.systray()
+local tray_widget = widget_utils.tray_widget()
 local screen_capture_widget = widget_utils.script_widget("screen_capture.sh", {button_info, button_action}, 10)
 local pomodoro_widget = widget_utils.script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = widget_utils.script_widget("audio_switch.sh", {button_info, button_action}, 10)
@@ -240,7 +240,7 @@ awful.screen.connect_for_each_screen(function(s)
                 screen_capture_widget,
                 pomodoro_widget,
                 audio_switch_widget,
-                --tray_widget,
+                tray_widget,
                 warnings_widget,
             }),
         },
