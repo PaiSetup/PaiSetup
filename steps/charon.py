@@ -50,7 +50,7 @@ class CharonStep(Step):
                     {
                         "type": "copy",
                         "destinationDir": dst_dir,
-                        "destinationName": "###",
+                        "destinationName": "####",
                     },
                     {
                         "type": "move",
