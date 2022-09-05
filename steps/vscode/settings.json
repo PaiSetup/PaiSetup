@@ -17,5 +17,6 @@
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
-    "explorer.confirmDelete": false
+    "explorer.confirmDelete": false,
+    "trailing-spaces.highlightCurrentLine": false
 }
