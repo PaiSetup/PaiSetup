@@ -75,6 +75,7 @@ local function shutdown_popup()
             }
             widget = widget_wrappers.margin(widget, dpi(10))
             widget = widget_wrappers.border(widget, gears.shape.rounded_rect, dpi(3), beautiful.color_gray_light)
+            widget = wibox.widget(widget)
             widget.set_focused = function(self, value)
                 if value then
                     self.bg = beautiful.color_theme
