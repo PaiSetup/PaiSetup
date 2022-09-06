@@ -35,7 +35,10 @@ class CharonStep(Step):
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Run Charon",
-            [f'Charon --config "{self._config_file_path}" --log "{log_file_path}" --daemon &'],
+            [
+                "pkill Charon",
+                f'Charon --config "{self._config_file_path}" --log "{log_file_path}" --daemon &',
+            ],
         )
 
     def _generate_charon_config(self):
