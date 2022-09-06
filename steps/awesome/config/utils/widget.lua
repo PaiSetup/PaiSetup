@@ -7,7 +7,7 @@ local widget_wrappers = require("utils.widget_wrappers")
 local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
-local function script_widget(name, buttons, timeout)
+local function script_widget(name, buttons, timeout, initial_text)
     local command = linux_setup_status_scripts .. name
 
     -- Create the base widget for our watch widget, so we can insert some additional
@@ -15,15 +15,23 @@ local function script_widget(name, buttons, timeout)
     -- Textbox widget doesn't have fgColor field on itself
     base_widget = wibox.widget.textbox()
     base_widget.my_foreground = "#FF0000"
+    if initial_text ~= nil then
+        base_widget.my_text = initial_text
+    else
+        base_widget.my_text = ""
+    end
+    base_widget.refresh = function(self, text)
+        self.markup = markup_utils.wrap_span(self.my_text, self.my_foreground, nil)
+    end
 
     -- Create the watch widget and supply our preparated base_widget. It must contain the
     -- extra foreground color field, which we use in update callback function.
     local widget, timer = awful.widget.watch(
         command,
         timeout,
-        function(widget, stdout)
-            text = markup_utils.wrap_span(stdout, widget.my_foreground, nil)
-            widget.markup = text
+        function (widget, stdout)
+            widget.my_text = stdout
+            widget:refresh()
         end,
         base_widget
     )
@@ -33,8 +41,8 @@ local function script_widget(name, buttons, timeout)
     widget.base_widget = base_widget
     widget.setup_my_foreground = function (widget, foreground)
         widget.base_widget.my_foreground = foreground
+        widget.base_widget:refresh()
     end
-    widget:setup_my_foreground(beautiful.fg_normal)
 
     -- Register mouse button handlers only for the buttons that were selected. The rest will be
     -- ignored.
@@ -71,7 +79,7 @@ local function shutdown_popup()
                 if value then
                     self.bg = beautiful.color_theme
                 else
-                    self.bg = beautiful.color_gray_light 
+                    self.bg = beautiful.color_gray_light
                 end
             end
             widget.callback = callback
