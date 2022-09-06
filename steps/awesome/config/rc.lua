@@ -187,19 +187,19 @@ awful.screen.connect_for_each_screen(function(s)
         widget_template = {
             widget = wibox.container.background,
             id = "background_role",
-            forced_width = dpi(300),
             forced_height = beautiful.wibar_height,
-            widget_wrappers.margin({
-                layout = wibox.layout.align.horizontal,
-                {
+            widget_wrappers.horizontal_margin({
+                layout = wibox.layout.fixed.horizontal,
+                widget_wrappers.horizontal_margin({
                     id     = 'icon_role',
                     widget = wibox.widget.imagebox,
-                },
-                {
-                    id     = 'text_role',
+                }, dpi(6)),
+                widget_wrappers.min_width({
                     widget = wibox.widget.textbox,
-                },
-            }, dpi(4)),
+                    id     = 'text_role',
+                    align  = 'center',
+                }, dpi(500))
+            }, dpi(10)),
         },
     }
 

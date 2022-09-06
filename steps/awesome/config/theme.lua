@@ -66,6 +66,7 @@ theme.tasklist_bg_urgent   = color_gray_light
 theme.tasklist_bg_minimize = color_gray_light
 theme.tasklist_shape = gears.shape.rounded_rect
 theme.tasklist_disable_icon = false
+theme.tasklist_align = "center" -- this aligns the 'text_role' widget
 
 
 

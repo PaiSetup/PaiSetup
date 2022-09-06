@@ -11,7 +11,7 @@ local function margin(arg, value)
 end
 
 local function horizontal_margin(arg, value)
-    return wibox.widget {
+    return {
         layout = wibox.container.margin,
         left = value,
         right = value,
@@ -20,7 +20,7 @@ local function horizontal_margin(arg, value)
 end
 
 local function border(arg, shape, width, color)
-    return wibox.widget {
+    return {
         layout = wibox.container.background,
         shape = shape,
         shape_border_width = width,
@@ -30,13 +30,22 @@ local function border(arg, shape, width, color)
 end
 
 local function bg(arg, color)
-    return wibox.widget {
+    return {
         layout = wibox.container.background,
         bg = color,
         shape = gears.shape.rounded_rect,
         shape_border_width = beautiful.border_width,
         shape_border_color = "#000000",
         arg,
+    }
+end
+
+local function min_width(arg, width)
+    return {
+        widget = wibox.container.constraint,
+        arg,
+        strategy ='min',
+        width = width,
     }
 end
 
@@ -66,6 +75,7 @@ return {
     margin = margin,
     horizontal_margin = horizontal_margin,
     bg = bg,
+    min_width = min_width,
     border = border,
     grp = grp,
 }
