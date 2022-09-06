@@ -120,15 +120,14 @@ screen.connect_signal("property::geometry", utils.set_wallpaper)
 
 -- Leaf widgets
 local memory_widget = widget_utils.script_widget("memory.sh", {button_info}, 5)
-local uptime_widget = widget_utils.script_widget("uptime.sh", {}, 60)
 local volume_widget = widget_utils.script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60)
 local packages_widget = widget_utils.script_widget("packages.sh", {button_info, button_action}, 60)
 local time_widget = widget_utils.script_widget("date.sh", {button_action}, 30)
-local warnings_widget = widget_utils.script_widget("warnings.sh", {button_info}, 4)
-local tray_widget = widget_utils.tray_widget()
 local screen_capture_widget = widget_utils.script_widget("screen_capture.sh", {button_info, button_action}, 10)
 local pomodoro_widget = widget_utils.script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = widget_utils.script_widget("audio_switch.sh", {button_info, button_action}, 10)
+local tray_widget = widget_utils.tray_widget()
+local warnings_widget = widget_utils.script_widget("warnings.sh", {button_info}, 4)
 
 local tags = {
     web = "",
@@ -232,7 +231,6 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             spacing = beautiful.widgets_group_margin,
             widget_wrappers.grp({memory_widget}),
-            widget_wrappers.grp({uptime_widget}),
             widget_wrappers.grp({volume_widget}),
             widget_wrappers.grp({packages_widget}),
             widget_wrappers.grp({time_widget}),
