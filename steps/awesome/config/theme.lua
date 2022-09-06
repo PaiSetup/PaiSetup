@@ -22,9 +22,9 @@ color_minimze = "00ffff" -- I don't know where I'll see this color. Make it some
 
 
 ----------------------------------------------------------------------------------- Custom values for our setup (used in rc.lua or its sub-scripts)
-theme.widgets_padding = 3
-theme.widgets_margin = 4
-theme.widgets_group_margin = 6
+theme.widgets_padding = dpi(3)
+theme.widgets_margin = dpi(4)
+theme.widgets_group_margin = dpi(6)
 theme.client_border_width = dpi(1)
 theme.bg_normal2 = color_gray_dark
 theme.color_theme = color_theme

@@ -5,6 +5,7 @@ local beautiful = require("beautiful")
 local markup_utils = require("utils.markup")
 local widget_wrappers = require("utils.widget_wrappers")
 local keygrabber = require("awful.keygrabber")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local function script_widget(name, buttons, timeout)
     local command = linux_setup_status_scripts .. name
@@ -30,8 +31,8 @@ local function script_widget(name, buttons, timeout)
     -- Add additional fields to the watch widget, so our logic for setting foreground colors
     -- can access base_widget's color.
     widget.base_widget = base_widget
-    widget.setup_my_foreground = function (widget, foreground) 
-        widget.base_widget.my_foreground = foreground 
+    widget.setup_my_foreground = function (widget, foreground)
+        widget.base_widget.my_foreground = foreground
     end
     widget:setup_my_foreground(beautiful.fg_normal)
 
@@ -58,14 +59,14 @@ local function shutdown_popup()
             local widget = {
                 widget = wibox.widget.textbox,
                 text = icon,
-                forced_height = 100,
-                forced_width = 100,
+                forced_height = dpi(100),
+                forced_width = dpi(100),
                 align = "center",
                 valign = "center",
                 font = "sans 50",
             }
-            widget = widget_wrappers.margin(widget, 10)
-            widget = widget_wrappers.border(widget, gears.shape.rounded_rect, 3, beautiful.color_gray_light)
+            widget = widget_wrappers.margin(widget, dpi(10))
+            widget = widget_wrappers.border(widget, gears.shape.rounded_rect, dpi(3), beautiful.color_gray_light)
             widget.set_focused = function(self, value)
                 if value then
                     self.bg = beautiful.color_theme
@@ -89,17 +90,17 @@ local function shutdown_popup()
         local function create_main_widget(buttons)
             local widget = {
                 layout = wibox.layout.fixed.vertical,
-                spacing = 10,
+                spacing = dpi(10),
                 gears.table.join(
                     {
                         layout = wibox.layout.fixed.horizontal,
-                        spacing = 10,
+                        spacing = dpi(10),
                     },
                     _shutdown_popup_data.buttons
                 ),
                 _shutdown_popup_data.selected_caption
             }
-            widget = widget_wrappers.margin(widget, 5)
+            widget = widget_wrappers.margin(widget, dpi(5))
             return widget
         end
 
@@ -175,8 +176,8 @@ local function tray_widget()
                 top = beautiful.wibar_height + 2 * beautiful.wibar_border_width,
                 right = beautiful.wibar_border_width,
             }
-            local width = 40
-            local height = width * 4
+            local width = dpi(40)
+            local height = width * 4 -- I cannot make this change height based on the number of apps, so we just hardcode space for 4 apps :()
 
             -- Create main widget - the systray
             _tray_popup_data = {}

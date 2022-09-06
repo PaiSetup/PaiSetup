@@ -169,8 +169,8 @@ awful.screen.connect_for_each_screen(function(s)
                     },
                     layout = wibox.layout.fixed.horizontal,
                 },
-                left  = 10,
-                right = 10,
+                left  = dpi(13),
+                right = dpi(13),
                 widget = wibox.container.margin
             },
             id     = 'background_role',

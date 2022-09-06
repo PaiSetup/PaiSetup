@@ -44,7 +44,7 @@ local function min_width(arg, width)
     return {
         widget = wibox.container.constraint,
         arg,
-        strategy ='min',
+        strategy = 'min',
         width = width,
     }
 end
@@ -67,8 +67,6 @@ local function grp(arg)
     arg.layout = wibox.layout.fixed.horizontal
     arg.spacing = beautiful.widgets_margin
     return bg(horizontal_margin(arg, beautiful.widgets_padding), bg_color)
-
-
 end
 
 return {
