@@ -106,7 +106,6 @@ class PackagesStep(Step):
                 # General
                 "consolas-font",
                 "openssh",
-                "firefox",
                 "update-grub",
                 "yay-git",
                 "dash-static-musl",

@@ -11,6 +11,7 @@ import enum
 from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
 from steps.git import GitStep
+from steps.firefox import FirefoxStep
 from steps.packages import PackagesStep
 from steps.bash_scripts import BashScriptsStep
 from steps.vscode.vscode import VscodeStep
@@ -72,6 +73,7 @@ steps = [
     FileAssociationsStep(),
     AudioStep(),
     GpuStep(),
+    FirefoxStep(),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
