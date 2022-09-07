@@ -17,13 +17,23 @@ class FirefoxStep(Step):
     in this step, but I don't think it's possible.
     """
 
-    def __init__(self):
+    def __init__(self, is_default_browser):
         super().__init__("Firefox")
+        self._is_default_browser = is_default_browser
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("firefox")
 
     def _perform_impl(self):
+        self._file_writer.write_section(
+            ".profile",
+            "Default browser",
+            [
+                "export BROWSER=firefox",
+                'export BROWSER_PRIVATE="firefox --private-window"',
+            ],
+        )
+
         profile_dirs = self._get_profile_directories()
         css_content = self.get_css_content()
         for profile_dir in profile_dirs:

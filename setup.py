@@ -73,7 +73,7 @@ steps = [
     FileAssociationsStep(),
     AudioStep(),
     GpuStep(),
-    FirefoxStep(),
+    FirefoxStep(is_default_browser=True),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [

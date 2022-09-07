@@ -19,8 +19,6 @@ class ShellStep(Step):
             [
                 f"export LINUX_SETUP_ROOT={self._root_dir}",
                 "export EDITOR=vim",
-                "export BROWSER=firefox",
-                'export BROWSER_PRIVATE="firefox --private-window"',
                 "export FILE_MANAGER=thunar",
             ],
         )
