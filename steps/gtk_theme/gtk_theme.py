@@ -50,9 +50,9 @@ class GtkThemeStep(Step):
 
         icon_theme_directory = self._env.home() / ".local/share/icons" / self.icon_theme_name
         log(f"Creating icon theme config file in {icon_theme_directory}")
-        icon_theme_directory.mkdir(parents=True, exist_ok=True)
-        with open(icon_theme_directory / "index.theme", "w") as file:
-            lines = [
+        self._file_writer.write_lines(
+            icon_theme_directory / "index.theme",
+            [
                 "[Icon Theme]",
                 f"Name={self.icon_theme_name}",
                 "Comment=My custom icon theme",
@@ -69,8 +69,9 @@ class GtkThemeStep(Step):
                 "Context=Emblems",
                 "Size=512",
                 "Type=Fixed",
-            ]
-            file.writelines("\n".join(lines))
+            ],
+            file_type=FileType.ConfigFile,
+        )
 
         sizes_to_generate = [64]
         self.generate_downsized_emblems(sizes_to_generate)
