@@ -11,7 +11,7 @@ class CharonStep(Step):
         self.charon_dir = root_build_dir / "charon"
         self.fetch_git = fetch_git
 
-        self._config_file_path = f"{os.environ['HOME']}/.config/charon/config.json"
+        self._config_file_path = self._env.home() / ".config/charon/config.json"
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.register_bgchecher_daemon_check_script("Charon --config", "Charon")
@@ -31,7 +31,7 @@ class CharonStep(Step):
 
         # Generate Charon config and call it in xinitrc_base
         self._generate_charon_config()
-        log_file_path = f"{os.environ['HOME']}/.log/charon"
+        log_file_path = self._env.home() / ".log/charon"
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Run Charon",
@@ -42,17 +42,17 @@ class CharonStep(Step):
         )
 
     def _generate_charon_config(self):
-        watched_dir = f"{os.environ['HOME']}/Downloads/funnyportal"
-        dst_dir = f"{os.environ['HOME']}/Multimedia/Funny/Internet"
+        watched_dir = self._env.home() / "Downloads/funnyportal"
+        dst_dir = self._env.home() / "Multimedia/Funny/Internet"
         backup_dir = f"/run/media/{os.environ['USER']}/External/Backup/Multimedia/Funny/Internet/"
         config = [
             {
-                "watchedFolder": watched_dir,
+                "watchedFolder": str(watched_dir),
                 "extensions": ["jpg", "jpeg", "gif", "png"],
                 "actions": [
                     {
                         "type": "copy",
-                        "destinationDir": dst_dir,
+                        "destinationDir": str(dst_dir),
                         "destinationName": "####",
                     },
                     {
@@ -63,12 +63,12 @@ class CharonStep(Step):
                 ],
             },
             {
-                "watchedFolder": watched_dir,
+                "watchedFolder": str(watched_dir),
                 "extensions": ["mp4", "webm"],
                 "actions": [
                     {
                         "type": "copy",
-                        "destinationDir": f"{dst_dir}/Video",
+                        "destinationDir": str(dst_dir / "Video"),
                         "destinationName": "###",
                     },
                     {

@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+ # TODO move this into FileWriter
+
 def patch_dot_desktop_file(source_name, destination_name, patch_functions):
     """
     Takes .desktop file from /usr/share/applications, applies patch functions to its

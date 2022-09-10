@@ -79,7 +79,7 @@ class FileWriter(Step):
         if path.is_absolute():
             return path
         else:
-            return Path(os.environ["HOME"]) / path
+            return Step._env.home() / path
 
     def _ensure_file_is_deleted(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)

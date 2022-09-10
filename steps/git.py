@@ -14,7 +14,7 @@ class GitStep(Step):
         dependency_dispatcher.add_packages("git")
 
     def perform(self):
-        gitconfig_dir = Path(os.environ["HOME"]) / ".config" / "git"
+        gitconfig_dir = self._env.home() / ".config/git"
         gitconfig_path = gitconfig_dir / "config"
         log(f"Creating {gitconfig_path} file")
         gitconfig_dir.mkdir(parents=True, exist_ok=True)

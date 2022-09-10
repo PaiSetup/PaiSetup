@@ -75,7 +75,7 @@ class DwmStep(GuiStep):
             "stalonetray",
         )
 
-        dependency_dispatcher.add_xsession("DWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
+        dependency_dispatcher.add_xsession("DWM", self._env.home() / self._xinitrc_path)
 
         dependency_dispatcher.register_bgchecher_daemon_check_script("dunst", "dunst", profile=self._bg_checker_profile)
         dependency_dispatcher.register_bgchecher_daemon_check_script("sxhkd", "sxhkd", profile=self._bg_checker_profile)
@@ -161,14 +161,14 @@ class DwmStep(GuiStep):
         self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
-            [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
+            [f'#include "{self._env.home() / ".config/XresourcesApp"}'],
             file_type=FileType.XResources,
         )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
             [
-                f'#include "{os.environ["HOME"]}/.config/XresourcesTheme"',
+                f'#include "{self._env.home() / ".config/XresourcesTheme"}',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],

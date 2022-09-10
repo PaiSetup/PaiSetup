@@ -33,7 +33,7 @@ class AwesomeStep(GuiStep):
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages("awesome")
-        dependency_dispatcher.add_xsession("AwesomeWM", f"{os.environ['HOME']}/{self._xinitrc_path}")
+        dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
 
     def perform(self):
         self._setup_awesome_config()
@@ -99,14 +99,14 @@ class AwesomeStep(GuiStep):
         self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
-            [f'#include "{os.environ["HOME"]}/.config/XresourcesApp"'],
+            [f'#include "{self._env.home() / ".config/XresourcesApp"}'],
             file_type=FileType.XResources,
         )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
             [
-                f'#include "{os.environ["HOME"]}/.config/XresourcesTheme"',
+                f'#include "{self._env.home() / ".config/XresourcesTheme"}',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],
@@ -161,6 +161,4 @@ class AwesomeStep(GuiStep):
             "    get_keybindings = get_keybindings,",
             "}",
         ]
-        self._file_writer.write_lines(
-            self._app_keybindings_path, lines, file_type=FileType.Lua
-        )
+        self._file_writer.write_lines(self._app_keybindings_path, lines, file_type=FileType.Lua)

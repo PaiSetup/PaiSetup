@@ -17,7 +17,7 @@ class NotesStep(Step):
         )
 
     def perform(self):
-        notes_dir = scripts_dir = Path(os.environ["HOME"]) / "Notes"
+        notes_dir = scripts_dir = self._env.home() / "Notes"
         ext.download(
             "https://github.com/InternalMD/Notes.git",
             "master",

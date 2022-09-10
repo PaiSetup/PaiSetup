@@ -10,7 +10,7 @@ class PicardStep(Step):
         super().__init__("Picard")
 
     def express_dependencies(self, dependency_dispatcher):
-        config_file_path = f"{os.environ['HOME']}/.config/MusicBrainz/Picard.ini"
+        config_file_path = self._env.home() / ".config/MusicBrainz/Picard.ini"
         config = self._get_picard_config()
 
         self._file_writer.write_lines(

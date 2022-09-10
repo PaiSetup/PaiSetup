@@ -77,7 +77,7 @@ class BgChckerStep(Step):
             if profile.is_global_profile:
                 lines += [
                     "pkill BgChecker",
-                    f"BgCheckerServer >{os.environ['HOME']}/.log/BgCheckerServer 2>&1 &",
+                    f"BgCheckerServer >{self._env.home() / '.log/BgCheckerServer 2>&1 &'}",
                     "",
                 ]
             lines += [f'BgCheckerClient SetStatus {interval_in_seconds} "{script}" >/dev/null 2>&1 &' for script, interval_in_seconds in scripts]

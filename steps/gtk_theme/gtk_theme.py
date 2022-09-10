@@ -48,7 +48,7 @@ class GtkThemeStep(Step):
             file_type=FileType.ConfigFile,
         )
 
-        icon_theme_directory = Path(os.environ["HOME"]) / ".local/share/icons" / self.icon_theme_name
+        icon_theme_directory = self._env.home() / ".local/share/icons" / self.icon_theme_name
         log(f"Creating icon theme config file in {icon_theme_directory}")
         icon_theme_directory.mkdir(parents=True, exist_ok=True)
         with open(icon_theme_directory / "index.theme", "w") as file:
@@ -84,23 +84,23 @@ class GtkThemeStep(Step):
 
         log("Setting emblems to directories")
         emblems_map = {
-            f"{os.environ['HOME']}/Desktop": ("desktop", False),
-            f"{os.environ['HOME']}/Downloads": ("downloads", False),
-            f"{os.environ['HOME']}/LinuxSetup": ("linux_setup", False),
-            f"{os.environ['HOME']}/Multimedia": ("multimedia", False),
-            f"{os.environ['HOME']}/Multimedia/Avatars": ("avatars", False),
-            f"{os.environ['HOME']}/Multimedia/FreestyleFootball": ("football", False),
-            f"{os.environ['HOME']}/Multimedia/FretSaw": ("fretsaw", False),
-            f"{os.environ['HOME']}/Multimedia/Funny": ("funny", False),
-            f"{os.environ['HOME']}/Multimedia/Icons": ("icons", False),
-            f"{os.environ['HOME']}/Multimedia/Microscope": ("microscope", False),
-            f"{os.environ['HOME']}/Multimedia/Movies": ("movies", False),
-            f"{os.environ['HOME']}/Multimedia/Music": ("music", True),
-            f"{os.environ['HOME']}/Multimedia/MusicToRate": ("music", True),
-            f"{os.environ['HOME']}/Multimedia/TvSeries": ("tv_series", True),
-            f"{os.environ['HOME']}/Multimedia/Wallpapers": ("wallpapers", False),
-            f"{os.environ['HOME']}/Scripts": ("scripts", False),
-            f"{os.environ['HOME']}/work": ("work", False),
+            f"{self._env.home()}/Desktop": ("desktop", False),
+            f"{self._env.home()}/Downloads": ("downloads", False),
+            f"{self._env.home()}/LinuxSetup": ("linux_setup", False),
+            f"{self._env.home()}/Multimedia": ("multimedia", False),
+            f"{self._env.home()}/Multimedia/Avatars": ("avatars", False),
+            f"{self._env.home()}/Multimedia/FreestyleFootball": ("football", False),
+            f"{self._env.home()}/Multimedia/FretSaw": ("fretsaw", False),
+            f"{self._env.home()}/Multimedia/Funny": ("funny", False),
+            f"{self._env.home()}/Multimedia/Icons": ("icons", False),
+            f"{self._env.home()}/Multimedia/Microscope": ("microscope", False),
+            f"{self._env.home()}/Multimedia/Movies": ("movies", False),
+            f"{self._env.home()}/Multimedia/Music": ("music", True),
+            f"{self._env.home()}/Multimedia/MusicToRate": ("music", True),
+            f"{self._env.home()}/Multimedia/TvSeries": ("tv_series", True),
+            f"{self._env.home()}/Multimedia/Wallpapers": ("wallpapers", False),
+            f"{self._env.home()}/Scripts": ("scripts", False),
+            f"{self._env.home()}/work": ("work", False),
         }
         with LogIndent():
             for path, (emblem, create_if_necessary) in emblems_map.items():
