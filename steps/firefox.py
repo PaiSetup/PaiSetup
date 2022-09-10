@@ -24,7 +24,7 @@ class FirefoxStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("firefox")
 
-    def _perform_impl(self):
+    def perform(self):
         self._file_writer.write_section(
             ".profile",
             "Default browser",

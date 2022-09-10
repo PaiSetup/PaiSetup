@@ -4,10 +4,12 @@ from pathlib import Path
 from utils.dependency_dispatcher import DependencyDispatcher
 from utils.argparser_utils import EnumAction
 from utils.file_writer import FileWriter
+from utils.log import log, LogIndent
 import argparse
 import sys
 import enum
 
+from steps.step import Step
 from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
 from steps.git import GitStep
@@ -133,7 +135,10 @@ if args.list_packages:
 
 # Run the steps
 for step in steps:
-    step.perform()
+    if step.is_method_overriden(Step.perform):
+        log(f"Performing step: {step.name}")
+        with LogIndent():
+            step.perform()
 
 # Finalize services
 file_writer.finalize()

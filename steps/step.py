@@ -1,6 +1,3 @@
-from utils.log import log, LogIndent
-
-
 class Step:
     def __init__(self, name):
         self.name = name
@@ -15,15 +12,9 @@ class Step:
         pass
 
     def perform(self):
-        if self._is_method_overriden(Step._perform_impl):
-            log(f"Performing step: {self.name}")
-            with LogIndent():
-                self._perform_impl()
+        pass
 
-    def _perform_impl(self):
-        raise NotImplementedError()
-
-    def _is_method_overriden(self, method):
+    def is_method_overriden(self, method):
         method_name = method.__name__
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__

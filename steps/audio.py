@@ -17,7 +17,7 @@ class AudioStep(Step):
             "pamixer",
         )
 
-    def _perform_impl(self):
+    def perform(self):
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Unload module-suspend-on-idle from pulseuadio",

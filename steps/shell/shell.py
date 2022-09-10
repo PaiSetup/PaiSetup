@@ -8,7 +8,7 @@ class ShellStep(Step):
         super().__init__("Shell")
         self._root_dir = root_dir
 
-    def _perform_impl(self):
+    def perform(self):
         self._setup_profile()
         self._setup_bash()
 

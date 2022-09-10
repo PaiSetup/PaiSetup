@@ -10,7 +10,7 @@ class BashScriptsStep(Step):
         self.scripts_dir = scripts_dir = Path(os.environ["HOME"]) / "Scripts"
         self.fetch_git = fetch_git
 
-    def _perform_impl(self):
+    def perform(self):
         ext.download(
             "https://github.com/InternalMD/Scripts.git",
             "origin/master",

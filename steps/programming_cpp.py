@@ -31,7 +31,7 @@ class ProgrammingCppStep(Step):
                 "renderdoc",
             )
 
-    def _perform_impl(self):
+    def perform(self):
         self._file_writer.write_section(
             ".profile",
             "Allow attaching debugger to a running process",

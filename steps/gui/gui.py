@@ -11,7 +11,7 @@ express_dependencies_called = False
 
 
 class GuiStep(Step):
-    def _perform_impl(self):
+    def perform(self):
         global perform_called
         if perform_called:
             return

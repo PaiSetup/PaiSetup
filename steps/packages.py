@@ -18,7 +18,7 @@ class PackagesStep(Step):
         dependency_dispatcher.register_listener(self.add_assumed_packages)
         dependency_dispatcher.register_listener(self.list_packages)
 
-    def _perform_impl(self):
+    def perform(self):
         self._install_yay()
         self._set_yay_permissions()
         self._install_packages()

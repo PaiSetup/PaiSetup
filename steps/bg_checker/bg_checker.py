@@ -62,7 +62,7 @@ class BgChckerStep(Step):
     def register_bgchecher_daemon_check_script(self, command_regex, name, **kwargs):
         self.register_bgchecker_script(f"{os.environ['SCRIPTS_PATH']}/core/linux/is_daemon_running.sh {command_regex} {name}", 3, **kwargs)
 
-    def _perform_impl(self):
+    def perform(self):
         self._build_bg_checker()
         self._generate_launch_scripts_for_profiles()
 

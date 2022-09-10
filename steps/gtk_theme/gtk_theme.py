@@ -22,7 +22,7 @@ class GtkThemeStep(Step):
             "lxappearance",  # not stricly needed, but useful when checking gtk themes
         )
 
-    def _perform_impl(self):
+    def perform(self):
         # TODO break this up into smaller methods
 
         current_step_dir = Path(__file__).parent

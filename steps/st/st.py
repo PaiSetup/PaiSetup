@@ -11,7 +11,7 @@ class StStep(Step):
         self.st_dir = root_build_dir / "st"
         self.fetch_git = fetch_git
 
-    def _perform_impl(self):
+    def perform(self):
         current_step_dir = Path(__file__).parent
 
         ext.download(

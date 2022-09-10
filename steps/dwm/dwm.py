@@ -48,8 +48,8 @@ class DwmStep(GuiStep):
         ]
         # fmt: on
 
-    def _perform_impl(self):
-        super()._perform_impl()
+    def perform(self):
+        super().perform()
         self._compile_projects()
         self._setup_xinitrc_dwm()
         self._setup_xresources()

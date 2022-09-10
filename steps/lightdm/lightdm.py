@@ -14,7 +14,7 @@ class LightDmStep(Step):
             "lightdm-gtk-greeter",
         )
 
-    def _perform_impl(self):
+    def perform(self):
         # Enable service
         service_name = "lightdm.service"
         log(f"Enabling {service_name}")

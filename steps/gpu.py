@@ -17,7 +17,7 @@ class GpuStep(Step):
         super().__init__("Gpu")
         self.vendors  = self._query_gpu_vendors()
 
-    def _perform_impl(self):
+    def perform(self):
         if self.vendors:
             vendors_string = ', '.join((v.name for v in self.vendors))
             log(f"Detected gpu vendors: {vendors_string}")

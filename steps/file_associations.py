@@ -9,7 +9,7 @@ class FileAssociationsStep(Step):
     def __init__(self):
         super().__init__("FileAssociations")
 
-    def _perform_impl(self):
+    def perform(self):
         self._create_terminal_vim_desktop_file()
         self._setup_associations()
 

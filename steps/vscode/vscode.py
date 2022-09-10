@@ -13,7 +13,7 @@ class VscodeStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("code")
 
-    def _perform_impl(self):
+    def perform(self):
         self._symlink_settings()
         self._install_extensions()
         self._create_terminal_vim_desktop_file()

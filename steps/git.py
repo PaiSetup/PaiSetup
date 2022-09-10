@@ -13,7 +13,7 @@ class GitStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("git")
 
-    def _perform_impl(self):
+    def perform(self):
         gitconfig_dir = Path(os.environ["HOME"]) / ".config" / "git"
         gitconfig_path = gitconfig_dir / "config"
         log(f"Creating {gitconfig_path} file")

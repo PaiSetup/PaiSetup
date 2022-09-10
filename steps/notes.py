@@ -16,7 +16,7 @@ class NotesStep(Step):
             KeyBinding('t').mod().shift().execute("obsidian e")
         )
 
-    def _perform_impl(self):
+    def perform(self):
         notes_dir = scripts_dir = Path(os.environ["HOME"]) / "Notes"
         ext.download(
             "https://github.com/InternalMD/Notes.git",

@@ -16,7 +16,7 @@ class CharonStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.register_bgchecher_daemon_check_script("Charon --config", "Charon")
 
-    def _perform_impl(self):
+    def perform(self):
         # Compile Charon
         ext.download(
             "git@github.com:DziubanMaciej/Charon.git",

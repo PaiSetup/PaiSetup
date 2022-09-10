@@ -17,7 +17,7 @@ class XsessionStep(Step):
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_xsession)
 
-    def _perform_impl(self):
+    def perform(self):
         for name, xinitrc_path in self._xsessions:
             log(f"Creating a script and .desktop file for {name} session")
 
