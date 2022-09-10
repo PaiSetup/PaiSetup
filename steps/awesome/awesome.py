@@ -99,14 +99,14 @@ class AwesomeStep(GuiStep):
         self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
-            [f'#include "{self._env.home() / ".config/XresourcesApp"}'],
+            [f'#include "{self._env.home() / ".config/XresourcesApp"}"'],
             file_type=FileType.XResources,
         )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
             [
-                f'#include "{self._env.home() / ".config/XresourcesTheme"}',
+                f'#include "{self._env.home() / ".config/XresourcesTheme"}"',
                 "#define COL_THEME2 #878787",
                 "#define COL_THEME3 #555555",
             ],
