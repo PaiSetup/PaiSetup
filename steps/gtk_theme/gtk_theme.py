@@ -101,6 +101,7 @@ class GtkThemeStep(Step):
             self._env.home() / "Multimedia/TvSeries": ("tv_series", True),
             self._env.home() / "Multimedia/Wallpapers": ("wallpapers", False),
             self._env.home() / "Scripts": ("scripts", False),
+            self._env.home() / "Notes": ("notes", False),
             self._env.home() / "work": ("work", False),
         }
         with LogIndent():
