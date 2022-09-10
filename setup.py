@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-from utils.dependency_dispatcher import DependencyDispatcher
 from utils.argparser_utils import EnumAction
-from utils.file_writer import FileWriter
 from utils.log import log, LogIndent
 import argparse
 import sys
 import enum
+
+from utils.dependency_dispatcher import DependencyDispatcher
+from utils.file_writer import FileWriter
+from utils.env import EnvManager
 
 from steps.step import Step
 from steps.dwm.dwm import DwmStep
@@ -65,6 +67,11 @@ args = arg_parser.parse_args()
 with open(lastmode_file, "w") as file:
     file.write(f"{args.mode.value}\n")
 
+# Setup services
+file_writer = FileWriter()
+env = EnvManager()
+Step.setup_external_services(file_writer, env)
+
 # Setup steps. They can be safely commented out if neccessary
 root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
@@ -115,11 +122,6 @@ if args.list_steps:
         print(step.name)
     exit(0)
 
-# Setup services
-file_writer = FileWriter()
-for step in steps:
-    step.setup_external_services(file_writer)
-
 # Handle cross-step dependencies
 dependencies = DependencyDispatcher()
 for step in steps:
@@ -132,6 +134,10 @@ dependencies.summary()
 if args.list_packages:
     dependencies.list_packages(True)
     exit(0)
+
+# Setup env
+for step in steps:
+    step.register_env_variables()
 
 # Run the steps
 for step in steps:

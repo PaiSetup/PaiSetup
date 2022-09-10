@@ -8,12 +8,14 @@ class Step:
     def __init__(self, name):
         self.name = name
 
-    def setup_external_services(self, file_writer):
+    @classmethod
+    def setup_external_services(cls, file_writer, env):
         """
         A service is an object shared between all steps which provides some utility functions
         while storing its state internally.
         """
-        self._file_writer = file_writer
+        cls._file_writer = file_writer
+        cls._env = env
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         """
@@ -21,6 +23,20 @@ class Step:
 
         It allows to register current service to the DependencyDispatcher as a handler of one
         or more functions. This is done with DependencyDispatcher.register_listener() method.
+        """
+        pass
+
+    def register_env_variables(self):
+        """
+        This method can be implemented by deriving classes.
+
+        Its goal is to set environment variables in current process. Some steps may add export
+        instructions to scripts like .profile, but this is not enough if other steps depend on
+        the env vars being set. They will only be set after relogging to the system. Hence
+        we also have to set it in the current process.
+
+        It cannot be done in perform(), because the order of execution is undefined. This method
+        will always be called before perform() invocations of all other steps.
         """
         pass
 
