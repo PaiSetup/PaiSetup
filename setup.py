@@ -122,6 +122,10 @@ if args.list_steps:
         print(step.name)
     exit(0)
 
+# Setup env
+for step in steps:
+    step.register_env_variables()
+
 # Handle cross-step dependencies
 dependencies = DependencyDispatcher()
 for step in steps:
@@ -134,10 +138,6 @@ dependencies.summary()
 if args.list_packages:
     dependencies.list_packages(True)
     exit(0)
-
-# Setup env
-for step in steps:
-    step.register_env_variables()
 
 # Run the steps
 for step in steps:

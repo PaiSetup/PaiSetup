@@ -12,6 +12,9 @@ class ShellStep(Step):
         self._setup_profile()
         self._setup_bash()
 
+    def register_env_variables(self):
+        self._env.set("LINUX_SETUP_ROOT", self._root_dir, is_path=True)
+
     def _setup_profile(self):
         self._file_writer.write_section(
             ".profile",

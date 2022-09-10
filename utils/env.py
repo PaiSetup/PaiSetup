@@ -19,7 +19,7 @@ class EnvManager:
             value = Path(value)
         self._map[name] = value
         if setenv:
-            os.environ[name] = value
+            os.environ[name] = str(value)
 
     def get(self, name):
         return self._map[name]
