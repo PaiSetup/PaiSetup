@@ -24,7 +24,6 @@ class CharonStep(Step):
             self.charon_dir,
             has_submodules=True,
             fetch=self.fetch_git,
-            chmod_needed=False,
         )
         ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF")
         ext.make(self.charon_dir / "build")

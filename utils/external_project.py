@@ -19,7 +19,7 @@ def download(
     has_submodules=False,
     clean=False,
     fetch=False,
-    chmod_needed=True, # TODO make this false by default
+    chmod_needed=False,
 ):
     log(f"Downloading {url} to {directory}")
 

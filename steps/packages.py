@@ -35,7 +35,6 @@ class PackagesStep(Step):
                 "https://aur.archlinux.org/yay-git.git",
                 "master",
                 build_dir,
-                chmod_needed=False,
             )
             log("Installing yay")
             with Pushd(build_dir):
