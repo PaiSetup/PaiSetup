@@ -41,5 +41,15 @@
         ```
     - Reboot
     - OS should boot into graphical interface
+  - Manual configuration
+    - Automatic mounts in `/etc/fstab`
+    - MEGA
+      - Sync exclusions:
+        - */home/maciej/Multimedia/Movies*
+        - */home/maciej/Multimedia/Music*
+        - */home/maciej/Multimedia/MusicToRate*
+        - */home/maciej/Multimedia/TvSeries*
+      - Syncs:
+        - */home/maciej/Multimedia* <-> *Backup/Multimedia*
 
 WARNING: only `setup.py` script can be run multiple times safely. Running other `.sh` scripts repeatedly can have unforseen consequences.

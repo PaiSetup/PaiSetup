@@ -8,11 +8,12 @@ fi
 ssh_key_path="$1"
 user_name="$2"
 if [ -z "$ssh_key_path" ] || [ ! -f "$ssh_key_path" ]; then
-    echo "ERROR: specify path to ssh key"
+    echo "ERROR: specify path to ssh key as \$1"
     exit 1
 fi
 if [ -z "$user_name" ]; then
-    user_name="DziubanMaciej"
+    echo "ERROR: specify git username as \$2"
+    exit 1
 fi
 ssh_key_name=$(basename "$ssh_key_path")
 
@@ -29,7 +30,6 @@ IdentityFile ~/.ssh/$ssh_key_name
 
 Host github.com bitbucket.org
     User $user_name
-
 EOM
 
 echo "Setting up known_hosts for typical sites"
