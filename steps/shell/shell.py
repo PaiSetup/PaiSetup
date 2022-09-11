@@ -8,6 +8,9 @@ class ShellStep(Step):
         super().__init__("Shell")
         self._root_dir = root_dir
 
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("exa")
+
     def perform(self):
         self._setup_profile()
         self._setup_bash()
@@ -26,8 +29,8 @@ class ShellStep(Step):
             ".profile",
             "ls aliases",
             [
-                "alias ls='ls --color=auto'",
-                "alias ll='ls -la'",
+                "alias ls=exa",
+                "alias ll='exa -la'",
                 "alias xo='xdg-open'",
             ],
         )
