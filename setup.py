@@ -69,12 +69,12 @@ with open(lastmode_file, "w") as file:
     file.write(f"{args.mode.value}\n")
 
 # Setup services
+root_dir = Path(__file__).parent
 file_writer = FileWriter()
-env = EnvManager()
+env = EnvManager(root_dir)
 Step.setup_external_services(file_writer, env)
 
 # Setup steps. They can be safely commented out if neccessary
-root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir, True),

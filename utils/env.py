@@ -7,10 +7,11 @@ class EnvConflict(Exception):
 
 
 class EnvManager:
-    def __init__(self):
+    def __init__(self, root_dir):
         self._map = {}
         self.set("HOME", os.environ["HOME"], setenv=False, is_path=True)
         self.set("USER", os.environ["USER"], setenv=False, is_path=False)
+        self.set("LINUX_SETUP_ROOT", root_dir, is_path=True)
 
     def set(self, name, value, setenv=True, is_path=False):
         if name in self._map:
