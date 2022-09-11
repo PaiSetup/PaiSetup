@@ -33,4 +33,4 @@ class BashScriptsStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("shellcheck")
-        dependency_dispatcher.set_folder_icon("Scripts", "scripts")
+        dependency_dispatcher.set_folder_icon(self._scripts_root_dir, "scripts")
