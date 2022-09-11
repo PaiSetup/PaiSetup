@@ -1,6 +1,6 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
+from utils.log import log, LogIndent
 from utils.dot_desktop_file import patch_dot_desktop_file
 from pathlib import Path
 
@@ -19,6 +19,7 @@ class VscodeStep(Step):
         self._create_terminal_vim_desktop_file()
 
     def _symlink_settings(self):
+        log("Symlinking VScode settings")
         current_step_dir = Path(__file__).parent
         config_dir = Path(".config/Code - OSS/User/")
         self._file_writer.write_symlink(src=current_step_dir / "keybindings.json", link=config_dir / "keybindings.json")
@@ -45,7 +46,9 @@ class VscodeStep(Step):
 
         # Python
         log("Installing python formatters")
-        command.run_command("pip install autopep8 black")  # TODO python -c "autopep8 black" is a faster check
+        with LogIndent():
+            self._install_python_package("autopep8")
+            self._install_python_package("black")
         extensions.append("ms-python.python")
 
         self._install_extensions_with_commad(download_dir, extensions)
@@ -95,3 +98,12 @@ class VscodeStep(Step):
                 "Exec": lambda section, name, value: f"{value} --new-window" if section == "Desktop Entry" else value,
             },
         )
+
+    def _install_python_package(self, package_name, import_name=None):
+        if import_name is None:
+            import_name = package_name
+        try:
+            command.run_command(f'python -c "import {import_name}"')
+        except command.CommandError:
+            log(f"Installing {package_name} Python package")
+            command.run_command(f"pip install {package_name}")
