@@ -201,3 +201,46 @@ class FileWriter(Step):
             pass
         except PermissionError:
             command.run_command(f"sudo rm {path}")
+
+    def patch_dot_desktop_file(self, source_name, destination_name, patch_functions):
+        """
+        Takes .desktop file from /usr/share/applications, applies patch functions to its
+        contents and creates a new file in a user specific folder for .desktop files.
+
+        Each line is matched to a zero or one patch function. Contents of a matched line is
+        pass to the patch function, which returns a new value for the current line.
+
+        Parameters:
+            source_name - name of file in /usr/share/applications with .deskop suffix
+            destination_name - name of file in ~/.local/share/applications with .deskop suffix
+            patch_functions - a dictionary
+                keys are names of values in .desktop file (e.g. "Exec")
+                values are functions taking a section, base name (without square bracket modifiers) and value and returning a new value
+        """
+        source_file_path = f"/usr/share/applications/{source_name}"
+        destination_file_path = Step._env.home() / ".local/share/applications" / destination_name
+
+        lines = []
+        with open(source_file_path, "r") as src:
+            section = ""
+            for untrimmed_line in src:
+                line = untrimmed_line.strip()
+                modified_line = untrimmed_line[:-1] # Remove the newline
+
+                if line.startswith("#"):
+                    pass
+                elif line.startswith("["):
+                    section = line[1:-1]
+                else:
+                    # line is e.g. "Name[de]=Vim"
+                    line_name = line.split("=")[0]  # e.g. "Name[de]"
+                    line_base_name = line_name.split("[")[0]  # e.g. "Name"
+                    line_value = "=".join(line.split("=")[1:])  # e.g. "Vim"
+
+                    if line_base_name in patch_functions:
+                        patch_function = patch_functions[line_base_name]
+                        modified_line_value = patch_function(section, line_name, line_value)
+                        modified_line = f"{line_name}={modified_line_value}"
+
+                lines.append(modified_line)
+        self.write_lines(destination_file_path, lines, file_type=FileType.ConfigFile)

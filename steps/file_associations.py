@@ -1,7 +1,6 @@
 from steps.step import Step
 from utils import command
 from utils.log import log
-from utils.dot_desktop_file import patch_dot_desktop_file
 import os
 
 
@@ -14,7 +13,7 @@ class FileAssociationsStep(Step):
         self._setup_associations()
 
     def _create_terminal_vim_desktop_file(self):
-        patch_dot_desktop_file(
+        self._file_writer.patch_dot_desktop_file(
             "vim.desktop",
             "terminal_vim.desktop",
             {

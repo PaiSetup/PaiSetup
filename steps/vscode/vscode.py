@@ -1,7 +1,6 @@
 from steps.step import Step
 from utils import command
 from utils.log import log, LogIndent
-from utils.dot_desktop_file import patch_dot_desktop_file
 from pathlib import Path
 
 
@@ -90,7 +89,7 @@ class VscodeStep(Step):
             return False
 
     def _create_terminal_vim_desktop_file(self):
-        patch_dot_desktop_file(
+        self._file_writer.patch_dot_desktop_file(
             "code-oss.desktop",
             "code_new_window.desktop",
             {
