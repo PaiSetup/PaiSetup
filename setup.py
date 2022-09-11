@@ -25,6 +25,7 @@ from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
+from steps.main_machine_folders import MainMachineFolders
 from steps.charon import CharonStep
 from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep
@@ -105,6 +106,7 @@ if args.mode == SetupMode.main:
         CharonStep(build_dir, fetch_git=args.fetch),
         PicardStep(),
         NotesStep(fetch_git=args.fetch),
+        MainMachineFolders(),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that

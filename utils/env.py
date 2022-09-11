@@ -22,7 +22,10 @@ class EnvManager:
             os.environ[name] = str(value)
 
     def get(self, name):
-        return self._map[name]
+        if name in self._map:
+            return self._map[name]
+        else:
+            return os.environ[name]
 
     def home(self):
         return self.get("HOME")

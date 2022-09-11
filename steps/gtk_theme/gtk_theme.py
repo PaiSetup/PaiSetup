@@ -2,7 +2,7 @@ from steps.step import Step
 from utils import command
 from utils.log import log, LogIndent
 from pathlib import Path
-from utils.file_writer import FileType
+from utils.file_writer import FileType, FileWriter
 import os
 import shutil
 
@@ -14,6 +14,11 @@ class GtkThemeStep(Step):
         self.icon_theme_name = "LinuxSetupTheme"
         self.regenerate_emblems = regenerate_emblems
 
+        self._emblems = {}
+        self.set_folder_icon("Desktop", "desktop")
+        self.set_folder_icon("Downloads", "downloads")
+        self.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
+
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "layan-gtk-theme-git",
@@ -21,6 +26,15 @@ class GtkThemeStep(Step):
             "sensual-breeze-icons-git",
             "lxappearance",  # not stricly needed, but useful when checking gtk themes
         )
+
+    def set_folder_icon(self, path, icon_name, **kwargs):
+        path = Path(path)
+        if path in self._emblems:
+            raise ValueError(f"There already exists an icon for {path}")
+        self._emblems[path] = icon_name
+
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.set_folder_icon)
 
     def perform(self):
         self._generate_gtk2_theme()
@@ -115,34 +129,12 @@ class GtkThemeStep(Step):
 
     def _assign_emblems(self):
         log("Setting emblems to directories")
-        emblems_map = {
-            self._env.home() / "Desktop": ("desktop", False),
-            self._env.home() / "Downloads": ("downloads", False),
-            self._env.home() / "LinuxSetup": ("linux_setup", False),
-            self._env.home() / "Multimedia": ("multimedia", False),
-            self._env.home() / "Multimedia/Avatars": ("avatars", False),
-            self._env.home() / "Multimedia/FreestyleFootball": ("football", False),
-            self._env.home() / "Multimedia/FretSaw": ("fretsaw", False),
-            self._env.home() / "Multimedia/Funny": ("funny", False),
-            self._env.home() / "Multimedia/Icons": ("icons", False),
-            self._env.home() / "Multimedia/Microscope": ("microscope", False),
-            self._env.home() / "Multimedia/Movies": ("movies", False),
-            self._env.home() / "Multimedia/Music": ("music", True),
-            self._env.home() / "Multimedia/MusicToRate": ("music", True),
-            self._env.home() / "Multimedia/TvSeries": ("tv_series", True),
-            self._env.home() / "Multimedia/Wallpapers": ("wallpapers", False),
-            self._env.home() / "Scripts": ("scripts", False),
-            self._env.home() / "Notes": ("notes", False),
-            self._env.home() / "work": ("work", False),
-        }
         with LogIndent():
-            for path, (emblem, create_if_necessary) in emblems_map.items():
-                log_line = f"{path}: {emblem}"
-                if not os.path.isdir(path):
-                    if create_if_necessary:
-                        Path(path).mkdir(parents=True)
-                    else:
-                        log(f"{log_line} (warning: directory does not exists - skipping)")
-                        continue
+            for path, emblem in self._emblems.items():
+                resolved_path = FileWriter.resolve_path(path)
+                log_line = f"{resolved_path}: {emblem}"
+                if not os.path.isdir(resolved_path):
+                    log(f"{log_line} (warning: directory does not exists - skipping)")
+                    continue
                 log(log_line)
-                command.run_command(f'gio set -t stringv {path} metadata::emblems "{emblem}"')
+                command.run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')

@@ -15,6 +15,7 @@ class NotesStep(Step):
         dependency_dispatcher.add_keybindings(
             KeyBinding('t').mod().shift().execute("obsidian e")
         )
+        dependency_dispatcher.set_folder_icon("Notes", "notes")
 
     def perform(self):
         notes_dir = scripts_dir = self._env.home() / "Notes"
