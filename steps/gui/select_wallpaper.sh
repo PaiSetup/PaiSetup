@@ -1,11 +1,13 @@
 #!/bin/sh
 
-do_notify="$2"
-[ -z "$do_notify" ] && do_notify=0
+file_path="$1"
+reset_wm="$2"
+set_wallpaper_with_feh="$3"
+[ -z "$reset_wm" ] && reset_wm=0
+[ -z "$set_wallpaper_with_feh" ] && set_wallpaper_with_feh=0
 
 # Generate theme colors based on the wallpaper
 get_main_colors() (
-    file_path="$1"
     cache_directory="$HOME/.cache/LinuxSetupWallpapers"
     scheme_file_path="$cache_directory/$(basename "$file_path").colorscheme"
 
@@ -26,7 +28,7 @@ get_main_colors() (
     fi
 )
 
-main_colors="$(get_main_colors "$1")"
+main_colors="$(get_main_colors)"
 if [ -n "$main_colors" ]; then
     # Save generated colors to a theme file
     theme_file=~/.config/XresourcesTheme
@@ -40,4 +42,10 @@ else
     echo "Not reloading colors" >&2
 fi
 
-ln -sf "$1" ~/.config/LinuxSetup/wallpaper
+ln -sf "$file_path" ~/.config/LinuxSetup/wallpaper
+if [ "$set_wallpaper_with_feh" != 0 ]; then
+    feh --bg-scale ~/.config/LinuxSetup/wallpaper
+fi
+if [ "$reset_wm" != 0 ]; then
+    $LINUX_SETUP_ROOT/steps/gui/reset_wm.sh
+fi

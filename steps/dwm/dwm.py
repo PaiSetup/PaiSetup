@@ -32,7 +32,7 @@ class DwmStep(GuiStep):
 
         # fmt: off
         self._keybindings = [
-            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/dwm/set_random_wallpaper.sh 0"),
+            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 1 1"),
             KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
             KeyBinding("BackSpace").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/shutdown.sh"),
 
@@ -146,6 +146,11 @@ class DwmStep(GuiStep):
             self._xinitrc_path,
             "Keybindings daemon",
             [f"sxhkd -c ~/{self._sxhkd_config_path} &"],
+        )
+        self._file_writer.write_section(
+            self._xinitrc_path,
+            "Wallpaper",
+            [f"$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 0 1"],
         )
         self._file_writer.write_section(
             self._xinitrc_path,
