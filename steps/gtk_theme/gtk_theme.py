@@ -23,10 +23,13 @@ class GtkThemeStep(Step):
         )
 
     def perform(self):
-        # TODO break this up into smaller methods
+        self._generate_gtk2_theme()
+        self._generate_gtk3_theme()
+        self._generate_icon_theme()
+        self._generate_downsized_emblems([64])
+        self._assign_emblems()
 
-        current_step_dir = Path(__file__).parent
-
+    def _generate_gtk2_theme(self):
         log("Generating gtk 2.0 theme")  # Example application using gtk 2.0 - lxappearance
         self._file_writer.write_lines(
             ".gtkrc-2.0",
@@ -37,6 +40,7 @@ class GtkThemeStep(Step):
             file_type=FileType.ConfigFile,
         )
 
+    def _generate_gtk3_theme(self):
         log("Generating gtk 3.0 theme")  # Example application using gtk 3.0 - Thunar
         self._file_writer.write_lines(
             ".config/gtk-3.0/settings.ini",
@@ -48,8 +52,9 @@ class GtkThemeStep(Step):
             file_type=FileType.ConfigFile,
         )
 
+    def _generate_icon_theme(self):
         icon_theme_directory = self._env.home() / ".local/share/icons" / self.icon_theme_name
-        log(f"Creating icon theme config file in {icon_theme_directory}")
+        log(f"Generating icon theme config file in {icon_theme_directory}")
         self._file_writer.write_lines(
             icon_theme_directory / "index.theme",
             [
@@ -72,17 +77,43 @@ class GtkThemeStep(Step):
             ],
             file_type=FileType.ConfigFile,
         )
-
-        sizes_to_generate = [64]
-        self.generate_downsized_emblems(sizes_to_generate)
-
         log("Linking emblems directories")
-        command.run_command(f"ln -sfT {current_step_dir / 'emblems_64'} {icon_theme_directory / 'emblems_64'}")
+        current_step_dir = Path(__file__).parent
+        command.run_command(f"ln -sfT {current_step_dir / 'emblems_64'} {icon_theme_directory / 'emblems_64'}")  # TODO use FileWriter
         command.run_command(f"ln -sfT {current_step_dir / 'emblems_512'} {icon_theme_directory / 'emblems_512'}")
 
         log("Refreshing icon cache")
         command.run_command("gtk-update-icon-cache")
 
+    def _generate_downsized_emblems(self, sizes_to_generate):
+        original_size = 512
+        original_emblems_dir = Path(__file__).parent / "emblems_512"
+
+        for size_to_generate in sizes_to_generate:
+            scaling_factor = size_to_generate / original_size
+            downsized_emblems_dir = Path(__file__).parent / f"emblems_{size_to_generate}"
+
+            # Skip if any problems encountered or files are already generated
+            if scaling_factor >= 1:
+                log(f"WARNING could not generate emblems for size {size_to_generate} (bigger than original)")
+                continue
+            if scaling_factor * original_size != size_to_generate:
+                log(f"WARNING could not generate emblems for size {size_to_generate} (division not even)")
+                continue
+            if downsized_emblems_dir.exists():
+                if self.regenerate_emblems:
+                    shutil.rmtree(downsized_emblems_dir)
+                else:
+                    return
+
+            # Perform downsizing
+            log(f"Generating {size_to_generate}x{size_to_generate} emblems")
+            downsized_emblems_dir.mkdir()
+            for original_file_path in original_emblems_dir.glob("*"):
+                downsized_file_path = downsized_emblems_dir / original_file_path.name
+                command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
+
+    def _assign_emblems(self):
         log("Setting emblems to directories")
         emblems_map = {
             self._env.home() / "Desktop": ("desktop", False),
@@ -115,31 +146,3 @@ class GtkThemeStep(Step):
                         continue
                 log(log_line)
                 command.run_command(f'gio set -t stringv {path} metadata::emblems "{emblem}"')
-
-    def generate_downsized_emblems(self, sizes_to_generate):
-        original_size = 512
-        original_emblems_dir = current_step_dir = Path(__file__).parent / "emblems_512"
-
-        for size_to_generate in sizes_to_generate:
-            scaling_factor = size_to_generate / original_size
-            downsized_emblems_dir = current_step_dir = Path(__file__).parent / f"emblems_{size_to_generate}"
-
-            # Skip if any problems encountered or files are already generated
-            if scaling_factor >= 1:
-                log(f"WARNING could not generate emblems for size {size_to_generate} (bigger than original)")
-                continue
-            if scaling_factor * original_size != size_to_generate:
-                log(f"WARNING could not generate emblems for size {size_to_generate} (division not even)")
-                continue
-            if downsized_emblems_dir.exists():
-                if self.regenerate_emblems:
-                    shutil.rmtree(downsized_emblems_dir)
-                else:
-                    return
-
-            # Perform downsizing
-            log(f"Generating {size_to_generate}x{size_to_generate} emblems")
-            downsized_emblems_dir.mkdir()
-            for original_file_path in original_emblems_dir.glob("*"):
-                downsized_file_path = downsized_emblems_dir / original_file_path.name
-                command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")

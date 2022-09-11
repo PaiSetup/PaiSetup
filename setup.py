@@ -40,7 +40,7 @@ from steps.xsession import XsessionStep
 class SetupMode(enum.Enum):
     main = "main"  # My main machine
     normie = "normie"  # Setup for beginners
-    normie_plus = "normie_plus"  # Setup for beginners + additional stuff like DWM, so I can comfortably use it as well
+    normie_plus = "normie_plus"  # Setup for beginners + additional stuff like tiling WMs, so I can comfortably use it as well
 
 
 # Retrieve last mode
