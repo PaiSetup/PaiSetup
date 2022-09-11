@@ -93,8 +93,8 @@ class GtkThemeStep(Step):
         )
         log("Linking emblems directories")
         current_step_dir = Path(__file__).parent
-        command.run_command(f"ln -sfT {current_step_dir / 'emblems_64'} {icon_theme_directory / 'emblems_64'}")  # TODO use FileWriter
-        command.run_command(f"ln -sfT {current_step_dir / 'emblems_512'} {icon_theme_directory / 'emblems_512'}")
+        self._file_writer.write_symlink(current_step_dir / "emblems_64", icon_theme_directory / "emblems_64")
+        self._file_writer.write_symlink(current_step_dir / "emblems_512", icon_theme_directory / "emblems_512")
 
         log("Refreshing icon cache")
         command.run_command("gtk-update-icon-cache")
