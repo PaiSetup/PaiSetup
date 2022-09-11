@@ -2,6 +2,7 @@ from steps.step import Step
 from utils import command
 from utils.os_helpers import Pushd
 from utils.log import log
+import utils.external_project as ext
 
 
 class PackagesStep(Step):
@@ -30,7 +31,12 @@ class PackagesStep(Step):
         else:
             log("Downloading yay")
             build_dir = self.root_build_dir / "yay"
-            command.setup_git_repo("https://aur.archlinux.org/yay-git.git", "", build_dir)
+            ext.download(
+                "https://aur.archlinux.org/yay-git.git",
+                "master",
+                build_dir,
+                chmod_needed=False,
+            )
             log("Installing yay")
             with Pushd(build_dir):
                 command.run_command("makepkg -si --noconfirm")
@@ -88,7 +94,7 @@ class PackagesStep(Step):
 
     def list_packages(self, resolve_groups, **kwargs):
         packages = self._get_packages(resolve_groups)
-        packages = '\n'.join(packages)
+        packages = "\n".join(packages)
         print(packages)
 
     def express_dependencies(self, dependency_dispatcher):
@@ -120,7 +126,7 @@ class PackagesStep(Step):
                 "qpdfview",
                 "pdfsam",
                 "zip",
-                "fzf", # fuzzy search
+                "fzf",  # fuzzy search
                 "file-roller",
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
