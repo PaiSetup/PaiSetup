@@ -16,7 +16,7 @@
       mount /dev/sda1 /mnt/efi
       swapon /dev/sda2
       ```
-    - install os and basic tools `pacstrap /mnt base linux linux-firmware git python base-devel`
+    - install os and basic tools `pacstrap /mnt base linux linux-lts linux-firmware git python base-devel`
     - generate fstab
       ```
       genfstab -U /mnt >> /mnt/etc/fstab

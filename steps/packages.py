@@ -100,9 +100,13 @@ class PackagesStep(Step):
                 "grub",
                 "efibootmgr",
                 "linux",
+                "linux-lts",
                 "linux-firmware",
                 "zsh",
                 "bash",
+                # Linux kernels headers (needed for dkms modules)
+                "linux-headers",
+                "linux-lts-headers",
                 # General
                 "consolas-font",
                 "openssh",
