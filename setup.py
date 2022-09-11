@@ -15,6 +15,7 @@ from steps.step import Step
 from steps.dwm.dwm import DwmStep
 from steps.st.st import StStep
 from steps.git import GitStep
+from steps.virtualbox import VirtualBox
 from steps.firefox import FirefoxStep
 from steps.packages import PackagesStep
 from steps.bash_scripts import BashScriptsStep
@@ -107,6 +108,7 @@ if args.mode == SetupMode.main:
         PicardStep(),
         NotesStep(fetch_git=args.fetch),
         MainMachineFolders(),
+        VirtualBox(),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that
