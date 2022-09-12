@@ -15,6 +15,7 @@ class FileType(Enum):
     Lua = 6
     Css = 7
     Javascript = 8
+    Xml = 9
 
     _properties = {
         # fmt: off
@@ -26,6 +27,7 @@ class FileType(Enum):
         Lua:        ("--",   "",    None,               False),
         Css:        ("/*",   " */", None,               False),
         Javascript: ("//",   "",    None,               False),
+        Xml:        ("<!--", "-->", None,               False),
         # fmt: on
     }
 

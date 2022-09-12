@@ -24,6 +24,7 @@ from steps.shell.shell import ShellStep
 from steps.gtk_theme.gtk_theme import GtkThemeStep
 from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
+from steps.thunar import ThunarStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
 from steps.main_machine_folders import MainMachineFolders
@@ -85,6 +86,7 @@ steps = [
     AudioStep(),
     GpuStep(),
     FirefoxStep(is_default_browser=True),
+    ThunarStep(),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [

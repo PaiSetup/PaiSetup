@@ -144,11 +144,6 @@ class PackagesStep(Step):
                 # Multimedia
                 "vlc",
                 "mpv",
-                "thunar",
-                "thunar-archive-plugin",
-                "thunar-media-tags-plugin",
-                "tumbler",  # needed for thumbnails in Thunar
-                "ffmpegthumbnailer",  # needed for video thumbnails in Thunar
                 "nomacs",
                 "libreoffice-still",
                 "feh",
