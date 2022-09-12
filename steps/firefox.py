@@ -6,17 +6,6 @@ from utils.file_writer import FileType
 
 
 class FirefoxStep(Step):
-    """
-    This step installs Mozilla Firefox and gives it a nice theme with transparency.
-
-    We have to install a special css file to the Firefox profile. Because we cannot check it easily, it is set
-    for all profiles. Current profile can be checked under "about:support" address.
-
-    Firefox requires user to explicitly enable parsing the specified css file. Go to "about:config" and enable
-    option "toolkit.legacyUserProfileCustomizations.stylesheets". It would be nice to set this automatically
-    in this step, but I don't think it's possible.
-    """
-
     def __init__(self, is_default_browser):
         super().__init__("Firefox")
         self._is_default_browser = is_default_browser
@@ -45,6 +34,14 @@ class FirefoxStep(Step):
                 file_type=FileType.Css,
             )
 
+            js_file_path = profile_dir / "user.js"
+            log(f"Enabling toolkit.legacyUserProfileCustomizations.stylesheets")
+            self._file_writer.write_lines(
+                js_file_path,
+                [f'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);'],
+                file_type=FileType.Javascript,
+            )
+
     def _get_profile_directories(self):
         root = Path("/home/maciej/.mozilla/firefox/")
         result = []
@@ -57,42 +54,42 @@ class FirefoxStep(Step):
         return r"""
 /* Everything but the page content */
 window, #main-window, #toolbar-menubar, #TabsToolbar, #PersonalToolbar, #navigator-toolbox,#sidebar-box{
-  background-color: rgba(49, 49, 58 , 0.5) !important;
-  -moz-appearance: none !important;
-  background-image: none !important;
+    background-color: rgba(49, 49, 58 , 0.5) !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
 }
 
 /* Background around "Go back", "Go forward", "Refresh", "Home" buttons, the url bar the addons, etc.*/
 window, #nav-bar{
-  background: rgba(67, 67, 74 , 0.5) !important;
-  -moz-appearance: none !important;
-  background-image: none !important;
+    background: rgba(67, 67, 74 , 0.5) !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
 }
 
 /* Tabs */
 .tab-background[selected="true"] {
-  background: rgba(82, 82, 88, 0.5) !important;
-  -moz-appearance: none !important;
-  background-image: none !important;
-  border-radius: 30px !important;
+    background: rgba(82, 82, 88, 0.5) !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+    border-radius: 30px !important;
 }
 tab.tabbrowser-tab:hover > stack > .tab-background {
-  border-radius: 30px !important;
+    border-radius: 30px !important;
 }
 
 /* Shows up after clicking on url and seeing the suggestions */
 #urlbar:not([open]) > #urlbar-background {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 #urlbar[open] > #urlbar-background {
-  background-color: rgba(70, 70, 76, 0.99) !important;
+    background-color: rgba(70, 70, 76, 0.99) !important;
 }
 
 :root{
-  background-color: transparent !important
+    background-color: transparent !important
 }
 
 #main-window, #tabbrowser-tabpanels {
-  background-color: rgba(50, 50, 50, 0.5) !important
+    background-color: rgba(50, 50, 50, 0.5) !important
 }
 """

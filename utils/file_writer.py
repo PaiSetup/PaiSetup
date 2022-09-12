@@ -14,6 +14,7 @@ class FileType(Enum):
     ConfigFile = 5
     Lua = 6
     Css = 7
+    Javascript = 8
 
     _properties = {
         # fmt: off
@@ -24,6 +25,7 @@ class FileType(Enum):
         ConfigFile: ("#",    "",    None,               False),
         Lua:        ("--",   "",    None,               False),
         Css:        ("/*",   " */", None,               False),
+        Javascript: ("//",   "",    None,               False),
         # fmt: on
     }
 
