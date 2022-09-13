@@ -49,6 +49,19 @@ local function min_width(arg, width)
     }
 end
 
+local function max_width(arg, width)
+    return {
+        widget = wibox.container.constraint,
+        arg,
+        strategy = 'max',
+        width = width,
+    }
+end
+
+local function width_between(arg, min, max)
+    return min_width(max_width(arg, max), min)
+end
+
 local alternating_counter = 0
 local function grp(arg)
     if alternating_counter % 2 == 0 then
@@ -74,6 +87,8 @@ return {
     horizontal_margin = horizontal_margin,
     bg = bg,
     min_width = min_width,
+    max_width = max_width,
+    width_between = width_between,
     border = border,
     grp = grp,
 }

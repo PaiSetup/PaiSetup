@@ -193,11 +193,11 @@ awful.screen.connect_for_each_screen(function(s)
                     id     = 'icon_role',
                     widget = wibox.widget.imagebox,
                 }, dpi(6)),
-                widget_wrappers.min_width({
+                widget_wrappers.width_between({
                     widget = wibox.widget.textbox,
                     id     = 'text_role',
                     align  = 'center',
-                }, dpi(500))
+                }, dpi(500), dpi(850))
             }, dpi(10)),
         },
     }
