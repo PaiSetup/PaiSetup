@@ -34,7 +34,7 @@ class VscodeStep(Step):
         extensions.append("vscode-icons-team.vscode-icons")
 
         # C++
-        self._install_extension_github("microsoft", "vscode-cpptools", "cpptools-linux.vsix", "ms-vscode.cpptools")
+        self._install_extension_github(download_dir, "microsoft", "vscode-cpptools", "cpptools-linux.vsix", "ms-vscode.cpptools")
         extensions.append("matepek.vscode-catch2-test-adapter")
         extensions.append("twxs.cmake")
         extensions.append("ms-vscode.cmake-tools")
@@ -58,7 +58,7 @@ class VscodeStep(Step):
         log(f"Installing extensions: {', '.join(extension_names)}")
         command.run_command(f"code {args}")
 
-    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
+    def _install_extension_github(self, download_dir, repo_owner, repo_name, vsix_name, extension_name):
         """
         This function is for a handful of extension which are not downloadable by vscode OSS (or vscodium)
         command, because Microsoft says so. So we have to manually pull the .vsix from the web and install
