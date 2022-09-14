@@ -60,7 +60,7 @@ local function script_widget(name, buttons, timeout, initial_text)
 end
 
 local _shutdown_popup_data = nil
-local function shutdown_popup()
+local function shutdown_popup(linux_setup_root, terminal)
     -- Create the popup and all its data, if this is the first time we call it
     if _shutdown_popup_data == nil then
         local function create_button(icon, caption, callback)
@@ -116,10 +116,17 @@ local function shutdown_popup()
         _shutdown_popup_data = {}
         _shutdown_popup_data.selection = 0
         _shutdown_popup_data.buttons = {
-            create_button("", "Cancel",   function()                               end),
-            create_button("", "Shutdown", function() awful.spawn("shutdown now")   end),
-            create_button("", "Reboot",   function() awful.spawn("reboot")         end),
-            create_button("", "Exit GUI", function() awful.spawn("pkill awesome")  end),
+            create_button("", "Cancel",              function()                               end),
+            create_button("", "Shutdown",            function() awful.spawn("shutdown now")   end),
+            create_button("", "Update and shutdown", function()
+                update_command = terminal .. " sh -c '$LINUX_SETUP_ROOT/steps/gui/update_packages.sh 0'"
+                time_before_shutdown = 3 -- not really needed, but it doesn't hurt
+                awful.spawn.easy_async_with_shell(update_command, function()
+                    gears.timer.start_new(time_before_shutdown, function() awful.spawn("shutdown now") end)
+                end)
+            end),
+            create_button("", "Reboot",              function() awful.spawn("reboot")         end),
+            create_button("", "Exit GUI",            function() awful.spawn("pkill awesome")  end),
         }
         _shutdown_popup_data.selected_caption = create_selected_caption()
         _shutdown_popup_data.refresh = function(self)

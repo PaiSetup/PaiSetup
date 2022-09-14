@@ -19,12 +19,7 @@ if [ "$BUTTON" = "$BUTTON_INFO" ]; then
 fi
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
-    command="$command echo '[1/4] Installing new packages' ; sudo pacman -Syu ;"
-    command="$command echo '[2/4] Removing orphans'        ; pacman -Qtdq | sudo pacman -Rns - ;"
-    command="$command echo '[3/4] Clearing pacman cache'   ; sudo pacman -Sc --noconfirm ;"
-    command="$command echo '[4/4] Clearing yay cache'      ; yay -Sc --noconfirm ;"
-    command="$command                                        pkill -RTMIN+13 dwmblocks ;"
-    command="$command  printf \"\n\e[48;5;28m\" ; read -p \"All done. Press enter to close this window...\" foo"
+    command="$LINUX_SETUP_ROOT/steps/gui/update_packages.sh 1"
     $TERMINAL sh -c "$command" >/dev/null 2>&1 &
 fi
 
