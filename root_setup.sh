@@ -36,6 +36,3 @@ pacman -Syu --noconfirm sudo
 groupadd sudo
 usermod -aG sudo $USERNAME
 printf '\n# Allow sudoers to use sudo without password\n%%sudo ALL=(ALL) NOPASSWD: ALL\n' | sudo EDITOR='tee -a' visudo
-
-echo "Switching to user $USERNAME"
-su -l $USERNAME

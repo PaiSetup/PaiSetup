@@ -2,7 +2,10 @@
   - Boot in UEFI mode
   - Install system according to https://wiki.archlinux.org/title/installation_guide and https://wiki.archlinux.org/title/GRUB#UEFI_systems
     - disregard all locales, keyboard configs, clocks, etc. They will be setup by the scripts
-    - partition the drive
+    - partition the drive (`fdisk /dev/sda`)
+      - EFI partition: 512MB, type *EFI System* (1)
+      - Swap partition: 4-8GB, type *Linux Swap* (19)
+      - Root partition: Minimum 15GB, type *Linux root x86-64* (23)
     - format partitions:
       ```
       mkfs.fat -F32 /dev/sda1
@@ -29,8 +32,11 @@
         LinuxSetup/grub_setup.sh
         LinuxSetup/root_setup.sh
         rm -rf LinuxSetup
+        rm -rf LinuxSetup
+        exit
+        reboot
         ```
-    - If everything went correctly, you should be logged in as a normal user, not root. You can now reboot.
+    - Machine should reboot and enter GRUB, which should boot the Arch Linux and allow you to login as user
   - User-level configuration
     - Log in as user
     - run commands
