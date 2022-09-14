@@ -45,9 +45,10 @@ class FirefoxStep(Step):
     def _get_profile_directories(self):
         root = Path("/home/maciej/.mozilla/firefox/")
         result = []
-        for child in root.iterdir():
-            if "default-release" in child.name:
-                result.append(child)
+        if root.is_dir():
+            for child in root.iterdir():
+                if "default-release" in child.name:
+                    result.append(child)
         return result
 
     def get_css_content(self):
