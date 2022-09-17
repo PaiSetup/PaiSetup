@@ -109,13 +109,15 @@ class PackagesStep(Step):
                 "linux-firmware",
                 "zsh",
                 "bash",
+                "update-grub",
+                "grub-theme-vimix-very-dark-blue",
+                "os-prober",
                 # Linux kernels headers (needed for dkms modules)
                 "linux-headers",
                 "linux-lts-headers",
                 # General
                 "consolas-font",
                 "openssh",
-                "update-grub",
                 "yay-git",
                 "dash-static-musl",
                 "qbittorrent",
