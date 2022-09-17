@@ -36,18 +36,13 @@ class GuiStep(Step):
             "nitrogen",
             "picom-ibhagwan-git",
             "ulauncher",
-            "libxft-bgra",
+            "libxft",
             "xorg-setxkbmap",
             "yad",
             "flameshot",
             "pacman-contrib",  # for checkupdates
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
-        )
-        dependency_dispatcher.add_assumed_packages(
-            [
-                "libxft=2.3.3",  # Some packages have this as a dependency, but we actually need libxft-bgra
-            ]
         )
 
         dependency_dispatcher.add_keybindings(
