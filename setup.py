@@ -91,11 +91,11 @@ steps = [
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
         XsessionStep(),
+        GitStep(),
         DwmStep(build_dir, fetch_git=False, is_default_wm=False),
         AwesomeStep(build_dir, fetch_git=False, is_default_wm=True),
         StStep(build_dir, fetch_git=False),
         BashScriptsStep(fetch_git=args.fetch),
-        GitStep(),
         VscodeStep(build_dir),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
