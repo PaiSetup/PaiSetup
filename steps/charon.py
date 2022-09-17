@@ -19,7 +19,7 @@ class CharonStep(Step):
     def perform(self):
         # Compile Charon
         ext.download(
-            "git@github.com:DziubanMaciej/Charon.git",
+            "https://github.com/DziubanMaciej/Charon.git",
             "b23facc",
             self.charon_dir,
             has_submodules=True,
