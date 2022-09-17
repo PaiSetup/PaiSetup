@@ -10,7 +10,7 @@ import shutil
 class GtkThemeStep(Step):
     def __init__(self, *, regenerate_emblems):
         super().__init__("GtkTheme")
-        self.widget_theme_name = "Layan-dark"
+        self.widget_theme_name = "Layan-Dark"
         self.icon_theme_name = "LinuxSetupTheme"
         self.regenerate_emblems = regenerate_emblems
 
