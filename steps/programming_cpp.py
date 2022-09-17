@@ -28,7 +28,7 @@ class ProgrammingCppStep(Step):
                 "vulkan-devel",
                 "glm",
                 "glfw-x11",
-                "renderdoc",
+                "renderdoc-bin",
             )
 
     def perform(self):
