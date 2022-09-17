@@ -14,7 +14,10 @@ class VscodeStep(Step):
 
     def perform(self):
         self._symlink_settings()
-        self._install_extensions()
+        if len(self._env.get("DISPLAY")) > 0:
+            self._install_extensions()
+        else:
+            log("Skipping extensions installation (no graphical display)")
         self._create_terminal_vim_desktop_file()
 
     def _symlink_settings(self):

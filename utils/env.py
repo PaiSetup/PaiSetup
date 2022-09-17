@@ -11,6 +11,10 @@ class EnvManager:
         self._map = {}
         self.set("HOME", os.environ["HOME"], setenv=False, is_path=True)
         self.set("USER", os.environ["USER"], setenv=False, is_path=False)
+        if "DISPLAY" in os.environ:
+            self.set("DISPLAY", os.environ["DISPLAY"], setenv=False, is_path=False)
+        else:
+            self.set("DISPLAY", "", setenv=False, is_path=False)
         self.set("LINUX_SETUP_ROOT", root_dir, is_path=True)
 
     def set(self, name, value, setenv=True, is_path=False):
