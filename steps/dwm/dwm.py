@@ -84,7 +84,7 @@ class DwmStep(GuiStep):
     def _compile_projects(self):
         dwm_dir = self.root_build_dir / "dwm"
         ext.download(
-            "git://git.suckless.org/dwm",
+            "https://git.suckless.org/dwm",
             "6.2",
             dwm_dir,
             fetch=self.fetch_git,
