@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 if [ "$(id -u)" -ne 0 ]; then
-   echo "This script must be run as root" 
+   echo "This script must be run as root"
    exit 1
 fi
 
@@ -36,3 +36,6 @@ pacman -Syu --noconfirm sudo
 groupadd sudo
 usermod -aG sudo $USERNAME
 printf '\n# Allow sudoers to use sudo without password\n%%sudo ALL=(ALL) NOPASSWD: ALL\n' | sudo EDITOR='tee -a' visudo
+
+echo "Enabling multilib in pacman.conf" # Needed for graphics related stuff (drivers, Steam)
+printf "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist\n" >> /etc/pacman.conf

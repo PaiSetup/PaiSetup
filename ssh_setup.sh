@@ -4,6 +4,9 @@ if [ "$(id -u)" -eq 0 ]; then
    exit 1
 fi
 
+# Download ssh
+sudo pacman -S openssh
+
 # Get parameters
 ssh_key_path="$1"
 user_name="$2"

@@ -14,7 +14,7 @@
       ```
     - mount partitions and enable swap
       ```
-      mount /dev/sda3 /mnt`
+      mount /dev/sda3 /mnt
       mkdir /mnt/efi
       mount /dev/sda1 /mnt/efi
       swapon /dev/sda2
@@ -29,9 +29,8 @@
     - Run commands
         ```
         git clone https://github.com/InternalMD/LinuxSetup
-        LinuxSetup/grub_setup.sh
         LinuxSetup/root_setup.sh
-        rm -rf LinuxSetup
+        LinuxSetup/grub_setup.sh
         rm -rf LinuxSetup
         exit
         reboot
@@ -42,11 +41,12 @@
     - run commands
         ```
         git clone https://github.com/InternalMD/LinuxSetup
-        LinuxSetup/ssh_setup.sh
+        LinuxSetup/ssh_setup.sh <private_key_path> <git_user_name>
         LinuxSetup/setup.py
         ```
     - Reboot
     - OS should boot into graphical interface
+    - Run `setup.py` one more time. Some configuration (e.g. VSCode extensions) can be done only in graphical environment.
   - Manual configuration
     - Automatic mounts in `/etc/fstab`
     - MEGA
