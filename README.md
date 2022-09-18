@@ -51,11 +51,11 @@
     - Automatic mounts in `/etc/fstab`
     - MEGA
       - Sync exclusions:
-        - */home/maciej/Multimedia/Movies*
-        - */home/maciej/Multimedia/Music*
-        - */home/maciej/Multimedia/MusicToRate*
-        - */home/maciej/Multimedia/TvSeries*
+        - */home/maciej/multimedia/Movies*
+        - */home/maciej/multimedia/Music*
+        - */home/maciej/multimedia/MusicToRate*
+        - */home/maciej/multimedia/TvSeries*
       - Syncs:
-        - */home/maciej/Multimedia* <-> *Backup/Multimedia*
+        - */home/maciej/multimedia* <-> *Backup/multimedia*
 
 WARNING: only `setup.py` script can be run multiple times safely. Running other `.sh` scripts repeatedly can have unforseen consequences.

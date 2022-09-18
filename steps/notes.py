@@ -9,7 +9,7 @@ class NotesStep(Step):
     def __init__(self, fetch_git):
         super().__init__("notes")
         self.fetch_git = fetch_git
-        self._notes_dir = scripts_dir = self._env.home() / "Notes"
+        self._notes_dir = scripts_dir = self._env.home() / "notes"
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")

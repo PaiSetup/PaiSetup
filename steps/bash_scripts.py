@@ -7,7 +7,7 @@ from pathlib import Path
 class BashScriptsStep(Step):
     def __init__(self, fetch_git):
         super().__init__("BashScripts")
-        self._scripts_root_dir = self._env.home() / "Scripts"
+        self._scripts_root_dir = self._env.home() / "scripts"
         self._scripts_path = self._scripts_root_dir / "BashUtils"
         self.fetch_git = fetch_git
 

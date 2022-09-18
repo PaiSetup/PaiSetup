@@ -15,8 +15,8 @@ class GtkThemeStep(Step):
         self.regenerate_emblems = regenerate_emblems
 
         self._emblems = {}
-        self.set_folder_icon("Desktop", "desktop")
-        self.set_folder_icon("Downloads", "downloads")
+        self.set_folder_icon("desktop", "desktop")
+        self.set_folder_icon("downloads", "downloads")
         self.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
 
     def express_dependencies(self, dependency_dispatcher):

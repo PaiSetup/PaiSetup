@@ -14,7 +14,7 @@ ffmpeg_log_file="$cache_dir/ffmpeg_log"
 ffmpeg_pid_file="$cache_dir/ffmpeg_pid"
 virtual_sink_name="VirtualRecordingSink"
 virtual_source_name="$virtual_sink_name.monitor"
-output_file=~/Downloads/recording.mp4
+output_file=~/downloads/recording.mp4
 
 failure() {
     notify-send "Error occurred" "$1"
