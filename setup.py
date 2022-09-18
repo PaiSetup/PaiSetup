@@ -86,7 +86,7 @@ steps = [
     AudioStep(),
     GpuStep(),
     FirefoxStep(is_default_browser=True),
-    ThunarStep(),
+    ThunarStep(is_main_machine=args.mode == SetupMode.main),
     HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:

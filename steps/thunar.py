@@ -3,8 +3,9 @@ from utils.file_writer import FileType
 
 
 class ThunarStep(Step):
-    def __init__(self):
+    def __init__(self, is_main_machine):
         super().__init__("Thunar")
+        self._is_main_machine = is_main_machine
         self.disable_suspending_command = ""
 
     def express_dependencies(self, dependency_dispatcher):
@@ -17,13 +18,32 @@ class ThunarStep(Step):
         )
 
     def perform(self):
+        self._setup_bookmarks()
         self._file_writer.write_lines(
             ".config/Thunar/uca.xml",
-            [self.get_uca_xml_contents()],
+            [self._get_uca_xml_contents()],
             file_type=FileType.Xml,
         )
 
-    def get_uca_xml_contents(self):
+    def _setup_bookmarks(self):
+        dirs = [
+            (self._env.home() / "downloads", "Downloads"),
+            (self._env.get("LINUX_SETUP_ROOT"), "Linux Setup"),
+        ]
+        if self._is_main_machine:
+            dirs += [
+                (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
+                (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
+            ]
+        dirs = [f"file:///{path} {name}" for path, name in dirs]
+
+        self._file_writer.write_lines(
+            ".config/gtk-3.0/bookmarks",
+            dirs,
+            file_type=FileType.ConfigFileNoComments,
+        )
+
+    def _get_uca_xml_contents(self):
         return """
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>

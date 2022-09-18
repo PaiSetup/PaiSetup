@@ -12,22 +12,24 @@ class FileType(Enum):
     Bash = 3
     Json = 4
     ConfigFile = 5
-    Lua = 6
-    Css = 7
-    Javascript = 8
-    Xml = 9
+    ConfigFileNoComments = 6
+    Lua = 7
+    Css = 8
+    Javascript = 9
+    Xml = 10
 
     _properties = {
         # fmt: off
-        PosixShell: ("#",    "",    "#!/usr/bin/sh",    True),
-        XResources: ("!",    "",    None,               False),
-        Bash:       ("#",    "",    "#!/usr/bin/bash",  False),
-        Json:       (None,   "",    None,               False),
-        ConfigFile: ("#",    "",    None,               False),
-        Lua:        ("--",   "",    None,               False),
-        Css:        ("/*",   " */", None,               False),
-        Javascript: ("//",   "",    None,               False),
-        Xml:        ("<!--", "-->", None,               False),
+        PosixShell:           ("#",    "",    "#!/usr/bin/sh",    True),
+        XResources:           ("!",    "",    None,               False),
+        Bash:                 ("#",    "",    "#!/usr/bin/bash",  False),
+        Json:                 (None,   "",    None,               False),
+        ConfigFile:           ("#",    "",    None,               False),
+        ConfigFileNoComments: (None,   "",    None,               False),
+        Lua:                  ("--",   "",    None,               False),
+        Css:                  ("/*",   " */", None,               False),
+        Javascript:           ("//",   "",    None,               False),
+        Xml:                  ("<!--", "-->", None,               False),
         # fmt: on
     }
 
