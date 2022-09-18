@@ -22,6 +22,7 @@ class GuiStep(Step):
         self._setup_xinitrc_base()
         self._setup_xresources_theme()
         self._setup_ulauncher_config()
+        self._file_writer.remove_file(".cache/LinuxSetupWallpapers/directories")
 
     def express_dependencies(self, dependency_dispatcher):
         global express_dependencies_called
