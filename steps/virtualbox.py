@@ -6,7 +6,7 @@ from utils.log import log, LogIndent
 class VirtualBox(Step):
     def __init__(self):
         super().__init__("VirtualBox")
-        self._vm_dir = self._env.home() / "VM"
+        self._vm_dir = self._env.home() / "vm"
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
