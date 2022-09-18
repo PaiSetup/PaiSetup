@@ -27,7 +27,7 @@ from steps.lightdm.lightdm import LightDmStep
 from steps.thunar import ThunarStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
-from steps.home_directory import HomeDirectoryStep
+from steps.home_directory.home_directory import HomeDirectoryStep
 from steps.charon import CharonStep
 from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep

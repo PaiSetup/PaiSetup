@@ -1,4 +1,5 @@
 from steps.step import Step
+from pathlib import Path
 import os
 from utils.log import log, LogIndent
 from utils import command
@@ -16,8 +17,12 @@ class HomeDirectoryStep(Step):
 
         dependency_dispatcher.set_folder_icon("desktop", "desktop")
         dependency_dispatcher.set_folder_icon("downloads", "downloads")
+        dependency_dispatcher.set_folder_icon("mounts", "mounts")
         dependency_dispatcher.set_folder_icon(self._work_dir, "work")
         dependency_dispatcher.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
+
+        bgchecker_script = Path(__file__).parent / "setup_mount_dir.sh"
+        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 3)
 
         if self._is_main_machine:
             multimedia_dir = self._env.home() / "multimedia"
