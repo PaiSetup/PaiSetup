@@ -58,4 +58,5 @@
       - Syncs:
         - */home/maciej/multimedia* <-> *Backup/multimedia*
 
-WARNING: only `setup.py` script can be run multiple times safely. Running other `.sh` scripts repeatedly can have unforseen consequences.
+NOTE: only `setup.py` script can be run multiple times safely. Running other `.sh` scripts repeatedly can have unforseen consequences.
+NOTE: Audio may not work on first boot, due to some drivers not being enabled. Maybe I could enable them with modprobe, but it's just easier to reboot.
