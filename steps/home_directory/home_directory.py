@@ -9,7 +9,7 @@ class HomeDirectoryStep(Step):
     def __init__(self, is_main_machine):
         super().__init__("HomeDirectory")
         self._is_main_machine = is_main_machine
-
+        self._multimedia_dir = self._env.home() / "multimedia"
         self._work_dir = self._env.home() / "work"
 
     def express_dependencies(self, dependency_dispatcher):
@@ -25,24 +25,34 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.register_bgchecker_script(bgchecker_script, 3)
 
         if self._is_main_machine:
-            multimedia_dir = self._env.home() / "multimedia"
-            dependency_dispatcher.set_folder_icon(multimedia_dir, "multimedia")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "avatars", "avatars")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "freestyle_football", "football")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "fret_saw", "fretsaw")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "funny", "funny")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "icons", "icons")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "microscope", "microscope")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "movies", "movies")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "music", "music")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "music_to_rate", "music")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "tv_series", "tv_series")
-            dependency_dispatcher.set_folder_icon(multimedia_dir / "wallpapers", "wallpapers")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir, "multimedia")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "avatars", "avatars")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "freestyle_football", "football")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "fret_saw", "fretsaw")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "funny", "funny")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "icons", "icons")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "microscope", "microscope")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "movies", "movies")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "music", "music")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "music_to_rate", "music")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "tv_series", "tv_series")
+            dependency_dispatcher.set_folder_icon(self._multimedia_dir / "wallpapers", "wallpapers")
 
     def perform(self):
-        self._work_dir.mkdir(parents=True, exist_ok=True)
+        self._create_directories()
         self._cleanup_existing_xdg_dirs()
         self._setup_xdg_paths()
+
+    def _create_directories(self):
+        self._work_dir.mkdir(parents=True, exist_ok=True)
+
+        if self._is_main_machine and self._multimedia_dir.exists():
+            # These directories are excluded from sync and we'll create them manually
+            (self._multimedia_dir / "movies").mkdir(exist_ok=True)
+            (self._multimedia_dir / "music").mkdir(exist_ok=True)
+            (self._multimedia_dir / "music_to_rate").mkdir(exist_ok=True)
+            (self._multimedia_dir / "tv_series").mkdir(exist_ok=True)
+
 
     def _cleanup_existing_xdg_dirs(self):
         with LogIndent("Making sure existing XDG dirs are ok"):
