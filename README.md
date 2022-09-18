@@ -51,10 +51,10 @@
     - Automatic mounts in `/etc/fstab`
     - MEGA
       - Sync exclusions:
-        - */home/maciej/multimedia/Movies*
-        - */home/maciej/multimedia/Music*
-        - */home/maciej/multimedia/MusicToRate*
-        - */home/maciej/multimedia/TvSeries*
+        - */home/maciej/multimedia/movies*
+        - */home/maciej/multimedia/music*
+        - */home/maciej/multimedia/music_to_rate*
+        - */home/maciej/multimedia/tv_series*
       - Syncs:
         - */home/maciej/multimedia* <-> *Backup/multimedia*
 
