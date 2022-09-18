@@ -27,7 +27,7 @@ from steps.lightdm.lightdm import LightDmStep
 from steps.thunar import ThunarStep
 from steps.audio import AudioStep
 from steps.gpu import GpuStep
-from steps.main_machine_folders import MainMachineFolders
+from steps.home_directory import HomeDirectoryStep
 from steps.charon import CharonStep
 from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep
@@ -87,6 +87,7 @@ steps = [
     GpuStep(),
     FirefoxStep(is_default_browser=True),
     ThunarStep(),
+    HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
@@ -109,7 +110,6 @@ if args.mode == SetupMode.main:
         CharonStep(build_dir, fetch_git=args.fetch),
         PicardStep(),
         NotesStep(fetch_git=args.fetch),
-        MainMachineFolders(),
         VirtualBox(),
     ]
 if args.mode == SetupMode.normie:

@@ -13,7 +13,12 @@ def update_indent(new_indent_level):
 
 
 class LogIndent:
+    def __init__(self, message=None):
+        self._message = message
+
     def __enter__(self):
+        if self._message is not None:
+            log(self._message)
         update_indent(indent_level + 1)
         return self
 

@@ -13,11 +13,7 @@ class GtkThemeStep(Step):
         self.widget_theme_name = "Layan-Dark"
         self.icon_theme_name = "LinuxSetupTheme"
         self.regenerate_emblems = regenerate_emblems
-
         self._emblems = {}
-        self.set_folder_icon("desktop", "desktop")
-        self.set_folder_icon("downloads", "downloads")
-        self.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -134,7 +130,7 @@ class GtkThemeStep(Step):
                 resolved_path = FileWriter.resolve_path(path)
                 log_line = f"{resolved_path}: {emblem}"
                 if not os.path.isdir(resolved_path):
-                    log(f"{log_line} (warning: directory does not exists - skipping)")
+                    log(f"{log_line} (warning: directory does not exist - skipping)")
                     continue
                 log(log_line)
                 command.run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
