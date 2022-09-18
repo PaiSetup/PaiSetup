@@ -45,6 +45,7 @@ class HomeDirectoryStep(Step):
 
     def _create_directories(self):
         self._work_dir.mkdir(parents=True, exist_ok=True)
+        (self._env.home() / ".log").mkdir(exist_ok=True)
 
         if self._is_main_machine and self._multimedia_dir.exists():
             # These directories are excluded from sync and we'll create them manually
