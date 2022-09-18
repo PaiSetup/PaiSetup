@@ -4,11 +4,6 @@ if [ "$(id -u)" -ne 0 ]; then
    exit 1
 fi
 
-echo "Configuring time"
-timedatectl set-ntp true
-ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
-hwclock --systohc
-
 echo "Setting up locales"
 echo "pl_PL.UTF-8 UTF-8" >> /etc/locale.gen
 echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen
@@ -25,6 +20,11 @@ echo "Creating user: $USERNAME"
 useradd -m $USERNAME
 passwd $USERNAME
 usermod -aG tty $USERNAME
+
+echo "Configuring time"
+echo "timedatectl set-ntp true" >> /home/maciej/.profile # Sometimes timedatectl doesn't work in arch install, so this is a hack to run it after reboot
+ln -s /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
+hwclock --systohc
 
 echo "Setting up network"
 pacman -Syu --noconfirm networkmanager
