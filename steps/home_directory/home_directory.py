@@ -43,6 +43,12 @@ class HomeDirectoryStep(Step):
         self._cleanup_existing_xdg_dirs()
         self._setup_xdg_paths()
 
+        self._file_writer.write_section(
+            ".profile",
+            "Path to directory for working projects",
+            ["export PROJECT_DIR=$HOME/work"],
+        )
+
     def _create_directories(self):
         self._work_dir.mkdir(parents=True, exist_ok=True)
         (self._env.home() / ".log").mkdir(exist_ok=True)
@@ -53,7 +59,6 @@ class HomeDirectoryStep(Step):
             (self._multimedia_dir / "music").mkdir(exist_ok=True)
             (self._multimedia_dir / "music_to_rate").mkdir(exist_ok=True)
             (self._multimedia_dir / "tv_series").mkdir(exist_ok=True)
-
 
     def _cleanup_existing_xdg_dirs(self):
         with LogIndent("Making sure existing XDG dirs are ok"):
