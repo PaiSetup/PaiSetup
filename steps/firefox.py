@@ -35,10 +35,13 @@ class FirefoxStep(Step):
             )
 
             js_file_path = profile_dir / "user.js"
-            log(f"Enabling toolkit.legacyUserProfileCustomizations.stylesheets")
+            log(f"Setting up preferences")
             self._file_writer.write_lines(
                 js_file_path,
-                [f'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);'],
+                [
+                    f'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);',
+                    f'user_pref("general.autoScroll", true);',
+                ],
                 file_type=FileType.Javascript,
             )
 
