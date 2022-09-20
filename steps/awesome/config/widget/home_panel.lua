@@ -124,7 +124,7 @@ local function create_repo_widget(linux_setup_root)
         local row = wibox.layout.fixed.horizontal(wrapped_caption_repo, wrapped_caption_branch, wrapped_caption_flag1, wrapped_caption_flag2, wrapped_caption_flag3)
         row.spacing = tile_size * 0.03
         row.set_values = function(self, repo, branch, flag1, flag2, flag3)
-            caption_repo.text = repo
+            caption_repo.text = " " .. repo
             caption_branch.text = branch
             caption_flag1.text = flag1
             wrapped_caption_flag1.visible = flag1 ~= ''
