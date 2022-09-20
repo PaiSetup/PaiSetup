@@ -148,7 +148,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, "", "", "", "", tags.draw, tags.video, tags.music }, s, awful.layout.layouts[1])
 
-    s.myhome_panel = home_panel(tags.music, s)
+    s.myhome_panel = home_panel(tags.music, linux_setup, s)
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     s.mylayoutbox = awful.widget.layoutbox(s)

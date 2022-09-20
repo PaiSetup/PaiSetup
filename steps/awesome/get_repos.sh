@@ -45,8 +45,7 @@ for line in $(find $LINUX_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/*
         flags="$flags unpulled"
     fi
 
+    # Return results
+    path="${path/\/home\/$USER\//~\/}"
     echo "$path $master_branch$flags"
 done
-
-
-git log origin/master..HEAD
