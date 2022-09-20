@@ -40,6 +40,19 @@ local function bg(arg, color)
     }
 end
 
+local function sized_bg(arg, color, width, height)
+    return {
+        layout = wibox.container.background,
+        bg = color,
+        shape = gears.shape.rounded_rect,
+        shape_border_width = beautiful.border_width,
+        shape_border_color = "#000000",
+        forced_width = width,
+        forced_height = height,
+        arg,
+    }
+end
+
 local function min_width(arg, width)
     return {
         widget = wibox.container.constraint,
@@ -86,6 +99,7 @@ return {
     margin = margin,
     horizontal_margin = horizontal_margin,
     bg = bg,
+    sized_bg = sized_bg,
     min_width = min_width,
     max_width = max_width,
     width_between = width_between,
