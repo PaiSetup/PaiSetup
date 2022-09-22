@@ -18,7 +18,7 @@ local naughty = require("naughty")
 local tile_size = dpi(200)
 
 local function wrap_widget(widget, rowspan, colspan)
-    widget = widget_wrappers.margin(widget, tile_size * 0.04)
+    local widget = widget_wrappers.margin(widget, tile_size * 0.04)
     widget = widget_wrappers.sized_bg(widget, beautiful.color_gray_light, colspan * tile_size, rowspan * tile_size)
     widget = wibox.widget(widget)
     return widget
@@ -51,7 +51,7 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
 
     -- Watch widget will call our callback function and pass the results of get_repos.sh script
     -- We will update GUI based on those results
-    widget = awful.widget.watch(command, interval, function (_, stdout)
+    local widget = awful.widget.watch(command, interval, function (_, stdout)
             local line_index = 1
 
             -- Iterate over lines of output
@@ -94,6 +94,59 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
     return wrap_widget(widget, rowspan, colspan)
 end
 
+local function create_arcchart_widget(set_middle_caption_callback, extra_caption_vertical, command, interval)
+    -- Mount point location inside the chart
+    local middle_caption = wibox.widget.textbox()
+    middle_caption.text = ''
+    middle_caption.align = 'center'
+    middle_caption.font = "sans " .. tostring(tile_size * 0.08)
+
+    -- Main chart
+    local chart = wibox.container.arcchart(middle_caption)
+    chart.thickness = tile_size * 0.1
+    chart.bg = beautiful.color_gray_dark
+    chart.colors = { beautiful.color_theme }
+    chart.min_value = 0
+    chart.max_value = 100
+    chart.forced_width = tile_size * 0.5
+    chart.forced_height = tile_size * 0.5
+
+    -- Additional text and a linear layout wrapping it with the chart
+    local extra_caption = wibox.widget.textbox()
+    extra_caption.text = ""
+    extra_caption.font = "sans " .. tostring(tile_size * 0.07)
+    local content = nil
+    if extra_caption_vertical then
+        extra_caption.align = 'center'
+        content = wibox.layout.fixed.vertical (chart, extra_caption)
+    else
+        content = wibox.layout.fixed.horizontal (chart, extra_caption)
+        extra_caption.valign = 'center'
+    end
+    content.spacing = tile_size * 0.1
+
+    -- Watch widget will call our callback passing it the results of the command
+    -- Based on the output we will update the GUI
+    local widget = awful.widget.watch(command, interval, function (_, stdout)
+            -- Get individual components of the output
+            matcher = stdout:gmatch("%S+")
+            value = matcher()
+            value = tonumber(value)
+
+            -- Update GUI
+            if value ~= nil and value >= 0 and value <= 100 then
+                chart.value = value
+            else
+                chart.value = 0
+            end
+
+            set_middle_caption_callback(middle_caption, extra_caption, value)
+        end,
+        content
+    )
+    return widget
+end
+
 ----------------------------------------------------------------------------------- Individual widgets
 
 local function create_disk_usage_widget(mount_point)
@@ -133,7 +186,7 @@ local function create_disk_usage_widget(mount_point)
     -- Watch widget will call our callback passing it the results of df command.
     -- Based on the output we will update the GUI
     local command = "bash -c 'df " .. mount_point .. " --output=used,size,pcent -h | tail +2'"
-    widget = awful.widget.watch(command, 5, function (_, stdout)
+    local widget = awful.widget.watch(command, 5, function (_, stdout)
             -- Get individual components of the output
             matcher = stdout:gmatch("%S+")
             used = matcher()
@@ -218,8 +271,7 @@ local function create_repo_widget(linux_setup_root)
     local interval = 10
     local rowspan = 1
     local colspan = 2
-    local widget = create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
-    return wrap_widget(widget, rowspan, colspan)
+    return create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
 end
 
 local function create_calendar()
@@ -312,7 +364,33 @@ local function create_currency_widget(linux_setup_root)
     local interval = 3600
     local rowspan = 1
     local colspan = 1
-    local widget = create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
+    return create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
+end
+
+local function create_system_usage_widget(linux_setup_root)
+    local interval = 2
+
+    -- CPU widget
+    local set_middle_caption_callback = function(middle_caption, extra_caption, value)
+        middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
+        extra_caption.text = value .. "%"
+    end
+    local command = linux_setup_root .. "/steps/awesome/get_cpu_usage.sh"
+    local cpu_widget = create_arcchart_widget(set_middle_caption_callback, false, command, interval)
+
+    -- Memory widget
+    local set_middle_caption_callback = function(middle_caption, extra_caption, value)
+        middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
+        extra_caption.text = value .. "%"
+    end
+    local command = linux_setup_root .. "/steps/awesome/get_mem_usage.sh"
+    local mem_widget = create_arcchart_widget(set_middle_caption_callback, false, command, interval)
+
+    -- Combine them
+    local widget = wibox.layout.fixed.vertical(cpu_widget, mem_widget)
+    widget.spacing = tile_size * 0.03
+    local rowspan = 1
+    local colspan = 1
     return wrap_widget(widget, rowspan, colspan)
 end
 
@@ -341,11 +419,12 @@ return function(visible_tag, linux_setup_root, screen)
     root_layout.homogeneous = true
     root_layout.forced_height = grid_height
     root_layout.forced_width = grid_width
-    root_layout:add_widget_at(create_disk_usage_widget("/dev/sdb1"),    1, 1,   1, 2)
-    root_layout:add_widget_at(create_disk_usage_widget("/"),            2, 1,   1, 2)
-    root_layout:add_widget_at(create_repo_widget(linux_setup_root),     3, 1,   2, 3)
-    root_layout:add_widget_at(create_currency_widget(linux_setup_root), 1, 3,   1, 1)
-    root_layout:add_widget_at(create_calendar(),                        1, 4,   1, 1)
+    root_layout:add_widget_at(create_disk_usage_widget("/dev/sdb1"),     1, 1,   1, 2)
+    root_layout:add_widget_at(create_disk_usage_widget("/"),             2, 1,   1, 2)
+    root_layout:add_widget_at(create_repo_widget(linux_setup_root),      3, 1,   2, 3)
+    root_layout:add_widget_at(create_currency_widget(linux_setup_root),  1, 3,   1, 1)
+    root_layout:add_widget_at(create_calendar(),                         1, 4,   1, 1)
+    root_layout:add_widget_at(create_system_usage_widget(linux_setup_root), 2, 6,   1, 1)
 
     -- Setup window and embed the grid layout in it
     local widget = wibox {
