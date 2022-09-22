@@ -12,7 +12,7 @@ get_rate() {
         value="$(echo "$result" | cut -c -5)"
     fi
     #echo "$sell->$buy: 1$buy_unit = $value$sell_unit"
-    echo "$buy_unit = $value$sell_unit"
+    echo "1$buy_unit $value$sell_unit"
 }
 get_rate "usd" "$" "pln" "zł"
 get_rate "eur" "€" "pln" "zł"

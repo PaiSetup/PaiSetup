@@ -24,6 +24,15 @@ local function wrap_widget(widget, rowspan, colspan)
     return widget
 end
 
+local function wrap_caption(caption, bg)
+    -- Helper function to wrap text boxes with a couple of containers to make them look prettier
+    caption.valign = 'bottom'
+    caption = widget_wrappers.margin(caption, tile_size * 0.023)
+    caption = widget_wrappers.bg(caption, bg)
+    caption = wibox.widget(caption)
+    return caption
+end
+
 local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, rowspan, colspan)
     -- This function wraps a bash script that is periodically called and its results
     -- are used to populate rows of a vertical layout. It does not know how to create
@@ -154,15 +163,7 @@ local function create_repo_widget(linux_setup_root)
     --    flag1, flag2, flag3 - zero or more warnings about the state of repository
 
     local function create_row()
-        -- Each text field is wrapped with a couple of containers to make it look prettier
         local flag_color = "#c94c4c"
-        local wrap_caption = function(caption, bg)
-            caption.valign = 'bottom'
-            caption = widget_wrappers.margin(caption, tile_size * 0.023)
-            caption = widget_wrappers.bg(caption, bg)
-            caption = wibox.widget(caption)
-            return caption
-        end
 
         -- Prepare textboxes. We have to store both raw textboxes and their wrapped versions,
         -- because we set text on the former, but alter visibility of the latter.
@@ -286,10 +287,26 @@ end
 
 local function create_currency_widget(linux_setup_root)
     local create_row = function()
-        return wibox.widget.textbox()
+        local left_currency = wibox.widget.textbox()
+        local middle_arrow = wibox.widget.textbox()
+        middle_arrow.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
+        middle_arrow.align = 'center'
+        local right_currency = wibox.widget.textbox()
+        local row = wibox.layout.fixed.horizontal(
+            wrap_caption(left_currency, beautiful.color_theme),
+            middle_arrow,
+            wrap_caption(right_currency, beautiful.color_theme)
+        )
+        row.spacing = tile_size * 0.035
+        row = wibox.container.place(row) -- center horizontally
+        row.left_currency = left_currency
+        row.right_currency = right_currency
+        return row
     end
     local update_row = function(row, line)
-        row.text = line
+        matcher = line:gmatch("%S+")
+        row.left_currency.text = matcher()
+        row.right_currency.text = matcher()
     end
     local command = linux_setup_root .. "/steps/awesome/get_currency_exchange.sh"
     local interval = 3600
