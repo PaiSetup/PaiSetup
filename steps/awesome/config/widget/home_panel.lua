@@ -24,6 +24,67 @@ local function wrap_widget(widget, rowspan, colspan)
     return widget
 end
 
+local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, rowspan, colspan)
+    -- This function wraps a bash script that is periodically called and its results
+    -- are used to populate rows of a vertical layout. It does not know how to create
+    -- the rows, but uses callbacks specified by the caller. Parameters:
+    --  command (string) - path to script to call periodically
+    --  interval (number) - interval of calling the script in seconds
+    --  create_row_callback - function without parameter returning a widget
+    --  update_row_callback - function taking a widget (result of create_row_callback) and a string (line of script output)
+    --  rowspan, colspan - define size passed to wrap_widget
+
+    -- Root layout. We'll be adding rows to it
+    local vertical = wibox.layout.fixed.vertical()
+    vertical.spacing = tile_size * 0.03
+    vertical.mychild_count = 0 -- my custom field, not a part of AweosomeWM
+    vertical.myrows = {} -- my custom field, not a part of AweosomeWM
+
+    -- Watch widget will call our callback function and pass the results of get_repos.sh script
+    -- We will update GUI based on those results
+    widget = awful.widget.watch(command, interval, function (_, stdout)
+            local line_index = 1
+
+            -- Iterate over lines of output
+            for line in stdout:gmatch("[^\r\n]+") do
+                -- Get row to set
+                local row = nil
+                if line_index > vertical.mychild_count then
+                    -- Create a new row and add it to the view
+                    row = create_row_callback()
+                    vertical:add(row)
+
+                    -- Store the row in our custom fields. It's hard to get these things from AwesomeWM, so we track it manually
+                    vertical.mychild_count = vertical.mychild_count + 1
+                    table.insert(vertical.myrows, row)
+                else
+                    -- Get an existing row
+                    row = vertical.myrows[line_index]
+                end
+
+                -- Set current info from current line to our row and show it
+                update_row_callback(row, line)
+                row.visible = true
+
+                -- Increment iteration variable
+                line_index = line_index + 1
+            end
+
+            -- Iterate over rest of the lines that are created and delete them
+            for i=vertical.mychild_count, line_index, -1 do
+                -- Remove the row from our custom fields
+                table.remove(vertical.myrows, i)
+                vertical.mychild_count = vertical.mychild_count - 1
+
+                -- Remove the row from view
+                vertical:remove(i)
+            end
+        end,
+        vertical
+    )
+    return wrap_widget(widget, rowspan, colspan)
+end
+
 ----------------------------------------------------------------------------------- Individual widgets
 
 local function create_disk_usage_widget(mount_point)
@@ -91,13 +152,9 @@ local function create_repo_widget(linux_setup_root)
     --    repo_path - filesystem path to the repository
     --    master_branch - main branch used by repository ("master" or "main")
     --    flag1, flag2, flag3 - zero or more warnings about the state of repository
-    --
-    -- The widget is coded kind of sloppily and can be improved:
-    --    the existence of maximum 3 flags is hardcoded
-    --    at each update we remove all rows and recreate them
 
-    -- A helper function to create on row representing one git repository
     local function create_row()
+        -- Each text field is wrapped with a couple of containers to make it look prettier
         local flag_color = "#c94c4c"
         local wrap_caption = function(caption, bg)
             caption.valign = 'bottom'
@@ -123,54 +180,45 @@ local function create_repo_widget(linux_setup_root)
         -- Create row
         local row = wibox.layout.fixed.horizontal(wrapped_caption_repo, wrapped_caption_branch, wrapped_caption_flag1, wrapped_caption_flag2, wrapped_caption_flag3)
         row.spacing = tile_size * 0.03
-        row.set_values = function(self, repo, branch, flag1, flag2, flag3)
-            caption_repo.text = " " .. repo
-            caption_branch.text = branch
-            caption_flag1.text = flag1
-            wrapped_caption_flag1.visible = flag1 ~= ''
-            caption_flag2.text = flag2
-            wrapped_caption_flag2.visible = flag2 ~= ''
-            caption_flag3.text = flag3
-            wrapped_caption_flag3.visible = flag3 ~= ''
-        end
+        row.caption_repo = caption_repo
+        row.caption_branch = caption_branch
+        row.caption_flag1 = caption_flag1
+        row.caption_flag2 = caption_flag2
+        row.caption_flag3 = caption_flag3
+        row.wrapped_caption_repo = wrapped_caption_repo
+        row.wrapped_caption_branch = wrapped_caption_branch
+        row.wrapped_caption_flag1 = wrapped_caption_flag1
+        row.wrapped_caption_flag2 = wrapped_caption_flag2
+        row.wrapped_caption_flag3 = wrapped_caption_flag3
         return row
     end
 
-    -- Root layout. We'll be adding rows to it
-    local vertical = wibox.layout.fixed.vertical()
-    vertical.spacing = tile_size * 0.03
-    vertical.mychild_count = 0 -- my custom field, not a part of AweosomeWM
+    local function update_row(row, line)
+        -- Get components of the repository info
+        local matcher = line:gmatch("%S+")
+        local repo_path = matcher()
+        local master_branch = matcher()
+        local flag1 = matcher() or ''
+        local flag2 = matcher() or ''
+        local flag3 = matcher() or ''
 
-    -- Watch widget will call our callback function and pass the results of get_repos.sh script
-    -- We will update GUI based on those results
+        -- Set values to the row
+        row.caption_repo.text = " " .. repo_path
+        row.caption_branch.text = master_branch
+        row.caption_flag1.text = flag1
+        row.wrapped_caption_flag1.visible = flag1 ~= ''
+        row.caption_flag2.text = flag2
+        row.wrapped_caption_flag2.visible = flag2 ~= ''
+        row.caption_flag3.text = flag3
+        row.wrapped_caption_flag3.visible = flag3 ~= ''
+    end
+
     local command = linux_setup_root .. "/steps/awesome/get_repos.sh"
-    widget = awful.widget.watch(command, 10, function (_, stdout)
-            -- Remove all children. This is sloppy...
-            for i=vertical.mychild_count,1,-1 do
-                vertical:remove(i)
-            end
-            vertical.mychild_count = 0
-
-            -- Iterate over lines of output. Each line represents one repository
-            for line in stdout:gmatch("[^\r\n]+") do
-                -- Get components of the repository info
-                local matcher = line:gmatch("%S+")
-                local path = matcher()
-                local master_branch = matcher()
-                local flag1 = matcher() or ''
-                local flag2 = matcher() or ''
-                local flag3 = matcher() or ''
-
-                -- Add the row to GUI
-                local row = create_row()
-                row:set_values(path, master_branch, flag1, flag2, flag3)
-                vertical:add(row)
-                vertical.mychild_count = vertical.mychild_count + 1
-            end
-        end,
-        vertical
-    )
-    return wrap_widget(widget, 1, 2)
+    local interval = 10
+    local rowspan = 1
+    local colspan = 2
+    local widget = create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
+    return wrap_widget(widget, rowspan, colspan)
 end
 
 local function create_calendar()
@@ -236,78 +284,18 @@ local function create_calendar()
     return wrap_widget(widget, 1, 1)
 end
 
-
-
-
-
-
-
-
-
-local function create_line_oriented_script_widget(command, interval, create_row_callback, update_row_callback, rowspan, colspan)
-    -- Root layout. We'll be adding rows to it
-    local vertical = wibox.layout.fixed.vertical()
-    vertical.spacing = tile_size * 0.03
-    vertical.mychild_count = 0 -- my custom field, not a part of AweosomeWM
-    vertical.myrows = {} -- my custom field, not a part of AweosomeWM
-
-    -- Watch widget will call our callback function and pass the results of get_repos.sh script
-    -- We will update GUI based on those results
-    widget = awful.widget.watch(command, interval, function (_, stdout)
-            local line_index = 1
-
-            -- Iterate over lines of output
-            for line in stdout:gmatch("[^\r\n]+") do
-                -- Get row to set
-                local row = nil
-                if line_index > vertical.mychild_count then
-                    -- Create a new row and add it to the view
-                    row = create_row_callback()
-                    vertical:add(row)
-
-                    -- Store the row in our custom fields. It's hard to get these things from AwesomeWM, so we track it manually
-                    vertical.mychild_count = vertical.mychild_count + 1
-                    table.insert(vertical.myrows, row)
-                else
-                    -- Get an existing row
-                    row = vertical.myrows[line_index]
-                end
-
-                -- Set current info from current line to our row and show it
-                update_row_callback(row, line)
-                row.visible = true
-
-                -- Increment iteration variable
-                line_index = line_index + 1
-            end
-
-            -- Iterate over rest of the lines that are created and delete them
-            for i=vertical.mychild_count, line_index, -1 do
-                -- Remove the row from our custom fields
-                table.remove(vertical.myrows, i)
-                vertical.mychild_count = vertical.mychild_count - 1
-
-                -- Remove the row from view
-                vertical:remove(i)
-            end
-        end,
-        vertical
-    )
-    return wrap_widget(widget, rowspan, colspan)
-end
-
 local function create_currency_widget(linux_setup_root)
-    local command = linux_setup_root .. "/steps/awesome/get_currency_exchange.sh"
-    local interval = 3600
     local create_row = function()
         return wibox.widget.textbox()
     end
     local update_row = function(row, line)
         row.text = line
     end
+    local command = linux_setup_root .. "/steps/awesome/get_currency_exchange.sh"
+    local interval = 3600
     local rowspan = 1
     local colspan = 1
-    local widget = create_line_oriented_script_widget(command, interval, create_row, update_row, rowspan, colspan)
+    local widget = create_line_oriented_script_widget(create_row, update_row, command, interval, rowspan, colspan)
     return wrap_widget(widget, rowspan, colspan)
 end
 
