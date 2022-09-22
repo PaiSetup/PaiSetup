@@ -394,6 +394,47 @@ local function create_system_usage_widget(linux_setup_root)
     return wrap_widget(widget, rowspan, colspan)
 end
 
+local function create_layout_list_widget()
+    local widget = awful.widget.layoutlist{}
+
+    local widget = awful.widget.layoutlist {
+        base_layout = wibox.widget {
+            spacing = tile_size * 0.03,
+            layout = wibox.layout.fixed.vertical,
+        },
+        widget_template = {
+            widget = wibox.container.background,
+            id = 'background_role',
+            shape = gears.shape.rounded_rect,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = tile_size * 0.04,
+                {
+                    widget = wibox.widget.imagebox,
+                    id = 'icon_role',
+                    forced_height = tile_size * 0.185,
+                    forced_width = tile_size * 0.185,
+                },
+                {
+                    widget = wibox.widget.textbox,
+                    id = 'text_role',
+                },
+            },
+        }
+    }
+    local layout_popup = awful.popup {
+        widget = wibox.widget {ll, margins = 4, widget = wibox.container.margin},
+        border_color = beautiful.border_color,
+        border_width = beautiful.border_width,
+        placement = awful.placement.centered,
+        ontop = true,
+        visible = false,
+        shape = gears.shape.rounded_rect
+    }
+
+    return wrap_widget(widget, 1, 1)
+end
+
 ----------------------------------------------------------------------------------- Main
 
 return function(visible_tag, linux_setup_root, screen)
@@ -425,6 +466,7 @@ return function(visible_tag, linux_setup_root, screen)
     root_layout:add_widget_at(create_currency_widget(linux_setup_root),  1, 3,   1, 1)
     root_layout:add_widget_at(create_calendar(),                         1, 4,   1, 1)
     root_layout:add_widget_at(create_system_usage_widget(linux_setup_root), 2, 6,   1, 1)
+    root_layout:add_widget_at(create_layout_list_widget(linux_setup_root), 2, 5,   1, 1)
 
     -- Setup window and embed the grid layout in it
     local widget = wibox {
