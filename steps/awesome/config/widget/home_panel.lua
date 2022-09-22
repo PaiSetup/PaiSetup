@@ -236,14 +236,89 @@ local function create_calendar()
     return wrap_widget(widget, 1, 1)
 end
 
+
+
+
+
+
+
+
+
+local function create_line_oriented_script_widget(command, interval, create_row_callback, update_row_callback, rowspan, colspan)
+    -- Root layout. We'll be adding rows to it
+    local vertical = wibox.layout.fixed.vertical()
+    vertical.spacing = tile_size * 0.03
+    vertical.mychild_count = 0 -- my custom field, not a part of AweosomeWM
+    vertical.myrows = {} -- my custom field, not a part of AweosomeWM
+
+    -- Watch widget will call our callback function and pass the results of get_repos.sh script
+    -- We will update GUI based on those results
+    widget = awful.widget.watch(command, interval, function (_, stdout)
+            local line_index = 1
+
+            -- Iterate over lines of output
+            for line in stdout:gmatch("[^\r\n]+") do
+                -- Get row to set
+                local row = nil
+                if line_index > vertical.mychild_count then
+                    -- Create a new row and add it to the view
+                    row = create_row_callback()
+                    vertical:add(row)
+
+                    -- Store the row in our custom fields. It's hard to get these things from AwesomeWM, so we track it manually
+                    vertical.mychild_count = vertical.mychild_count + 1
+                    table.insert(vertical.myrows, row)
+                else
+                    -- Get an existing row
+                    row = vertical.myrows[line_index]
+                end
+
+                -- Set current info from current line to our row and show it
+                update_row_callback(row, line)
+                row.visible = true
+
+                -- Increment iteration variable
+                line_index = line_index + 1
+            end
+
+            -- Iterate over rest of the lines that are created and delete them
+            for i=vertical.mychild_count, line_index, -1 do
+                -- Remove the row from our custom fields
+                table.remove(vertical.myrows, i)
+                vertical.mychild_count = vertical.mychild_count - 1
+
+                -- Remove the row from view
+                vertical:remove(i)
+            end
+        end,
+        vertical
+    )
+    return wrap_widget(widget, rowspan, colspan)
+end
+
+local function create_currency_widget(linux_setup_root)
+    local command = linux_setup_root .. "/steps/awesome/get_currency_exchange.sh"
+    local interval = 3600
+    local create_row = function()
+        return wibox.widget.textbox()
+    end
+    local update_row = function(row, line)
+        row.text = line
+    end
+    local rowspan = 1
+    local colspan = 1
+    local widget = create_line_oriented_script_widget(command, interval, create_row, update_row, rowspan, colspan)
+    return wrap_widget(widget, rowspan, colspan)
+end
+
 ----------------------------------------------------------------------------------- Main
 
 return function(visible_tag, linux_setup_root, screen)
     -- Main function composing the panel from above widgets
 
     -- Some size constants
-    local rows = 3
-    local columns = 4
+    local rows = 4
+    local columns = 6
     local spacing = tile_size * 0.1
     local grid_width = columns * tile_size + (columns - 1) * spacing
     local grid_height = rows * tile_size + (rows - 1) * spacing
@@ -261,10 +336,11 @@ return function(visible_tag, linux_setup_root, screen)
     root_layout.homogeneous = true
     root_layout.forced_height = grid_height
     root_layout.forced_width = grid_width
-    root_layout:add_widget_at(create_disk_usage_widget("/dev/sdb1"),   1, 1,   1, 2)
-    root_layout:add_widget_at(create_disk_usage_widget("/"),           2, 1,   1, 2)
-    root_layout:add_widget_at(create_repo_widget(linux_setup_root),    3, 1,   1, 3)
-    root_layout:add_widget_at(create_calendar(),                       3, 4,   1, 1)
+    root_layout:add_widget_at(create_disk_usage_widget("/dev/sdb1"),    1, 1,   1, 2)
+    root_layout:add_widget_at(create_disk_usage_widget("/"),            2, 1,   1, 2)
+    root_layout:add_widget_at(create_repo_widget(linux_setup_root),     3, 1,   2, 3)
+    root_layout:add_widget_at(create_currency_widget(linux_setup_root), 1, 3,   1, 1)
+    root_layout:add_widget_at(create_calendar(),                        1, 4,   1, 1)
 
     -- Setup window and embed the grid layout in it
     local widget = wibox {
