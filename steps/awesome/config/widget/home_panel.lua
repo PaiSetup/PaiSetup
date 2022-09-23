@@ -166,8 +166,8 @@ end
 
 local function create_disk_usage_widget(linux_setup_root)
     local set_captions_callback = function(middle_caption, extra_caption, value, matcher)
-        used = matcher()
         size = matcher()
+        used = matcher()
         mount_point = matcher()
 
         middle_caption.markup = markup_utils.wrap_span(mount_point, beautiful.color_theme, nil)
