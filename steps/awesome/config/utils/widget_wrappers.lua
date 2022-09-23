@@ -34,8 +34,26 @@ local function bg(arg, color)
         layout = wibox.container.background,
         bg = color,
         shape = gears.shape.rounded_rect,
-        shape_border_width = beautiful.border_width,
-        shape_border_color = "#000000",
+        arg,
+    }
+end
+
+local function circle(arg, color)
+    return {
+        layout = wibox.container.background,
+        bg = color,
+        shape = gears.shape.circle,
+        arg,
+    }
+end
+
+local function sized_bg(arg, color, width, height)
+    return {
+        layout = wibox.container.background,
+        bg = color,
+        shape = gears.shape.rounded_rect,
+        forced_width = width,
+        forced_height = height,
         arg,
     }
 end
@@ -86,6 +104,8 @@ return {
     margin = margin,
     horizontal_margin = horizontal_margin,
     bg = bg,
+    circle = circle,
+    sized_bg = sized_bg,
     min_width = min_width,
     max_width = max_width,
     width_between = width_between,

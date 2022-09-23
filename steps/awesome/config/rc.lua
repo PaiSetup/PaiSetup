@@ -23,6 +23,7 @@ require("awful.hotkeys_popup.keys")
 local script_widget = require("widget.script_widget")
 local shutdown_popup = require("widget.shutdown_popup")
 local tray_widget = require("widget.tray_widget")
+local home_panel = require("widget.home_panel")
 local widget_wrappers = require("utils.widget_wrappers")
 local markup_utils = require("utils.markup")
 local utils = require("utils.utils")
@@ -60,6 +61,7 @@ end
 ----------------------------------------------------------------------------------- Variable definitions
 -- Read some handy env variables
 terminal = os.getenv("TERMINAL")
+user = os.getenv("USER")
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 linux_setup = os.getenv("LINUX_SETUP_ROOT")
@@ -86,17 +88,17 @@ beautiful.wallpaper = gears.filesystem.get_xdg_config_home() .. "/LinuxSetup/wal
 ----------------------------------------------------------------------------------- Client layouts
 awful.layout.layouts = {
     awful.layout.suit.tile,
-    awful.layout.suit.floating,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.floating,
+    -- awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.max,
+    -- awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.magnifier,
     awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
@@ -146,6 +148,8 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, "", "", "", "", tags.draw, tags.video, tags.music }, s, awful.layout.layouts[1])
+
+    s.myhome_panel = home_panel(tags.music, linux_setup, user, s)
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     s.mylayoutbox = awful.widget.layoutbox(s)
