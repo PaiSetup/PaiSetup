@@ -14,7 +14,7 @@ class BashScriptsStep(Step):
     def perform(self):
         ext.download(
             "https://github.com/InternalMD/Scripts.git",
-            "origin/master",
+            "master",
             self._scripts_root_dir,
             fetch=self.fetch_git,
         )
