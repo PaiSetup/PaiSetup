@@ -149,7 +149,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, "", "", "", "", tags.draw, tags.video, tags.music }, s, awful.layout.layouts[1])
 
-    s.myhome_panel = home_panel(tags.music, linux_setup, user, s)
+    home_panel(tags.music, linux_setup, user, s)
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     s.mylayoutbox = awful.widget.layoutbox(s)
@@ -325,20 +325,28 @@ clientkeys = gears.table.join(
 )
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)
-        c:emit_signal("request::activate", "mouse_click", {raise = true})
+        if c.focusable then
+            c:emit_signal("request::activate", "mouse_click", {raise = true})
+        end
     end),
     awful.button({ modkey }, 1, function (c)
-        c:emit_signal("request::activate", "mouse_click", {raise = true})
-        c.floating = true
-        awful.mouse.client.move(c)
+        if c.focusable then
+            c:emit_signal("request::activate", "mouse_click", {raise = true})
+            c.floating = true
+            awful.mouse.client.move(c)
+        end
     end),
     awful.button({ modkey }, 2, function (c)
-        c:emit_signal("request::activate", "mouse_click", {raise = true})
-        c.floating = false
+        if c.focusable then
+            c:emit_signal("request::activate", "mouse_click", {raise = true})
+            c.floating = false
+        end
     end),
     awful.button({ modkey }, 3, function (c)
-        c:emit_signal("request::activate", "mouse_click", {raise = true})
-        awful.mouse.client.resize(c)
+        if c.focusable then
+            c:emit_signal("request::activate", "mouse_click", {raise = true})
+            awful.mouse.client.resize(c)
+        end
     end)
 )
 
@@ -350,7 +358,8 @@ awful.rules.rules = gears.table.join(
         rules_utils.get_floating_clients_rule(),
     },
     rules_utils.get_no_border_rules(),
-    rules_utils.get_tag_mappings_rules(tags)
+    rules_utils.get_tag_mappings_rules(tags),
+    awful.rules.rules
 )
 
 

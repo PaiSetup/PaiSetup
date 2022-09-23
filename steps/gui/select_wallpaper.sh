@@ -35,6 +35,10 @@ if [ -n "$main_colors" ]; then
     echo "$main_colors" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$theme_file"
     echo "Reloading colors" >&2
 
+    # Set main color as default cava foreground
+    main_color="$(echo "$main_colors" | head -1)"
+    printf "[color]\nforeground = '$main_color'\n" > ~/.config/cava/config
+
     # Load theme colors
     xresources_file=~/.config/Xresources
     xrdb "$xresources_file"
@@ -42,7 +46,10 @@ else
     echo "Not reloading colors" >&2
 fi
 
+# Setup the wallpaper in predefined path
 ln -sf "$file_path" ~/.config/LinuxSetup/wallpaper
+
+# Execute post actions
 if [ "$set_wallpaper_with_feh" != 0 ]; then
     feh --bg-scale ~/.config/LinuxSetup/wallpaper
 fi

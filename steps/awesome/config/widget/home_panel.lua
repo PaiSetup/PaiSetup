@@ -4,6 +4,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local markup_utils = require("utils.markup")
 local widget_wrappers = require("utils.widget_wrappers")
+local rules_utils = require("utils.rules")
 local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
@@ -481,7 +482,7 @@ return function(visible_tag, linux_setup_root, user, screen)
     }
     widget:setup(widget_wrappers.bg(widget_wrappers.margin(root_layout, spacing), '#00000000'))
 
-    -- Setup visibility
+    -- Setup visibility of the panel. It should only show itself on one selected tag
     widget.refresh_visibility = function(self)
         local current_tag = awful.tag.selected(1)
         self.visible = current_tag ~= nil and visible_tag == current_tag.name
@@ -489,6 +490,21 @@ return function(visible_tag, linux_setup_root, user, screen)
     widget:refresh_visibility()
     screen:connect_signal("tag::history::update", function() widget:refresh_visibility() end)
 
-    -- Return it
-    return widget
+    -- Launch cava audio visualizer on the bottom of the screen.
+    --
+    -- We need to define an awful.rule to set some properties to make it look good. Because this rule depend on screen resolution, it
+    -- will have to be different for each screen. Hence, we generate a separate client class for each screen, so they are distinguishable.
+    --
+    -- Another nitpick is killing the old client before AwesomeWM restarts. Fortunately there is an 'exit' signal that we can use.
+    local client_class = "ST_CAVA" .. screen.index
+    local cava_pid = awful.spawn('st -A 0 -B "#000000" -c ' .. client_class .. ' -e cava')
+    awesome.connect_signal('exit', function(reason_restart)
+        awful.spawn("kill -9 " .. cava_pid) -- kill the client before restarting
+    end)
+    awful.rules.rules = gears.table.join(
+        awful.rules.rules,
+        {
+            rules_utils.get_home_panel_cava_rule(visible_tag, client_class, screen.geometry.width, screen.geometry.height, 0.3)
+        }
+    )
 end

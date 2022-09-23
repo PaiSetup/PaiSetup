@@ -1,5 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local function get_default_rule(clientkeys, clientbuttons)
     return {
@@ -92,9 +93,33 @@ local function get_tag_mappings_rules(tags)
     }
 end
 
+local function get_home_panel_cava_rule(tag, client_class, screen_width, screen_height, screen_height_percentage)
+    local client_height = math.floor(screen_height * screen_height_percentage)
+
+    -- st snaps its position to some grid and the additional 20 pixels makes sure it's really snapped to bottom
+    -- this can be removed if other terminal emulator is used
+    local client_y = screen_height - client_height + dpi(20)
+
+    return {
+        rule = { class = client_class },
+        properties = {
+            tag = tag,
+            focusable = false,
+            floating = true,
+            size_hints_honor = false,
+            border_width = 0,
+            x = 0,
+            y = client_y,
+            width = screen_width,
+            height = client_height,
+        },
+    }
+end
+
 return {
     get_default_rule = get_default_rule,
     get_no_border_rules = get_no_border_rules,
     get_floating_clients_rule = get_floating_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
+    get_home_panel_cava_rule = get_home_panel_cava_rule,
 }
