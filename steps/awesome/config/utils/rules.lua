@@ -86,10 +86,6 @@ local function get_tag_mappings_rules(tags)
             rule = { class = "vlc", },
             properties = { tag = tags.video }
         },
-        {
-            rule = { class = "Rhythmbox", },
-            properties = { tag = tags.music }
-        },
     }
 end
 
