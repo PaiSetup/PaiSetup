@@ -221,6 +221,9 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 
+    -- Create layout box
+    s.mylayoutbox = awful.widget.layoutbox(s)
+
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, })
 
@@ -260,6 +263,7 @@ awful.screen.connect_for_each_screen(function(s)
                 tray_widget,
                 warnings_widget,
             }),
+            widget_wrappers.bg(widget_wrappers.margin(s.mylayoutbox, dpi(3)), beautiful.color_gray_light),
         },
 
     }

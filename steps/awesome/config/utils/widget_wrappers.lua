@@ -82,7 +82,7 @@ end
 
 local alternating_counter = 0
 local function grp(arg)
-    if alternating_counter % 2 == 0 then
+    if alternating_counter % 2 == 1 then
         fg_color = beautiful.color_theme
         bg_color = beautiful.color_gray_light
     else
