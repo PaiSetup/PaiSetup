@@ -2,9 +2,7 @@
 
 file_path="$1"
 reset_wm="$2"
-set_wallpaper_with_feh="$3"
 [ -z "$reset_wm" ] && reset_wm=0
-[ -z "$set_wallpaper_with_feh" ] && set_wallpaper_with_feh=0
 
 # Generate theme colors based on the wallpaper
 get_main_colors() (
@@ -29,6 +27,7 @@ get_main_colors() (
 )
 
 main_colors="$(get_main_colors)"
+main_color="$(echo "$main_colors" | head -1)"
 if [ -n "$main_colors" ]; then
     # Save generated colors to a theme file
     theme_file=~/.config/XresourcesTheme
@@ -36,7 +35,6 @@ if [ -n "$main_colors" ]; then
     echo "Reloading colors" >&2
 
     # Set main color as default cava foreground
-    main_color="$(echo "$main_colors" | head -1)"
     printf "[color]\nforeground = '$main_color'\n" > ~/.config/cava/config
 
     # Load theme colors
@@ -50,9 +48,17 @@ fi
 ln -sf "$file_path" ~/.config/LinuxSetup/wallpaper
 
 # Execute post actions
-if [ "$set_wallpaper_with_feh" != 0 ]; then
-    feh --bg-scale ~/.config/LinuxSetup/wallpaper
-fi
 if [ "$reset_wm" != 0 ]; then
     $LINUX_SETUP_ROOT/steps/gui/reset_wm.sh
 fi
+
+# Execute WM-specific operations
+wm="$(wmctrl -m | grep Name: | cut -d' ' -f2)"
+case "$wm" in
+    "dwm")
+        feh --bg-scale ~/.config/LinuxSetup/wallpaper
+        ;;
+    "awesome")
+        $LINUX_SETUP_ROOT/steps/awesome/colorize_icons.sh
+        ;;
+esac

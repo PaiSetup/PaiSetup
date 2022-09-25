@@ -7,6 +7,7 @@ local gears = require("gears")
 local themes_path = gfs.get_themes_dir()
 
 local theme = {}
+local linux_setup = os.getenv("LINUX_SETUP_ROOT")
 
 
 
@@ -113,22 +114,23 @@ theme.wibar_height = dpi(30)
 
 
 ----------------------------------------------------------------------------------- Layout icons
-theme.layout_fairh = themes_path.."default/layouts/fairhw.png"
-theme.layout_fairv = themes_path.."default/layouts/fairvw.png"
-theme.layout_floating  = themes_path.."default/layouts/floatingw.png"
-theme.layout_magnifier = themes_path.."default/layouts/magnifierw.png"
-theme.layout_max = themes_path.."default/layouts/maxw.png"
-theme.layout_fullscreen = themes_path.."default/layouts/fullscreenw.png"
-theme.layout_tilebottom = themes_path.."default/layouts/tilebottomw.png"
-theme.layout_tileleft   = themes_path.."default/layouts/tileleftw.png"
-theme.layout_tile = themes_path.."default/layouts/tilew.png"
-theme.layout_tiletop = themes_path.."default/layouts/tiletopw.png"
-theme.layout_spiral  = themes_path.."default/layouts/spiralw.png"
-theme.layout_dwindle = themes_path.."default/layouts/dwindlew.png"
-theme.layout_cornernw = themes_path.."default/layouts/cornernww.png"
-theme.layout_cornerne = themes_path.."default/layouts/cornernew.png"
-theme.layout_cornersw = themes_path.."default/layouts/cornersww.png"
-theme.layout_cornerse = themes_path.."default/layouts/cornersew.png"
+local layout_icons_dir = linux_setup .. "/steps/awesome/config/icons_colorized/"
+theme.layout_fairh = layout_icons_dir.."fairh.png"
+theme.layout_fairv = layout_icons_dir.."fairv.png"
+theme.layout_floating  = layout_icons_dir.."floating.png"
+theme.layout_magnifier = layout_icons_dir.."magnifier.png"
+theme.layout_max = layout_icons_dir.."max.png"
+theme.layout_fullscreen = layout_icons_dir.."fullscreen.png"
+theme.layout_tilebottom = layout_icons_dir.."tilebottom.png"
+theme.layout_tileleft   = layout_icons_dir.."tileleft.png"
+theme.layout_tile = layout_icons_dir.."tile.png"
+theme.layout_tiletop = layout_icons_dir.."tiletop.png"
+theme.layout_spiral  = layout_icons_dir.."spiral.png"
+theme.layout_dwindle = layout_icons_dir.."dwindle.png"
+theme.layout_cornernw = layout_icons_dir.."cornernw.png"
+theme.layout_cornerne = layout_icons_dir.."cornerne.png"
+theme.layout_cornersw = layout_icons_dir.."cornersw.png"
+theme.layout_cornerse = layout_icons_dir.."cornerse.png"
 
 
 
