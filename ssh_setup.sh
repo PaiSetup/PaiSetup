@@ -39,6 +39,7 @@ echo "Setting up known_hosts for typical sites"
 ssh-keyscan github.com 2>/dev/null >> ~/.ssh/known_hosts
 
 echo "Redirecting all traffic to github.com to SSH"
+touch "$HOME/.config/git/config"
 git config --global url."ssh://git@github.com".insteadOf https://github.com
 
 echo "Setting permissions (read-write only for the user $(whoami))"

@@ -32,10 +32,21 @@ class ProgrammingCppStep(Step):
             )
 
     def perform(self):
+        self._file_writer.write_lines(
+            ".config/gdb/gdbinit",
+            [
+                "set debuginfod enabled on",
+                "tui enable",
+                "set history save on",
+            ],
+        )
+
         self._file_writer.write_section(
             ".profile",
-            "Allow attaching debugger to a running process",
+            "Debugger",
             [
-                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
+                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null #Allow attaching debugger to a running process",
+                'export GDBHISTFILE="$HOME/.cache/gdb/history"',
+                "export CGDB_DIR=$HOME/.config/cgdb",
             ],
         )
