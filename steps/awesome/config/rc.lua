@@ -368,22 +368,18 @@ awful.rules.rules = gears.table.join(
 
 
 ----------------------------------------------------------------------------------- Client signals (callbacks)
-client.connect_signal("manage", function (c)
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
-
+client.connect_signal("manage", function (client)
+    -- Prevent clients from being unreachable after screen count changes.
     if awesome.startup
-      and not c.size_hints.user_position
-      and not c.size_hints.program_position then
-        -- Prevent clients from being unreachable after screen count changes.
-        awful.placement.no_offscreen(c)
+      and not client.size_hints.user_position
+      and not client.size_hints.program_position then
+        awful.placement.no_offscreen(client)
     end
 
     -- Do not let creating new clients on home panel tag
-    if c.first_tag.name == tags.home and not c.is_home_panel then
-        local default_tag = c.screen.tags[default_tag_index]
-        c:move_to_tag(default_tag)
+    if client.first_tag.name == tags.home and not client.is_home_panel then
+        local default_tag = client.screen.tags[default_tag_index]
+        client:move_to_tag(default_tag)
     end
 end)
 
