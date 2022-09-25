@@ -31,7 +31,11 @@ class AwesomeStep(GuiStep):
 
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)
-        dependency_dispatcher.add_packages("awesome")
+        dependency_dispatcher.add_packages(
+            "awesome",
+            "lua", # not strictly needed, but useful for prototyping
+            "jq", # needed for parsing json when getting currency exchange
+        )
         dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
 
     def perform(self):
