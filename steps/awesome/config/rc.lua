@@ -117,17 +117,23 @@ local tags = {
     home = "",
 }
 local default_tag_index = 3
+function get_home_tag(screen)
+    if screen == nil then
+        screen = awful.screen.focused()
+    end
+    return awful.tag.find_by_name(screen, tags.home)
+end
 
 -- Preserve tags after restart
 utils.enable_viewed_tag_preserving()
 
 local taglist_buttons = gears.table.join(
-    awful.button({ },        1, function(t) t:view_only()                                                                end),
-    awful.button({ modkey }, 1, function(t) if client.focus and t.name ~= tags.home then client.focus:move_to_tag(t) end end),
+    awful.button({ },        1, function(t) t:view_only()                                        end),
+    awful.button({ modkey }, 1, function(t) if client.focus then client.focus:move_to_tag(t) end end),
     awful.button({ },        3, awful.tag.viewtoggle),
-    awful.button({ modkey }, 3, function(t) if client.focus and t.name ~= tags.home then client.focus:toggle_tag(t)  end end),
-    awful.button({ },        4, function(t) awful.tag.viewnext(t.screen)                                                 end),
-    awful.button({ },        5, function(t) awful.tag.viewprev(t.screen)                                                 end)
+    awful.button({ modkey }, 3, function(t) if client.focus then client.focus:toggle_tag(t)  end end),
+    awful.button({ },        4, function(t) awful.tag.viewnext(t.screen)                         end),
+    awful.button({ },        5, function(t) awful.tag.viewprev(t.screen)                         end)
 )
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -152,6 +158,8 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, tags.general, tags.general, tags.general, tags.general, tags.draw, tags.video, tags.home }, s, awful.layout.layouts[1])
 
+    -- Setup home tag and panel
+    get_home_tag(s).is_home = true
     home_panel(tags.home, linux_setup, user, s)
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
@@ -166,7 +174,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
         screen  = s,
-        filter  = awful.widget.taglist.filter.all,
+        filter  = function(t) return not t.is_home end,
         buttons = taglist_buttons,
         widget_template =
         {
@@ -277,6 +285,7 @@ globalkeys = gears.table.join(
     awful.key({ altkey, "Shift" }, "Tab",   awful.tag.viewprev,        {description = "view next",     group = "Tag switching"}),
     awful.key({ altkey          }, "Tab",   awful.tag.viewnext,        {description = "view next",     group = "Tag switching"}),
     awful.key({ modkey          }, "Tab",   awful.tag.history.restore, {description = "go back",       group = "Tag switching"}),
+    awful.key({ modkey          }, "d",     function () get_home_tag():view_only() end,      {description = "view desktop",  group = "Tag switching"}),
 
     ---------------------------- Per-tag
     gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag", tags.home)),
@@ -377,7 +386,7 @@ client.connect_signal("manage", function (client)
     end
 
     -- Do not let creating new clients on home panel tag
-    if client.first_tag.name == tags.home and not client.is_home_panel then
+    if client.first_tag.is_home and not client.is_home_panel then
         local default_tag = client.screen.tags[default_tag_index]
         client:move_to_tag(default_tag)
     end
