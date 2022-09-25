@@ -42,7 +42,11 @@ class GtkThemeStep(Step):
     def _generate_gtk2_theme(self):
         log("Generating gtk 2.0 theme")  # Example application using gtk 2.0 - lxappearance
         self._file_writer.write_lines(
-            ".gtkrc-2.0",
+            ".config/LinuxSetup/xinitrc_base",
+            [ 'export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc"']
+        )
+        self._file_writer.write_lines(
+            ".config/gtk-2.0/gtkrc",
             [
                 f'gtk-theme-name="{self.widget_theme_name}"',
                 f'gtk-icon-theme-name="{self.icon_theme_name}"',

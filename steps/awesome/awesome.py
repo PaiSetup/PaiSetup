@@ -14,7 +14,6 @@ class AwesomeStep(GuiStep):
         super().__init__("Awesome")
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
-        self._is_default_wm = is_default_wm
         self._current_step_dir = Path(__file__).parent
 
         self._linux_setup_config_path = ".config/LinuxSetup/awesome"
@@ -93,9 +92,6 @@ class AwesomeStep(GuiStep):
             ["exec awesome"],
             line_placement=LinePlacement.End,
         )
-
-        if self._is_default_wm:
-            self._file_writer.write_symlink(src=self._xinitrc_path, link=".xinitrc")
 
     def _setup_xresources(self):
         log(f"Generating {self._xresources_path}")

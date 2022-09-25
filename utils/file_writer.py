@@ -17,6 +17,7 @@ class FileType(Enum):
     Css = 8
     Javascript = 9
     Xml = 10
+    Python = 11
 
     _properties = {
         # fmt: off
@@ -30,6 +31,7 @@ class FileType(Enum):
         Css:                  ("/*",   " */", None,               False),
         Javascript:           ("//",   "",    None,               False),
         Xml:                  ("<!--", "-->", None,               False),
+        Python:               ("#",    "",    "#!/bin/python",    False),
         # fmt: on
     }
 

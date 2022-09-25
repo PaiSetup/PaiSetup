@@ -36,9 +36,10 @@ class ShellStep(Step):
         )
         self._file_writer.write_section(
             ".profile",
-            "Move .lesshist file into .config",
+            "Move some dotfiles out of home dir",
             [
-                "export LESSHISTFILE=~/.config/lesshst",
+                'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
+                'alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
             ],
         )
 
@@ -59,10 +60,11 @@ class ShellStep(Step):
         )
         self._file_writer.write_section(
             ".bashrc",
-            "Infinite history",
+            "Setup history",
             [
                 "export HISTFILESIZE=-1",
                 "export HISTSIZE=-1",
+                'export HISTFILE="${XDG_STATE_HOME}/bash_history"',
             ],
             file_type=FileType.Bash,
         )

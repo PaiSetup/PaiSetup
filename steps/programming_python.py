@@ -22,3 +22,19 @@ class ProgrammingPythonStep(Step):
             "bpython",
             "tk",
         )
+
+    def perform(self):
+        self._file_writer.write_section(
+            ".profile",
+            "Startup script to move python history",
+            ['export PYTHONSTARTUP="$HOME/.config/python/pythonrc"'],
+        )
+
+        self._file_writer.write_lines(
+            ".config/python/pythonrc",
+            [
+                "import readline",
+                "readline.write_history_file = lambda *args: None",
+            ],
+            file_type=FileType.Python,
+        )

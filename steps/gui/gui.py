@@ -71,7 +71,9 @@ class GuiStep(Step):
             file_type=FileType.XResources,
         )
 
-    def _setup_xinitrc_base(self,):
+    def _setup_xinitrc_base(
+        self,
+    ):
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Start in home directory",
@@ -112,6 +114,11 @@ class GuiStep(Step):
                 "export BUTTON_SCROLL_UP=4",
                 "export BUTTON_SCROLL_DOWN=5",
             ],
+        )
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Override locations of some files",
+            ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
         )
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",

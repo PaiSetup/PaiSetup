@@ -16,7 +16,6 @@ class DwmStep(GuiStep):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir
         self.fetch_git = fetch_git
-        self._is_default_wm = is_default_wm
         self._current_step_dir = Path(__file__).parent
 
         self._linux_setup_config_path = ".config/LinuxSetup/dwm"
@@ -28,7 +27,7 @@ class DwmStep(GuiStep):
         self._sxhkd_config_path = f"{self._linux_setup_config_path}/sxhkdrc"
 
         self._bg_checker_launch_script_path = f"{self._linux_setup_config_path}/run_bg_checker.sh"
-        self._bg_checker_profile = BgChckerStep.Profile(self._bg_checker_launch_script_path, self._xinitrc_path, self._is_default_wm)
+        self._bg_checker_profile = BgChckerStep.Profile(self._bg_checker_launch_script_path, self._xinitrc_path, is_default_wm)
 
         # fmt: off
         self._keybindings = [
@@ -161,9 +160,6 @@ class DwmStep(GuiStep):
             ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
-
-        if self._is_default_wm:
-            self._file_writer.write_symlink(src=self._xinitrc_path, link=".xinitrc")
 
     def _setup_xresources(self):
         self._file_writer.write_section(

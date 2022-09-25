@@ -13,8 +13,6 @@ class HomeDirectoryStep(Step):
         self._work_dir = self._env.home() / "work"
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("xdg-user-dirs")
-
         dependency_dispatcher.set_folder_icon("desktop", "desktop")
         dependency_dispatcher.set_folder_icon("downloads", "downloads")
         dependency_dispatcher.set_folder_icon("mounts", "mounts")
@@ -52,6 +50,8 @@ class HomeDirectoryStep(Step):
     def _create_directories(self):
         self._work_dir.mkdir(parents=True, exist_ok=True)
         (self._env.home() / ".log").mkdir(exist_ok=True)
+        (self._env.home() / ".local/state").mkdir(exist_ok=True)
+        (self._env.home() / ".local/share").mkdir(exist_ok=True)
 
         if self._is_main_machine and self._multimedia_dir.exists():
             # These directories are excluded from sync and we'll create them manually
@@ -109,21 +109,34 @@ class HomeDirectoryStep(Step):
                     log(f"{path}: OK")
 
     def _setup_xdg_paths(self):
+        # Prepare our custom XDG dirs specification and generate some config files
         self._file_writer.write_lines(
             ".config/user-dirs.dirs",
             [
-                # Renamed dirs
-                'XDG_DESKTOP_DIR="$HOME/desktop"',
-                'XDG_DOWNLOAD_DIR="$HOME/downloads"',
-                # Removed dirs
-                # From https://www.freedesktop.org/wiki/Software/xdg-user-dirs/:
-                # "To disable a directory, point it to the homedir. If you delete it it will be recreated on the next login."
-                'XDG_TEMPLATES_DIR="$HOME"',
-                'XDG_PUBLICSHARE_DIR="$HOME"',
-                'XDG_DOCUMENTS_DIR="$HOME"',
-                'XDG_MUSIC_DIR="$HOME"',
-                'XDG_PICTURES_DIR="$HOME"',
-                'XDG_VIDEOS_DIR="$HOME"',
+                "# Renamed dirs",
+                'export XDG_DESKTOP_DIR="$HOME/desktop"',
+                'export XDG_DOWNLOAD_DIR="$HOME/downloads"',
+                "",
+                "# From https://www.freedesktop.org/wiki/Software/xdg-user-dirs/:",
+                '# "To disable a directory, point it to the homedir. If you delete it it will be recreated on the next login.',
+                "# Removed dirs",
+                'export XDG_TEMPLATES_DIR="$HOME"',
+                'export XDG_PUBLICSHARE_DIR="$HOME"',
+                'export XDG_DOCUMENTS_DIR="$HOME"',
+                'export XDG_MUSIC_DIR="$HOME"',
+                'export XDG_PICTURES_DIR="$HOME"',
+                "",
+                "# Default dirs",
+                'export XDG_DATA_HOME="$HOME/.local/share"',
+                'export XDG_CONFIG_HOME="$HOME/.config"',
+                'export XDG_STATE_HOME="$HOME/.local/state"',
+                'export XDG_CACHE_HOME="$HOME/.cache"',
             ],
         )
-        command.run_command("xdg-user-dirs-update")
+
+        # Set the variables in xinitrc too. We need it that early, so all GUI applications will have them loaded.
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
+            "Load XDG variables",
+            [". ~/.config/user-dirs.dirs"],
+        )
