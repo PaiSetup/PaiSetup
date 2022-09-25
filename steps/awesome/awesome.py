@@ -57,7 +57,10 @@ class AwesomeStep(GuiStep):
         self._file_writer.write_section(
             self._xinitrc_path,
             "Call base script",
-            [". ~/.config/LinuxSetup/xinitrc_base"],
+            [
+                "export WM=awesome",
+                ". ~/.config/LinuxSetup/xinitrc_base",
+            ],
         )
         self._file_writer.write_section(
             self._xinitrc_path,

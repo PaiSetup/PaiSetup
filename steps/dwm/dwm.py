@@ -116,7 +116,10 @@ class DwmStep(GuiStep):
         self._file_writer.write_section(
             self._xinitrc_path,
             "Call base script",
-            [". ~/.config/LinuxSetup/xinitrc_base"],
+            [
+                "export WM=dwm",
+                ". ~/.config/LinuxSetup/xinitrc_base",
+            ],
         )
         self._file_writer.write_section(
             self._xinitrc_path,

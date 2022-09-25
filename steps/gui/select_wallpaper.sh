@@ -53,8 +53,7 @@ if [ "$reset_wm" != 0 ]; then
 fi
 
 # Execute WM-specific operations
-wm="$(wmctrl -m | grep Name: | cut -d' ' -f2)"
-case "$wm" in
+case "$WM" in
     "dwm")
         feh --bg-scale ~/.config/LinuxSetup/wallpaper
         ;;
