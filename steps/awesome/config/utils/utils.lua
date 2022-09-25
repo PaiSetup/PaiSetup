@@ -65,7 +65,7 @@ local function enable_viewed_tag_preserving()
     end)
 end
 
-local function get_per_tag_keys(modkey, group, forbidden_tag_name)
+local function get_per_tag_keys(modkey, group)
     -- Bind all key numbers to tags.
     -- Be careful: we use keycodes to make it work on any keyboard layout.
     -- This should map on the top row of your keyboard, usually 1 to 9.
@@ -97,7 +97,7 @@ local function get_per_tag_keys(modkey, group, forbidden_tag_name)
                     function ()
                         if client.focus then
                             local tag = client.focus.screen.tags[i]
-                            if tag and tag.name ~= forbidden_tag_name then
+                            if tag then
                                 client.focus:move_to_tag(tag)
                             end
                         end
@@ -108,7 +108,7 @@ local function get_per_tag_keys(modkey, group, forbidden_tag_name)
                     function ()
                         if client.focus then
                             local tag = client.focus.screen.tags[i]
-                            if tag and tag.name ~= forbidden_tag_name then
+                            if tag then
                                 client.focus:toggle_tag(tag)
                             end
                         end

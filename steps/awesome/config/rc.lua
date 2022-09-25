@@ -280,15 +280,15 @@ beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width
 -- Global keys - they work everywhere
 globalkeys = gears.table.join(
     --------------------------- Tag switching
-    awful.key({ modkey          }, "Left",  awful.tag.viewprev,        {description = "view previous", group = "Tag switching"}),
-    awful.key({ modkey          }, "Right", awful.tag.viewnext,        {description = "view next",     group = "Tag switching"}),
-    awful.key({ altkey, "Shift" }, "Tab",   awful.tag.viewprev,        {description = "view next",     group = "Tag switching"}),
-    awful.key({ altkey          }, "Tab",   awful.tag.viewnext,        {description = "view next",     group = "Tag switching"}),
-    awful.key({ modkey          }, "Tab",   awful.tag.history.restore, {description = "go back",       group = "Tag switching"}),
-    awful.key({ modkey          }, "d",     function () get_home_tag():view_only() end,      {description = "view desktop",  group = "Tag switching"}),
+    awful.key({ modkey          }, "Left",  awful.tag.viewprev,                          {description = "view previous", group = "Tag switching"}),
+    awful.key({ modkey          }, "Right", awful.tag.viewnext,                          {description = "view next",     group = "Tag switching"}),
+    awful.key({ altkey, "Shift" }, "Tab",   awful.tag.viewprev,                          {description = "view next",     group = "Tag switching"}),
+    awful.key({ altkey          }, "Tab",   awful.tag.viewnext,                          {description = "view next",     group = "Tag switching"}),
+    awful.key({ modkey          }, "Tab",   awful.tag.history.restore,                   {description = "go back",       group = "Tag switching"}),
+    awful.key({ modkey          }, "d",     function () get_home_tag():view_only() end,  {description = "view desktop",  group = "Tag switching"}),
 
     ---------------------------- Per-tag
-    gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag", tags.home)),
+    gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag")),
 
     --------------------------- Client switching
     awful.key({ modkey,         }, "j", function () awful.client.focus.byidx( 1) end, {description = "focus next by index",                group = "Client switching"}),
@@ -377,6 +377,17 @@ awful.rules.rules = gears.table.join(
 
 
 ----------------------------------------------------------------------------------- Client signals (callbacks)
+
+client.connect_signal("tagged", function (client, tag)
+    -- Do not left moving clients to home panel tag. We need additional "client.managed" check,
+    -- because when home panel clients (i.e. cava) are created, this signal is called before
+    -- setting is_home_panel=True, so we have no way to check it.
+    if tag.is_home and client.managed and not client.is_home_panel then
+        local default_tag = client.screen.tags[default_tag_index]
+        client:move_to_tag(default_tag)
+    end
+end)
+
 client.connect_signal("manage", function (client)
     -- Prevent clients from being unreachable after screen count changes.
     if awesome.startup
@@ -389,8 +400,8 @@ client.connect_signal("manage", function (client)
     if client.first_tag.is_home and not client.is_home_panel then
         local default_tag = client.screen.tags[default_tag_index]
         client:move_to_tag(default_tag)
-        client.urgent  = true
     end
+    client.managed = true -- custom field, not a part of AwesomeWM
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
