@@ -112,6 +112,7 @@ local function get_home_panel_cava_rule(tag, client_class, screen_width, screen_
             y = client_y,
             width = screen_width,
             height = client_height,
+            is_home_panel = true, -- custom property, not a part of AwesomeWM
         },
     }
 end

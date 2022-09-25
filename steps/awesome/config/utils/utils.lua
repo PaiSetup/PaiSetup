@@ -65,7 +65,7 @@ local function enable_viewed_tag_preserving()
     end)
 end
 
-local function get_per_tag_keys(modkey, group)
+local function get_per_tag_keys(modkey, group, forbidden_tag_name)
     -- Bind all key numbers to tags.
     -- Be careful: we use keycodes to make it work on any keyboard layout.
     -- This should map on the top row of your keyboard, usually 1 to 9.
@@ -78,7 +78,7 @@ local function get_per_tag_keys(modkey, group)
                             local screen = awful.screen.focused()
                             local tag = screen.tags[i]
                             if tag then
-                            tag:view_only()
+                                tag:view_only()
                             end
                     end,
                     {description = "View tag", group = group}),
@@ -97,7 +97,7 @@ local function get_per_tag_keys(modkey, group)
                     function ()
                         if client.focus then
                             local tag = client.focus.screen.tags[i]
-                            if tag then
+                            if tag and tag.name ~= forbidden_tag_name then
                                 client.focus:move_to_tag(tag)
                             end
                         end
@@ -108,7 +108,7 @@ local function get_per_tag_keys(modkey, group)
                     function ()
                         if client.focus then
                             local tag = client.focus.screen.tags[i]
-                            if tag then
+                            if tag and tag.name ~= forbidden_tag_name then
                                 client.focus:toggle_tag(tag)
                             end
                         end

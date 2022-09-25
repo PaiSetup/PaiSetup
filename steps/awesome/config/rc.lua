@@ -107,16 +107,26 @@ awful.layout.layouts = {
 
 ----------------------------------------------------------------------------------- Top bar
 
+-- Definition of custom tags
+local tags = {
+    web = "",
+    code = "",
+    draw = "",
+    video = "",
+    music = "",
+}
+local default_tag_index = 3
+
 -- Preserve tags after restart
 utils.enable_viewed_tag_preserving()
 
 local taglist_buttons = gears.table.join(
-    awful.button({ },        1, function(t) t:view_only()                                        end),
-    awful.button({ modkey }, 1, function(t) if client.focus then client.focus:move_to_tag(t) end end),
+    awful.button({ },        1, function(t) t:view_only()                                                                 end),
+    awful.button({ modkey }, 1, function(t) if client.focus and t.name ~= tags.music then client.focus:move_to_tag(t) end end),
     awful.button({ },        3, awful.tag.viewtoggle),
-    awful.button({ modkey }, 3, function(t) if client.focus then client.focus:toggle_tag(t)  end end),
-    awful.button({ },        4, function(t) awful.tag.viewnext(t.screen)                         end),
-    awful.button({ },        5, function(t) awful.tag.viewprev(t.screen)                         end)
+    awful.button({ modkey }, 3, function(t) if client.focus and t.name ~= tags.music then client.focus:toggle_tag(t)  end end),
+    awful.button({ },        4, function(t) awful.tag.viewnext(t.screen)                                                  end),
+    awful.button({ },        5, function(t) awful.tag.viewprev(t.screen)                                                  end)
 )
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -132,14 +142,6 @@ local pomodoro_widget = script_widget("pomodoro.sh", {button_info, button_action
 local audio_switch_widget = script_widget("audio_switch.sh", {button_info, button_action}, 10)
 local tray_widget = tray_widget()
 local warnings_widget = script_widget("warnings.sh", {button_info}, 4)
-
-local tags = {
-    web = "",
-    code = "",
-    draw = "",
-    video = "",
-    music = "",
-}
 
 -- Setup widgets for each screen
 awful.screen.connect_for_each_screen(function(s)
@@ -276,7 +278,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey          }, "Tab",   awful.tag.history.restore, {description = "go back",       group = "Tag switching"}),
 
     ---------------------------- Per-tag
-    gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag")),
+    gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag", tags.music)),
 
     --------------------------- Client switching
     awful.key({ modkey,         }, "j", function () awful.client.focus.byidx( 1) end, {description = "focus next by index",                group = "Client switching"}),
@@ -325,25 +327,25 @@ clientkeys = gears.table.join(
 )
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)
-        if c.focusable then
+        if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
         end
     end),
     awful.button({ modkey }, 1, function (c)
-        if c.focusable then
+        if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
             c.floating = true
             awful.mouse.client.move(c)
         end
     end),
     awful.button({ modkey }, 2, function (c)
-        if c.focusable then
+        if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
             c.floating = false
         end
     end),
     awful.button({ modkey }, 3, function (c)
-        if c.focusable then
+        if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
             awful.mouse.client.resize(c)
         end
@@ -375,6 +377,12 @@ client.connect_signal("manage", function (c)
       and not c.size_hints.program_position then
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
+    end
+
+    -- Do not let creating new clients on home panel tag
+    if c.first_tag.name == tags.music and not c.is_home_panel then
+        local default_tag = c.screen.tags[default_tag_index]
+        c:move_to_tag(default_tag)
     end
 end)
 
