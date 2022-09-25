@@ -12,7 +12,7 @@ for line in $(find $LINUX_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/*
 
     # Go to repo
     path="$(realpath "$line/..")"
-    cd "$path"
+    cd "$path" || continue
 
     # Fetch
     if [ "$fetch" != 0 ]; then
@@ -46,6 +46,6 @@ for line in $(find $LINUX_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/*
     fi
 
     # Return results
-    path="${path/\/home\/$USER\//~\/}"
+    path="$(echo "$path" | sed "s/\/home\/$USER/~/g")"
     echo "$path $master_branch$flags"
 done

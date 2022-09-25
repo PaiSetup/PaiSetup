@@ -39,7 +39,7 @@ class ShellStep(Step):
             "Move some dotfiles out of home dir",
             [
                 'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
-                'alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
+                'alias wget=wget --hsts-file="\$XDG_DATA_HOME/wget-hsts"'
             ],
         )
 
