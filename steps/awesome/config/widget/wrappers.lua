@@ -80,6 +80,13 @@ local function width_between(arg, min, max)
     return min_width(max_width(arg, max), min)
 end
 
+local function center(arg)
+    return {
+        widget = wibox.container.place,
+        arg,
+    }
+end
+
 local alternating_counter = 0
 local function grp(arg)
     if alternating_counter % 2 == 1 then
@@ -110,5 +117,6 @@ return {
     max_width = max_width,
     width_between = width_between,
     border = border,
+    center = center,
     grp = grp,
 }

@@ -20,16 +20,20 @@ require("awful.autofocus")
 require("awful.hotkeys_popup.keys")
 
 -- Custom utility functions
-local script_widget = require("widget.script_widget")
-local shutdown_popup = require("widget.shutdown_popup")
-local tray_widget = require("widget.tray_widget")
-local home_panel = require("widget.home_panel")
-local widget_wrappers = require("utils.widget_wrappers")
+local widget_wrappers = require("widget.wrappers")
 local markup_utils = require("utils.markup")
 local utils = require("utils.utils")
 local rules_utils = require("utils.rules")
 local app_keybindings = require("utils.app_keybindings")
 
+-- Custom widgets
+local shutdown_popup = require("widget.shutdown_popup")
+local script_widget = require("widget.script_widget")
+local tray_widget = require("widget.tray_widget")
+local home_panel = require("widget.home_panel")
+local taglist = require("widget.taglist")
+local tasklist = require("widget.tasklist")
+local layout_box = require("widget.layout_box")
 
 
 ----------------------------------------------------------------------------------- Error handling
@@ -129,15 +133,6 @@ end
 -- Preserve tags after restart
 utils.enable_viewed_tag_preserving()
 
-local taglist_buttons = gears.table.join(
-    awful.button({ },        1, function(t) t:view_only()                                        end),
-    awful.button({ modkey }, 1, function(t) if client.focus then client.focus:move_to_tag(t) end end),
-    awful.button({ },        3, awful.tag.viewtoggle),
-    awful.button({ modkey }, 3, function(t) if client.focus then client.focus:toggle_tag(t)  end end),
-    awful.button({ },        4, function(t) awful.tag.viewnext(t.screen)                         end),
-    awful.button({ },        5, function(t) awful.tag.viewprev(t.screen)                         end)
-)
-
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", utils.set_wallpaper)
 
@@ -164,89 +159,17 @@ awful.screen.connect_for_each_screen(function(s)
     get_home_tag(s).is_home = true
     home_panel(tags.home, linux_setup, user, s)
 
-    -- Create an imagebox widget which will contain an icon indicating which layout we're using.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-        awful.button({ }, 1, function () awful.layout.inc( 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(-1) end),
-        awful.button({ }, 4, function () awful.layout.inc( 1) end),
-        awful.button({ }, 5, function () awful.layout.inc(-1) end)
-    ))
-
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist {
-        screen  = s,
-        filter  = function(t) return not t.is_home end,
-        buttons = taglist_buttons,
-        widget_template =
-        {
-            {
-                {
-                    {
-                        id     = 'text_role',
-                        widget = wibox.widget.textbox,
-                    },
-                    layout = wibox.layout.fixed.horizontal,
-                },
-                left  = dpi(13),
-                right = dpi(13),
-                widget = wibox.container.margin
-            },
-            id     = 'background_role',
-            widget = wibox.container.background,
-        },
-    }
-
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.focused,
-        buttons = tasklist_buttons,
-        widget_template = {
-            widget = wibox.container.background,
-            id = "background_role",
-            forced_height = beautiful.wibar_height,
-            widget_wrappers.horizontal_margin({
-                layout = wibox.layout.fixed.horizontal,
-                widget_wrappers.horizontal_margin({
-                    id     = 'icon_role',
-                    widget = wibox.widget.imagebox,
-                }, dpi(6)),
-                widget_wrappers.width_between({
-                    widget = wibox.widget.textbox,
-                    id     = 'text_role',
-                    align  = 'center',
-                }, dpi(500), dpi(850))
-            }, dpi(10)),
-        },
-    }
-
-    -- Create layout box
-    s.mylayoutbox = awful.widget.layoutbox(s)
-
-    -- Create the wibox
+    -- Create the bar
     s.mywibox = awful.wibar({ position = "top", screen = s, })
 
-    -- Add widgets to the wibox
+    -- Add widgets to the bar
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
         -- Left widgets
-        {
-            layout = wibox.layout.fixed.horizontal,
-            {
-                widget = wibox.container.background,
-                bg     = beautiful.bg_normal,
-                shape  = gears.shape.rounded_rect,
-                s.mytaglist,
-            }
-          },
+        widget_wrappers.bg(taglist(s, modkey), beautiful.bg_normal),
 
         -- Middle widget
-        {
-            widget = wibox.container.place,
-            halign  = center,
-            s.mytasklist,
-        },
+        widget_wrappers.center(tasklist(s)),
 
         -- Right widgets
         {
@@ -263,9 +186,8 @@ awful.screen.connect_for_each_screen(function(s)
                 tray_widget,
                 warnings_widget,
             }),
-            widget_wrappers.bg(widget_wrappers.margin(s.mylayoutbox, dpi(3)), beautiful.color_gray_light),
+            layout_box(s),
         },
-
     }
 end)
 
