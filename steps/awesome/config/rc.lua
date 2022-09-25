@@ -389,6 +389,7 @@ client.connect_signal("manage", function (client)
     if client.first_tag.is_home and not client.is_home_panel then
         local default_tag = client.screen.tags[default_tag_index]
         client:move_to_tag(default_tag)
+        client.urgent  = true
     end
 end)
 
