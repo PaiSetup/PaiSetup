@@ -119,10 +119,15 @@ local function get_per_tag_keys(modkey, group)
     return keys
 end
 
+function set_layout_key(mods, key, layout)
+    return awful.key(mods, key, function () awful.layout.set(layout) end, {description = "set " .. layout.name .. " for the current tag", group = "layout"})
+end
+
 return {
     set_wallpaper = set_wallpaper,
     set_random_wallpaper = set_random_wallpaper,
     enable_viewed_tag_preserving = enable_viewed_tag_preserving,
     taglist_square_top_rect = taglist_square_top_rect,
     get_per_tag_keys = get_per_tag_keys,
+    set_layout_key = set_layout_key,
 }

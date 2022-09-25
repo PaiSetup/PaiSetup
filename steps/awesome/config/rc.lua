@@ -105,6 +105,8 @@ awful.layout.layouts = {
     -- awful.layout.suit.corner.se,
 }
 
+
+
 ----------------------------------------------------------------------------------- Top bar
 
 -- Definition of custom tags
@@ -277,6 +279,8 @@ beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width
 
 ----------------------------------------------------------------------------------- Key/button bindings and rules
 
+
+
 -- Global keys - they work everywhere
 globalkeys = gears.table.join(
     --------------------------- Tag switching
@@ -314,8 +318,13 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(linux_setup, terminal)              end, {description = "show shutdown popup", group = "AwesomeWM"}),
 
     --------------------------- Layout control
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end, {description = "decrease master width factor", group = "layout"}),
+    awful.key(           { modkey }, "l", function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),
+    awful.key(           { modkey }, "h", function () awful.tag.incmwfact(-0.05)          end, {description = "decrease master width factor", group = "layout"}),
+    utils.set_layout_key({ modkey }, "y", awful.layout.layouts[1]),
+    utils.set_layout_key({ modkey }, "u", awful.layout.layouts[2]),
+    utils.set_layout_key({ modkey }, "i", awful.layout.layouts[3]),
+    utils.set_layout_key({ modkey }, "o", awful.layout.layouts[4]),
+    utils.set_layout_key({ modkey }, "p", awful.layout.layouts[5]),
 --  awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end, {description = "increase the number of master clients", group = "layout"}),
 --  awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end, {description = "decrease the number of master clients", group = "layout"}),
 --  awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end, {description = "increase the number of columns", group = "layout"}),
