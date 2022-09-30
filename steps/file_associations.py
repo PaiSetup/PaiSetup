@@ -148,7 +148,7 @@ class FileAssociationsStep(Step):
         associations = [
             ("thunar.desktop", "inode/directory"),
             ("vlc.desktop", video_mimes + audio_mimes),
-            ("nomacs.desktop", image_mimes),
+            ("org.nomacs.ImageLounge.desktop", image_mimes),
             ("qpdfview.desktop", pdf_mimes),
             ("terminal_vim.desktop", text_types),
         ]
