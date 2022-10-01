@@ -395,6 +395,10 @@ local function create_layout_list_widget()
             },
         }
     }
+    widget:buttons(gears.table.join(
+        awful.button({ }, 4, function () awful.layout.inc(-1) end),
+        awful.button({ }, 5, function () awful.layout.inc( 1) end)
+    ))
     local layout_popup = awful.popup {
         widget = wibox.widget {ll, margins = 4, widget = wibox.container.margin},
         border_color = beautiful.border_color,
