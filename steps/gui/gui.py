@@ -101,7 +101,7 @@ class GuiStep(Step):
             "Basic graphical settings",
             [
                 "(sleep 0.1 ; xrandr --output Virtual-1 --mode 1920x1080) &",
-                "$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 1 &",
+                "$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 0",
             ],
         )
         self._file_writer.write_section(

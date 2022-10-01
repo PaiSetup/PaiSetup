@@ -10,7 +10,7 @@ get_wallpapers_directories() {
     fi
 }
 
-get_wallpapers_directories             |
-    xargs -I{} find "{}" -name "*.png" |
-    shuf -n 1                          |
+get_wallpapers_directories                                    |
+    xargs -I{} find "{}" \( -name "*.png" -o -name "*.jpg" \) |
+    shuf -n 1                                                 |
     xargs -I{} $LINUX_SETUP_ROOT/steps/gui/select_wallpaper.sh "{}" "$@"

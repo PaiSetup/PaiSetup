@@ -63,7 +63,7 @@ class ThunarStep(Step):
     <unique-id>1638740948234297-1</unique-id>
     <command>bash -c  &quot;/home/maciej/LinuxSetup/steps/gui/select_wallpaper.sh  %f 1&quot;</command>
     <description></description>
-    <patterns>*.png</patterns>
+    <patterns>*.png;*.jpg</patterns>
     <image-files/>
 </action>
 <action>
