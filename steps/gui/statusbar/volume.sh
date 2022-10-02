@@ -3,7 +3,12 @@
 [ -n "$1" ] && BUTTON="$1"
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
-    $TERMINAL pulsemixer >/dev/null 2>/dev/null &
+    mixed_pid="$(pgrep pulsemixer)"
+    if [ -z "$mixed_pid" ]; then
+        $TERMINAL pulsemixer >/dev/null 2>/dev/null &
+    else
+        kill -9 "$mixed_pid"
+    fi
 fi
 if [ "$BUTTON" = "$BUTTON_SCROLL_UP" ]; then
     $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2 0
