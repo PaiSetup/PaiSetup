@@ -76,6 +76,7 @@ class FileAssociationsStep(Step):
             "video/mp",
             "video/mp4",
             "video/mpeg",
+            "video/x-matroska",
             "video/ogg",
             "video/quicktime",
             "video/vnd.dece.hd",
