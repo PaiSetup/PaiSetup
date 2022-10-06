@@ -42,7 +42,7 @@ class CharonStep(Step):
 
     def _generate_charon_config(self):
         watched_dir = self._env.home() / "downloads/funnyportal"
-        dst_dir = self._env.home() / "multimedia/Funny/Internet"
+        dst_dir = self._env.home() / "multimedia/funny/Internet"
         backup_dir = f"/run/media/{self._env.get('USER')}/External/Backup/multimedia/Funny/Internet/"
         config = [
             {
