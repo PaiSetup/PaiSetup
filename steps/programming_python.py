@@ -1,6 +1,7 @@
 from steps.step import Step
 from pathlib import Path
 from utils.file_writer import FileType
+from utils.keybinding import KeyBinding
 
 
 class ProgrammingPythonStep(Step):
@@ -21,6 +22,9 @@ class ProgrammingPythonStep(Step):
             "python-pip",
             "bpython",
             "tk",
+        )
+        dependency_dispatcher.add_keybindings(
+            KeyBinding('p').mod().shift().executeShell("$TERMINAL python")
         )
 
     def perform(self):
