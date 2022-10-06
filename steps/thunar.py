@@ -44,7 +44,11 @@ class ThunarStep(Step):
         )
 
     def _get_uca_xml_contents(self):
-        return """
+        linux_setup_root = self._env.get("LINUX_SETUP_ROOT")
+        extensions = ["png", "jpg", "jpeg", "avif"]
+        extensions = ";".join([f"*.{x}" for x in extensions])
+
+        return f"""
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
 <action>
@@ -61,9 +65,9 @@ class ThunarStep(Step):
     <icon>preferences-desktop-wallpaper</icon>
     <name>Set wallpaper and generate colors</name>
     <unique-id>1638740948234297-1</unique-id>
-    <command>bash -c  &quot;/home/maciej/LinuxSetup/steps/gui/select_wallpaper.sh  %f 1&quot;</command>
+    <command>bash -c  &quot;{linux_setup_root}/steps/gui/select_wallpaper.sh  %f 1&quot;</command>
     <description></description>
-    <patterns>*.png;*.jpg</patterns>
+    <patterns>{extensions}</patterns>
     <image-files/>
 </action>
 <action>
