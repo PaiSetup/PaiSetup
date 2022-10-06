@@ -413,12 +413,10 @@ local function create_layout_list_widget()
 end
 
 local function create_greeting_widget(user)
-    local icon = wibox.widget.textbox()
-    icon.markup = markup_utils.wrap_span('', beautiful.color_gray_dark, nil)
-    icon.align = 'center'
-    icon.font = "sans " .. tostring(tile_size * 0.5)
-    icon = widget_wrappers.margin(icon, tile_size * 0.15)
-    icon = widget_wrappers.circle(icon, beautiful.color_theme)
+    local icon = wibox.widget.imagebox(beautiful.arch_logo, true, gears.shape.rect)
+    icon.forced_height = tile_size * 0.9
+    icon.forced_width = tile_size * 0.9
+    icon = widget_wrappers.horizontal_margin(icon, tile_size * 0.08)
     icon = wibox.widget(icon)
 
     local greeting = wibox.widget.textbox('Hello, ' .. user .. '!')

@@ -114,24 +114,28 @@ theme.wibar_height = dpi(30)
 
 
 ----------------------------------------------------------------------------------- Layout icons
-local layout_icons_dir = linux_setup .. "/steps/awesome/config/icons_colorized/"
-theme.layout_fairh = layout_icons_dir.."fairh.png"
-theme.layout_fairv = layout_icons_dir.."fairv.png"
-theme.layout_floating  = layout_icons_dir.."floating.png"
-theme.layout_magnifier = layout_icons_dir.."magnifier.png"
-theme.layout_max = layout_icons_dir.."max.png"
-theme.layout_fullscreen = layout_icons_dir.."fullscreen.png"
-theme.layout_tilebottom = layout_icons_dir.."tilebottom.png"
-theme.layout_tileleft   = layout_icons_dir.."tileleft.png"
-theme.layout_tile = layout_icons_dir.."tile.png"
-theme.layout_tiletop = layout_icons_dir.."tiletop.png"
-theme.layout_spiral  = layout_icons_dir.."spiral.png"
-theme.layout_dwindle = layout_icons_dir.."dwindle.png"
-theme.layout_cornernw = layout_icons_dir.."cornernw.png"
-theme.layout_cornerne = layout_icons_dir.."cornerne.png"
-theme.layout_cornersw = layout_icons_dir.."cornersw.png"
-theme.layout_cornerse = layout_icons_dir.."cornerse.png"
+local icons_dir = linux_setup .. "/steps/awesome/config/icons_colorized/"
+theme.layout_fairh = icons_dir.."fairh.png"
+theme.layout_fairv = icons_dir.."fairv.png"
+theme.layout_floating  = icons_dir.."floating.png"
+theme.layout_magnifier = icons_dir.."magnifier.png"
+theme.layout_max = icons_dir.."max.png"
+theme.layout_fullscreen = icons_dir.."fullscreen.png"
+theme.layout_tilebottom = icons_dir.."tilebottom.png"
+theme.layout_tileleft   = icons_dir.."tileleft.png"
+theme.layout_tile = icons_dir.."tile.png"
+theme.layout_tiletop = icons_dir.."tiletop.png"
+theme.layout_spiral  = icons_dir.."spiral.png"
+theme.layout_dwindle = icons_dir.."dwindle.png"
+theme.layout_cornernw = icons_dir.."cornernw.png"
+theme.layout_cornerne = icons_dir.."cornerne.png"
+theme.layout_cornersw = icons_dir.."cornersw.png"
+theme.layout_cornerse = icons_dir.."cornerse.png"
 
+
+
+----------------------------------------------------------------------------------- Other icons
+theme.arch_logo = icons_dir.."arch.png"
 
 
 ----------------------------------------------------------------------------------- Rest
