@@ -4,6 +4,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local markup_utils = require("utils.markup")
 local widget_wrappers = require("widget.wrappers")
+local shutdown_popup = require("widget.shutdown_popup")
 local rules_utils = require("utils.rules")
 local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
@@ -423,7 +424,17 @@ local function create_greeting_widget(user)
     greeting.align = 'center'
     greeting.font = "sans " .. tostring(tile_size * 0.12)
 
-    local widget = wibox.layout.fixed.vertical(icon, greeting)
+    local shutdown_button = wibox.widget.textbox()
+    shutdown_button.align = 'center'
+    shutdown_button.font = "sans " .. tostring(tile_size * 0.15)
+    shutdown_button.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
+    shutdown_button:connect_signal("button::press", function (self, lx, ly, button, mods, metadata)
+        if button == 1 then
+            shutdown_popup()
+        end
+    end)
+
+    local widget = wibox.layout.fixed.vertical(icon, greeting, shutdown_button)
     widget.spacing = tile_size * 0.2
     widget = wibox.container.place(widget)
 

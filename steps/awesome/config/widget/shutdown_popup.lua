@@ -126,5 +126,7 @@ return function (linux_setup_root, terminal)
                 return
             end
         end)
+    else
+        keygrabber.stop(grabber)
     end
 end
