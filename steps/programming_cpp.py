@@ -1,5 +1,6 @@
 from steps.step import Step
 from pathlib import Path
+from utils.file_writer import FileType
 
 
 class ProgrammingCppStep(Step):
@@ -38,8 +39,15 @@ class ProgrammingCppStep(Step):
                 "set debuginfod enabled on",
                 "tui enable",
                 "set history save on",
+                "refresh",
+                "set tui border-kind space",
+                "set tui tab-width 4",
+                "set tui compact-source on",
+                "focus cmd",
             ],
+            file_type=FileType.ConfigFileNoComments,
         )
+        (self._env.home() / ".cache/gdb").mkdir(exist_ok=True, parents=True)
 
         self._file_writer.write_section(
             ".profile",
