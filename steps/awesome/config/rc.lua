@@ -144,6 +144,7 @@ local time_widget = script_widget("date.sh", {button_action}, 30)
 local screen_capture_widget = script_widget("screen_capture.sh", {button_info, button_action}, 10)
 local pomodoro_widget = script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = script_widget("audio_switch.sh", {button_info, button_action}, 10)
+local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = tray_widget()
 local warnings_widget = script_widget("warnings.sh", {button_info}, 4)
 
@@ -183,6 +184,7 @@ awful.screen.connect_for_each_screen(function(s)
                 screen_capture_widget,
                 pomodoro_widget,
                 audio_switch_widget,
+                trash_widget,
                 tray_widget,
                 warnings_widget,
             }),
