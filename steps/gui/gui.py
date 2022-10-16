@@ -157,3 +157,9 @@ class GuiStep(Step):
         config = json.dumps(config, indent=4)
 
         self._file_writer.write_lines(".config/ulauncher/settings.json", [config], file_type=FileType.Json)
+
+    def _setup_picom_config(self):
+        self._file_writer.write_lines(
+            ".config/picom.conf",
+            ["vsync = true;"],
+        )
