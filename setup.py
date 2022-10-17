@@ -81,7 +81,7 @@ build_dir = root_dir / "build"
 steps = [
     PackagesStep(build_dir, True),
     ShellStep(root_dir),
-    GtkThemeStep(regenerate_emblems=False),
+    GtkThemeStep(regenerate_widget_theme=False, regenerate_icon_theme=False),
     FileAssociationsStep(),
     AudioStep(),
     GpuStep(),

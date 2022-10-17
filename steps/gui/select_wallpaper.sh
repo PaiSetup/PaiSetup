@@ -82,6 +82,11 @@ setup_apps() (
     # Wallpaper path (consumed by AwesomeWM)
     echo "  ~/.config/LinuxSetup/wallpaper" >&2
     ln -sf "$file_path" ~/.config/LinuxSetup/wallpaper
+
+    # Gtk
+    echo "  GTK theme"
+    ( $LINUX_SETUP_ROOT/steps/gtk_theme/generate_widget_theme.sh | sed "s/^/  /g" ) &
+    ( $LINUX_SETUP_ROOT/steps/gtk_theme/generate_icon_theme.sh | sed "s/^/  /g" ) &
 )
 
 # Execute WM-specific operations
