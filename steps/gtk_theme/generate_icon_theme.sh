@@ -44,25 +44,27 @@ big_pattern="s/#7DC4E4/$COLOR_GRAY_LIGHT/g;s/#24273A/$COLOR_THEME/g;s/#F5A97F/$C
 small_pattern="s/#F5A97F/$COLOR_THEME/g"
 
 # Simply symlink some directories or colorize icons in them (more expensive)
-colorize_directory "actions/16" "$small_pattern"
-colorize_directory "animations/24" "$small_pattern"
-colorize_directory "apps/16" "$small_pattern"
-copy_directory     "categories"
-colorize_directory "devices/16" "$small_pattern"
-symlink_directory  "emblems/48"
+mkdir -p "$dst_theme_dir/emblems"
 ln -s              "$LINUX_SETUP_ROOT/steps/gtk_theme/emblems_64" "$dst_theme_dir/emblems/64"
 ln -s              "$LINUX_SETUP_ROOT/steps/gtk_theme/emblems_512" "$dst_theme_dir/emblems/512"
+symlink_directory  "emblems/48"
+symlink_directory  "index.theme"
 symlink_directory  "emotes"
 symlink_directory  "intl"
-colorize_directory "mimetypes/16" "$small_pattern"
 symlink_directory  "mimetypes/64"
-colorize_directory "places/16" "$small_pattern"
-colorize_directory "places/64" "$big_pattern"
-# colorize_directory "panel/24" "$big_pattern" # Removed this, it wouldn't be used
 symlink_directory  "scalable-max-32"
 symlink_directory  "status"
 symlink_directory  "stock"
-symlink_directory  "index.theme"
+copy_directory     "categories"
+
+colorize_directory "places/64" "$big_pattern"
+colorize_directory "places/16" "$small_pattern"
+colorize_directory "actions/16" "$small_pattern"
+colorize_directory "devices/16" "$small_pattern"
+colorize_directory "animations/24" "$small_pattern"
+colorize_directory "mimetypes/16" "$small_pattern"
+# colorize_directory "panel/24" "$big_pattern" # Removed this, it wouldn't be used
+colorize_directory "apps/16" "$small_pattern"
 
 # Flush caches
 gtk-update-icon-cache
