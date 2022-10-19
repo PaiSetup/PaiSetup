@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Our color palette
 COLOR_THEME="$(xrdb -get color1 | tr -d '#')"
 COLOR_GRAY_LIGHT="$(xrdb -get color2 | tr -d '#')"

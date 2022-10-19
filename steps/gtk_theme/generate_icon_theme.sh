@@ -1,9 +1,8 @@
-#/bin/sh
+#!/bin/sh
 
 # Prepare our color palette
 COLOR_THEME="$(xrdb -get color1)"
 COLOR_GRAY_LIGHT="$(xrdb -get color2)"
-COLOR_GRAY_DARK="$(xrdb -get color3)"
 COLOR_FONT="$(xrdb -get color4)"
 
 # Prepare theme directory
