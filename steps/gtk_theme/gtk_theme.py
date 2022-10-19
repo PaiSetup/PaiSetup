@@ -8,6 +8,25 @@ import shutil
 
 
 class GtkThemeStep(Step):
+    """
+    GTK theming is a quite complicated task. Here it consists of four things:
+        1. Widget theme, which defines the colors and sizes of interface elements. We generate it using a third party software
+           called oomox. Colors are generated based on theme colors stored in xresources. Theme is generated in a separate bash
+           script, because we want to call it after wallpapers (and the theme colors) change.
+        2. Icon theme, which defines icons used for various reasons, e.g. folder icons in Thunar or custom app icons in
+           ulauncher. It is based on catpuccin icon theme. Some icons were removed to make it lighter. Icons in this theme are
+           defined in svg format (which is xml). We can colorize the icons, so they match the widget theme by doing find&replace
+           with sed. It is done in a separate bash script (for the same reason as in 1.). Links to the icon theme:
+            - https://www.gnome-look.org/p/1715570
+            - https://github.com/Fausto-Korpsvart/Catppuccin-GTK-Theme
+        3. Downsizing emblems. GVfs allows defining emblems for files in the filesystem. Emblems are images that will usually be
+           displayed on top of a normal folder icon by GUI file managers. We have our own set of custom emblems stored as images
+           of size 512x512. We also downscale them to smaller sizes, so file managers can use them and consume less memory when
+           full size is not needed.
+        4. GTK config, which points to location of widget theme and icon theme. There are separate configs for different versions
+           of GTK. We have to generate all of them. There's no need to regenerate them after wallpaper change.
+    """
+
     def __init__(self, *, regenerate_widget_theme, regenerate_icon_theme):
         super().__init__("GtkTheme")
         self.widget_theme_name = "LinuxSetupWidgetTheme"
@@ -23,6 +42,8 @@ class GtkThemeStep(Step):
         dependency_dispatcher.add_packages(
             "gvfs",
             "lxappearance",  # not stricly needed, but useful when checking gtk themes
+            "themix-theme-oomox-git",
+            "themix-full-git",
         )
 
     def set_folder_icon(self, path, icon_name, **kwargs):
