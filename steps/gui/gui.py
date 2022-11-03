@@ -135,11 +135,6 @@ class GuiStep(Step):
             "App launcher",
             ["ulauncher --hide-window &"],
         )
-        self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
-            "Run browser",
-            ["$BROWSER &"],
-        )
 
     def _setup_ulauncher_config(self):
         config = {
