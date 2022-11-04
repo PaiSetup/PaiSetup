@@ -130,6 +130,11 @@ class FileAssociationsStep(Step):
             "audio/x-wav",
         ]
 
+        music_mimes = [
+            "audio/mp3",
+            "audio/flac",
+        ]
+
         pdf_mimes = [
             "application/pdf",
         ]
@@ -149,13 +154,18 @@ class FileAssociationsStep(Step):
         associations = [
             ("thunar.desktop", "inode/directory"),
             ("vlc.desktop", video_mimes + audio_mimes),
+            ("org.gnome.Rhythmbox3.desktop", music_mimes),
             ("org.nomacs.ImageLounge.desktop", image_mimes),
             ("qpdfview.desktop", pdf_mimes),
             ("terminal_vim.desktop", text_types),
         ]
 
+        # Check available .desktop files with following command:
+        #   sudo find /usr/share/applications
         # Check mime type of a given file with following command:
         #    xdg-mime query filetype "file"
+        # Check default app of a given file with following command:
+        #    xdg-mime query default "$(xdg-mime query filetype "file")"
 
         for application, mime_types in associations:
             log(f"Associating {len(mime_types)} with {application}")
