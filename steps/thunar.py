@@ -34,6 +34,7 @@ class ThunarStep(Step):
             dirs += [
                 (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
                 (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
+                (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
             ]
         dirs = [f"file:///{path} {name}" for path, name in dirs]
 
