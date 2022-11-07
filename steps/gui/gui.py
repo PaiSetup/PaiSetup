@@ -127,6 +127,11 @@ class GuiStep(Step):
         )
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
+            "Set screen save timeout duration to 2 hours",
+            ["xset s 7200 &"],
+        )
+        self._file_writer.write_section(
+            ".config/LinuxSetup/xinitrc_base",
             "Screenshot daemon",
             ["flameshot &"],
         )
