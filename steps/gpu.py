@@ -15,14 +15,18 @@ class GpuVendor(Enum):
 class GpuStep(Step):
     def __init__(self):
         super().__init__("Gpu")
-        self.vendors  = self._query_gpu_vendors()
+        self._vendors = self._query_gpu_vendors()
 
     def perform(self):
-        if self.vendors:
-            vendors_string = ', '.join((v.name for v in self.vendors))
+        if self._vendors:
+            vendors_string = ", ".join((v.name for v in self._vendors))
             log(f"Detected gpu vendors: {vendors_string}")
         else:
             log("No gpu vendors detected")
+
+        if GpuVendor.Nvidia in self._vendors:
+            log("Enabling vsync on Nvidia")
+            command.run_command('nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"')
 
     def express_dependencies(self, dependency_dispatcher):
         vendor_specific_packages = {
@@ -42,8 +46,8 @@ class GpuStep(Step):
             ],
         }
 
-        if self.vendors:
-            for vendor in self.vendors:
+        if self._vendors:
+            for vendor in self._vendors:
                 dependency_dispatcher.add_packages(vendor_specific_packages[vendor])
 
             # Installing steam may cause a random vulkan driver to be installed as a dependency,
