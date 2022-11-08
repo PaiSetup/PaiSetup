@@ -26,7 +26,13 @@ class GpuStep(Step):
 
         if GpuVendor.Nvidia in self._vendors:
             log("Enabling vsync on Nvidia")
-            command.run_command('nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"')
+            vsync_command = 'nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"'
+            command.run_command(vsync_command)
+            self._file_writer.write_section(
+                ".config/LinuxSetup/xinitrc_base",
+                "Enabling vsync on Nvidia",
+                [vsync_command],
+            )
 
     def express_dependencies(self, dependency_dispatcher):
         vendor_specific_packages = {
