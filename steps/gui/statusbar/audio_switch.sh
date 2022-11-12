@@ -15,7 +15,7 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     if [ -z "$next" ]; then
         next="0"
     fi
-    pacmd set-default-sink "$next"
+    pactl set-default-sink "$next"
 fi
 
 # Print icon

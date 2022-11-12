@@ -3,9 +3,9 @@
 [ -n "$1" ] && BUTTON="$1"
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
-    mixed_pid="$(pgrep pulsemixer)"
+    mixed_pid="$(pgrep pavucontrol)"
     if [ -z "$mixed_pid" ]; then
-        $TERMINAL pulsemixer >/dev/null 2>/dev/null &
+        pavucontrol >/dev/null 2>/dev/null &
     else
         kill -9 "$mixed_pid"
     fi
@@ -17,8 +17,12 @@ if [ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ]; then
     $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1 0
 fi
 
-is_enabled=$(amixer get Master | grep -c "\[on\]")
-volume=$(amixer get Master | grep -E "[0-9]+%" -o | sed 's/%//g' | head -1 | tr -d '\n')
+if [ "$(pamixer --get-mute)" = "false" ]; then
+    is_enabled=1
+else
+    is_enabled=0
+fi
+volume="$(pamixer --get-volume)"
 if [ "$is_enabled" = 0 ]; then
     icon=""
 else
