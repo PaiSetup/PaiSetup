@@ -13,6 +13,7 @@ from utils.env import EnvManager
 
 from steps.step import Step
 from steps.dwm.dwm import DwmStep
+from steps.bluetooth.bluetooth import BluetoothStep
 from steps.st.st import StStep
 from steps.git import GitStep
 from steps.virtualbox import VirtualBox
@@ -88,6 +89,7 @@ steps = [
     FirefoxStep(is_default_browser=True),
     ThunarStep(is_main_machine=args.mode == SetupMode.main),
     HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
+    BluetoothStep(),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
