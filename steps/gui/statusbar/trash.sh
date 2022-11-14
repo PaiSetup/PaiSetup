@@ -22,7 +22,7 @@ while true; do
         du -sh "$trash_dir" | sed "s/^/    /g"
 
         printf "\nCleaning..."
-        time sudo rm -rf "$trash_dir/*"
+        sudo rm -rf "$trash_dir/*"
 
         printf "\nAfter:\n"
         du -sh "$trash_dir" | sed "s/^/    /g"
