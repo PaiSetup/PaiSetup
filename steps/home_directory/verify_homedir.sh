@@ -12,3 +12,6 @@ if [ -n "$extra_files" ]; then
     echo "$count unexpected files found in ~"
     echo "$extra_files"
 fi
+
+rm "$actual_files"
+rm "$expected_files"
