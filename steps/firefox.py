@@ -12,6 +12,7 @@ class FirefoxStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("firefox")
+        dependency_dispatcher.register_homedir_file(".mozilla")
 
     def perform(self):
         self._file_writer.write_section(

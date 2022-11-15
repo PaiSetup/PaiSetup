@@ -15,6 +15,7 @@ class NotesStep(Step):
         dependency_dispatcher.add_packages("obsidian")
         dependency_dispatcher.add_keybindings(KeyBinding("t").mod().shift().execute("obsidian e"))
         dependency_dispatcher.set_folder_icon(self._notes_dir, "notes")
+        dependency_dispatcher.register_homedir_file(self._notes_dir)
 
     def register_env_variables(self):
         self._env.set("NOTES_PATH", self._notes_dir)

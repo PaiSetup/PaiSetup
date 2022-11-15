@@ -45,6 +45,7 @@ class GtkThemeStep(Step):
             "themix-theme-oomox-git",
             "themix-full-git",
         )
+        dependency_dispatcher.register_homedir_file(".themes")
 
     def set_folder_icon(self, path, icon_name, **kwargs):
         path = Path(path)

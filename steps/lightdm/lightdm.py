@@ -13,6 +13,7 @@ class LightDmStep(Step):
             "lightdm",
             "lightdm-gtk-greeter",
         )
+        dependency_dispatcher.register_homedir_file(".dmrc")
 
     def perform(self):
         # Enable service

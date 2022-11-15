@@ -11,6 +11,7 @@ class VscodeStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("code")
+        dependency_dispatcher.register_homedir_file(".vscode-oss")
 
     def perform(self):
         self._symlink_settings()

@@ -66,6 +66,13 @@ class GpuStep(Step):
                 "steam",
             )
 
+            dependency_dispatcher.register_homedir_file(".steam")
+            dependency_dispatcher.register_homedir_file(".steampath")
+            dependency_dispatcher.register_homedir_file(".steampid")
+        if GpuVendor.Nvidia in self._vendors:
+            dependency_dispatcher.register_homedir_file(".nv")
+            dependency_dispatcher.register_homedir_file(".nvidia-settings-rc")
+
     def _query_gpu_vendors(self):
         lspci_output = command.run_command("lspci", return_stdout=True)
         vendors = set()

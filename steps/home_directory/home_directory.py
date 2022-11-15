@@ -3,14 +3,22 @@ from pathlib import Path
 import os
 from utils.log import log, LogIndent
 from utils import command
+from utils.file_writer import FileType
 
 
 class HomeDirectoryStep(Step):
     def __init__(self, is_main_machine):
         super().__init__("HomeDirectory")
         self._is_main_machine = is_main_machine
+
         self._multimedia_dir = self._env.home() / "multimedia"
         self._work_dir = self._env.home() / "work"
+
+        self._homedir_whitelist = Path(__file__).parent / "homedir_whitelist"
+        self._homedir_whitelisted_files = []
+
+    def register_as_dependency_listener(self, dependency_dispatcher):
+        dependency_dispatcher.register_listener(self.register_homedir_file)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.set_folder_icon("desktop", "desktop")
@@ -21,6 +29,9 @@ class HomeDirectoryStep(Step):
 
         bgchecker_script = Path(__file__).parent / "setup_mount_dir.sh"
         dependency_dispatcher.register_bgchecker_script(bgchecker_script, 3)
+
+        bgchecker_script = Path(__file__).parent / "verify_homedir.sh"
+        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 45)
 
         if self._is_main_machine:
             dependency_dispatcher.set_folder_icon(self._multimedia_dir, "multimedia")
@@ -40,12 +51,28 @@ class HomeDirectoryStep(Step):
         self._create_directories()
         self._cleanup_existing_xdg_dirs()
         self._setup_xdg_paths()
+        self._generate_files_whitelist()
 
         self._file_writer.write_section(
             ".profile",
             "Path to directory for working projects",
             ["export PROJECT_DIR=$HOME/work"],
         )
+
+    def register_homedir_file(self, file, **kwargs):
+        filename = Path(file)
+        if filename.is_absolute():
+            try:
+                filename = filename.relative_to("/home/maciej")
+            except ValueError:
+                log(f"ERROR: incorrect path passed: {file}")
+                raise
+
+        if len(filename.parts) != 1:
+            log(f"ERROR: incorrect path passed: {file}")
+            raise ValueError()
+
+        self._homedir_whitelisted_files.append(str(filename))
 
     def _create_directories(self):
         self._work_dir.mkdir(parents=True, exist_ok=True)
@@ -140,3 +167,31 @@ class HomeDirectoryStep(Step):
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
         )
+
+    def _generate_files_whitelist(self):
+        """
+        We generate a file containing list of files that are allowed to be in home directory.
+        If there are some other files, there will be an error reported to bgcheckerd
+        """
+
+        # First add folders managed by this step
+        self.register_homedir_file(self._multimedia_dir)
+        self.register_homedir_file(self._work_dir)
+        self.register_homedir_file("desktop")
+        self.register_homedir_file("downloads")
+        self.register_homedir_file("mounts")
+        self.register_homedir_file("vm")
+        self.register_homedir_file(".profile")
+        self.register_homedir_file(".log")
+        self.register_homedir_file(".cache")
+        self.register_homedir_file(".config")
+        self.register_homedir_file(".local")
+        self.register_homedir_file(self._env.get("LINUX_SETUP_ROOT"))
+
+        # Add some files which don't belong to any step and it's not worth creating new steps
+        self.register_homedir_file(".ssh")
+
+        # Generate a file with all files (including those registered by other steps)
+        log("Generating homedir whitelist file")
+        self._homedir_whitelisted_files.sort()
+        self._file_writer.write_lines(self._homedir_whitelist, self._homedir_whitelisted_files, file_type=FileType.ConfigFileNoComments)

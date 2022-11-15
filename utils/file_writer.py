@@ -18,6 +18,7 @@ class FileType(Enum):
     Javascript = 9
     Xml = 10
     Python = 11
+    Vimrc = 12
 
     _properties = {
         # fmt: off
@@ -32,6 +33,7 @@ class FileType(Enum):
         Javascript:           ("//",   "",    None,               False),
         Xml:                  ("<!--", "-->", None,               False),
         Python:               ("#",    "",    "#!/bin/python",    False),
+        Vimrc:                ('"',    "",    None,               False),
         # fmt: on
     }
 

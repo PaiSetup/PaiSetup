@@ -53,6 +53,10 @@ class GuiStep(Step):
             KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
         )
 
+        dependency_dispatcher.register_homedir_file(".Xauthority")
+        dependency_dispatcher.register_homedir_file(".xsession-errors")
+        dependency_dispatcher.register_homedir_file(".xsession-errors.old")
+
     def _compile_color_generator(self):
         colors_dir = self.root_build_dir / "colors"
         ext.download(

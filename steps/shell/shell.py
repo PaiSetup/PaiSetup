@@ -10,6 +10,9 @@ class ShellStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("exa")
+        dependency_dispatcher.register_homedir_file(".bashrc")
+        dependency_dispatcher.register_homedir_file(".bash_logout")
+        dependency_dispatcher.register_homedir_file(".bash_profile")
 
     def perform(self):
         self._setup_profile()
