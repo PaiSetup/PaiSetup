@@ -53,7 +53,8 @@ fi
 
 # Print icon
 icon=""
-(pamixer --get-default-sink | grep -q  "USB") && icon=""
-(pamixer --get-default-sink | grep -qE  "bluez") && icon=""
-(pamixer --get-default-sink | grep -qE "HDMI|VGA") && icon="  "
+(pamixer --get-default-sink | grep -q   "USB")      && icon=""
+(pamixer --get-default-sink | grep -qE  "bluez")    && icon=""
+(pamixer --get-default-sink | grep -qiE "wireless") && icon=""
+(pamixer --get-default-sink | grep -qE "HDMI|VGA")  && icon="  "
 printf "$icon"
