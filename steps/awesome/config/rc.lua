@@ -284,6 +284,7 @@ clientbuttons = gears.table.join(
         if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
             c.floating = true
+            c.maximized = false
             awful.mouse.client.move(c)
         end
     end),
@@ -291,6 +292,7 @@ clientbuttons = gears.table.join(
         if not c.is_home_panel then
             c:emit_signal("request::activate", "mouse_click", {raise = true})
             c.floating = false
+            c.maximized = false
         end
     end),
     awful.button({ modkey }, 3, function (c)
