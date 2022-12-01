@@ -15,5 +15,5 @@ class JavaStep(Step):
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Override locations of java cache",
-            ['export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java'],
+            ['export _JAVA_OPTIONS=-"Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java -Djavafx.cachedir=$XDG_CACHE_HOME/openjfx"'],
         )
