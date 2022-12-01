@@ -13,6 +13,10 @@ class VscodeStep(Step):
         dependency_dispatcher.add_packages("code")
         dependency_dispatcher.register_homedir_file(".vscode-oss")
 
+        # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
+        # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
+        dependency_dispatcher.register_homedir_file(".pki")
+
     def perform(self):
         self._symlink_settings()
         if len(self._env.get("DISPLAY")) > 0:

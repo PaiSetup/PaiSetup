@@ -193,5 +193,5 @@ class HomeDirectoryStep(Step):
 
         # Generate a file with all files (including those registered by other steps)
         log("Generating homedir whitelist file")
-        self._homedir_whitelisted_files.sort()
+        self._homedir_whitelisted_files = sorted(set(self._homedir_whitelisted_files))
         self._file_writer.write_lines(self._homedir_whitelist, self._homedir_whitelisted_files, file_type=FileType.ConfigFileNoComments)
