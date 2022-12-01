@@ -21,8 +21,9 @@ while true; do
         printf "\nBefore:\n"
         du -sh "$trash_dir" | sed "s/^/    /g"
 
-        printf "\nCleaning..."
-        sudo rm -rf "$trash_dir/*"
+        printf "\nCleaning\n"
+        sudo rm -rf "$trash_dir/files/"
+        sudo rm -rf "$trash_dir/info/"
 
         printf "\nAfter:\n"
         du -sh "$trash_dir" | sed "s/^/    /g"
