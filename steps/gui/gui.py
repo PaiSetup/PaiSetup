@@ -121,7 +121,7 @@ class GuiStep(Step):
         )
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
-            "Override locations of some files",
+            "Override locations of X11 logs",
             ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
         )
         self._file_writer.write_section(

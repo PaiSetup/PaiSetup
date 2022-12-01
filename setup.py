@@ -27,6 +27,7 @@ from steps.file_associations import FileAssociationsStep
 from steps.lightdm.lightdm import LightDmStep
 from steps.thunar import ThunarStep
 from steps.audio import AudioStep
+from steps.java import JavaStep
 from steps.gpu import GpuStep
 from steps.home_directory.home_directory import HomeDirectoryStep
 from steps.charon import CharonStep
@@ -90,6 +91,7 @@ steps = [
     ThunarStep(is_main_machine=args.mode == SetupMode.main),
     HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
     BluetoothStep(),
+    JavaStep(),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [
