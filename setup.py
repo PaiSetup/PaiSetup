@@ -16,7 +16,7 @@ from steps.dwm.dwm import DwmStep
 from steps.bluetooth.bluetooth import BluetoothStep
 from steps.st.st import StStep
 from steps.git import GitStep
-from steps.virtualbox import VirtualBox
+from steps.virtualbox import VirtualBoxStep
 from steps.firefox import FirefoxStep
 from steps.packages import PackagesStep
 from steps.bash_scripts import BashScriptsStep
@@ -115,7 +115,7 @@ if args.mode == SetupMode.main:
         CharonStep(build_dir, fetch_git=args.fetch),
         PicardStep(),
         NotesStep(fetch_git=args.fetch),
-        VirtualBox(),
+        VirtualBoxStep(),
         RaspberryPiStep(),
     ]
 if args.mode == SetupMode.normie:

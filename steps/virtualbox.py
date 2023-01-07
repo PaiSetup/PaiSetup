@@ -3,7 +3,7 @@ from utils import command
 from utils.log import log, LogIndent
 
 
-class VirtualBox(Step):
+class VirtualBoxStep(Step):
     def __init__(self):
         super().__init__("VirtualBox")
         self._vm_dir = self._env.home() / "vm"
