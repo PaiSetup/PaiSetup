@@ -35,6 +35,7 @@ from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
+from steps.raspberry_pi import RaspberryPiStep
 from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
 from steps.bg_checker.bg_checker import BgChckerStep
@@ -115,6 +116,7 @@ if args.mode == SetupMode.main:
         PicardStep(),
         NotesStep(fetch_git=args.fetch),
         VirtualBox(),
+        RaspberryPiStep(),
     ]
 if args.mode == SetupMode.normie:
     # TODO: setup kde or something like that

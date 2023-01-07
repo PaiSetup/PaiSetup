@@ -130,6 +130,7 @@ class PackagesStep(Step):
                 "imagemagick",  # file conversion
                 "losslesscut-bin",  # cutting video
                 "dos2unix",
+                "nmap",
                 # Unixporn
                 "neofetch",
                 "cava",

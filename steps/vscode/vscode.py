@@ -10,7 +10,10 @@ class VscodeStep(Step):
         self._root_build_dir = root_build_dir
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("code")
+        dependency_dispatcher.add_packages(
+            "code",
+            "code-features",  # Fixes some issues with loading ms-python.python extension
+        )
         dependency_dispatcher.register_homedir_file(".vscode-oss")
 
         # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
