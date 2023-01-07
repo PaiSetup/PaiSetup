@@ -23,9 +23,7 @@ class ProgrammingPythonStep(Step):
             "bpython",
             "tk",
         )
-        dependency_dispatcher.add_keybindings(
-            KeyBinding('p').mod().shift().executeShell("$TERMINAL python")
-        )
+        dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL python"))
 
     def perform(self):
         self._file_writer.write_section(

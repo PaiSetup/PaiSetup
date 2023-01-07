@@ -9,6 +9,7 @@
     },
     "rust-client.rustupPath": "/usr/bin/rustup",
     "python.formatting.provider": "black",
+    "python.formatting.blackPath": "black",
     "python.formatting.blackArgs": [
         "--line-length",
         "150"
