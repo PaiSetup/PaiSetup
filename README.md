@@ -48,7 +48,10 @@
     - OS should boot into graphical interface
     - Run `setup.py` one more time. Some configuration (e.g. VSCode extensions) can be done only in graphical environment.
   - Manual configuration
-    - Automatic mounts in `/etc/fstab`
+    - Windows partition mount in `/etc/fstab`
+      - Run `lsblk` to find out which partition contains user files from dual-booted Windows
+      - Run `generate_fstab_for_ntfs.sh /dev/nvme0n1p4` (assuming `/dev/nvme0n1p4` contains the partition)
+      - Append script outputs to */etc/fstab*
     - MEGA
       - Sync exclusions:
         - */home/maciej/multimedia/movies*
