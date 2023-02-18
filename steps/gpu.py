@@ -39,6 +39,7 @@ class GpuStep(Step):
             GpuVendor.Intel: [
                 "vulkan-intel",
                 "lib32-vulkan-intel",
+                "intel-compute-runtime",
             ],
             GpuVendor.Amd: [
                 "lib32-vulkan-amdgpu-pro",
@@ -49,6 +50,7 @@ class GpuStep(Step):
                 "nvidia-utils",
                 "lib32-nvidia-utils",
                 "nvidia-settings",
+                "opencl-nvidia",
             ],
         }
 

@@ -30,6 +30,7 @@ class ProgrammingCppStep(Step):
                 "glm",
                 "glfw-x11",
                 "renderdoc-bin",
+                "opencl-headers",
             )
 
     def perform(self):
