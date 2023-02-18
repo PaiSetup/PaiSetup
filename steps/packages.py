@@ -8,7 +8,7 @@ import utils.external_project as ext
 class PackagesStep(Step):
     def __init__(self, root_build_dir, print_installation):
         super().__init__("Packages")
-        self._known_package_groups = ["base-devel", "vulkan-devel"]
+        self._known_package_groups = ["vulkan-devel"]
         self.root_build_dir = root_build_dir
         self.print_installation = print_installation
         self._packages = []
@@ -24,6 +24,7 @@ class PackagesStep(Step):
         self._set_yay_permissions()
         self._install_packages()
         self._mark_packages_explicit()
+        self._mark_packages_deps()
 
     def _install_yay(self):
         if not command.get_missing_packages(["yay"], self._known_package_groups):
@@ -59,10 +60,22 @@ class PackagesStep(Step):
             command.run_command(install_command, print_stdout=self.print_installation)
 
     def _mark_packages_explicit(self):
+        # Mark all packages we install here as explictly installed. Sometimes a package can be already
+        # installed as a dependency and then it won't show up in "yay -Qeq" invocation. This command
+        # fixes this issue
         packages_option = self._get_packages(True)
         packages_option = " ".join(packages_option)
         log(f"Making packages installed as explicit: {packages_option}.")
         command.run_command(f"yay -D --asexplicit {packages_option}")
+
+    def _mark_packages_deps(self):
+        # In February 2022 base-devel stopped being a package group and started being a metapackage
+        # (an empty package with only dependencies). This means all its packages should be switched
+        # from "explicitly installed" to "installed as a dependency"
+        packages_option = command.run_command(f"pactree base-devel --depth 1 -l", shell=False, return_stdout=True)
+        packages_option = packages_option.replace("\n", " ")
+        packages_option = packages_option.replace("base-devel ", "")
+        command.run_command(f"yay -D --asdeps {packages_option}")
 
     @staticmethod
     def _add_packages_to_list(packages_list, *args):
