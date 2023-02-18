@@ -32,6 +32,10 @@ return function (name, buttons, timeout, initial_text)
         function (widget, stdout)
             widget.my_text = stdout
             widget:refresh()
+
+            for index, widget_to_update in pairs(widget.widgets_to_update) do
+                widget_to_update:run_script()
+            end
         end,
         base_widget
     )
@@ -56,5 +60,21 @@ return function (name, buttons, timeout, initial_text)
         handlers = gears.table.join(handlers, handler)
     end
     widget:buttons(handlers)
+
+    -- Create a function to manually rerun the underlying script and update widget's view.
+    widget.run_script = function(self)
+        awful.spawn.easy_async_with_shell(command, function()
+            timer:emit_signal("timeout")
+        end)
+    end
+
+    -- Prepare an array of other script widgets that should be updated whenever this one is
+    -- done executing.
+    widget.widgets_to_update = {}
+    widget.add_widget_to_update = function(self, widget_to_update)
+        self.widgets_to_update[#self.widgets_to_update+1] = widget_to_update
+    end
+
+    -- Finally return the widget
     return widget
 end

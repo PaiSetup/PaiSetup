@@ -147,6 +147,7 @@ local audio_switch_widget = script_widget("audio_switch.sh", {button_info, butto
 local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = tray_widget()
 local warnings_widget = script_widget("warnings.sh", {button_info}, 4)
+audio_switch_widget:add_widget_to_update(volume_widget)
 
 -- Setup widgets for each screen
 awful.screen.connect_for_each_screen(function(s)
