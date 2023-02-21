@@ -114,10 +114,18 @@ return function (linux_setup_root, terminal)
                 return
             end
             if key == "Left" then
-                _shutdown_popup_data.selection = math.max(_shutdown_popup_data.selection - 1, 1)
+                if _shutdown_popup_data.selection == 1 then
+                    _shutdown_popup_data.selection = #_shutdown_popup_data.buttons
+                else
+                    _shutdown_popup_data.selection = _shutdown_popup_data.selection - 1
+                end
                 _shutdown_popup_data:refresh()
             elseif key == "Right" then
-                _shutdown_popup_data.selection = math.min(_shutdown_popup_data.selection + 1, #_shutdown_popup_data.buttons)
+                if _shutdown_popup_data.selection == #_shutdown_popup_data.buttons then
+                    _shutdown_popup_data.selection = 1
+                else
+                    _shutdown_popup_data.selection = _shutdown_popup_data.selection + 1
+                end
                 _shutdown_popup_data:refresh()
             elseif key == "Escape" then
                 _shutdown_popup_data.popup.visible = false
