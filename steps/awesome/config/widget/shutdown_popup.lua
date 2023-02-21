@@ -74,6 +74,10 @@ return function (linux_setup_root, terminal)
                 end)
             end),
             create_button("", "Reboot",              function() awful.spawn("reboot")         end),
+            create_button("", "Reboot to Windows",   function()
+                update_command = terminal .. " sh -c '$LINUX_SETUP_ROOT/steps/gui/reboot_to_windows.sh'"
+                awful.spawn(update_command)
+            end),
             create_button("", "Exit GUI",            function() awful.spawn("pkill awesome")  end),
         }
         _shutdown_popup_data.selected_caption = create_selected_caption()
