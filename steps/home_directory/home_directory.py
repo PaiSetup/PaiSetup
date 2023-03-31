@@ -134,6 +134,11 @@ class HomeDirectoryStep(Step):
                         log(f"{path}: WARNING - {path} exists, but should be removed")
                 else:
                     log(f"{path}: OK")
+            self._file_writer.write_section(
+                ".config/LinuxSetup/xinitrc_base",
+                "Remove unused directories in HOME",
+                [ f"rmdir ~/{x} 2>/dev/null" for x in removed_map] + [ f"rmdir ~/{x} 2>/dev/null" for x, _ in renamed_map]
+            )
 
     def _setup_xdg_paths(self):
         # Prepare our custom XDG dirs specification and generate some config files
