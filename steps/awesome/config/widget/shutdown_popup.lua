@@ -142,9 +142,14 @@ return function (linux_setup_root, terminal)
             end)
         end
         _shutdown_popup_data.close = function(self)
+            self.popup.visible = false
+            keygrabber.stop(grabber)
+        end
+        _shutdown_popup_data.toggle_open = function(self)
             if self.popup.visible then
-                self.popup.visible = false
-                keygrabber.stop(grabber)
+                self:close()
+            else
+                self:open()
             end
         end
         _shutdown_popup_data.select = function(self, index)
@@ -158,5 +163,5 @@ return function (linux_setup_root, terminal)
     end
 
     -- Initialize popup
-    _shutdown_popup_data:open()
+    _shutdown_popup_data:toggle_open()
 end
