@@ -29,6 +29,7 @@ local app_keybindings = require("utils.app_keybindings")
 -- Custom widgets
 local shutdown_popup = require("widget.shutdown_popup")
 local script_widget = require("widget.script_widget")
+local callback_widget = require("widget.callback_widget")
 local tray_widget = require("widget.tray_widget")
 local home_panel = require("widget.home_panel")
 local taglist = require("widget.taglist")
@@ -147,6 +148,7 @@ local audio_switch_widget = script_widget("audio_switch.sh", {button_info, butto
 local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = tray_widget()
 local warnings_widget = script_widget("warnings.sh", {button_info}, 4)
+local shutdown_popup_widget = callback_widget(function () shutdown_popup(linux_setup, terminal) end, "")
 audio_switch_widget:add_widget_to_update(volume_widget)
 
 -- Setup widgets for each screen
@@ -190,6 +192,7 @@ awful.screen.connect_for_each_screen(function(s)
                 trash_widget,
                 tray_widget,
                 warnings_widget,
+                shutdown_popup_widget,
             }),
             layout_box(s),
         },
