@@ -76,8 +76,12 @@ return function (linux_setup_root, terminal)
             return widget
         end
 
+        -- Prepare popup data
         _shutdown_popup_data = {}
+
+        -- Prepare fields of popup data
         _shutdown_popup_data.selection = 0
+        _shutdown_popup_data.selected_caption = create_selected_caption()
         _shutdown_popup_data.buttons = {
             create_button("", "Cancel",              function()                               end),
             create_button("", "Shutdown",            function() awful.spawn("shutdown now")   end),
@@ -95,22 +99,6 @@ return function (linux_setup_root, terminal)
             end),
             create_button("", "Exit GUI",            function() awful.spawn("pkill awesome")  end),
         }
-        _shutdown_popup_data.selected_caption = create_selected_caption()
-        _shutdown_popup_data.select = function(self, index)
-            self.selection = index
-            for _, button in pairs(self.buttons) do
-                button:set_focused(false)
-            end
-            self.buttons[self.selection]:set_focused(true)
-            self.selected_caption.text = self.buttons[self.selection].caption
-        end
-        _shutdown_popup_data.close = function(self)
-            if self.popup.visible then
-                self.popup.visible = false
-                keygrabber.stop(grabber)
-            end
-        end
-
         _shutdown_popup_data.popup = awful.popup {
             widget    = create_main_widget(_shutdown_popup_data.buttons),
             ontop     = true,
@@ -119,18 +107,9 @@ return function (linux_setup_root, terminal)
             visible   = false,
             bg        = beautiful.color_gray_dark
         }
-    end
 
-    -- By now the popup must have been used at least once
-    _shutdown_popup_data.popup.visible = not _shutdown_popup_data.popup.visible
-
-    -- Perform additional work if we just showed the popup
-    if _shutdown_popup_data.popup.visible then
-        -- Reset the selection
-        _shutdown_popup_data:select(1)
-
-        -- Intercept all keyboard input to navigate in the popup
-        keygrabber.run(function(mod, key, event)
+        -- Prepare methods of popup data
+        _shutdown_popup_data.keygrabber_callback = function(self, mod, key, event)
             if event ~= "press" then
                 return
             end
@@ -154,8 +133,30 @@ return function (linux_setup_root, terminal)
                 _shutdown_popup_data:close()
                 return
             end
-        end)
-    else
-        keygrabber.stop(grabber)
+        end
+        _shutdown_popup_data.open = function(self)
+            self.popup.visible = true
+            self:select(1)
+            keygrabber.run(function(mod, key, event)
+                _shutdown_popup_data:keygrabber_callback(mod, key, event)
+            end)
+        end
+        _shutdown_popup_data.close = function(self)
+            if self.popup.visible then
+                self.popup.visible = false
+                keygrabber.stop(grabber)
+            end
+        end
+        _shutdown_popup_data.select = function(self, index)
+            self.selection = index
+            for _, button in pairs(self.buttons) do
+                button:set_focused(false)
+            end
+            self.buttons[self.selection]:set_focused(true)
+            self.selected_caption.text = self.buttons[self.selection].caption
+        end
     end
+
+    -- Initialize popup
+    _shutdown_popup_data:open()
 end
