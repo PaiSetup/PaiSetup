@@ -1,6 +1,7 @@
 from steps.step import Step
 from utils import command
 import os
+import tempfile
 from utils.log import log
 from enum import Enum
 from pathlib import Path
@@ -63,6 +64,10 @@ class InvalidFileTypeUsageException(Exception):
 
 
 class ChangedFileTypeException(Exception):
+    pass
+
+
+class ParseFailureException(Exception):
     pass
 
 
@@ -218,7 +223,7 @@ class FileWriter(Step):
         contents and creates a new file in a user specific folder for .desktop files.
 
         Each line is matched to a zero or one patch function. Contents of a matched line is
-        pass to the patch function, which returns a new value for the current line.
+        passed to the patch function, which returns a new value for the current line.
 
         Parameters:
             source_name - name of file in /usr/share/applications with .deskop suffix
@@ -254,3 +259,85 @@ class FileWriter(Step):
 
                 lines.append(modified_line)
         self.write_lines(destination_file_path, lines, file_type=FileType.ConfigFile)
+
+    def patch_ini_file(self, file_path, patch_functions):
+        """
+        Parses an .ini file, applies patch functions to its contents and saves it back to disc.
+
+        Each line is matched to a zero or one patch function. Contents of a matched line is
+        passed to the patch function, which returns a new value for the current line. The patch
+        function is matched by section name and key name.
+
+        Parameters:
+            file_path - patch to the .ini file
+            patch_functions - a dictionary
+                keys are tuples of section name and key name used for matching the patch function, e.g. ("GraphicsSettings", "Resolution")
+                values are functions taking a current value and returning a new value
+        """
+
+        file_path = FileWriter.resolve_path(file_path)
+        with open(file_path, "r") as real_file:
+            with tempfile.NamedTemporaryFile(mode='w', delete=False, prefix=f"{file_path}.tmp_") as tmp_file:
+                section = ""
+                for line in real_file:
+                    line = line[:-1] # Remove the newline
+                    line_content, line_comment = FileWriter._split_comment(line)
+
+                    # Find out type of current line
+                    if not line_content: # Empty line
+                        pass
+                    elif line_content.startswith('[') and line_content.endswith(']'): # Section line
+                        section = line_content[1:-1]
+                    elif assignement := FileWriter._split_assignment(line_content): # Key-value pair line
+                        key, assignement, value = assignement
+
+                        # Apply a patch function if it matches
+                        try:
+                            patch_function = patch_functions[(section, key)]
+                            value = patch_function(value)
+                            line_content = f"{key}{assignement}{value}"
+                        except KeyError:
+                            pass
+                    else:
+                        raise ParseFailureException("Unknown line type")
+
+                    tmp_file.write(f"{line_content}{line_comment}\n")
+
+        os.rename(tmp_file.name, str(file_path))
+
+    @staticmethod
+    def _split_comment(line, comment_signs=['#']):
+        comment_start = [line.find(comment_sign) for comment_sign in comment_signs]
+        comment_start = min(comment_start)
+        if comment_start == -1:
+            return (line, "")
+
+        while comment_start > 0 and line[comment_start - 1] == ' ':
+            comment_start -= 1
+
+        return (
+            line[:comment_start],
+            line[comment_start:],
+        )
+
+
+    @staticmethod
+    def _split_assignment(line):
+        assignment_sign_start = line.find("=")
+        assignment_sign_end = assignment_sign_start
+        if assignment_sign_start == -1:
+            return None
+
+        while assignment_sign_start > 0 and line[assignment_sign_start - 1] == ' ':
+            assignment_sign_start -= 1
+        while assignment_sign_end < len(line) - 2 and line[assignment_sign_end + 1] == ' ':
+            assignment_sign_end += 1
+
+        key = line[:assignment_sign_start]
+        assignement = line[assignment_sign_start:assignment_sign_end+1]
+        value = line[assignment_sign_end + 1:]
+
+        if '=' in key or '=' in value:
+            return None
+
+        return key, assignement, value

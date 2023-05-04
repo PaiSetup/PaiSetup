@@ -36,6 +36,7 @@ from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
 from steps.programming_gamedev import ProgrammingGamedevStep
+from steps.qbittorrent import QBitTorrentStep
 from steps.raspberry_pi import RaspberryPiStep
 from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
@@ -94,6 +95,7 @@ steps = [
     HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
     BluetoothStep(),
     JavaStep(),
+    QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
 ]
 if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
     steps += [

@@ -131,7 +131,6 @@ class PackagesStep(Step):
                 "openssh",
                 "yay-git",
                 "dash-static-musl",
-                "qbittorrent",
                 "unzip",
                 "udisks2",
                 "udiskie",
