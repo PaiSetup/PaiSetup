@@ -54,6 +54,10 @@ class VscodeStep(Step):
         extensions.append("xaver.clang-format")
         extensions.append("shardulm94.trailing-spaces")
 
+        # Rust
+        extensions.append("rust-lang.rust-analyzer")
+        extensions.append("vadimcn.vscode-lldb")
+
         # Python
         log("Installing python formatters")
         with LogIndent():

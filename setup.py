@@ -33,6 +33,7 @@ from steps.home_directory.home_directory import HomeDirectoryStep
 from steps.charon import CharonStep
 from steps.picard import PicardStep
 from steps.programming_cpp import ProgrammingCppStep
+from steps.programming_rust import ProgrammingRustStep
 from steps.programming_python import ProgrammingPythonStep
 from steps.programming_common import ProgrammingCommonStep
 from steps.programming_gamedev import ProgrammingGamedevStep
@@ -108,6 +109,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         VscodeStep(build_dir),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
+        ProgrammingRustStep(),
         ProgrammingCommonStep(),
         ProgrammingGamedevStep(),
         BgChckerStep(build_dir),
