@@ -6,3 +6,7 @@
 
 # XDG Configuration paths for various apps
 https://wiki.archlinux.org/title/XDG_Base_Directory#Supported
+
+# Searching Linux tree
+https://livegrep.com/search/linux
+https://mariadb.com/kb/en/operating-system-error-codes/
