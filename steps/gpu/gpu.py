@@ -4,6 +4,7 @@ import os
 from enum import Enum
 from pathlib import Path
 from utils.log import log
+from steps.gpu.nvidia_enable_vsync import main as nvidia_enable_vsync
 
 
 class GpuVendor(Enum):
@@ -25,13 +26,11 @@ class GpuStep(Step):
             log("No gpu vendors detected")
 
         if GpuVendor.Nvidia in self._vendors:
-            log("Enabling vsync on Nvidia")
-            vsync_command = 'nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"'
-            command.run_command(vsync_command)
+            nvidia_enable_vsync()
             self._file_writer.write_section(
                 ".config/LinuxSetup/xinitrc_base",
                 "Enabling vsync on Nvidia",
-                [vsync_command],
+                ["PYTHONPATH=$LINUX_SETUP_ROOT $LINUX_SETUP_ROOT/steps/gpu/nvidia_enable_vsync.py"],
             )
 
     def express_dependencies(self, dependency_dispatcher):

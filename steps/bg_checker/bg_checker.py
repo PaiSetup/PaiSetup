@@ -50,8 +50,8 @@ class BgChckerStep(Step):
         dependency_dispatcher.register_listener(self.register_bgchecker_script)
         dependency_dispatcher.register_listener(self.register_bgchecher_daemon_check_script)
 
-    def register_bgchecker_script(self, script, interval_in_seconds, *, profile=None, **kwargs):
-        entry = (script, interval_in_seconds)
+    def register_bgchecker_script(self, script, interval_in_seconds, *, profile=None, delay=None, **kwargs):
+        entry = (script, interval_in_seconds, delay)
         if profile is None:
             profile = self._global_profile
 
@@ -80,7 +80,13 @@ class BgChckerStep(Step):
                     f"BgCheckerServer >{self._env.home() / '.log/BgCheckerServer 2>&1 &'}",
                     "",
                 ]
-            lines += [f'BgCheckerClient SetStatus {interval_in_seconds} "{script}" >/dev/null 2>&1 &' for script, interval_in_seconds in scripts]
+            for (script, interval_in_seconds, delay) in scripts:
+                line = f'BgCheckerClient SetStatus {interval_in_seconds} "{script}" >/dev/null 2>&1 &'
+                if delay is not None:
+                    line = f'(sleep {delay}; {line}) &'
+                else:
+                    line = f'{line}'
+                lines.append(line)
             self._file_writer.write_lines(profile.launch_script_path, lines, file_type=FileType.PosixShell)
 
             # Call the launch script in profile-specific xinitrc script

@@ -28,10 +28,11 @@ from steps.lightdm.lightdm import LightDmStep
 from steps.thunar import ThunarStep
 from steps.audio import AudioStep
 from steps.java import JavaStep
-from steps.gpu import GpuStep
+from steps.gpu.gpu import GpuStep
 from steps.home_directory.home_directory import HomeDirectoryStep
 from steps.charon import CharonStep
 from steps.picard import PicardStep
+from steps.screen_config_persistance import ScreenConfigPersistanceStep
 from steps.programming_cpp import ProgrammingCppStep
 from steps.programming_rust import ProgrammingRustStep
 from steps.programming_python import ProgrammingPythonStep
@@ -90,6 +91,7 @@ steps = [
     GtkThemeStep(regenerate_widget_theme=False, regenerate_icon_theme=False),
     FileAssociationsStep(),
     AudioStep(),
+    ScreenConfigPersistanceStep(),
     GpuStep(),
     FirefoxStep(is_default_browser=True),
     ThunarStep(is_main_machine=args.mode == SetupMode.main),
