@@ -42,6 +42,7 @@ cycle_sinks() {
         sink_ids="$(echo "$sink_ids" | grep -v hdmi-stereo)"
     fi
     sink_ids="$(echo "$sink_ids" | grep -oE "^[0-9]+ ")"
+    # shellcheck disable=SC2206
     sink_ids=($sink_ids) # wrap in an array
 
     max_sink_index=$((${#sink_ids[@]} - 1))
