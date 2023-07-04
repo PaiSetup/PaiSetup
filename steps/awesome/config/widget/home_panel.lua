@@ -229,17 +229,27 @@ local function create_repo_widget(linux_setup_root)
     end
 
     local function update_row(row, line)
-        -- Get components of the repository info
         local matcher = line:gmatch("%S+")
+
+        -- Get basic info
+        local repo_type = matcher()
         local repo_path = matcher()
-        local master_branch = matcher()
+
+        -- Report main branch of the repository.
+        if repo_type == 'git' then
+            local master_branch = matcher()
+            row.caption_repo.text = " " .. repo_path
+            row.caption_branch.text = master_branch
+            row.wrapped_caption_branch.visible = master_branch ~= '?'
+        else
+            row.caption_repo.text = "   " .. repo_path
+            row.wrapped_caption_branch.visible = false
+        end
+
+        -- Report additional warnings
         local flag1 = matcher() or ''
         local flag2 = matcher() or ''
         local flag3 = matcher() or ''
-
-        -- Set values to the row
-        row.caption_repo.text = " " .. repo_path
-        row.caption_branch.text = master_branch
         row.caption_flag1.text = flag1
         row.wrapped_caption_flag1.visible = flag1 ~= ''
         row.caption_flag2.text = flag2
