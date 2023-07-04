@@ -18,12 +18,21 @@ class ProgrammingRustStep(Step):
     def perform(self):
         command.run_command("rustup default stable")
 
+        rust_config = [
+            f'export CARGO_HOME="{self._cargo_home}"',
+            f'export RUSTUP_HOME="{self._rustup_home}"',
+            f'export PATH="$PATH:{self._cargo_home}/bin"',
+        ]
+
         self._file_writer.write_section(
             ".config/LinuxSetup/xinitrc_base",
             "Configure rust",
-            [
-                f'export CARGO_HOME="{self._cargo_home}"',
-                f'export RUSTUP_HOME="{self._rustup_home}"',
-                f'export PATH="$PATH:{self._cargo_home}/bin"'
-            ],
+            rust_config,
+        )
+
+        # Needed for VSCode, which seems to clear variables from xinitrc
+        self._file_writer.write_section(
+            ".profile",
+            "Configure rust",
+            rust_config,
         )
