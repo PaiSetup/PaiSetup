@@ -1,10 +1,10 @@
 #!/bin/sh
 
 get_daemons() {
-    echo "[A-z/]+python[23]? [A-z/]+ulauncher ulauncher"
+    echo "[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher ulauncher"
     echo "flameshot flameshot"
     echo "picom picom"
-    echo "[A-z/]+python[23]? [A-z/]+udiskie udiskie"
+    echo "[a-zA-Z/]+python[23]? [a-zA-Z/]+udiskie udiskie"
 }
 
 . $SCRIPTS_PATH/core/linux/is_daemon_running.sh
