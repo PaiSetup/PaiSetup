@@ -6,9 +6,9 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 fi
 
-warnings="$(BgCheckerClient ReadWarnings)"
+warnings="$(check_mate_client read)"
 if [ "$?" != "0" ]; then
-    warnings="BgCheckerServer is not running"
+    warnings="check_mate_server is not running"
 fi
 if [ -n "$warnings" ]; then
     [ "$BUTTON" = "$BUTTON_INFO" ] && notify-send "⚠️ Warnings" "$warnings\n"

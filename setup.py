@@ -42,7 +42,7 @@ from steps.qbittorrent import QBitTorrentStep
 from steps.raspberry_pi import RaspberryPiStep
 from steps.encryption.encryption import EncryptionStep
 from steps.notes import NotesStep
-from steps.bg_checker.bg_checker import BgChckerStep
+from steps.check_mate.check_mate import CheckMateStep
 from steps.awesome.awesome import AwesomeStep
 from steps.xsession import XsessionStep
 
@@ -114,7 +114,7 @@ if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
         ProgrammingRustStep(),
         ProgrammingCommonStep(),
         ProgrammingGamedevStep(),
-        BgChckerStep(build_dir),
+        CheckMateStep(build_dir),
     ]
 if args.mode == SetupMode.main:
     steps += [

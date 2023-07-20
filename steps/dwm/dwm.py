@@ -8,7 +8,7 @@ from utils.log import log
 import utils.external_project as ext
 from utils import command
 from steps.gui.gui import GuiStep
-from steps.bg_checker.bg_checker import BgChckerStep
+from steps.check_mate.check_mate import CheckMateStep
 
 
 class DwmStep(GuiStep):
@@ -26,8 +26,8 @@ class DwmStep(GuiStep):
         self._dunst_config_path = f"{self._linux_setup_config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._linux_setup_config_path}/sxhkdrc"
 
-        self._bg_checker_launch_script_path = f"{self._linux_setup_config_path}/run_bg_checker.sh"
-        self._bg_checker_profile = BgChckerStep.Profile(self._bg_checker_launch_script_path, self._xinitrc_path, is_default_wm)
+        self._periodic_check_launch_script = f"{self._linux_setup_config_path}/run_check_mate.sh"
+        self._periodic_check_profile = CheckMateStep.Profile(self._periodic_check_launch_script, self._xinitrc_path, is_default_wm)
 
         # fmt: off
         self._keybindings = [
@@ -76,9 +76,9 @@ class DwmStep(GuiStep):
 
         dependency_dispatcher.add_xsession("DWM", self._env.home() / self._xinitrc_path)
 
-        dependency_dispatcher.register_bgchecher_daemon_check_script("dunst", "dunst", profile=self._bg_checker_profile)
-        dependency_dispatcher.register_bgchecher_daemon_check_script("sxhkd", "sxhkd", profile=self._bg_checker_profile)
-        dependency_dispatcher.register_bgchecher_daemon_check_script("dwmblocks", "dwmblocks", profile=self._bg_checker_profile)
+        dependency_dispatcher.register_periodic_daemon_check("dunst", "dunst", profile=self._periodic_check_profile)
+        dependency_dispatcher.register_periodic_daemon_check("sxhkd", "sxhkd", profile=self._periodic_check_profile)
+        dependency_dispatcher.register_periodic_daemon_check("dwmblocks", "dwmblocks", profile=self._periodic_check_profile)
 
     def _compile_projects(self):
         dwm_dir = self.root_build_dir / "dwm"

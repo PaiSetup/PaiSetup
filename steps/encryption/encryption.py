@@ -18,5 +18,5 @@ class EncryptionStep(Step):
             KeyBinding("r").mod().shift().ctrl().executeShell("$LINUX_SETUP_ROOT/steps/encryption/mount_receipts.sh"),
         )
 
-        bgchecker_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
-        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 5)
+        check_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
+        dependency_dispatcher.register_periodic_check(check_script, 5)

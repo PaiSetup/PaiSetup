@@ -14,7 +14,7 @@ class CharonStep(Step):
         self._config_file_path = self._env.home() / ".config/charon/config.json"
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.register_bgchecher_daemon_check_script("Charon --config", "Charon")
+        dependency_dispatcher.register_periodic_daemon_check("Charon --config", "Charon")
 
     def perform(self):
         # Compile Charon

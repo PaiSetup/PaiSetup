@@ -27,11 +27,11 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.set_folder_icon(self._work_dir, "work")
         dependency_dispatcher.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
 
-        bgchecker_script = Path(__file__).parent / "setup_mount_dir.sh"
-        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 3)
+        check_script = Path(__file__).parent / "setup_mount_dir.sh"
+        dependency_dispatcher.register_periodic_check(check_script, 3)
 
-        bgchecker_script = Path(__file__).parent / "verify_homedir.sh"
-        dependency_dispatcher.register_bgchecker_script(bgchecker_script, 45)
+        check_script = Path(__file__).parent / "verify_homedir.sh"
+        dependency_dispatcher.register_periodic_check(check_script, 45)
 
         if self._is_main_machine:
             dependency_dispatcher.set_folder_icon(self._multimedia_dir, "multimedia")
@@ -176,7 +176,7 @@ class HomeDirectoryStep(Step):
     def _generate_files_whitelist(self):
         """
         We generate a file containing list of files that are allowed to be in home directory.
-        If there are some other files, there will be an error reported to bgcheckerd
+        If there are some other files, there will be an error reported by a periodic check.
         """
 
         # First add folders managed by this step

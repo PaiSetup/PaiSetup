@@ -12,9 +12,7 @@ class ScreenConfigPersistanceStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("autorandr")
-
-        bgchecker_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
-        dependency_dispatcher.register_bgchecker_script("autorandr -s latest --force >/dev/null", 120, delay=120)
+        dependency_dispatcher.register_periodic_check("autorandr -s latest --force >/dev/null", 120, delay=120)
 
     def perform(self):
         self._file_writer.write_section(
