@@ -29,11 +29,12 @@ class CheckMateStep(Step):
             self.is_global_profile = is_global_profile
 
     class PeriodicCheck:
-        def __init__(self, script, interval_in_seconds, delay, script_args):
+        def __init__(self, script, interval_in_seconds, delay, script_args, shell):
             self.script = script
             self.interval_in_seconds = interval_in_seconds
             self.delay = delay
             self.script_args = script_args
+            self.shell = shell
 
     def __init__(self, root_build_dir):
         super().__init__("CheckMate")
@@ -56,13 +57,13 @@ class CheckMateStep(Step):
         dependency_dispatcher.register_listener(self.register_periodic_check)
         dependency_dispatcher.register_listener(self.register_periodic_daemon_check)
 
-    def register_periodic_check(self, script, interval_in_seconds, *, profile=None, delay=None, script_args='', **kwargs):
+    def register_periodic_check(self, script, interval_in_seconds, *, profile=None, delay=None, script_args="", shell=False, **kwargs):
         if profile is None:
             profile = self._global_profile
         if profile not in self._profiles:
             self._profiles[profile] = []
 
-        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay, script_args)
+        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay, script_args, shell)
         self._profiles[profile].append(check)
 
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
@@ -86,11 +87,16 @@ class CheckMateStep(Step):
                     "",
                 ]
             for check in checks:
-                line = f'check_mate_client watch "{check.script}" {check.script_args} -- -w {1000*check.interval_in_seconds} -p {self._tcp_port} >/dev/null 2>&1 &'
+                line = "check_mate_client watch"
+                line += f' "{check.script}" {check.script_args}'
+                line += f" --"
+                line += f" -w {1000*check.interval_in_seconds}"
+                line += f" -p {self._tcp_port}"
+                if check.shell:
+                    line += " -s 1"
+                line += " >/dev/null 2>&1 &"
                 if check.delay is not None:
                     line = f"(sleep {check.delay}; {line}) &"
-                else:
-                    line = f"{line}"
                 lines.append(line)
             self._file_writer.write_lines(profile.launch_script_path, lines, file_type=FileType.PosixShell)
 
