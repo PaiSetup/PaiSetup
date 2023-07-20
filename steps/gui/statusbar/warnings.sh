@@ -6,7 +6,7 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $LINUX_SETUP_ROOT/steps/gui/shutdown.sh
 fi
 
-warnings="$(check_mate_client read)"
+warnings="$(check_mate_client read -p 50198)" # TODO do not hardcode this, take it from CheckMateStep somehow
 if [ "$?" != "0" ]; then
     warnings="check_mate_server is not running"
 fi

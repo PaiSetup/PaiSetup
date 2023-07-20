@@ -39,6 +39,7 @@ class CheckMateStep(Step):
         super().__init__("CheckMate")
 
         self._current_step_dir = Path(__file__).parent
+        self._tcp_port = 50198
         self._profiles = {}  # key=Profile, value=list of PeriodicCheck
         self._global_profile = CheckMateStep.Profile(".config/LinuxSetup/run_check_mate.sh", ".config/LinuxSetup/xinitrc_base", True, True)
 
@@ -81,11 +82,11 @@ class CheckMateStep(Step):
                     "pkill -f check_mate_client",
                     "pkill -f check_mate_server",
                     "",
-                    f"check_mate_server >{self._env.home() / '.log/check_mate_server 2>&1 &'}",
+                    f"check_mate_server -p {self._tcp_port} >{self._env.home() / '.log/check_mate_server 2>&1 &'}",
                     "",
                 ]
             for check in checks:
-                line = f'check_mate_client watch "{check.script}" {check.script_args} -- -w {1000*check.interval_in_seconds} >/dev/null 2>&1 &'
+                line = f'check_mate_client watch "{check.script}" {check.script_args} -- -w {1000*check.interval_in_seconds} -p {self._tcp_port} >/dev/null 2>&1 &'
                 if check.delay is not None:
                     line = f"(sleep {check.delay}; {line}) &"
                 else:
