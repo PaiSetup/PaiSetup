@@ -65,7 +65,7 @@ for path in $(find $LINUX_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/*
     path="$(realpath "$path")"
     path="$(echo "$path" | sed "s/\/home\/$USER/~/g")"
 
-    if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]; then
+    if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
         report_git "$path"
     else
         report_nogit "$path"
