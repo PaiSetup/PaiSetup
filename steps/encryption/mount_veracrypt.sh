@@ -36,9 +36,7 @@ if [ "$is_mounted" = 0 ]; then
 
     rm -rf ~/.cache/thumbnails/ ~/.thumbnails
 
-    [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly unounted and locked."
-
-    pkill -RTMIN+15 dwmblocks
+    [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly unmounted and locked."
 else
     if [ "$is_opened" = 0 ]; then
         # Device is not mounted, but it's opened (decrypted). We have to lock it.
@@ -79,7 +77,10 @@ else
         $FILE_MANAGER "$mount_point" >/dev/null 2>&1 &
 
         [ "$notify_success" = 0 ] && notify-send "✅ Drive decrypted" "Veracrypt image $image_path has been successfuly decrypted and mapped to $mount_point."
-
-        pkill -RTMIN+15 dwmblocks
     fi
 fi
+
+# Refresh status icons
+pkill -RTMIN+15 dwmblocks
+check_mate_client refresh Veracrypt -p 50198
+awesome-client 'awesome.emit_signal("refresh:warnings")'

@@ -19,4 +19,4 @@ class EncryptionStep(Step):
         )
 
         check_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 5)
+        dependency_dispatcher.register_periodic_check(check_script, 5, client_name="Veracrypt")

@@ -9,9 +9,6 @@ local rules_utils = require("utils.rules")
 local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
-local naughty = require("naughty")
-
-
 ----------------------------------------------------------------------------------- Global utils
 
 -- The main function builds a grid layout. This constant represent the size of one cell

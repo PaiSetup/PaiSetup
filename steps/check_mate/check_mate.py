@@ -29,12 +29,13 @@ class CheckMateStep(Step):
             self.is_global_profile = is_global_profile
 
     class PeriodicCheck:
-        def __init__(self, script, interval_in_seconds, delay_in_seconds, script_args, shell):
+        def __init__(self, script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name):
             self.script = script
             self.interval_in_seconds = interval_in_seconds
             self.delay_in_seconds = delay_in_seconds
             self.script_args = script_args
             self.shell = shell
+            self.client_name = client_name
 
     def __init__(self, root_build_dir):
         super().__init__("CheckMate")
@@ -57,13 +58,15 @@ class CheckMateStep(Step):
         dependency_dispatcher.register_listener(self.register_periodic_check)
         dependency_dispatcher.register_listener(self.register_periodic_daemon_check)
 
-    def register_periodic_check(self, script, interval_in_seconds, *, profile=None, delay_in_seconds=None, script_args="", shell=False, **kwargs):
+    def register_periodic_check(
+        self, script, interval_in_seconds, *, profile=None, delay_in_seconds=None, script_args="", shell=False, client_name=None, **kwargs
+    ):
         if profile is None:
             profile = self._global_profile
         if profile not in self._profiles:
             self._profiles[profile] = []
 
-        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell)
+        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name)
         self._profiles[profile].append(check)
 
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
@@ -92,6 +95,8 @@ class CheckMateStep(Step):
                 line += f" --"
                 if check.delay_in_seconds is not None:
                     line += f" -d {1000*check.delay_in_seconds}"
+                if check.client_name is not None:
+                    line += f" -n {check.client_name}"
                 line += f" -w {1000*check.interval_in_seconds}"
                 line += f" -p {self._tcp_port}"
                 if check.shell:

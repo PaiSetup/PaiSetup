@@ -7,7 +7,7 @@ local widget_wrappers = require("widget.wrappers")
 local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
-return function (name, buttons, timeout, initial_text)
+return function (name, buttons, timeout, initial_text, refresh_name)
     local command = linux_setup_status_scripts .. name
 
     -- Create the base widget for our watch widget, so we can insert some additional
@@ -60,6 +60,13 @@ return function (name, buttons, timeout, initial_text)
         handlers = gears.table.join(handlers, handler)
     end
     widget:buttons(handlers)
+
+    -- Register handler for refresh signal, if requested.
+    if refresh_name ~= nil then
+        awesome.connect_signal(refresh_name, function()
+            widget:run_script()
+        end)
+    end
 
     -- Create a function to manually rerun the underlying script and update widget's view.
     widget.run_script = function(self)
