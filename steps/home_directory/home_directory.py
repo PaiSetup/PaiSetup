@@ -31,7 +31,7 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.register_periodic_check(check_script, 3)
 
         check_script = Path(__file__).parent / "verify_homedir.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 45)
+        dependency_dispatcher.register_periodic_check(check_script, 45, multi_line=True)
 
         if self._is_main_machine:
             dependency_dispatcher.set_folder_icon(self._multimedia_dir, "multimedia")

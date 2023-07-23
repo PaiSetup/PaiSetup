@@ -29,13 +29,14 @@ class CheckMateStep(Step):
             self.is_global_profile = is_global_profile
 
     class PeriodicCheck:
-        def __init__(self, script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name):
+        def __init__(self, script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name, multi_line):
             self.script = script
             self.interval_in_seconds = interval_in_seconds
             self.delay_in_seconds = delay_in_seconds
             self.script_args = script_args
             self.shell = shell
             self.client_name = client_name
+            self.multi_line = multi_line
 
     def __init__(self, root_build_dir):
         super().__init__("CheckMate")
@@ -45,13 +46,13 @@ class CheckMateStep(Step):
         self._profiles = {}  # key=Profile, value=list of PeriodicCheck
         self._global_profile = CheckMateStep.Profile(".config/LinuxSetup/run_check_mate.sh", ".config/LinuxSetup/xinitrc_base", True, True)
 
-        self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3)
+        self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60)
         self.register_periodic_check(self._current_step_dir / "check_network_connectivity.sh", 10)
         self.register_periodic_check(self._current_step_dir / "check_network_interface.sh", 5)
         self.register_periodic_check(self._current_step_dir / "check_scripts_warnings.sh", 5)
         self.register_periodic_check(self._current_step_dir / "check_trash.sh", 15)
-        self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20)
+        self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20)
 
     def register_as_dependency_listener(self, dependency_dispatcher):
@@ -59,14 +60,24 @@ class CheckMateStep(Step):
         dependency_dispatcher.register_listener(self.register_periodic_daemon_check)
 
     def register_periodic_check(
-        self, script, interval_in_seconds, *, profile=None, delay_in_seconds=None, script_args="", shell=False, client_name=None, **kwargs
+        self,
+        script,
+        interval_in_seconds,
+        *,
+        profile=None,
+        delay_in_seconds=None,
+        script_args="",
+        shell=False,
+        client_name=None,
+        multi_line=False,
+        **kwargs,
     ):
         if profile is None:
             profile = self._global_profile
         if profile not in self._profiles:
             self._profiles[profile] = []
 
-        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name)
+        check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name, multi_line)
         self._profiles[profile].append(check)
 
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
@@ -99,6 +110,8 @@ class CheckMateStep(Step):
                     line += f" -n {check.client_name}"
                 line += f" -w {1000*check.interval_in_seconds}"
                 line += f" -p {self._tcp_port}"
+                if check.multi_line:
+                    line += f" -m MultiLineError"
                 if check.shell:
                     line += " -s 1"
                 line += " >/dev/null 2>&1 &"

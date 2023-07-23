@@ -27,9 +27,12 @@ class ProgrammingPythonStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".profile",
-            "Startup script to move python history",
-            ['export PYTHONSTARTUP="$HOME/.config/python/pythonrc"'],
+            ".config/LinuxSetup/xinitrc_base",
+            "Python config",
+            [
+                'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',
+                f'export PYTHONPATH="$PYTHONPATH:{self._env.get("LINUX_SETUP_ROOT")}"',
+            ],
         )
 
         self._file_writer.write_lines(
