@@ -19,5 +19,7 @@
         "editor.defaultFormatter": "xaver.clang-format"
     },
     "explorer.confirmDelete": false,
-    "trailing-spaces.highlightCurrentLine": false
+    "trailing-spaces.highlightCurrentLine": false,
+    "editor.minimap.renderCharacters": false,
+    "window.zoomLevel": -1
 }
