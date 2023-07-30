@@ -25,7 +25,7 @@ class ProgrammingRustStep(Step):
         ]
 
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Configure rust",
             rust_config,
         )

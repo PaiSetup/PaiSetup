@@ -23,7 +23,7 @@ class AudioStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Configure pulseaudio modules",
             [
                 "pactl unload-module module-suspend-on-idle &",

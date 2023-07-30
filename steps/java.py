@@ -13,7 +13,7 @@ class JavaStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Override locations of java cache",
             ['export _JAVA_OPTIONS=-"Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java -Djavafx.cachedir=$XDG_CACHE_HOME/openjfx"'],
         )

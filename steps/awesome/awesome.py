@@ -16,9 +16,9 @@ class AwesomeStep(GuiStep):
         self.fetch_git = fetch_git
         self._current_step_dir = Path(__file__).parent
 
-        self._linux_setup_config_path = ".config/LinuxSetup/awesome"
-        self._xresources_path = f"{self._linux_setup_config_path}/Xresources"
-        self._xinitrc_path = f"{self._linux_setup_config_path}/xinitrc"
+        self._config_path = ".config/PaiSetup/awesome"
+        self._xresources_path = f"{self._config_path}/Xresources"
+        self._xinitrc_path = f"{self._config_path}/xinitrc"
 
         self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
@@ -62,7 +62,7 @@ class AwesomeStep(GuiStep):
             "Call base script",
             [
                 "export WM=awesome",
-                ". ~/.config/LinuxSetup/xinitrc_base",
+                ". ~/.config/PaiSetup/xinitrc_base",
             ],
         )
         self._file_writer.write_section(

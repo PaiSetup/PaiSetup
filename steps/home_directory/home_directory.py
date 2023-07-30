@@ -25,7 +25,7 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.set_folder_icon("downloads", "downloads")
         dependency_dispatcher.set_folder_icon("mounts", "mounts")
         dependency_dispatcher.set_folder_icon(self._work_dir, "work")
-        dependency_dispatcher.set_folder_icon(self._env.get("LINUX_SETUP_ROOT"), "linux_setup")
+        dependency_dispatcher.set_folder_icon(self._env.get("PAI_SETUP_ROOT"), "pai_setup")
 
         check_script = Path(__file__).parent / "setup_mount_dir.sh"
         dependency_dispatcher.register_periodic_check(check_script, 3)
@@ -135,7 +135,7 @@ class HomeDirectoryStep(Step):
                 else:
                     log(f"{path}: OK")
             self._file_writer.write_section(
-                ".config/LinuxSetup/xinitrc_base",
+                ".config/PaiSetup/xinitrc_base",
                 "Remove unused directories in HOME",
                 [ f"rmdir ~/{x} 2>/dev/null" for x in removed_map] + [ f"rmdir ~/{x} 2>/dev/null" for x, _ in renamed_map]
             )
@@ -168,7 +168,7 @@ class HomeDirectoryStep(Step):
 
         # Set the variables in xinitrc too. We need it that early, so all GUI applications will have them loaded.
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
         )
@@ -191,7 +191,7 @@ class HomeDirectoryStep(Step):
         self.register_homedir_file(".cache")
         self.register_homedir_file(".config")
         self.register_homedir_file(".local")
-        self.register_homedir_file(self._env.get("LINUX_SETUP_ROOT"))
+        self.register_homedir_file(self._env.get("PAI_SETUP_ROOT"))
 
         # Add some files which don't belong to any step and it's not worth creating new steps
         self.register_homedir_file(".ssh")

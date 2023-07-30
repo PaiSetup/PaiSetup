@@ -15,8 +15,8 @@ local function set_wallpaper(s)
     end
 end
 
-local function set_random_wallpaper(linux_setup_root)
-    local command = linux_setup_root .. "/steps/gui/select_random_wallpaper.sh"
+local function set_random_wallpaper(pai_setup_root)
+    local command = pai_setup_root .. "/steps/gui/select_random_wallpaper.sh"
     awful.spawn.easy_async_with_shell(command, function()
         awesome.restart()
     end)

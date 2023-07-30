@@ -27,11 +27,11 @@ class ProgrammingPythonStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Python config",
             [
                 'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',
-                f'export PYTHONPATH="$PYTHONPATH:{self._env.get("LINUX_SETUP_ROOT")}"',
+                f'export PYTHONPATH="$PYTHONPATH:{self._env.get("PAI_SETUP_ROOT")}"', # TODO use variable in the script
             ],
         )
 

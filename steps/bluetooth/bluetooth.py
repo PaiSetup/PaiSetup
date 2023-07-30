@@ -16,9 +16,9 @@ class BluetoothStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Auto connect to trusted bluetooth devices",
-            ["$LINUX_SETUP_ROOT/steps/bluetooth/connect_to_trusted.sh &"],
+            ["$PAI_SETUP_ROOT/steps/bluetooth/connect_to_trusted.sh &"],
         )
 
 

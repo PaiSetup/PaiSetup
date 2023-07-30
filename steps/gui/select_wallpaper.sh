@@ -40,7 +40,7 @@ get_png_file() (
 # Generate theme color based on the png image
 get_main_color() (
     file_path="$1"
-    cache_directory="$HOME/.cache/LinuxSetupWallpapers"
+    cache_directory="$HOME/.cache/PaiSetupWallpapers"
     scheme_file_path="$cache_directory/$(basename "$file_path").colorscheme"
 
     if [ -f "$scheme_file_path" ]; then
@@ -80,13 +80,13 @@ setup_apps() (
     printf "[color]\nforeground = '$main_color'\n" > ~/.config/cava/config
 
     # Wallpaper path (consumed by AwesomeWM)
-    echo "  ~/.config/LinuxSetup/wallpaper" >&2
-    ln -sf "$file_path" ~/.config/LinuxSetup/wallpaper
+    echo "  ~/.config/PaiSetup/wallpaper" >&2
+    ln -sf "$file_path" ~/.config/PaiSetup/wallpaper
 
     # Gtk
     echo "  GTK theme"
-    ( $LINUX_SETUP_ROOT/steps/gtk_theme/generate_widget_theme.sh | sed "s/^/  /g" ) &
-    ( $LINUX_SETUP_ROOT/steps/gtk_theme/generate_icon_theme.sh | sed "s/^/  /g" ) &
+    ( $PAI_SETUP_ROOT/steps/gtk_theme/generate_widget_theme.sh | sed "s/^/  /g" ) &
+    ( $PAI_SETUP_ROOT/steps/gtk_theme/generate_icon_theme.sh | sed "s/^/  /g" ) &
 )
 
 # Execute WM-specific operations
@@ -96,18 +96,18 @@ setup_wm() (
     case "$WM" in
         "dwm")
             # If DWM calls this script, we have to set the wallpaper (DWM cannot do this)
-            feh --bg-scale ~/.config/LinuxSetup/wallpaper
+            feh --bg-scale ~/.config/PaiSetup/wallpaper
             ;;
         "awesome")
             # If AwesomeWM calls this script, it will restart shortly and load the new icons
-            $LINUX_SETUP_ROOT/steps/awesome/colorize_icons.sh 2>&1 | sed "s/^/  /g"
+            $PAI_SETUP_ROOT/steps/awesome/colorize_icons.sh 2>&1 | sed "s/^/  /g"
             ;;
     esac
 
     reset_wm="$1"
     if [ "$reset_wm" != 0 ]; then
         echo "  resetting WM" >&2
-        $LINUX_SETUP_ROOT/steps/gui/reset_wm.sh
+        $PAI_SETUP_ROOT/steps/gui/reset_wm.sh
     fi
 )
 

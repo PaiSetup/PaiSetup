@@ -28,9 +28,9 @@ class GpuStep(Step):
         if GpuVendor.Nvidia in self._vendors:
             nvidia_enable_vsync()
             self._file_writer.write_section(
-                ".config/LinuxSetup/xinitrc_base",
+                ".config/PaiSetup/xinitrc_base",
                 "Enabling vsync on Nvidia",
-                ["PYTHONPATH=$LINUX_SETUP_ROOT $LINUX_SETUP_ROOT/steps/gpu/nvidia_enable_vsync.py"],
+                ["PYTHONPATH=$PAI_SETUP_ROOT $PAI_SETUP_ROOT/steps/gpu/nvidia_enable_vsync.py"],
             )
 
     def express_dependencies(self, dependency_dispatcher):

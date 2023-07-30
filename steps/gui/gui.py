@@ -22,7 +22,7 @@ class GuiStep(Step):
         self._setup_xinitrc_base()
         self._setup_xresources_theme()
         self._setup_ulauncher_config()
-        self._file_writer.remove_file(".cache/LinuxSetupWallpapers/directories")
+        self._file_writer.remove_file(".cache/PaiSetupWallpapers/directories")
 
     def express_dependencies(self, dependency_dispatcher):
         global express_dependencies_called
@@ -79,17 +79,17 @@ class GuiStep(Step):
         self,
     ):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Start in home directory",
             ["cd || exit"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Automounting daemon",
             ["udiskie &"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Source xinitrc.d scripts",
             [
                 "if [ -d /etc/X11/xinit/xinitrc.d ] ; then",
@@ -101,12 +101,12 @@ class GuiStep(Step):
             ],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Set wallpaper",
-            ["$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 0"],
+            ["$PAI_SETUP_ROOT/steps/gui/select_random_wallpaper.sh 0"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Button names for statusbar scripts",
             [
                 "export BUTTON_ACTION=1",
@@ -117,27 +117,27 @@ class GuiStep(Step):
             ],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Override locations of X11 logs",
             ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Polish keyboard layout",
             ["(sleep 1; setxkbmap pl) &"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Set screen save timeout duration to 2 hours",
             ["xset s 7200 &"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Screenshot daemon",
             ["flameshot &"],
         )
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "App launcher",
             ["ulauncher --hide-window &"],
         )

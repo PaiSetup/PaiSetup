@@ -8,7 +8,7 @@
 #    pactl unload-module module-loopback ; pactl unload-module module-null-sink
 
 
-cache_dir="$HOME/.cache/LinuxSetupFfmpegRecording"
+cache_dir="$HOME/.cache/PaiSetupFfmpegRecording"
 modules_file="$cache_dir/pulseaudio_modules"
 ffmpeg_log_file="$cache_dir/ffmpeg_log"
 ffmpeg_pid_file="$cache_dir/ffmpeg_pid"

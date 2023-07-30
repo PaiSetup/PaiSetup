@@ -31,7 +31,7 @@ else
 fi
 
 # Module content
-$LINUX_SETUP_ROOT/steps/gui/statusbar/$module_name
+$PAI_SETUP_ROOT/steps/gui/statusbar/$module_name
 
 # Module ending
 if [ "$submodule_index" = "$((submodule_count - 1))" ]; then

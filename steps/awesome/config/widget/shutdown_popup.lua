@@ -8,7 +8,7 @@ local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
 local _shutdown_popup_data = nil
-return function (linux_setup_root, terminal)
+return function (pai_setup_root, terminal)
     -- Create the popup and all its data, if this is the first time we call it
     if _shutdown_popup_data == nil then
         buttons_count = 0
@@ -86,7 +86,7 @@ return function (linux_setup_root, terminal)
             create_button("", "Cancel",              function()                               end),
             create_button("", "Shutdown",            function() awful.spawn("shutdown now")   end),
             create_button("", "Update and shutdown", function()
-                update_command = terminal .. " sh -c '$LINUX_SETUP_ROOT/steps/gui/update_packages.sh 0'"
+                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/gui/update_packages.sh 0'"
                 time_before_shutdown = 3 -- not really needed, but it doesn't hurt
                 awful.spawn.easy_async_with_shell(update_command, function()
                     gears.timer.start_new(time_before_shutdown, function() awful.spawn("shutdown now") end)
@@ -94,7 +94,7 @@ return function (linux_setup_root, terminal)
             end),
             create_button("", "Reboot",              function() awful.spawn("reboot")         end),
             create_button("", "Reboot to Windows",   function()
-                update_command = terminal .. " sh -c '$LINUX_SETUP_ROOT/steps/gui/reboot_to_windows.sh'"
+                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/gui/reboot_to_windows.sh'"
                 awful.spawn(update_command)
             end),
             create_button("", "Exit GUI",            function() awful.spawn("pkill awesome")  end),

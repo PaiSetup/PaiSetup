@@ -11,10 +11,10 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     fi
 fi
 if [ "$BUTTON" = "$BUTTON_SCROLL_UP" ]; then
-    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2 0
+    $PAI_SETUP_ROOT/steps/gui/set_volume.sh 2 0
 fi
 if [ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ]; then
-    $LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1 0
+    $PAI_SETUP_ROOT/steps/gui/set_volume.sh 1 0
 fi
 
 if [ "$(pamixer --get-mute)" = "false" ]; then

@@ -20,20 +20,20 @@ fi
 # Override current state on button
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     if [ "$is_player_playing" = 0 ]; then
-        $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 0 0
+        $PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 0 0
         is_player_playing=1
         is_player_running=0
     else
-        $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 1 0
+        $PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 1 0
         is_player_playing=0
         is_player_running=0
     fi
 fi
 if [ "$BUTTON" = "$BUTTON_INFO" ]; then
-    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 5 0
+    $PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 5 0
 fi
 if [ "$BUTTON" = "$BUTTON_TERMINATE" ]; then
-    $LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 0
+    $PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 4 0
     is_player_playing=1
     is_player_running=1
 fi

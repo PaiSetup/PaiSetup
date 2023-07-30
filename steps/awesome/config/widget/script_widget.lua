@@ -8,7 +8,7 @@ local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
 
 return function (name, buttons, timeout, initial_text, refresh_name)
-    local command = linux_setup_status_scripts .. name
+    local command = pai_setup_status_scripts .. name
 
     -- Create the base widget for our watch widget, so we can insert some additional
     -- fields. This additional state is needed to implement alternating foreground colors.

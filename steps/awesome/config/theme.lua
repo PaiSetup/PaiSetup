@@ -7,7 +7,7 @@ local gears = require("gears")
 local themes_path = gfs.get_themes_dir()
 
 local theme = {}
-local linux_setup = os.getenv("LINUX_SETUP_ROOT")
+local pai_setup = os.getenv("PAI_SETUP_ROOT")
 
 
 
@@ -114,7 +114,7 @@ theme.wibar_height = dpi(30)
 
 
 ----------------------------------------------------------------------------------- Layout icons
-local icons_dir = linux_setup .. "/steps/awesome/config/icons_colorized/"
+local icons_dir = pai_setup .. "/steps/awesome/config/icons_colorized/"
 theme.layout_fairh = icons_dir.."fairh.png"
 theme.layout_fairv = icons_dir.."fairv.png"
 theme.layout_floating  = icons_dir.."floating.png"

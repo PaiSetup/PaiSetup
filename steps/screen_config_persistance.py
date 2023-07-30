@@ -16,7 +16,7 @@ class ScreenConfigPersistanceStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Reload screen config",
             ["(sleep 0.1 ; autorandr -l latest) &"],
         )

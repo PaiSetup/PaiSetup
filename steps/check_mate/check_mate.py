@@ -8,7 +8,7 @@ from utils.file_writer import FileType, FileWriter
 
 class CheckMateStep(Step):
     """
-    CheckMate is a client/server application written in Rust for the purposes of LinuxSetup. The clients connect to server,
+    CheckMate is a client/server application written in Rust for the purposes of PaiSetup. The clients connect to server,
     periodically runs a shell script and sends results to the server. The server is capable of returning all current
     statuses (from all other clients) on a request made by a client.
 
@@ -44,7 +44,7 @@ class CheckMateStep(Step):
         self._current_step_dir = Path(__file__).parent
         self._tcp_port = 50198
         self._profiles = {}  # key=Profile, value=list of PeriodicCheck
-        self._global_profile = CheckMateStep.Profile(".config/LinuxSetup/run_check_mate.sh", ".config/LinuxSetup/xinitrc_base", True, True)
+        self._global_profile = CheckMateStep.Profile(".config/PaiSetup/run_check_mate.sh", ".config/PaiSetup/xinitrc_base", True, True)
 
         self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60)

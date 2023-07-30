@@ -1,6 +1,6 @@
 class Step:
     """
-    Base class for all steps of setting up the Linux environment. A step is a logical part
+    Base class for all steps of setting up the working environment. A step is a logical part
     of the whole process, which can be filtered out by its name. Concrete steps should
     derive from this class and implement one or more of its methods.
     """

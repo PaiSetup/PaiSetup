@@ -2,7 +2,7 @@ commit 2df33022e20104dc8694b8d058dbebda2e45113a
 Author: MaciejDziuban <dziuban.maciej@gmail.com>
 Date:   Fri Nov 12 19:57:17 2021 +0100
 
-    /home/maciej/LinuxSetup/steps/st/1-st-alpha-0.8.2.diff
+    /home/maciej/PaiSetup/steps/st/1-st-alpha-0.8.2.diff
 
 diff --git a/config.def.h b/config.def.h
 index 6f05dce..b4fff92 100644

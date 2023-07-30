@@ -10,7 +10,7 @@ COLOR_WTF=FFFF00
 # Oomox variables
 oomox_config="$(mktemp -u)"
 cat << HEREDOC > $oomox_config
-NAME=LinuxSetupWidgetTheme
+NAME=PaiSetupWidgetTheme
 BG=$COLOR_THEME
 BTN_BG=$COLOR_GRAY_DARK
 BTN_FG=$COLOR_FONT
@@ -30,5 +30,5 @@ WM_BORDER_FOCUS=$COLOR_WTF
 WM_BORDER_UNFOCUS=$COLOR_WTF
 HEREDOC
 
-oomox-cli -o LinuxSetupWidgetTheme "$oomox_config"
+oomox-cli -o PaiSetupWidgetTheme "$oomox_config"
 rm "$oomox_config"

@@ -69,8 +69,8 @@ terminal = os.getenv("TERMINAL")
 user = os.getenv("USER")
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
-linux_setup = os.getenv("LINUX_SETUP_ROOT")
-linux_setup_status_scripts = linux_setup .. "/steps/gui/statusbar/"
+pai_setup = os.getenv("PAI_SETUP_ROOT")
+pai_setup_status_scripts = pai_setup .. "/steps/gui/statusbar/"
 button_action = os.getenv("BUTTON_ACTION")
 button_terminate = os.getenv("BUTTON_TERMINATE")
 button_info = os.getenv("BUTTON_INFO")
@@ -86,7 +86,7 @@ altkey = "Mod1"
 ----------------------------------------------------------------------------------- Theme setup
 beautiful.init(gears.filesystem.get_xdg_config_home() .. "/awesome/theme.lua")
 beautiful.font = "DejaVu Sans 15"
-beautiful.wallpaper = gears.filesystem.get_xdg_config_home() .. "/LinuxSetup/wallpaper"
+beautiful.wallpaper = gears.filesystem.get_xdg_config_home() .. "/PaiSetup/wallpaper"
 
 
 
@@ -148,7 +148,7 @@ local audio_switch_widget = script_widget("audio_switch.sh", {button_info, butto
 local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = tray_widget()
 local warnings_widget = script_widget("checks.py", {button_action, button_terminate, button_info}, 4, nil, "refresh:warnings")
-local shutdown_popup_widget = callback_widget(function () shutdown_popup(linux_setup, terminal) end, "")
+local shutdown_popup_widget = callback_widget(function () shutdown_popup(pai_setup, terminal) end, "")
 audio_switch_widget:add_widget_to_update(volume_widget)
 
 -- Setup widgets for each screen
@@ -161,7 +161,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Setup home tag and panel
     get_home_tag(s).is_home = true
-    home_panel(tags.home, linux_setup, user, s)
+    home_panel(tags.home, pai_setup, user, s)
 
     -- Create the bar
     s.mywibox = awful.wibar({ position = "top", screen = s, })
@@ -248,8 +248,8 @@ globalkeys = gears.table.join(
     --------------------------- Awesome WM control
     awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                            {description = "show help",           group = "AwesomeWM"}),
     awful.key({ modkey, "Shift" }, "q",         awesome.restart,                                                    {description = "reload awesome",      group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "w",         function () utils.set_random_wallpaper(linux_setup)            end, {description = "change wallpaper",    group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(linux_setup, terminal)              end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "w",         function () utils.set_random_wallpaper(pai_setup)              end, {description = "change wallpaper",    group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(pai_setup, terminal)                end, {description = "show shutdown popup", group = "AwesomeWM"}),
 
     --------------------------- Layout control
     awful.key(           { modkey }, "l", function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),

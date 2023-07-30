@@ -18,32 +18,32 @@ class DwmStep(GuiStep):
         self.fetch_git = fetch_git
         self._current_step_dir = Path(__file__).parent
 
-        self._linux_setup_config_path = ".config/LinuxSetup/dwm"
-        self._xresources_path = f"{self._linux_setup_config_path}/Xresources"
-        self._xinitrc_path = f"{self._linux_setup_config_path}/xinitrc"
+        self._config_path = ".config/PaiSetup/dwm"
+        self._xresources_path = f"{self._config_path}/Xresources"
+        self._xinitrc_path = f"{self._config_path}/xinitrc"
 
-        self._picom_config_path = f"{self._linux_setup_config_path}/picom.conf"
-        self._dunst_config_path = f"{self._linux_setup_config_path}/dunstrc"
-        self._sxhkd_config_path = f"{self._linux_setup_config_path}/sxhkdrc"
+        self._picom_config_path = f"{self._config_path}/picom.conf"
+        self._dunst_config_path = f"{self._config_path}/dunstrc"
+        self._sxhkd_config_path = f"{self._config_path}/sxhkdrc"
 
-        self._periodic_check_launch_script = f"{self._linux_setup_config_path}/run_check_mate.sh"
+        self._periodic_check_launch_script = f"{self._config_path}/run_check_mate.sh"
         self._periodic_check_profile = CheckMateStep.Profile(self._periodic_check_launch_script, self._xinitrc_path, is_default_wm)
 
         # fmt: off
         self._keybindings = [
-            KeyBinding("w").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/select_random_wallpaper.sh"),
+            KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/gui/select_random_wallpaper.sh"),
             KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
-            KeyBinding("BackSpace").mod().shift().executeShell("$LINUX_SETUP_ROOT/steps/gui/shutdown.sh"),
+            KeyBinding("BackSpace").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/gui/shutdown.sh"),
 
-            KeyBinding("XF86AudioMute").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 0"),
-            KeyBinding("XF86AudioLowerVolume").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 1"),
-            KeyBinding("XF86AudioRaiseVolume").executeShell("$LINUX_SETUP_ROOT/steps/gui/set_volume.sh 2"),
+            KeyBinding("XF86AudioMute").executeShell("$PAI_SETUP_ROOT/steps/gui/set_volume.sh 0"),
+            KeyBinding("XF86AudioLowerVolume").executeShell("$PAI_SETUP_ROOT/steps/gui/set_volume.sh 1"),
+            KeyBinding("XF86AudioRaiseVolume").executeShell("$PAI_SETUP_ROOT/steps/gui/set_volume.sh 2"),
 
-            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_brightness.sh 0"),
-            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/set_brightness.sh 1"),
+            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/gui/set_brightness.sh 0"),
+            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/gui/set_brightness.sh 1"),
 
-            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 3 1"),
-            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$LINUX_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1"),
+            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 3 1"),
+            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/gui/access_rhythmbox.sh 2 1"),
         ]
         # fmt: on
 
@@ -117,7 +117,7 @@ class DwmStep(GuiStep):
             "Call base script",
             [
                 "export WM=dwm",
-                ". ~/.config/LinuxSetup/xinitrc_base",
+                ". ~/.config/PaiSetup/xinitrc_base",
             ],
         )
         self._file_writer.write_section(
@@ -152,7 +152,7 @@ class DwmStep(GuiStep):
         self._file_writer.write_section(
             self._xinitrc_path,
             "Run DWM",
-            ['dbus-launch --sh-syntax --exit-with-session "$LINUX_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
+            ['dbus-launch --sh-syntax --exit-with-session "$PAI_SETUP_ROOT/steps/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
 

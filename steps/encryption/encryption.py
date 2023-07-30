@@ -14,8 +14,8 @@ class EncryptionStep(Step):
             "cryptomator-bin",
         )
         dependency_dispatcher.add_keybindings(
-            KeyBinding("x").mod().shift().ctrl().executeShell("$LINUX_SETUP_ROOT/steps/encryption/mount_nice.sh"),
-            KeyBinding("r").mod().shift().ctrl().executeShell("$LINUX_SETUP_ROOT/steps/encryption/mount_receipts.sh"),
+            KeyBinding("x").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/encryption/mount_nice.sh"),
+            KeyBinding("r").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/encryption/mount_receipts.sh"),
         )
 
         check_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"

@@ -22,7 +22,7 @@ case "$selection" in
         fi
         ;;
     "Connect to trusted")
-        $LINUX_SETUP_ROOT/steps/bluetooth/connect_to_trusted.sh
+        $PAI_SETUP_ROOT/steps/bluetooth/connect_to_trusted.sh
         ;;
     *)
         notify-send "Error" "Bluetooth panel got invalid response from rofi"

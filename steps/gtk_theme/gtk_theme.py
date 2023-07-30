@@ -29,8 +29,8 @@ class GtkThemeStep(Step):
 
     def __init__(self, *, regenerate_widget_theme, regenerate_icon_theme):
         super().__init__("GtkTheme")
-        self.widget_theme_name = "LinuxSetupWidgetTheme"
-        self.icon_theme_name = "LinuxSetupIconTheme"
+        self.widget_theme_name = "PaiSetupWidgetTheme"
+        self.icon_theme_name = "PaiSetupIconTheme"
         self._regenerate_widget_theme = regenerate_widget_theme
         self._regenerate_icon_theme = regenerate_icon_theme
         self._widget_theme_path = self._env.home() / ".themes" / self.widget_theme_name  # TODO can it be moved to ~/.local?
@@ -121,7 +121,7 @@ class GtkThemeStep(Step):
     def _generate_gtk2_config(self):
         log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "Ensure gkt2 configs are in ~/.config",
             ['export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc"'],
         )

@@ -59,7 +59,7 @@ report_nogit() {
 
 IFS="
 "
-for path in $(find $LINUX_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/* -maxdepth 0 -type d); do
+for path in $(find $PAI_SETUP_ROOT $SCRIPTS_PATH/.. $NOTES_PATH $PROJECT_DIR/* -maxdepth 0 -type d); do
     # Go to repo
     cd "$path" || continue
     path="$(realpath "$path")"

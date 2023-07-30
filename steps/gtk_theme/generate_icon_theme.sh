@@ -6,8 +6,8 @@ COLOR_GRAY_LIGHT="$(xrdb -get color2)"
 COLOR_FONT="$(xrdb -get color4)"
 
 # Prepare theme directory
-src_theme_dir="$LINUX_SETUP_ROOT/steps/gtk_theme/icon_theme"
-dst_theme_dir="$HOME/.local/share/icons/LinuxSetupIconTheme"
+src_theme_dir="$PAI_SETUP_ROOT/steps/gtk_theme/icon_theme"
+dst_theme_dir="$HOME/.local/share/icons/PaiSetupIconTheme"
 rm -rf "$dst_theme_dir"
 mkdir -p "$dst_theme_dir"
 
@@ -44,8 +44,8 @@ small_pattern="s/#F5A97F/$COLOR_THEME/g"
 
 # Simply symlink some directories or colorize icons in them (more expensive)
 mkdir -p "$dst_theme_dir/emblems"
-ln -s              "$LINUX_SETUP_ROOT/steps/gtk_theme/emblems_64" "$dst_theme_dir/emblems/64"
-ln -s              "$LINUX_SETUP_ROOT/steps/gtk_theme/emblems_512" "$dst_theme_dir/emblems/512"
+ln -s              "$PAI_SETUP_ROOT/steps/gtk_theme/emblems_64" "$dst_theme_dir/emblems/64"
+ln -s              "$PAI_SETUP_ROOT/steps/gtk_theme/emblems_512" "$dst_theme_dir/emblems/512"
 symlink_directory  "emblems/48"
 symlink_directory  "index.theme"
 symlink_directory  "emotes"

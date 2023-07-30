@@ -162,7 +162,7 @@ end
 
 ----------------------------------------------------------------------------------- Concrete widgets
 
-local function create_disk_usage_widget(linux_setup_root)
+local function create_disk_usage_widget(pai_setup_root)
     local set_captions_callback = function(middle_caption, extra_caption, value, matcher)
         size = matcher()
         used = matcher()
@@ -172,7 +172,7 @@ local function create_disk_usage_widget(linux_setup_root)
         extra_caption.text = used .. " / " .. size .. " (" .. value .. "%)"
     end
     local interval = 5
-    local command = linux_setup_root .. "/steps/awesome/get_disk_usage.sh "
+    local command = pai_setup_root .. "/steps/awesome/get_disk_usage.sh "
 
     -- Widget for mountpoints
     local widget1 = create_arcchart_widget(set_captions_callback, true, command .. "/",         interval)
@@ -185,7 +185,7 @@ local function create_disk_usage_widget(linux_setup_root)
     return widget
 end
 
-local function create_repo_widget(linux_setup_root)
+local function create_repo_widget(pai_setup_root)
     -- This widget can display git repositories present in the system and some info about
     -- them. It relies upon get_repos.sh script written in bash. The script produces output
     -- like following: <repo_path> <master_branch> <flag1> <flag2> <flag3>, where
@@ -255,7 +255,7 @@ local function create_repo_widget(linux_setup_root)
         row.wrapped_caption_flag3.visible = flag3 ~= ''
     end
 
-    local command = linux_setup_root .. "/steps/awesome/get_repos.sh"
+    local command = pai_setup_root .. "/steps/awesome/get_repos.sh"
     local interval = 10
     local center_vertically = false
     return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically)
@@ -322,7 +322,7 @@ local function create_calendar_widget()
     return widget
 end
 
-local function create_currency_widget(linux_setup_root)
+local function create_currency_widget(pai_setup_root)
     local create_row = function()
         local left_currency = wibox.widget.textbox()
         local middle_arrow = wibox.widget.textbox()
@@ -345,13 +345,13 @@ local function create_currency_widget(linux_setup_root)
         row.left_currency.text = matcher()
         row.right_currency.text = matcher()
     end
-    local command = linux_setup_root .. "/steps/awesome/get_currency_exchange.sh"
+    local command = pai_setup_root .. "/steps/awesome/get_currency_exchange.sh"
     local interval = 3600
     local center_vertically = true
     return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically)
 end
 
-local function create_system_usage_widget(linux_setup_root)
+local function create_system_usage_widget(pai_setup_root)
     local interval = 2
 
     -- CPU widget
@@ -359,7 +359,7 @@ local function create_system_usage_widget(linux_setup_root)
         middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
         extra_caption.text = value .. "%"
     end
-    local command = linux_setup_root .. "/steps/awesome/get_cpu_usage.sh"
+    local command = pai_setup_root .. "/steps/awesome/get_cpu_usage.sh"
     local cpu_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
 
     -- Memory widget
@@ -367,7 +367,7 @@ local function create_system_usage_widget(linux_setup_root)
         middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
         extra_caption.text = value .. "%"
     end
-    local command = linux_setup_root .. "/steps/awesome/get_mem_usage.sh"
+    local command = pai_setup_root .. "/steps/awesome/get_mem_usage.sh"
     local mem_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
 
     -- Combine them
@@ -452,7 +452,7 @@ end
 
 ----------------------------------------------------------------------------------- Main
 
-return function(visible_tag, linux_setup_root, user, screen)
+return function(visible_tag, pai_setup_root, user, screen)
     -- Main function composing the panel from above widgets
 
     -- Some size constants
@@ -484,12 +484,12 @@ return function(visible_tag, linux_setup_root, user, screen)
         root_layout:add_widget_at(widget, row, col, rowspan, colspan)
     end
     add_widget_to_grid(create_greeting_widget(user),                 1, 1,   2, 1)
-    add_widget_to_grid(create_layout_list_widget(linux_setup_root),  3, 1,   1, 1)
-    add_widget_to_grid(create_repo_widget(linux_setup_root),         1, 3,   2, 3)
-    add_widget_to_grid(create_currency_widget(linux_setup_root),     1, 2,   1, 1)
+    add_widget_to_grid(create_layout_list_widget(pai_setup_root),    3, 1,   1, 1)
+    add_widget_to_grid(create_repo_widget(pai_setup_root),           1, 3,   2, 3)
+    add_widget_to_grid(create_currency_widget(pai_setup_root),       1, 2,   1, 1)
     add_widget_to_grid(create_calendar_widget(),                     2, 2,   1, 1)
-    add_widget_to_grid(create_system_usage_widget(linux_setup_root), 3, 2,   1, 2)
-    add_widget_to_grid(create_disk_usage_widget(linux_setup_root),   3, 4,   1, 2)
+    add_widget_to_grid(create_system_usage_widget(pai_setup_root),   3, 2,   1, 2)
+    add_widget_to_grid(create_disk_usage_widget(pai_setup_root),     3, 4,   1, 2)
 
     -- Setup window and embed the grid layout in it
     local widget = wibox {

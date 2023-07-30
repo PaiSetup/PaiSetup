@@ -33,7 +33,7 @@ class NotesStep(Step):
         )
 
         self._file_writer.write_section(
-            ".config/LinuxSetup/xinitrc_base",
+            ".config/PaiSetup/xinitrc_base",
             "My personal notes",
             [f'export NOTES_PATH="{self._notes_dir}"'],
         )

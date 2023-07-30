@@ -23,7 +23,7 @@ class ShellStep(Step):
             ".profile",
             "Some constants",
             [
-                f"export LINUX_SETUP_ROOT={self._root_dir}",
+                f"export PAI_SETUP_ROOT={self._root_dir}",
                 "export EDITOR=vim",
                 "export FILE_MANAGER=thunar",
             ],
