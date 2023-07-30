@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from steps.step import Step
-from steps.linux import get_steps
+from steps import get_steps
 from utils.dependency_dispatcher import DependencyDispatcher
 from utils.env import EnvManager
 from utils.file_writer import FileWriter
