@@ -1,4 +1,5 @@
 import os
+from utils.os_function import *
 from pathlib import Path
 
 
@@ -9,9 +10,20 @@ class EnvConflict(Exception):
 class EnvManager:
     def __init__(self, root_dir):
         self._map = {}
-        self.set("HOME", os.environ["HOME"], setenv=False, is_path=True)
-        self.set("USER", os.environ["USER"], setenv=False, is_path=False)
-        if "DISPLAY" in os.environ:
+
+        system = OperatingSystem.current()
+        if system.is_windows():
+            home = os.environ["HOMEPATH"]
+            user = os.environ["USERNAME"]
+            display = None
+        elif system.is_linux():
+            home = os.environ["HOME"]
+            user = os.environ["USER"]
+            display = os.environ["DISPLAY"] if "DISPLAY" in os.environ else None
+
+        self.set("HOME", home, setenv=False, is_path=True)
+        self.set("USER", user, setenv=False, is_path=False)
+        if display:
             self.set("DISPLAY", os.environ["DISPLAY"], setenv=False, is_path=False)
         else:
             self.set("DISPLAY", "", setenv=False, is_path=False)
