@@ -2,6 +2,7 @@ import subprocess
 import shlex
 import os
 import utils.os_helpers
+from utils.os_function import OperatingSystem
 from pathlib import Path
 import re
 
@@ -20,7 +21,7 @@ class CommandError(Exception):
 
 
 def run_command(command, *, shell=False, stdin=subprocess.PIPE, return_stdout=False, print_stdout=False):
-    if not shell:
+    if not shell and not OperatingSystem.current().is_windows():
         command = shlex.split(command)
 
     if return_stdout and print_stdout:

@@ -69,7 +69,7 @@ class VscodeStepBase(Step):
         args = (f"--install-extension {x}" for x in extension_names)
         args = " ".join(args)
         log(f"Installing extensions: {', '.join(extension_names)}")
-        command.run_command(f"{self._get_vscode_command()} {args}")
+        command.run_command(f"{self._get_vscode_command()} {args}", shell=True)
 
     def _install_python_package(self, package_name, import_name=None):
         if import_name is None:
