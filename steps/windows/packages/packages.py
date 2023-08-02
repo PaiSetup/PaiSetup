@@ -18,6 +18,7 @@ class PackagesStep(Step):
         self._programs_dir = Path("D:/Programs")
         self._hw_tools_dir = Path("D:/HwTools")
         self._desktop_dir = Path("D:/Desktop")
+        self._games_dir = Path("D:/Games")
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_packages)
@@ -39,7 +40,7 @@ class PackagesStep(Step):
 
     def install_package(self, package):
         # Gather required info for this package
-        package_info = PackageInfo(package, self._programs_dir, self._hw_tools_dir)
+        package_info = PackageInfo(package, self._programs_dir, self._hw_tools_dir, self._games_dir)
 
         # Install it with chocolatey
         install_command = f"choco install {package} --yes"
@@ -50,7 +51,7 @@ class PackagesStep(Step):
         if package_info.package_args:
             install_command += f' --packageparameters="{package_info.package_args}"'
         log(install_command)
-        # command.run_command(install_command)
+        command.run_command(install_command)
 
         # Verify we really installed something
         if package_info.install_dir:

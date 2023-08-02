@@ -8,4 +8,10 @@ class HwToolsStep(Step):
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "msiafterburner",
+            "hwmonitor",
+            "furmark",
+            "crystaldiskmark",
+            "crystaldiskinfo.install",
+            "xtreme-tuner",
+            "killdisk-freeware",
         )
