@@ -1,6 +1,7 @@
 import enum
 import tempfile
 import re
+from utils.windows_registry import HKLM, set_registry_value_string
 
 
 class Installer(enum.Enum):
@@ -244,8 +245,7 @@ class PackageInfo:
             self.desktop_files_to_delete.append("VLC media player.lnk")
 
             # Vlc installer ignores the directory selection argument and goes straight to the registry
-            # set_registry_value_string -hive "HKLM"-path "SOFTWARE\VideoLAN\VLC"-valueName "InstallDir"-value $unquotedInstallationDir
-            raise NotImplementedError()  # TODO: implement registry setting to select installation dir
+            set_registry_value_string(HKLM, r"SOFTWARE\VideoLAN\VLC", "InstallDir", self.install_dir)
         elif package_name == "vscodium":
             self.install_dir = programs_dir / "Vscodium"
             self._set_installer(Installer.Inno)

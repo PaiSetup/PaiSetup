@@ -288,7 +288,7 @@ class FileWriter(Step):
                         pass
                     elif line_content.startswith('[') and line_content.endswith(']'): # Section line
                         section = line_content[1:-1]
-                    elif assignement := FileWriter._split_assignment(line_content): # Key-value pair line
+                    elif assignement := FileWriter._split_assignment(line_content): # Key-value, pair line
                         key, assignement, value = assignement
 
                         # Apply a patch function if it matches

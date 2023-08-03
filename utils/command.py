@@ -2,7 +2,7 @@ import subprocess
 import shlex
 import os
 import utils.os_helpers
-from utils.os_function import OperatingSystem
+from utils.os_function import OperatingSystem, windows_only
 from pathlib import Path
 import re
 
@@ -64,3 +64,10 @@ def get_missing_packages(arg, known_package_groups):
     # Extract package name from the line
     missing = [re.search("'([^']+)'", x).group(1) for x in missing]
     return missing
+
+
+@windows_only
+def run_powershell_command(command, *args, **kwargs):
+    if type(command) == list:
+        command = ';'.join(command)
+    return run_command(["powershell", "-Command", command], *args, **kwargs)
