@@ -28,7 +28,7 @@ class ExplorerStep(Step):
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCortanaButton", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowTaskViewButton", 0)
-        set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", "PeopleBand", 0)
+        # set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", "PeopleBand", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", 2)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\PenWorkspace", "PenWorkspaceButtonDesiredVisibility", 0)
         set_registry_value_dword(HKLM, r"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "NoTaskGrouping", 1)
@@ -50,9 +50,9 @@ class ExplorerStep(Step):
         delete_registry_sub_key_tree(HKCR, r"*\shellex\ContextMenuHandlers", "FormatFactoryShell")
         delete_registry_sub_key_tree(HKCR, r"*\shellex\ContextMenuHandlers", "EPP")
         delete_registry_sub_key_tree(HKCR, r"*\shellex\ContextMenuHandlers", "MEGA (Context menu)")
-        set_registry_value_string(
-            HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked", "{9F156763-7844-4DC4-B2B1-901F640F5155}", ""
-        )
+        #set_registry_value_string(
+        #    HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked", "{9F156763-7844-4DC4-B2B1-901F640F5155}", ""
+        #)
 
     def _set_dark_theme(self):
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", 0)

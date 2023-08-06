@@ -133,7 +133,7 @@ class PackageInfo:
                     "UseCredentialManager=Disabled",  # Shouldn't be needed, there is the /NoCredentialManager option, but it doesn't work
                 ]
             self._append_package_arg("/GitOnlyOnPath /NoGuiHereIntegration")
-            self._append_install_arg("/LOADINF=$infFile")
+            self._append_install_arg(f"/LOADINF={inf_file_path}")
         elif package_name == "godot":
             # Binary file installed in <chocolatey_dir>/bin
             pass

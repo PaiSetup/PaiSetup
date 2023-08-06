@@ -29,8 +29,8 @@ class EnvManager:
             self.set("DISPLAY", "", setenv=False, is_path=False)
         self.set("PAI_SETUP_ROOT", root_dir, is_path=True)
 
-    def set(self, name, value, setenv=True, is_path=False):
-        if name in self._map:
+    def set(self, name, value, setenv=True, is_path=False, force=False):
+        if not force and name in self._map:
             raise EnvConflict(f"Duplicate name: {name}")
         if is_path:
             value = Path(value)

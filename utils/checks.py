@@ -11,7 +11,7 @@ def require_check(check, warning_message):
 
 
 @windows_only
-def is_windows_activated():
+def is_windows_activated(): # TODO remove this and call ActivateWindowsStep
     powershell_command = [
         '$output = Get-CIMInstance -query "select LicenseStatus from SoftwareLicensingProduct where LicenseStatus=1"  | Format-List LicenseStatus',
         "$isActivated = -Not [string]::IsNullOrEmpty($output)",

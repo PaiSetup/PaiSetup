@@ -12,6 +12,6 @@ class HwToolsStep(Step):
             "furmark",
             "crystaldiskmark",
             "crystaldiskinfo.install",
-            "xtreme-tuner",
+            # "xtreme-tuner",
             "killdisk-freeware",
         )

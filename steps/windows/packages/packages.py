@@ -28,6 +28,7 @@ class PackagesStep(Step):
         dependency_dispatcher.register_listener(self.list_packages)
 
     def perform(self):
+        self._refresh_path()
         log(f"Required packages: {self._packages}")
         if self._skip_already_installed:
             packages_to_install = self._get_missing_packages(self._packages)
@@ -40,6 +41,7 @@ class PackagesStep(Step):
 
         for package in packages_to_install:
             self.install_package(package)
+        self._refresh_path()
 
     def install_package(self, package):
         # Gather required info for this package
@@ -109,13 +111,28 @@ class PackagesStep(Step):
         return [line for line in lines if not should_remove(line)]
 
     def _get_missing_packages(self, required_packages):
-        installed_packages = command.run_command("choco list --local-only", return_stdout=True)
+        installed_packages = command.run_command("choco list", return_stdout=True)
         installed_packages = installed_packages.splitlines()
         installed_packages = self._remove_chocolatey_warnings(installed_packages, True)
-        installed_packages = {x.split()[0] for x in installed_packages}
+        installed_packages = {x.split()[0].lower() for x in installed_packages}
 
-        required_packages = set(required_packages)
+        required_packages = {x.lower() for x in required_packages}
 
         missing_packages = required_packages.difference(installed_packages)
         missing_packages = list(missing_packages)
         return missing_packages
+
+    def _refresh_path(self):
+        log("Refreshing PATH variable")
+        powershell_command = [
+            "Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1",
+            "refreshenv | out-null",
+            "echo $env:PATH",
+        ]
+        new_path = command.run_powershell_command(powershell_command, return_stdout=True).strip()
+        self._env.set("PATH", new_path, force=True)
+
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages(
+            "firefox",
+        )
