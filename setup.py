@@ -40,13 +40,9 @@ steps = get_steps(args, root_dir, build_dir, secret_dir)
 # Filter steps by command line args
 if args.steps != None:
     allowed_names = [x.lower() for x in args.steps]
-    steps = [step for step in steps if step.name.lower() in allowed_names]
-
-# List steps
-if args.list_steps:
     for step in steps:
-        print(step.name)
-    exit(0)
+        if step.name.lower() not in allowed_names:
+            step.set_enabled(False)
 
 # Setup env
 for step in steps:
@@ -57,8 +53,16 @@ dependencies = DependencyDispatcher()
 for step in steps:
     step.register_as_dependency_listener(dependencies)
 for step in steps:
-    step.express_dependencies(dependencies)
+    if step.is_enabled():
+        step.express_dependencies(dependencies)
 dependencies.summary()
+
+# List steps
+if args.list_steps:
+    for step in steps:
+        if step.is_enabled():
+            print(step.name)
+    exit(0)
 
 # List packages
 if args.list_packages:
@@ -67,7 +71,7 @@ if args.list_packages:
 
 # Run the steps
 for step in steps:
-    if step.is_method_overriden(Step.perform):
+    if step.is_enabled() and step.is_method_overriden(Step.perform):
         log(f"Performing step: {step.name}")
         with LogIndent():
             step.perform()

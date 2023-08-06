@@ -7,6 +7,7 @@ class Step:
 
     def __init__(self, name):
         self.name = name
+        self._enabled = True
 
     @classmethod
     def setup_external_services(cls, file_writer, env):
@@ -57,6 +58,15 @@ class Step:
         implement this. Some of them may exist only to place dependencies on other steps.
         """
         pass
+
+    def is_enabled(self):
+        return self._enabled
+
+    def set_enabled(self, value):
+        value = bool(value)
+        if self._enabled == value:
+            raise ValueError("Redundant setter call")
+        self._enabled = value
 
     def is_method_overriden(self, method):
         method_name = method.__name__
