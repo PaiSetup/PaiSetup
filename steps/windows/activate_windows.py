@@ -4,9 +4,9 @@ from utils.log import log
 import re
 
 class ActivateWindowsStep(Step):
-    def __init__(self, root_dir):
+    def __init__(self, secret_dir):
         super().__init__("ActivateWindows")
-        self._root_dir = root_dir
+        self._secret_dir = secret_dir
 
     def is_windows_activated(self):
         powershell_command = [
@@ -18,7 +18,7 @@ class ActivateWindowsStep(Step):
         return output.strip() == "True"
 
     def get_key(self):
-        file_path = self._root_dir / ".key_windows10"
+        file_path = self._secret_dir / "windows10"
         try:
             with open(file_path) as file:
                 key = file.readline()

@@ -9,12 +9,12 @@ from .vscode import VscodeStep
 from utils.setup_mode import SetupMode
 
 
-def get_steps(args, root_dir, build_dir):
+def get_steps(args, root_dir, build_dir, secret_dir):
     steps = [
         FoldersStep("D:/"),
         PackagesStep(build_dir, skip_already_installed=True),
 
-        ActivateWindowsStep(root_dir),
+        ActivateWindowsStep(secret_dir),
         ExplorerStep(),
         GitStep(),
         VscodeStep(build_dir),

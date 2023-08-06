@@ -15,6 +15,7 @@ import argparse
 # Prepare common paths
 root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
+secret_dir = root_dir / "secret"
 
 # Parse command-line arguments
 # fmt: off
@@ -35,7 +36,7 @@ Step.setup_external_services(file_writer, env)
 
 # Setup steps. They can be safely commented out if neccessary
 
-steps = get_steps(args, root_dir, build_dir)
+steps = get_steps(args, root_dir, build_dir, secret_dir)
 
 # Filter steps by command line args
 if args.steps != None:
