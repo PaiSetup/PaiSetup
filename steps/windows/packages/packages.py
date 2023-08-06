@@ -7,6 +7,7 @@ from utils import command
 from pathlib import Path
 import re
 from .package_info import PackageInfo
+from steps.windows.folders import KnownFolder
 
 
 class PackagesStep(Step):
@@ -14,11 +15,13 @@ class PackagesStep(Step):
         super().__init__("Packages")
         self._skip_already_installed = skip_already_installed
         self._packages = []
-        # TODO there should be a step defining paths like this and we should query it for programs_dir. Hardcoding for now.
-        self._programs_dir = Path("D:/Programs")
-        self._hw_tools_dir = Path("D:/HwTools")
-        self._desktop_dir = Path("D:/Desktop")
-        self._games_dir = Path("D:/Games")
+
+    def express_dependencies(self, dependency_dispatcher):
+        known_folders = dependency_dispatcher.get_known_folders()
+        self._programs_dir = known_folders[KnownFolder.Programs]
+        self._hw_tools_dir = known_folders[KnownFolder.HwTools]
+        self._desktop_dir = known_folders[KnownFolder.Desktop]
+        self._games_dir = known_folders[KnownFolder.Games]
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_packages)

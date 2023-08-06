@@ -9,7 +9,6 @@ HKLM = winreg.HKEY_LOCAL_MACHINE
 HKCR = winreg.HKEY_CLASSES_ROOT
 
 
-
 def delete_registry_sub_key_tree(hive, key, subkey_name):
     def delete(key, subkey_name):
         try:
@@ -44,7 +43,6 @@ def get_registry_value(hive, key, value_name):
         if value_name is None:
             value_name = ""
         return winreg.QueryValueEx(key, value_name)
-
 
 
 def set_registry_value_string(hive, key, value_name, value):

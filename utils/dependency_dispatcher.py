@@ -13,7 +13,7 @@ class Listener:
     def __call__(self, *args, **kwargs):
         kwargs['dependency_dispatcher'] = self._dependency_dispatcher
         for method in self._methods:
-            method(*args, **kwargs)
+            return method(*args, **kwargs)
 
 
 class DependencyDispatcher:
