@@ -35,12 +35,11 @@ env = EnvManager(root_dir)
 Step.setup_external_services(file_writer, env)
 
 # Setup steps. They can be safely commented out if neccessary
-
 steps = get_steps(args, root_dir, build_dir, secret_dir)
 
 # Filter steps by command line args
 if args.steps != None:
-    allowed_names = ["packages"] + [x.lower() for x in args.steps]
+    allowed_names = [x.lower() for x in args.steps]
     steps = [step for step in steps if step.name.lower() in allowed_names]
 
 # List steps
