@@ -23,6 +23,11 @@ class PackagesStep(Step):
         self._desktop_dir = known_folders[KnownFolder.Desktop]
         self._games_dir = known_folders[KnownFolder.Games]
 
+        dependency_dispatcher.add_packages(
+            "firefox",
+            "notepadplusplus",
+        )
+
     def register_as_dependency_listener(self, dependency_dispatcher):
         dependency_dispatcher.register_listener(self.add_packages)
         dependency_dispatcher.register_listener(self.list_packages)
@@ -130,8 +135,3 @@ class PackagesStep(Step):
         ]
         new_path = command.run_powershell_command(powershell_command, return_stdout=True).strip()
         self._env.set("PATH", new_path, force=True)
-
-    def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages(
-            "firefox",
-        )
