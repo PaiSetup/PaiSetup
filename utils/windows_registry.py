@@ -45,16 +45,18 @@ def get_registry_value(hive, key, value_name):
         return winreg.QueryValueEx(key, value_name)
 
 
-def set_registry_value_string(hive, key, value_name, value):
-    with _open_registry_key(hive, key, winreg.KEY_SET_VALUE) as key:
+def set_registry_value_string(hive, key, value_name, value, create_keys=False):
+    with _open_registry_key(hive, key, winreg.KEY_SET_VALUE, create_keys=create_keys) as key:
         winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, value)
 
 
-def _open_registry_key(hive, key, access):
-    return winreg.OpenKey(hive, key, 0, access)
+def _open_registry_key(hive, key, access, *, create_keys=False):
+    if create_keys:
+        return winreg.CreateKeyEx(hive, key, 0, access)
+    else:
+        return winreg.OpenKey(hive, key, 0, access)
 
-
-def set_registry_value_dword(hive, key, value_name, value):
+def set_registry_value_dword(hive, key, value_name, value, create_keys=False):
     value = int(value)
-    with _open_registry_key(hive, key, winreg.KEY_SET_VALUE) as key:
+    with _open_registry_key(hive, key, winreg.KEY_SET_VALUE, create_keys=create_keys) as key:
         winreg.SetValueEx(key, value_name, 0, winreg.REG_DWORD, value)
