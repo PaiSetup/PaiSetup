@@ -1,5 +1,6 @@
 from .activate_windows import ActivateWindowsStep
 from .explorer import ExplorerStep
+from .extensions import ExtensionsStep
 from .folders import FoldersStep
 from .git import GitStep
 from .hw_tools import HwToolsStep
@@ -17,6 +18,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
 
         ActivateWindowsStep(secret_dir),
         ExplorerStep(),
+        ExtensionsStep(),
         GitStep(),
         HwToolsStep(),
         SshStep(secret_dir),

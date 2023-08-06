@@ -25,27 +25,44 @@ def delete_registry_sub_key_tree(hive, key, subkey_name):
             # If it doesn't exist, it's ok
             pass
 
-    with _open_registry_key(hive, key, winreg.KEY_ALL_ACCESS) as key:
-        delete(key, subkey_name)
+    try:
+        with _open_registry_key(hive, key, winreg.KEY_ALL_ACCESS) as key:
+            delete(key, subkey_name)
+    except FileNotFoundError:
+        # If it doesn't exist, it's ok
+        pass
 
 
-def delete_registry_value(hive, key, value_name):
-    with _open_registry_key(hive, key, winreg.KEY_SET_VALUE) as key:
-        try:
+def delete_registry_value(hive, key, value_name=None):
+    if value_name is None:
+        value_name = ""
+
+    try:
+        with _open_registry_key(hive, key, winreg.KEY_SET_VALUE) as key:
             winreg.DeleteValue(key, value_name)
-        except FileNotFoundError:
-            # If it doesn't exist, it's ok
-            pass
+    except FileNotFoundError:
+        # If it doesn't exist, it's ok
+        pass
 
 
-def get_registry_value(hive, key, value_name):
-    with _open_registry_key(hive, key, winreg.KEY_QUERY_VALUE) as key:
-        if value_name is None:
-            value_name = ""
-        return winreg.QueryValueEx(key, value_name)
+def get_registry_value(hive, key, value_name=None, missing_ok=False):
+    if value_name is None:
+        value_name = ""
+
+    try:
+        with _open_registry_key(hive, key, winreg.KEY_QUERY_VALUE) as key:
+            return winreg.QueryValueEx(key, value_name)[0]
+    except FileNotFoundError:
+        if missing_ok:
+            return None
+        else:
+            raise
 
 
 def set_registry_value_string(hive, key, value_name, value, create_keys=False):
+    if value_name is None:
+        value_name = ""
+
     with _open_registry_key(hive, key, winreg.KEY_SET_VALUE, create_keys=create_keys) as key:
         winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, value)
 
@@ -57,6 +74,9 @@ def _open_registry_key(hive, key, access, *, create_keys=False):
         return winreg.OpenKey(hive, key, 0, access)
 
 def set_registry_value_dword(hive, key, value_name, value, create_keys=False):
+    if value_name is None:
+        value_name = ""
+
     value = int(value)
     with _open_registry_key(hive, key, winreg.KEY_SET_VALUE, create_keys=create_keys) as key:
         winreg.SetValueEx(key, value_name, 0, winreg.REG_DWORD, value)
