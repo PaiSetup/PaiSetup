@@ -17,7 +17,7 @@ class VscodeStep(VscodeStepBase):
         self._symlink_settings()
 
     def _get_vscode_config_dir(self):
-        return Path("C:/Users/maciej/AppData/Roaming/VSCodium/User")
+        return Path(self._env.get("APPDATA")) / "VSCodium\\User"
 
     def _get_vscode_command(self):
         return "D:/Programs/VsCodium/bin/codium"

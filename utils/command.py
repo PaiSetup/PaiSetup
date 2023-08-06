@@ -1,7 +1,6 @@
 import subprocess
 import shlex
 import os
-import utils.os_helpers
 from utils.os_function import OperatingSystem, windows_only
 from pathlib import Path
 import re
