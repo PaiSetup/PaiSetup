@@ -28,7 +28,6 @@ class PackagesStep(Step):
         dependency_dispatcher.register_listener(self.list_packages)
 
     def perform(self):
-        self._refresh_path()
         log(f"Required packages: {self._packages}")
         if self._skip_already_installed:
             packages_to_install = self._get_missing_packages(self._packages)

@@ -13,7 +13,7 @@ class EnvManager:
 
         system = OperatingSystem.current()
         if system.is_windows():
-            home = os.environ["HOMEPATH"]
+            home = f"{os.environ['HOMEDRIVE']}{os.environ['HOMEPATH']}"
             user = os.environ["USERNAME"]
             display = None
         elif system.is_linux():

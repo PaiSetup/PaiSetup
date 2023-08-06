@@ -1,8 +1,5 @@
 from steps.step import Step
 from utils import command
-import os
-from pathlib import Path
-from utils.file_writer import FileType
 from utils.log import log
 
 
