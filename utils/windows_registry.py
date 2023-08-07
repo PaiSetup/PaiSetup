@@ -3,6 +3,7 @@ from utils.os_function import require_windows
 require_windows()
 
 import winreg
+from utils import command
 
 HKCU = winreg.HKEY_CURRENT_USER
 HKLM = winreg.HKEY_LOCAL_MACHINE
@@ -73,6 +74,7 @@ def _open_registry_key(hive, key, access, *, create_keys=False):
     else:
         return winreg.OpenKey(hive, key, 0, access)
 
+
 def set_registry_value_dword(hive, key, value_name, value, create_keys=False):
     if value_name is None:
         value_name = ""
@@ -80,3 +82,28 @@ def set_registry_value_dword(hive, key, value_name, value, create_keys=False):
     value = int(value)
     with _open_registry_key(hive, key, winreg.KEY_SET_VALUE, create_keys=create_keys) as key:
         winreg.SetValueEx(key, value_name, 0, winreg.REG_DWORD, value)
+
+
+def delete_registry_user_choice(hive, extension):
+    """
+    UserChoice key for extension associations is protected with a permission. It cannot be removed with
+    delete_registry_sub_key_tree. A proper solution would be to remove this permission, but that's not that
+    easy. For now there is this nasty workaround. For some reason DeleteSubKey in Powershell is able to
+    delete UserChoice key anyway. Seems like a bug - DeleteSubKeyTreeTree and Remove-Item do not work.
+    """
+
+    if hive == HKCU:
+        hive = "[Microsoft.Win32.Registry]::CurrentUser"
+    elif hive == HKLM:
+        hive = "[Microsoft.Win32.Registry]::LocalMachine"
+    else:
+        raise ValueError("Unsupported hive")
+
+    powershell_command = [
+        f"$key = {hive}.OpenSubKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{extension}', $True)",
+        "if ($key) {",
+        "    $key.DeleteSubKey('UserChoice', $False)",
+        "    $key.Close()",
+        "}",
+    ]
+    command.run_powershell_command(powershell_command)

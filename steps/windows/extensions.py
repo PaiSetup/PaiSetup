@@ -88,7 +88,6 @@ class ExtensionsStep(Step):
             delete_registry_sub_key_tree(HKCU, rf"SOFTWARE\Classes\{extension}\{application_key}", "ShellNew")
             delete_registry_sub_key_tree(HKLM, rf"SOFTWARE\Classes\{extension}\{application_key}", "ShellNew")
 
-
     def _clear_user_choice(self, extension):
         """
         This method removes association of extension to an application. This is created when user selects an
@@ -97,7 +96,11 @@ class ExtensionsStep(Step):
         will be presented with a choice the next time they try to open the file with this extension.
         """
 
-        # TODO: UserChoice is somehow protected with a deny rule and it cannot be deleted...
+        # UserChoice field is protected with a permission and for now we are removing it with a workaround.
+        delete_registry_user_choice(HKCU, extension)
+        delete_registry_user_choice(HKLM, extension)
+
+        # Now we can remove the rest of the keys, which are not protected
         delete_registry_sub_key_tree(HKCU, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
         delete_registry_sub_key_tree(HKLM, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
 
