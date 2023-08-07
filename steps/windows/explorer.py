@@ -51,7 +51,11 @@ class ExplorerStep(Step):
         delete_registry_sub_key_tree(HKCR, r"*\shellex\ContextMenuHandlers", "EPP")
         delete_registry_sub_key_tree(HKCR, r"*\shellex\ContextMenuHandlers", "MEGA (Context menu)")
         set_registry_value_string(
-            HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked", "{9F156763-7844-4DC4-B2B1-901F640F5155}", "", create_keys=True
+            HKLM,
+            r"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked",
+            "{9F156763-7844-4DC4-B2B1-901F640F5155}",
+            "",
+            create_keys=True,
         )
 
     def _set_dark_theme(self):

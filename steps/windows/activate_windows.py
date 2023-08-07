@@ -3,6 +3,7 @@ from utils import command
 from utils.log import log
 import re
 
+
 class ActivateWindowsStep(Step):
     def __init__(self, secret_dir):
         super().__init__("ActivateWindows")
@@ -32,7 +33,6 @@ class ActivateWindowsStep(Step):
         except FileNotFoundError:
             log(f"Key not found in {file_path}")
 
-
     def perform(self):
         if self.is_windows_activated():
             log("Windows already activated")
@@ -42,5 +42,5 @@ class ActivateWindowsStep(Step):
         if not key:
             return
 
-        command.run_powershell_command(f'slmgr /ipk {key}')
-        command.run_powershell_command('slmgr /ato')
+        command.run_powershell_command(f"slmgr /ipk {key}")
+        command.run_powershell_command("slmgr /ato")
