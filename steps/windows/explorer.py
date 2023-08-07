@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils.checks import *
 from utils.windows_registry import *
 
@@ -6,12 +6,23 @@ from utils.windows_registry import *
 class ExplorerStep(Step):
     def __init__(self):
         super().__init__("Explorer")
+        self._quick_access_folder_for_removal = []
+        self._quick_access_folder_for_addition = []
+
+    @dependency_listener
+    def remove_folder_from_quick_access(self, folder, **kwargs):
+        self._quick_access_folder_for_removal.append(folder)
+
+    @dependency_listener
+    def add_folder_to_quick_access(self, folder, **kwargs):
+        self._quick_access_folder_for_addition.append(folder)
 
     def perform(self):
         self._setup_shown_files()
         self._setup_taskbar()
         self._setup_context_menus()
         self._set_dark_theme()
+        self._setup_quick_access()
         self._remove_bloat_folders()
         # self._reset_explorer()
 
@@ -62,6 +73,24 @@ class ExplorerStep(Step):
         log("Enabling dark theme")
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", 0)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", 0)
+
+    def _setup_quick_access(self):
+        if len(self._quick_access_folder_for_removal) == 0 and len(self._quick_access_folder_for_addition) == 0:
+            return
+
+        log("Setting up quick access")
+        powershell_command = [
+            "$object = New-Object -com shell.application",
+            "$quickAccessItems = $object.Namespace('shell:::{679F85CB-0220-4080-B29B-5540CC05AAB6}').Items()",
+        ]
+        for folder in self._quick_access_folder_for_removal:
+            powershell_command += [
+                f"$item = ($quickAccessItems | Where-Object {{ $_.Path -EQ '{folder}' }})",
+                "if ($item) { $item.InvokeVerb('unpinfromhome') }",
+            ]
+        for folder in self._quick_access_folder_for_addition:
+            powershell_command += [f"$object.Namespace('{folder}').Self.InvokeVerb('pintohome')"]
+        command.run_powershell_command(powershell_command)
 
     def _remove_bloat_folders(self):
         log("Removing bloat folders")

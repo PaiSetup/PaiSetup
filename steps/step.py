@@ -24,8 +24,16 @@ class Step:
 
         It allows to register current service to the DependencyDispatcher as a handler of one
         or more functions. This is done with DependencyDispatcher.register_listener() method.
+
+        Default implementation automatically detects methods decorated with @dependency_listener
+        and registers them. If the decorator is used, the Step implementor doesn't have to
+        override this method.
         """
-        pass
+        methods = dir(self.__class__)
+        methods = [getattr(self, x) for x in methods]
+        methods = [x for x in methods if hasattr(x, "_is_dependency_listener")]
+        for method in methods:
+            dependency_dispatcher.register_listener(method)
 
     def register_env_variables(self):
         """
@@ -73,3 +81,11 @@ class Step:
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__
         return method_name in self_dict and self_dict[method_name] != class_dict[method_name]
+
+
+def dependency_listener(func):
+    """
+    A decorator for inserting dependency listeners in Step implementors.
+    """
+    func._is_dependency_listener = True
+    return func
