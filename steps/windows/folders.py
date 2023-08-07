@@ -1,6 +1,7 @@
 from steps.step import Step
 from enum import Enum, auto
 from pathlib import Path
+from utils import command
 
 
 class KnownFolder(Enum):
@@ -62,6 +63,8 @@ class FoldersStep(Step):
         dependency_dispatcher.register_listener(self.get_known_folders)
 
     def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("windows-handies")
+
         home = self._env.home()
         dependency_dispatcher.remove_folder_from_quick_access(home / "Desktop")
         dependency_dispatcher.remove_folder_from_quick_access(home / "Downloads")
@@ -82,7 +85,13 @@ class FoldersStep(Step):
         dependency_dispatcher.add_folder_to_quick_access(home)
 
     def perform(self):
+        self._setup_known_folders()
         self._create_folders()
+
+    def _setup_known_folders(self):
+        command.run_command(f"KnownFolders.exe -f Desktop -p {self._folders[KnownFolder.Desktop]} -m -r")
+        # TODO it is difficult to move Documents. Investigate it.
+        # command.run_command(f"KnownFolders.exe -f Documents -p {self._folders[KnownFolder.Documents]} -m -r")
 
     def _create_folders(self):
         for _, path in self._folders.items():

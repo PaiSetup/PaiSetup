@@ -1,7 +1,10 @@
 import enum
 import tempfile
 import re
+from pathlib import Path
 from utils.windows_registry import HKLM, set_registry_value_string
+
+custom_packages_dir = Path(__file__).parent / "custom_packages"
 
 
 class Installer(enum.Enum):
@@ -19,7 +22,7 @@ class Installer(enum.Enum):
     Nsis = enum.auto()
 
     # Some packages are not available in upstream repos, so we embed some of our own
-    EmbeddedPackage = enum.auto()
+    CustomPackage = enum.auto()
 
     # Windows store packages. They go to C:\Program Files\WindowsApps, no way to change it
     Appx = enum.auto()
@@ -32,6 +35,7 @@ class PackageInfo:
         self.package_args = ""
         self.desktop_files_to_delete = []
         self.install_dir = None
+        self.is_custom_package = False
 
         self._set_package(package_name, programs_dir, hw_tools_dir, games_dir)
 
@@ -81,7 +85,7 @@ class PackageInfo:
             self.desktop_files_to_delete.append("CCleaner.lnk")
         elif package_name == "charon":
             self.install_dir = programs_dir / "Charon"
-            self._set_installer(Installer.EmbeddedPackage)
+            self._set_installer(Installer.CustomPackage)
             self._append_package_arg(f"/folder={self.install_dir}")
         elif package_name == "cmake":
             self.install_dir = programs_dir / "CMake"
@@ -252,7 +256,7 @@ class PackageInfo:
             self._append_package_arg("/NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /NoAddContextMenuFolders")
         elif package_name == "windows-handies":
             self.install_dir = programs_dir / "WindowsHandies"
-            self._set_installer(Installer.EmbeddedPackage)
+            self._set_installer(Installer.CustomPackage)
             self._append_package_arg(f"/folder={self.install_dir}")
         elif package_name == "xtreme-tuner":
             self.install_dir = hw_tools_dir / "XtremeTuner"
@@ -282,8 +286,10 @@ class PackageInfo:
         elif installer == Installer.Nsis:
             assert_install_dir_present()
             self._append_install_arg(f"/D={self.install_dir}")
-        elif installer == Installer.EmbeddedPackage:
-            raise NotImplementedError()  # TODO
+        elif installer == Installer.CustomPackage:
+            assert_install_dir_present()
+            self._append_choco_arg(f"--source={custom_packages_dir}")
+            self.is_custom_package = True
         elif installer == Installer.Appx:
             assert_install_dir_present(False)
         else:

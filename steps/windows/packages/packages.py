@@ -6,7 +6,7 @@ import utils.external_project as ext
 from utils import command
 from pathlib import Path
 import re
-from .package_info import PackageInfo
+from .package_info import PackageInfo, custom_packages_dir
 from steps.windows.folders import KnownFolder
 
 
@@ -53,6 +53,8 @@ class PackagesStep(Step):
 
         # Install it with chocolatey
         install_command = f"choco install {package} --yes"
+        if package_info.is_custom_package:
+            self._pack_custom_package(package)
         if package_info.choco_args:
             install_command += f" {package_info.choco_args}"
         if package_info.install_args:
@@ -75,6 +77,18 @@ class PackagesStep(Step):
         for file in package_info.desktop_files_to_delete:
             file = self._desktop_dir / file
             file.unlink(missing_ok=True)
+
+    def _pack_custom_package(self, package_name):
+        package_dir = custom_packages_dir / package_name
+
+        # If there already is a nupkg file, early exit
+        for file in package_dir.iterdir():
+            if file.suffix == ".nupkg":
+                return
+
+        # Process the package
+        with Pushd(package_dir):
+            command.run_command("choco pack")
 
     def add_packages(self, *args, **kwargs):
         for arg in args:
