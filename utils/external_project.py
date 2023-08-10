@@ -1,6 +1,8 @@
 from utils import command
 from pathlib import Path
 from utils.os_helpers import Pushd
+import tempfile
+import shutil
 from utils.log import log, LogIndent
 import multiprocessing
 
@@ -85,3 +87,29 @@ def make(
         # Compile
         log(f"Building and installing with {cores} threads")
         command.run_command(f"sudo make {target} {multicore_arg}")
+
+
+def download_github_zip(user, repo, dst_dir, re_download=False):
+    # Handle the case when there destination path is already present
+    if dst_dir.is_dir():
+        if re_download:
+            shutil.rmtree(dst_dir)
+        else:
+            return
+    elif dst_dir.exists():
+        raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
+
+    with tempfile.NamedTemporaryFile() as zipfile:
+        # Download the zip package
+        url = f"https://github.com/{user}/{repo}/archive/refs/heads/master.zip"
+        download_command = f"wget {url} -O {zipfile.name}"
+        command.run_command(download_command)
+
+        dst_parent_dir = dst_dir.parent
+        with Pushd(dst_parent_dir):
+            # Unzip to the parent of desired destination directory
+            unzip_command = f"unzip {zipfile.name}"
+            command.run_command(unzip_command)
+
+            # In the zip there is one folder called <ProjectName>-<BranchName>. Rename it to the name of desired destination director
+            Path(f"{repo}-master").rename(dst_dir)

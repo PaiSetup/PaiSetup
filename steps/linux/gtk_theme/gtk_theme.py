@@ -3,6 +3,7 @@ from utils import command
 from utils.log import log, LogIndent
 from pathlib import Path
 from utils.file_writer import FileType, FileWriter
+from utils import external_project as ext
 import os
 import shutil
 
@@ -58,6 +59,7 @@ class GtkThemeStep(Step):
 
     def perform(self):
         self._generate_widget_theme()
+        self._download_icon_theme()
         self._generate_icon_theme()
         self._generate_downsized_emblems([64])
         self._assign_emblems()
@@ -70,6 +72,11 @@ class GtkThemeStep(Step):
             return
         log(f"Widget theme {self._widget_theme_path} generation")
         command.run_command(str(self._current_step_dir / "generate_widget_theme.sh"), shell=True)
+
+    def _download_icon_theme(self):
+        log("Downloading icon theme")
+        dst_dir = self._current_step_dir / "icon_theme"
+        ext.download_github_zip("PaiSetup", "GtkIconTheme", dst_dir, False)
 
     def _generate_icon_theme(self):
         if self._icon_theme_path.exists() and not self._regenerate_icon_theme:
