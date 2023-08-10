@@ -21,12 +21,16 @@ class Listener:
         self._methods.append((step, method))
 
     def __call__(self, *args, **kwargs):
-        kwargs['dependency_dispatcher'] = self._dependency_dispatcher # TODO why is it here?
+        kwargs["dependency_dispatcher"] = self._dependency_dispatcher  # TODO why is it here?
         for step, method in self._methods:
             # If there is a dependency on disabled step, it must be enabled
             if not step.is_enabled():
-                step.set_enabled(True)
-                step.express_dependencies(self._dependency_dispatcher)
+                if self._dependency_dispatcher.is_auto_resolve_enabled():
+                    log(f"INFO: automatic dependency resolving is enabled. Enabling {step.name} step")
+                    step.set_enabled(True)
+                    step.express_dependencies(self._dependency_dispatcher)
+                else:
+                    log(f"WARNING: automatic dependency resolving is disabled, but {method.__qualname__} is used as a dependency.")
 
             # Call all methods, but return early if any of them returns a value
             result = method(*args, **kwargs)
@@ -48,11 +52,9 @@ class DependencyDispatcher:
     To achieve this the step has to implement express_dependencies().
     """
 
-    def __init__(self):
+    def __init__(self, auto_resolve):
         self._listeners = {}
-        self._dummy_listener = Listener(self)
-        self._missing_listeners = set()
-
+        self._auto_resolve = auto_resolve
 
     def register_listener(self, method):
         # Create new listener for this method name if neccessary
@@ -65,12 +67,9 @@ class DependencyDispatcher:
 
     def __getattr__(self, method_name):
         if method_name not in self._listeners:
-            self._missing_listeners.add(method_name)
-            return self._dummy_listener
+            raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
         else:
             return self._listeners[method_name]
 
-    def summary(self):
-        # TODO this should be an error?
-        for missing_listener in self._missing_listeners:
-            log(f'WARNING: dependencies on method "{missing_listener}" was not satisfied')
+    def is_auto_resolve_enabled(self):
+        return self._auto_resolve

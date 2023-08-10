@@ -25,6 +25,7 @@ arg_parser.add_argument("-p", "--list_packages", action="store_true", help="show
 arg_parser.add_argument("-m", "--mode", type=SetupMode, default=SetupMode.retrieve_last_mode(root_dir), action=EnumAction, help="Setup mode - chooses packages to install")
 arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter steps to perform during setup for a given mode")
 arg_parser.add_argument("-f", "--fetch", action="store_true", help="fetch git repositories which might have changed. Some repositories is still not fetched, e.g. dwm, which does not change very often")
+arg_parser.add_argument("-a", "--no_auto_resolve_dependencies", action="store_true", help="Do not automatically enable disabled steps if they are depended on by other enabled steps. This can lead to errors.")
 args = arg_parser.parse_args()
 args.mode.save_last_mode(root_dir)
 # fmt: on
@@ -49,13 +50,12 @@ for step in steps:
     step.register_env_variables()
 
 # Handle cross-step dependencies
-dependencies = DependencyDispatcher()
+dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
     step.register_as_dependency_listener(dependencies)
 for step in steps:
     if step.is_enabled():
         step.express_dependencies(dependencies)
-dependencies.summary()
 
 # List steps
 if args.list_steps:
