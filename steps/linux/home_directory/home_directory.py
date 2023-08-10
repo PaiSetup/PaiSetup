@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from pathlib import Path
 import os
 from utils.log import log, LogIndent
@@ -16,9 +16,6 @@ class HomeDirectoryStep(Step):
 
         self._homedir_whitelist = Path(__file__).parent / "homedir_whitelist"
         self._homedir_whitelisted_files = []
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.register_homedir_file)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.set_folder_icon("desktop", "desktop")
@@ -59,6 +56,7 @@ class HomeDirectoryStep(Step):
             ["export PROJECT_DIR=$HOME/work"],
         )
 
+    @dependency_listener
     def register_homedir_file(self, file, **kwargs):
         filename = Path(file)
         if filename.is_absolute():

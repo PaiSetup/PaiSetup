@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils import command
 from utils.log import log, LogIndent
 from pathlib import Path
@@ -48,14 +48,12 @@ class GtkThemeStep(Step):
         )
         dependency_dispatcher.register_homedir_file(".themes")
 
+    @dependency_listener
     def set_folder_icon(self, path, icon_name, **kwargs):
         path = Path(path)
         if path in self._emblems:
             raise ValueError(f"There already exists an icon for {path}")
         self._emblems[path] = icon_name
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.set_folder_icon)
 
     def perform(self):
         self._generate_widget_theme()

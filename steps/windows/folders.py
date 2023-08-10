@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from enum import Enum, auto
 from pathlib import Path
 from utils import command
@@ -56,11 +56,9 @@ class FoldersStep(Step):
         if not include_projects:
             self._folders.pop(KnownFolder.Projects)
 
+    @dependency_listener
     def get_known_folders(self, **kwargs):
         return self._folders
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.get_known_folders)
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")

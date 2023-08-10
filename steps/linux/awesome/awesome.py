@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from pathlib import Path
 from shutil import copyfile
 import os
@@ -23,11 +23,9 @@ class AwesomeStep(GuiStep):
         self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
 
+    @dependency_listener
     def add_keybindings(self, *keybindings, **kwargs):
         self._keybindings += keybindings
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.add_keybindings)
 
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)

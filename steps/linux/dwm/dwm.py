@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from pathlib import Path
 from shutil import copyfile
 import os
@@ -57,11 +57,9 @@ class DwmStep(GuiStep):
         self._setup_picom_config()
         self._setup_sxhkdrc()
 
+    @dependency_listener
     def add_keybindings(self, *keybindings, **kwargs):
         self._keybindings += list(keybindings)
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.add_keybindings)
 
     def express_dependencies(self, dependency_dispatcher):
         super().express_dependencies(dependency_dispatcher)

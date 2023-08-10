@@ -40,9 +40,9 @@ class DependencyDispatcher:
 
     Each step can register one or more of its methods as a dependency handler.
     For example PackageStep can register its 'add_packages' method.
-    To achieve this the step has to implement register_as_dependency_listener().
+    To achieve this, 'add_packages' method has to be decorated with @dependency_listener.
 
-    Each step can also express its dependencies, by calling the handler method on an object od DependencyDispatcher.
+    Each step can express its dependencies, by calling the handler method on an object od DependencyDispatcher.
     DependencyDispatcher will forward the call to the appriopriate registered handler.
     For example GitStep can express its dependency on 'git' package being installed by calling "dispatcher.add_packages('git')".
     To achieve this the step has to implement express_dependencies().

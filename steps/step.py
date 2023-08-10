@@ -20,14 +20,9 @@ class Step:
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         """
-        This method can be implemented by deriving classes.
-
-        It allows to register current service to the DependencyDispatcher as a handler of one
-        or more functions. This is done with DependencyDispatcher.register_listener() method.
-
-        Default implementation automatically detects methods decorated with @dependency_listener
-        and registers them. If the decorator is used, the Step implementor doesn't have to
-        override this method.
+        This method detects methods decorated with @dependency_listener and registers them to the
+        dependency dispatcher. Such method can be called by other steps during express_dependencies
+        phase. This method must not be implemented by deriving classes.
         """
         methods = dir(self.__class__)
         methods = [getattr(self, x) for x in methods]
@@ -85,7 +80,8 @@ class Step:
 
 def dependency_listener(func):
     """
-    A decorator for inserting dependency listeners in Step implementors.
+    A decorator used for marking methods of Step implementors as dependency listeners. This allows
+    other steps to depend on the marked method and call it during express_dependencies phase.
     """
     func._is_dependency_listener = True
     return func

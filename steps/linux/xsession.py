@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils import command
 import os
 from pathlib import Path
@@ -11,11 +11,9 @@ class XsessionStep(Step):
         super().__init__("Xsession")
         self._xsessions = []
 
+    @dependency_listener
     def add_xsession(self, name, xinitrc_path, **kwargs):
         self._xsessions.append((name, xinitrc_path))
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.add_xsession)
 
     def perform(self):
         for name, xinitrc_path in self._xsessions:

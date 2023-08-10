@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils import command
 from utils.os_helpers import Pushd
 from utils.log import log
@@ -27,10 +27,6 @@ class PackagesStep(Step):
             "firefox",
             "notepadplusplus",
         )
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.add_packages)
-        dependency_dispatcher.register_listener(self.list_packages)
 
     def perform(self):
         log(f"Required packages: {self._packages}")
@@ -90,6 +86,7 @@ class PackagesStep(Step):
         with Pushd(package_dir):
             command.run_command("choco pack")
 
+    @dependency_listener
     def add_packages(self, *args, **kwargs):
         for arg in args:
             if arg is None:
@@ -99,6 +96,7 @@ class PackagesStep(Step):
             else:
                 self._packages.append(str(arg))
 
+    @dependency_listener
     def list_packages(self, resolve_groups, **kwargs):
         packages = "\n".join(self._packages)
         print(packages)

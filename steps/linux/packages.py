@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils import command
 from utils.os_helpers import Pushd
 from utils.log import log
@@ -13,11 +13,6 @@ class PackagesStep(Step):
         self.print_installation = print_installation
         self._packages = []
         self._assumed_packages = []
-
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.add_packages)
-        dependency_dispatcher.register_listener(self.add_assumed_packages)
-        dependency_dispatcher.register_listener(self.list_packages)
 
     def perform(self):
         self._install_yay()
@@ -87,9 +82,11 @@ class PackagesStep(Step):
             else:
                 packages_list.append(str(arg))
 
+    @dependency_listener
     def add_packages(self, *args, **kwargs):
         PackagesStep._add_packages_to_list(self._packages, *args)
 
+    @dependency_listener
     def add_assumed_packages(self, *args, **kwargs):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
@@ -104,6 +101,7 @@ class PackagesStep(Step):
         else:
             return self._packages
 
+    @dependency_listener
     def list_packages(self, resolve_groups, **kwargs):
         packages = self._get_packages(resolve_groups)
         packages = "\n".join(packages)

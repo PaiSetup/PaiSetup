@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 import os
 from utils.log import log, LogIndent
 from utils import command
@@ -55,10 +55,7 @@ class CheckMateStep(Step):
         self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20)
 
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        dependency_dispatcher.register_listener(self.register_periodic_check)
-        dependency_dispatcher.register_listener(self.register_periodic_daemon_check)
-
+    @dependency_listener
     def register_periodic_check(
         self,
         script,
@@ -80,6 +77,7 @@ class CheckMateStep(Step):
         check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name, multi_line)
         self._profiles[profile].append(check)
 
+    @dependency_listener
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
         script = f"{self._env.get('SCRIPTS_PATH')}/core/linux/is_daemon_running.sh"
         script_args = f"{command_regex} {name}"
