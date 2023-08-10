@@ -6,7 +6,7 @@ from .virtualbox import VirtualBoxStep
 from .firefox import FirefoxStep
 from .packages import PackagesStep
 from .bash_scripts import BashScriptsStep
-from .vscode.vscode import VscodeStep
+from .vscode import VscodeStep
 from .shell.shell import ShellStep
 from .gtk_theme.gtk_theme import GtkThemeStep
 from .file_associations import FileAssociationsStep
@@ -35,7 +35,7 @@ from .xsession import XsessionStep
 from utils.setup_mode import SetupMode
 
 
-def get_steps(args, root_dir, build_dir):
+def get_steps(args, root_dir, build_dir, secret_dir):
     steps = [
         PackagesStep(build_dir, True),
         ShellStep(root_dir),
