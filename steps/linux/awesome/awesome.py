@@ -24,7 +24,7 @@ class AwesomeStep(GuiStep):
         self._keybindings = []
 
     @dependency_listener
-    def add_keybindings(self, *keybindings, **kwargs):
+    def add_keybindings(self, *keybindings):
         self._keybindings += keybindings
 
     def express_dependencies(self, dependency_dispatcher):

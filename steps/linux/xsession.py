@@ -12,7 +12,7 @@ class XsessionStep(Step):
         self._xsessions = []
 
     @dependency_listener
-    def add_xsession(self, name, xinitrc_path, **kwargs):
+    def add_xsession(self, name, xinitrc_path):
         self._xsessions.append((name, xinitrc_path))
 
     def perform(self):

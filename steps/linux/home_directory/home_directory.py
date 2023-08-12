@@ -57,7 +57,7 @@ class HomeDirectoryStep(Step):
         )
 
     @dependency_listener
-    def register_homedir_file(self, file, **kwargs):
+    def register_homedir_file(self, file):
         filename = Path(file)
         if filename.is_absolute():
             try:

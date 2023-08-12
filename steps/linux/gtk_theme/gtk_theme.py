@@ -49,7 +49,7 @@ class GtkThemeStep(Step):
         dependency_dispatcher.register_homedir_file(".themes")
 
     @dependency_listener
-    def set_folder_icon(self, path, icon_name, **kwargs):
+    def set_folder_icon(self, path, icon_name):
         path = Path(path)
         if path in self._emblems:
             raise ValueError(f"There already exists an icon for {path}")

@@ -67,7 +67,6 @@ class CheckMateStep(Step):
         shell=False,
         client_name=None,
         multi_line=False,
-        **kwargs,
     ):
         if profile is None:
             profile = self._global_profile

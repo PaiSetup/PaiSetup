@@ -10,11 +10,11 @@ class ExplorerStep(Step):
         self._quick_access_folder_for_addition = []
 
     @dependency_listener
-    def remove_folder_from_quick_access(self, folder, **kwargs):
+    def remove_folder_from_quick_access(self, folder):
         self._quick_access_folder_for_removal.append(folder)
 
     @dependency_listener
-    def add_folder_to_quick_access(self, folder, **kwargs):
+    def add_folder_to_quick_access(self, folder):
         self._quick_access_folder_for_addition.append(folder)
 
     def perform(self):

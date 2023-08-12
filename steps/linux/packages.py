@@ -83,11 +83,11 @@ class PackagesStep(Step):
                 packages_list.append(str(arg))
 
     @dependency_listener
-    def add_packages(self, *args, **kwargs):
+    def add_packages(self, *args):
         PackagesStep._add_packages_to_list(self._packages, *args)
 
     @dependency_listener
-    def add_assumed_packages(self, *args, **kwargs):
+    def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
     def _get_packages(self, resolve_groups):
@@ -102,7 +102,7 @@ class PackagesStep(Step):
             return self._packages
 
     @dependency_listener
-    def list_packages(self, resolve_groups, **kwargs):
+    def list_packages(self, resolve_groups):
         packages = self._get_packages(resolve_groups)
         packages = "\n".join(packages)
         print(packages)

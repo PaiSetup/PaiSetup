@@ -58,7 +58,7 @@ class DwmStep(GuiStep):
         self._setup_sxhkdrc()
 
     @dependency_listener
-    def add_keybindings(self, *keybindings, **kwargs):
+    def add_keybindings(self, *keybindings):
         self._keybindings += list(keybindings)
 
     def express_dependencies(self, dependency_dispatcher):

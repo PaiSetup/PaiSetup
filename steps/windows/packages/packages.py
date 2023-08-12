@@ -87,7 +87,7 @@ class PackagesStep(Step):
             command.run_command("choco pack")
 
     @dependency_listener
-    def add_packages(self, *args, **kwargs):
+    def add_packages(self, *args):
         for arg in args:
             if arg is None:
                 pass
@@ -97,7 +97,7 @@ class PackagesStep(Step):
                 self._packages.append(str(arg))
 
     @dependency_listener
-    def list_packages(self, resolve_groups, **kwargs):
+    def list_packages(self, resolve_groups):
         packages = "\n".join(self._packages)
         print(packages)
 

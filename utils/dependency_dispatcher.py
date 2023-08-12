@@ -21,7 +21,6 @@ class Listener:
         self._methods.append((step, method))
 
     def __call__(self, *args, **kwargs):
-        kwargs["dependency_dispatcher"] = self._dependency_dispatcher  # TODO why is it here?
         for step, method in self._methods:
             # If there is a dependency on disabled step, it must be enabled
             if not step.is_enabled():

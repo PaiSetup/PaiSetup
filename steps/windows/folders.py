@@ -57,7 +57,7 @@ class FoldersStep(Step):
             self._folders.pop(KnownFolder.Projects)
 
     @dependency_listener
-    def get_known_folders(self, **kwargs):
+    def get_known_folders(self):
         return self._folders
 
     def express_dependencies(self, dependency_dispatcher):
