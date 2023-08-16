@@ -17,6 +17,7 @@ class GpuStep(Step):
     def __init__(self):
         super().__init__("Gpu")
         self._vendors = self._query_gpu_vendors()
+        self._has_display = len(self._env.get("DISPLAY")) > 0
 
     def perform(self):
         if self._vendors:
@@ -26,7 +27,8 @@ class GpuStep(Step):
             log("No gpu vendors detected")
 
         if GpuVendor.Nvidia in self._vendors:
-            nvidia_enable_vsync()
+            if self._has_display:
+                nvidia_enable_vsync()
             self._file_writer.write_section(
                 ".config/PaiSetup/xinitrc_base",
                 "Enabling vsync on Nvidia",
@@ -65,6 +67,7 @@ class GpuStep(Step):
                 "vulkan-icd-loader",
                 "lib32-vulkan-icd-loader",
                 "steam",
+                "mesa",
             )
 
             dependency_dispatcher.register_homedir_file(".steam")
