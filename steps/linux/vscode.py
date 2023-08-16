@@ -6,7 +6,7 @@ from pathlib import Path
 
 class VscodeStep(VscodeStepBase):
     def __init__(self, root_build_dir):
-        super().__init__("Vscode")
+        super().__init__(root_build_dir)
         self._root_build_dir = root_build_dir
 
     def express_dependencies(self, dependency_dispatcher):
@@ -42,7 +42,7 @@ class VscodeStep(VscodeStepBase):
         )
 
     def _get_vscode_config_dir(self):
-        return Path(".config/Code - OSS/User/")
+        return Path(".config/Code/User/")
 
     def _get_vscode_command(self):
         return "code"
