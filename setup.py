@@ -53,9 +53,9 @@ for step in steps:
 dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
     step.register_as_dependency_listener(dependencies)
-for step in steps:
-    if step.is_enabled():
-        step.express_dependencies(dependencies)
+enabled_steps = [step for step in steps if step.is_enabled()] # Save into variable, because steps may be enabled during iteration
+for step in enabled_steps:
+    step.express_dependencies(dependencies)
 
 # List steps
 if args.list_steps:
