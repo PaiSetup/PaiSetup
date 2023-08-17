@@ -6,6 +6,7 @@ from .git import GitStep
 from .hw_tools import HwToolsStep
 from .packages.packages import PackagesStep
 from .ssh import SshStep
+from .uninstall_bloat import UninstallBloatStep
 from .vscode import VscodeStep
 
 from utils.setup_mode import SetupMode
@@ -23,6 +24,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         GitStep(),
         HwToolsStep(),
         SshStep(secret_dir),
+        UninstallBloatStep(),
         VscodeStep(build_dir),
     ]
     return steps
