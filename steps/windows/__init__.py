@@ -5,6 +5,7 @@ from .folders import FoldersStep
 from .git import GitStep
 from .hw_tools import HwToolsStep
 from .packages.packages import PackagesStep
+from .privacy import PrivacyStep
 from .ssh import SshStep
 from .uninstall_bloat import UninstallBloatStep
 from .vscode import VscodeStep
@@ -23,6 +24,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ExtensionsStep(),
         GitStep(),
         HwToolsStep(),
+        PrivacyStep(),
         SshStep(secret_dir),
         UninstallBloatStep(),
         VscodeStep(build_dir),
