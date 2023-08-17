@@ -75,6 +75,7 @@ for step in steps:
         log(f"Performing step: {step.name}")
         with LogIndent():
             step.perform()
+log("END")
 
 # Finalize services
 file_writer.finalize()
