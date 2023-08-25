@@ -10,6 +10,7 @@ from .power import PowerStep
 from .privacy import PrivacyStep
 from .ssh import SshStep
 from .startup import StartupStep
+from .time import TimeStep
 from .uninstall_bloat import UninstallBloatStep
 from .vscode import VscodeStep
 
@@ -53,6 +54,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         PowerStep(),
         PrivacyStep(),
         SshStep(secret_dir),
+        TimeStep(),
         StartupStep(),
         UninstallBloatStep(),
         VscodeStep(build_dir),
