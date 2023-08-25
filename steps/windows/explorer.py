@@ -18,6 +18,7 @@ class ExplorerStep(Step):
         self._quick_access_folder_for_addition.append(folder)
 
     def perform(self):
+        self._setup_system_icons_on_desktop()
         self._setup_shown_files()
         self._setup_taskbar()
         self._setup_context_menus()
@@ -25,6 +26,14 @@ class ExplorerStep(Step):
         self._setup_quick_access()
         self._remove_bloat_folders()
         # self._reset_explorer()
+
+    def _setup_system_icons_on_desktop(self):
+        log("Setting up system icons on desktop")
+
+        # Show "This PC" on Desktop
+        set_registry_value_dword(
+            HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel", "{20D04FE0-3AEA-1069-A2D8-08002B30309D}", "0"
+        )
 
     def _setup_shown_files(self):
         log("Setting up shown files")
