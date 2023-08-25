@@ -6,6 +6,7 @@ from .git import GitStep
 from .hw_tools import HwToolsStep
 from .icons.icons import IconsStep
 from .packages.packages import PackagesStep
+from .power import PowerStep
 from .privacy import PrivacyStep
 from .ssh import SshStep
 from .startup import StartupStep
@@ -49,6 +50,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         GitStep(),
         HwToolsStep(),
         IconsStep(),
+        PowerStep(),
         PrivacyStep(),
         SshStep(secret_dir),
         StartupStep(),
