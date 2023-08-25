@@ -4,6 +4,7 @@ from utils.os_helpers import Pushd
 import tempfile
 import shutil
 from utils.log import log, LogIndent
+from utils.os_function import OperatingSystem
 import multiprocessing
 
 
@@ -99,17 +100,32 @@ def download_github_zip(user, repo, dst_dir, re_download=False):
     elif dst_dir.exists():
         raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
 
-    with tempfile.NamedTemporaryFile() as zipfile:
+    with tempfile.NamedTemporaryFile(suffix=".zip") as zipfile:
         # Download the zip package
         url = f"https://github.com/{user}/{repo}/archive/refs/heads/master.zip"
-        download_command = f"wget {url} -O {zipfile.name}"
-        command.run_command(download_command)
+        if OperatingSystem.current().is_windows():
+            zipfile.close()  # This prevents "File is already used by another process" error
+            url = [
+                "$ProgressPreference = 'SilentlyContinue'",
+                f'Invoke-WebRequest "{url}" -OutFile "{zipfile.name}"',
+            ]
+            command.run_powershell_command(url)
+        else:
+            download_command = f'wget "{url}" -O "{output_file}"'
+            command.run_command(download_command)
 
         dst_parent_dir = dst_dir.parent
         with Pushd(dst_parent_dir):
             # Unzip to the parent of desired destination directory
-            unzip_command = f"unzip {zipfile.name}"
-            command.run_command(unzip_command)
+            if OperatingSystem.current().is_windows():
+                unzip_command = [
+                    "$ProgressPreference = 'SilentlyContinue'",
+                    f'Expand-Archive {zipfile.name} -DestinationPath "."',
+                ]
+                command.run_powershell_command(unzip_command)
+            else:
+                unzip_command = f"unzip {zipfile.name}"
+                command.run_command(unzip_command)
 
             # In the zip there is one folder called <ProjectName>-<BranchName>. Rename it to the name of desired destination director
             Path(f"{repo}-master").rename(dst_dir)

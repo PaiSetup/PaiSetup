@@ -4,6 +4,7 @@ from .extensions import ExtensionsStep
 from .folders import FoldersStep
 from .git import GitStep
 from .hw_tools import HwToolsStep
+from .icons.icons import IconsStep
 from .packages.packages import PackagesStep
 from .privacy import PrivacyStep
 from .ssh import SshStep
@@ -25,6 +26,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ExtensionsStep(),
         GitStep(),
         HwToolsStep(),
+        IconsStep(),
         PrivacyStep(),
         SshStep(secret_dir),
         StartupStep(),
