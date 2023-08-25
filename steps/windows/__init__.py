@@ -16,11 +16,33 @@ from utils.setup_mode import SetupMode
 
 
 def get_steps(args, root_dir, build_dir, secret_dir):
-    steps = [
-        # These steps should be at the beginning
-        FoldersStep("D:/"),
-        PackagesStep(build_dir, skip_already_installed=True),
-        # For this steps order doesn't matter
+    steps = []
+
+    # Add folder step
+    if args.mode == SetupMode.main:
+        steps.append(FoldersStep("D:/", include_multimedia=False))
+    elif args.mode == SetupMode.normie:
+        steps.append(
+            FoldersStep(
+                None,
+                override_system_locations=False,
+                separate_hw_tools=False,
+                include_games=False,
+                include_multimedia=False,
+                include_projects=False,
+                include_vms=False,
+            )
+        )
+    elif args.mode == SetupMode.extra:
+        steps.append(FoldersStep("D:/", include_multimedia=False, include_projects=False, include_vms=False))
+    else:
+        raise ValueError("Unsupported mode")
+
+    # Add packages step. It should be before all other steps. TODO: resolve execution dependencies automatically.
+    steps.append(PackagesStep(build_dir, skip_already_installed=True))
+
+    # Add the rest of the steps
+    steps += [
         ActivateWindowsStep(secret_dir),
         ExplorerStep(),
         ExtensionsStep(),

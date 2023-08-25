@@ -35,6 +35,9 @@ from utils.setup_mode import SetupMode
 
 
 def get_steps(args, root_dir, build_dir, secret_dir):
+    if args.mode != SetupMode.main:
+        raise ValueError("Arch Linux can only be setup as a main machine")
+
     steps = [
         PackagesStep(build_dir, True),
         ShellStep(root_dir),
@@ -49,35 +52,26 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         BluetoothStep(),
         JavaStep(),
         QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
+        XsessionStep(),
+        GitStep(),
+        DwmStep(build_dir, fetch_git=False, is_default_wm=False),
+        AwesomeStep(build_dir, fetch_git=False, is_default_wm=True),
+        StStep(build_dir, fetch_git=False),
+        BashScriptsStep(fetch_git=args.fetch),
+        VscodeStep(build_dir),
+        ProgrammingCppStep(graphics=True, systemc=True),
+        ProgrammingPythonStep(),
+        ProgrammingRustStep(),
+        ProgrammingCommonStep(),
+        ProgrammingGamedevStep(),
+        CheckMateStep(build_dir),
+        LightDmStep(),
+        EncryptionStep(),
+        CharonStep(build_dir, fetch_git=args.fetch),
+        PicardStep(),
+        NotesStep(fetch_git=args.fetch),
+        VirtualBoxStep(),
+        RaspberryPiStep(),
     ]
-    if args.mode == SetupMode.main or args.mode == SetupMode.normie_plus:
-        steps += [
-            XsessionStep(),
-            GitStep(),
-            DwmStep(build_dir, fetch_git=False, is_default_wm=False),
-            AwesomeStep(build_dir, fetch_git=False, is_default_wm=True),
-            StStep(build_dir, fetch_git=False),
-            BashScriptsStep(fetch_git=args.fetch),
-            VscodeStep(build_dir),
-            ProgrammingCppStep(graphics=True, systemc=True),
-            ProgrammingPythonStep(),
-            ProgrammingRustStep(),
-            ProgrammingCommonStep(),
-            ProgrammingGamedevStep(),
-            CheckMateStep(build_dir),
-        ]
-    if args.mode == SetupMode.main:
-        steps += [
-            LightDmStep(),
-            EncryptionStep(),
-            CharonStep(build_dir, fetch_git=args.fetch),
-            PicardStep(),
-            NotesStep(fetch_git=args.fetch),
-            VirtualBoxStep(),
-            RaspberryPiStep(),
-        ]
-    if args.mode == SetupMode.normie:
-        # TODO: setup kde or something like that
-        pass
 
     return steps

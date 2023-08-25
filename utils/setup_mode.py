@@ -4,8 +4,8 @@ from pathlib import Path
 
 class SetupMode(enum.Enum):
     main = "main"  # My main machine
-    normie = "normie"  # Setup for beginners
-    normie_plus = "normie_plus"  # Setup for beginners + additional stuff like tiling WMs, so I can comfortably use it as well
+    extra = "extra"  # My extra machine, not a full setup
+    normie = "normie"  # Setup for not very computer-literate people
 
     @staticmethod
     def retrieve_last_mode(root_dir):

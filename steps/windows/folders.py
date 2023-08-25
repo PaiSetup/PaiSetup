@@ -22,39 +22,51 @@ class FoldersStep(Step):
     def __init__(
         self,
         root_folder,
-        override_programs=True,
+        override_system_locations=True,
         separate_hw_tools=True,
         include_multimedia=True,
         include_games=True,
         include_projects=True,
+        include_vms=True,
     ):
         super().__init__("Folders")
-        root_folder = Path(root_folder)
-        self._folders = {
-            KnownFolder.Root: root_folder,
-            KnownFolder.Desktop: root_folder / "Desktop",
-            KnownFolder.Documents: root_folder / "Documents",
-            KnownFolder.Games: root_folder / "Games",
-            KnownFolder.HwTools: root_folder / "HwTools",
-            KnownFolder.Multimedia: root_folder / "Multimedia",
-            KnownFolder.Programs: root_folder / "Programs",
-            KnownFolder.Projects: root_folder / "Projects",
-            KnownFolder.Scripts: root_folder / "Scripts",
-            KnownFolder.Toolbar: root_folder / "Toolbar",
-            KnownFolder.VirtualMachines: root_folder / "VirtualMachines",
-        }
-        if not override_programs:
-            program_files_dir = self._env.get("programfiles")
-            self._folders[KnownFolder.Programs] = program_files_dir
-            self._folders[KnownFolder.HwTools] = program_files_dir
-        if not separate_hw_tools:
+        self._folders = {}
+
+        # Add root folder if it's present
+        if root_folder is not None:
+            root_folder = Path(root_folder)
+            self._folders[KnownFolder.Root] = root_folder
+
+        # Add system locations
+        if override_system_locations:
+            if root_folder is None:
+                raise ValueError("Cannot override system locations without specified root folder.")
+
+            self._folders[KnownFolder.Desktop] = root_folder / "Desktop"
+            self._folders[KnownFolder.Documents] = root_folder / "Documents"
+            self._folders[KnownFolder.Programs] = root_folder / "Programs"
+        else:
+            self._folders[KnownFolder.Desktop] = self.home() / "Desktop"
+            self._folders[KnownFolder.Documents] = self.home() / "Documents"
+            self._folders[KnownFolder.Programs] = self._env.get("programfiles")
+
+        # Add custom locations
+        if root_folder is not None:
+            if include_games:
+                self._folders[KnownFolder.Games] = root_folder / "Games"
+            if include_multimedia:
+                self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
+            if include_projects:
+                self._folders[KnownFolder.Projects] = root_folder / "Projects"
+            if include_vms:
+                self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
+            self._folders[KnownFolder.HwTools] = root_folder / "HwTools" if separate_hw_tools else self._folders[KnownFolder.Programs]
+            self._folders[KnownFolder.Scripts] = root_folder / "Scripts"
+            self._folders[KnownFolder.Toolbar] = root_folder / "Toolbar"
+        else:
+            if include_games or include_multimedia or include_projects or include_vms or separate_hw_tools:
+                raise ValueError("Illegal folders included for rootless structure")
             self._folders[KnownFolder.HwTools] = self._folders[KnownFolder.Programs]
-        if not include_multimedia:
-            self._folders.pop(KnownFolder.Multimedia)
-        if not include_games:
-            self._folders.pop(KnownFolder.Games)
-        if not include_projects:
-            self._folders.pop(KnownFolder.Projects)
 
     @dependency_listener
     def get_known_folders(self):
