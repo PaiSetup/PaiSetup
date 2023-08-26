@@ -44,6 +44,7 @@ class StartupStep(Step):
         self._remove_startup_entry("OneDrive")
         self._remove_startup_entry("Steam")
         self._remove_startup_entry("SunJavaUpdateSched")
+        self._remove_startup_entry("EADM")
 
     def _remove_startup_entry(self, name):
         for hive in [HKCU, HKLM]:
