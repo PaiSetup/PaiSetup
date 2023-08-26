@@ -11,7 +11,7 @@ def main():
     for output_line in output:
         regex = re.search(":: ([0-9a-zA-Z-]+): (.*)", output_line)
         if regex is None:
-            log("WARNING: could not parse nvidia-settings")
+            log("WARNING: could not parse nvidia-settings") # TODO use WarningHub
             continue
         display = regex[1]
         config = regex[2]

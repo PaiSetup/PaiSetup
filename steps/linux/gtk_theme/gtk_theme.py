@@ -93,10 +93,10 @@ class GtkThemeStep(Step):
 
             # Skip if any problems encountered or files are already generated
             if scaling_factor >= 1:
-                log(f"WARNING could not generate emblems for size {size_to_generate} (bigger than original)")
+                self._warnings.push(f"could not generate emblems for size {size_to_generate} (bigger than original)")
                 continue
             if scaling_factor * original_size != size_to_generate:
-                log(f"WARNING could not generate emblems for size {size_to_generate} (division not even)")
+                self._warnings.push(f"could not generate emblems for size {size_to_generate} (division not even)")
                 continue
             if downsized_emblems_dir.exists():
                 if self._regenerate_icon_theme:

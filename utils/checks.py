@@ -2,6 +2,7 @@ from utils import command
 from utils.log import log
 from utils.os_function import windows_only
 
+# TODO is this file needed?
 
 def require_check(check, warning_message):
     if not check():
