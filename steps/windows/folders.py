@@ -16,6 +16,7 @@ class KnownFolder(Enum):
     Scripts = auto()
     Toolbar = auto()
     VirtualMachines = auto()
+    PublicDesktop = auto()
 
 
 class FoldersStep(Step):
@@ -48,7 +49,8 @@ class FoldersStep(Step):
         else:
             self._folders[KnownFolder.Desktop] = self.home() / "Desktop"
             self._folders[KnownFolder.Documents] = self.home() / "Documents"
-            self._folders[KnownFolder.Programs] = self._env.get("programfiles")
+            self._folders[KnownFolder.Programs] = Path(self._env.get("programfiles"))
+        self._folders[KnownFolder.PublicDesktop] = Path(self._env.get("PUBLIC")) / "Desktop"
 
         # Add custom locations
         if root_folder is not None:

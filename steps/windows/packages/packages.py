@@ -22,6 +22,7 @@ class PackagesStep(Step):
         self._programs_dir = known_folders[KnownFolder.Programs]
         self._hw_tools_dir = known_folders[KnownFolder.HwTools]
         self._desktop_dir = known_folders[KnownFolder.Desktop]
+        self._public_desktop_dir = known_folders[KnownFolder.PublicDesktop]
         self._games_dir = known_folders[KnownFolder.Games]
 
         dependency_dispatcher.add_packages(
@@ -86,8 +87,10 @@ class PackagesStep(Step):
                 raise ValueError(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
 
         # Remove any automatically created desktop icons
-        for file in package_info.desktop_files_to_delete:
-            file = self._desktop_dir / file
+        for file_name in package_info.desktop_files_to_delete:
+            file = self._desktop_dir / file_name
+            file.unlink(missing_ok=True)
+            file = self._public_desktop_dir / file_name
             file.unlink(missing_ok=True)
 
     def _pack_custom_package(self, package_name):
