@@ -15,6 +15,7 @@ from .programming_cpp import ProgrammingCppStep
 from .ssh import SshStep
 from .startup import StartupStep
 from .time import TimeStep
+from .toolbar import ToolbarStep
 from .uninstall_bloat import UninstallBloatStep
 from .vscode import VscodeStep
 
@@ -68,6 +69,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     if args.mode == SetupMode.main or arg.mode == SetupMode.extra:
         steps += [
             GamesStep(),
+            ToolbarStep(root_dir),
         ]
 
     # Add steps only for main machine

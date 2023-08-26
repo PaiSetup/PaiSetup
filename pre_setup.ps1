@@ -23,5 +23,8 @@ if ($programs_dir -ne '') {
 }
 choco install python311 $python_install_args -y
 
+# Install python libraries needed by PaiSetup
+python -m pip install pywin32
+
 # Install autohotkey
 choco install autohotkey.portable --version=1.1.37.1
