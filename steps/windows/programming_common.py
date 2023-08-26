@@ -11,5 +11,4 @@ class ProgrammingCommonStep(Step):
             "graphviz",
             "sysinternals",
             "vagrant",
-            "virtualbox",
         )

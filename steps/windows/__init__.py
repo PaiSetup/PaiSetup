@@ -17,6 +17,7 @@ from .startup import StartupStep
 from .time import TimeStep
 from .toolbar import ToolbarStep
 from .uninstall_bloat import UninstallBloatStep
+from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
 
 from utils.setup_mode import SetupMode
@@ -70,6 +71,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         steps += [
             GamesStep(),
             ToolbarStep(root_dir),
+            VirtualBoxStep(),
         ]
 
     # Add steps only for main machine

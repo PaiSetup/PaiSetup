@@ -62,7 +62,7 @@ class PackagesStep(Step):
 
     def install_package(self, package):
         # Gather required info for this package
-        package_info = PackageInfo(package, self._programs_dir, self._hw_tools_dir, self._games_dir)
+        package_info = self.get_package_info(package)
 
         # Install it with chocolatey
         install_command = f"choco install {package} --yes"
@@ -129,6 +129,10 @@ class PackagesStep(Step):
     def list_packages(self, resolve_groups):
         packages = "\n".join(self._packages)
         print(packages)
+
+    @dependency_listener
+    def get_package_info(self, package):
+        return PackageInfo(package, self._programs_dir, self._hw_tools_dir, self._games_dir)
 
     def _remove_chocolatey_warnings(self, lines, remove_empty_lines=False):
         warnings_line_prefixes = [
