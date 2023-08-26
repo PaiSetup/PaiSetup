@@ -1,0 +1,1 @@
+These scripts are meant to be ran only once, before the main *setup.py*. Running them multiple times can have unforseen consequences.

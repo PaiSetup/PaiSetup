@@ -6,6 +6,13 @@ from win32com.shell import shell, shellcon
 
 
 class ToolbarStep(Step):
+    """
+    This step creates shortcuts in toolbar directory, but it doesn't add the toolbar
+    to the taskbar. There is no API for it. It might be possible to reverse engineer
+    the binary in HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Streams\Desktop,
+    but the ROI is quite low.
+    """
+
     def __init__(self, root_dir):
         super().__init__("Toolbar")
         self._root_dir = root_dir
@@ -21,7 +28,7 @@ class ToolbarStep(Step):
             self._warnings.push("toolbar directory is not set")
             return
 
-        log("Cleaning toolbar directory")
+        log(f"Cleaning toolbar directory {self._toolbar_dir}")
         for file in self._toolbar_dir.iterdir():
             if file.suffix == ".lnk":
                 file.unlink()
