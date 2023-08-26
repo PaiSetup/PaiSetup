@@ -1,3 +1,7 @@
+from utils.env import EnvManager
+from utils.file_writer import FileWriter
+
+
 class Step:
     """
     Base class for all steps of setting up the working environment. A step is a logical part
@@ -10,13 +14,15 @@ class Step:
         self._enabled = True
 
     @classmethod
-    def setup_external_services(cls, file_writer, env):
+    def setup_external_services(cls, root_dir):
         """
         A service is an object shared between all steps which provides some utility functions
         while storing its state internally.
         """
-        cls._file_writer = file_writer
-        cls._env = env
+        if hasattr(cls, "_file_writer"):
+            raise ValueError("setup_external_services may be called only once")
+        cls._env = EnvManager(root_dir)
+        cls._file_writer = FileWriter(cls._env.home())
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         """

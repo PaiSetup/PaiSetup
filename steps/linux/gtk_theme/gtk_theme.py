@@ -115,7 +115,7 @@ class GtkThemeStep(Step):
         log("Setting emblems to directories")
         with LogIndent():
             for path, emblem in self._emblems.items():
-                resolved_path = FileWriter.resolve_path(path)
+                resolved_path = self._file_writer.resolve_path(path)
                 log_line = f"{resolved_path}: {emblem}"
                 if not os.path.isdir(resolved_path):
                     log(f"{log_line} (warning: directory does not exist - skipping)")

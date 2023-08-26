@@ -22,8 +22,8 @@ class CheckMateStep(Step):
     """
 
     class Profile:
-        def __init__(self, launch_script_path, xinitrc_path, is_default_profile, is_global_profile=False):
-            self.launch_script_path = FileWriter.resolve_path(launch_script_path)
+        def __init__(self, launch_script_path, xinitrc_path, *, is_default_profile, is_global_profile=False):
+            self.launch_script_path = launch_script_path
             self.xinitrc_path = xinitrc_path
             self.is_default_profile = is_default_profile
             self.is_global_profile = is_global_profile
@@ -44,7 +44,12 @@ class CheckMateStep(Step):
         self._current_step_dir = Path(__file__).parent
         self._tcp_port = 50198
         self._profiles = {}  # key=Profile, value=list of PeriodicCheck
-        self._global_profile = CheckMateStep.Profile(".config/PaiSetup/run_check_mate.sh", ".config/PaiSetup/xinitrc_base", True, True)
+        self._global_profile = CheckMateStep.Profile(
+            self._file_writer.resolve_path(".config/PaiSetup/run_check_mate.sh"),
+            ".config/PaiSetup/xinitrc_base",
+            is_default_profile=True,
+            is_global_profile=True,
+        )
 
         self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60)

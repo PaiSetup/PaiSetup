@@ -27,7 +27,7 @@ class DwmStep(GuiStep):
         self._sxhkd_config_path = f"{self._config_path}/sxhkdrc"
 
         self._periodic_check_launch_script = f"{self._config_path}/run_check_mate.sh"
-        self._periodic_check_profile = CheckMateStep.Profile(self._periodic_check_launch_script, self._xinitrc_path, is_default_wm)
+        self._periodic_check_profile = CheckMateStep.Profile(self._periodic_check_launch_script, self._xinitrc_path, is_default_profile=is_default_wm)
 
         # fmt: off
         self._keybindings = [

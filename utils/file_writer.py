@@ -1,4 +1,3 @@
-from steps.step import Step
 from utils import command
 import os
 import tempfile
@@ -84,17 +83,17 @@ class FileDesc:
         self.end_lines = []
 
 
-class FileWriter(Step):
-    def __init__(self):
+class FileWriter:
+    def __init__(self, home_path):
         self._files = dict()
+        self._home_path = home_path
 
-    @staticmethod
-    def resolve_path(path):
+    def resolve_path(self, path):
         path = Path(path)
         if path.is_absolute():
             return path
         else:
-            return Step._env.home() / path
+            return self._home_path / path
 
     def _ensure_file_is_deleted(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -118,7 +117,7 @@ class FileWriter(Step):
         file_type=FileType.PosixShell,
         line_placement=LinePlacement.Normal,
     ):
-        path = FileWriter.resolve_path(path)
+        path = self.resolve_path(path)
 
         # Get description of the file
         if path in self._files:
@@ -197,8 +196,8 @@ class FileWriter(Step):
         link,
         **kwargs,
     ):
-        src = FileWriter.resolve_path(src)
-        link = FileWriter.resolve_path(link)
+        src = self.resolve_path(src)
+        link = self.resolve_path(link)
         self._ensure_file_is_deleted(link)
         os.symlink(src, link)
         return link
@@ -209,7 +208,7 @@ class FileWriter(Step):
         return self.write_lines(path, lines, file_type=FileType.PosixShell)
 
     def remove_file(self, path):
-        path = FileWriter.resolve_path(path)
+        path = self.resolve_path(path)
         try:
             os.remove(path)
         except FileNotFoundError:
@@ -233,7 +232,7 @@ class FileWriter(Step):
                 values are functions taking a section, base name (without square bracket modifiers) and value and returning a new value
         """
         source_file_path = f"/usr/share/applications/{source_name}"
-        destination_file_path = Step._env.home() / ".local/share/applications" / destination_name
+        destination_file_path = self._home_path / ".local/share/applications" / destination_name
 
         lines = []
         with open(source_file_path, "r") as src:
@@ -275,7 +274,7 @@ class FileWriter(Step):
                 values are functions taking a current value and returning a new value
         """
 
-        file_path = FileWriter.resolve_path(file_path)
+        file_path = self.resolve_path(file_path)
         with open(file_path, "r") as real_file:
             with tempfile.NamedTemporaryFile(mode='w', delete=False, prefix=f"{file_path}.tmp_") as tmp_file:
                 section = ""

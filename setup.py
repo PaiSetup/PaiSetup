@@ -3,8 +3,6 @@
 from steps.step import Step
 from steps import get_steps
 from utils.dependency_dispatcher import DependencyDispatcher
-from utils.env import EnvManager
-from utils.file_writer import FileWriter
 from utils.setup_mode import SetupMode
 
 from pathlib import Path
@@ -31,9 +29,7 @@ args.mode.save_last_mode(root_dir)
 # fmt: on
 
 # Setup services
-file_writer = FileWriter()
-env = EnvManager(root_dir)
-Step.setup_external_services(file_writer, env)
+Step.setup_external_services(root_dir)
 
 # Setup steps. They can be safely commented out if neccessary
 steps = get_steps(args, root_dir, build_dir, secret_dir)
