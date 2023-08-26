@@ -1,5 +1,5 @@
-from utils.env import EnvManager
-from utils.file_writer import FileWriter
+from utils.services.env import EnvManager
+from utils.services.file_writer import FileWriter
 
 
 class Step:
@@ -23,6 +23,15 @@ class Step:
             raise ValueError("setup_external_services may be called only once")
         cls._env = EnvManager(root_dir)
         cls._file_writer = FileWriter(cls._env.home())
+
+    @classmethod
+    def finalize_services(cls):
+        """
+        Service objects may require to be finalized to perform some cleanup operations or print
+        their results.
+        """
+        cls._env.finalize()
+        cls._file_writer.finalize()
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         """

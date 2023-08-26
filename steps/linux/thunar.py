@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 
 
 class ThunarStep(Step):

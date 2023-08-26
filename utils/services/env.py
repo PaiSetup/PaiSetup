@@ -46,3 +46,6 @@ class EnvManager:
 
     def home(self):
         return self.get("HOME")
+
+    def finalize(self):
+        pass

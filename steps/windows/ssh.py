@@ -2,7 +2,7 @@ from steps.step import Step
 from utils import command
 from utils.log import log
 from pathlib import Path
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 import shutil
 import os
 import stat

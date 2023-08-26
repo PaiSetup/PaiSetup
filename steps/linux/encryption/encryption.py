@@ -1,7 +1,7 @@
 from steps.step import Step
 from pathlib import Path
 from utils.keybinding import KeyBinding
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 
 
 class EncryptionStep(Step):

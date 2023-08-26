@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 from utils.log import log, LogIndent
 from utils import command
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 
 
 class HomeDirectoryStep(Step):

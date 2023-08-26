@@ -2,7 +2,7 @@ from steps.step import Step, dependency_listener
 from pathlib import Path
 from shutil import copyfile
 import os
-from utils.file_writer import FileType, LinePlacement
+from utils.services.file_writer import FileType, LinePlacement
 from utils.log import log
 import utils.external_project as ext
 from utils import command

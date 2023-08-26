@@ -3,7 +3,7 @@ import os
 from utils.log import log, LogIndent
 from utils import command
 from pathlib import Path
-from utils.file_writer import FileType, FileWriter
+from utils.services.file_writer import FileType, FileWriter
 
 
 class CheckMateStep(Step):

@@ -74,4 +74,4 @@ for step in steps:
 log("END")
 
 # Finalize services
-file_writer.finalize()
+Step.finalize_services()

@@ -2,7 +2,7 @@ from steps.step import Step
 from pathlib import Path
 import os
 from utils.log import log
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 
 
 class FirefoxStep(Step):

@@ -1,7 +1,7 @@
 from steps.step import Step
 import json
 import os
-from utils.file_writer import FileType
+from utils.services.file_writer import FileType
 import utils.external_project as ext
 
 
