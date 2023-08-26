@@ -14,6 +14,7 @@ import argparse
 root_dir = Path(__file__).parent
 build_dir = root_dir / "build"
 secret_dir = root_dir / "secret"
+logs_dir = root_dir / "logs"
 
 # Parse command-line arguments
 # fmt: off
@@ -29,7 +30,7 @@ args.mode.save_last_mode(root_dir)
 # fmt: on
 
 # Setup services
-Step.setup_external_services(root_dir)
+Step.setup_external_services(root_dir, logs_dir)
 
 # Setup steps. They can be safely commented out if neccessary
 steps = get_steps(args, root_dir, build_dir, secret_dir)
@@ -49,7 +50,7 @@ for step in steps:
 dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
     step.register_as_dependency_listener(dependencies)
-enabled_steps = [step for step in steps if step.is_enabled()] # Save into variable, because steps may be enabled during iteration
+enabled_steps = [step for step in steps if step.is_enabled()]  # Save into variable, because steps may be enabled during iteration
 for step in enabled_steps:
     step.express_dependencies(dependencies)
 

@@ -75,7 +75,17 @@ class PackagesStep(Step):
         if package_info.package_args:
             install_command += f' --packageparameters="{package_info.package_args}"'
         log(install_command)
-        command.run_command(install_command)
+        try:
+            command.run_command(install_command)
+        except command.CommandError as e:
+            self._warnings.push_with_report(
+                f'Installation of "{package}" failed.',
+                f"install_error_{package}",
+                e.stdout,
+                print=False,
+            )
+            log("FAILED", add_indent=True)
+            return
 
         # Verify we really installed something
         if package_info.install_dir:

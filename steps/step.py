@@ -15,7 +15,7 @@ class Step:
         self._enabled = True
 
     @classmethod
-    def setup_external_services(cls, root_dir):
+    def setup_external_services(cls, root_dir, logs_dir):
         """
         A service is an object shared between all steps which provides some utility functions
         while storing its state internally.
@@ -24,7 +24,7 @@ class Step:
             raise ValueError("setup_external_services may be called only once")
         cls._env = EnvManager(root_dir)
         cls._file_writer = FileWriter(cls._env.home())
-        cls._warnings = WarningHub()
+        cls._warnings = WarningHub(logs_dir)
 
     @classmethod
     def finalize_services(cls):

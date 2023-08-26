@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 import time
 
 indent_level = 0
@@ -42,6 +43,8 @@ def _get_log_delta_time():
     return "[" + content + "] "
 
 
-def log(message):
+def log(message, add_indent=False):
     log_time = _get_log_delta_time()
-    print(f"{log_time}{indent}{message}")
+
+    with LogIndent() if add_indent else nullcontext():
+        print(f"{log_time}{indent}{message}")
