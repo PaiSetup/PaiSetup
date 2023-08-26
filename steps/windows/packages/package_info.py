@@ -59,7 +59,7 @@ class PackageInfo:
 
     def _set_package(self, package_name, programs_dir, hw_tools_dir, games_dir):
         if package_name == "7zip":
-            self.install_dir = programs_dir / "7zip_"  # Installer ignores the last character in path
+            self.install_dir = programs_dir / "7zip"
             self._set_installer(Installer.Nsis)
         elif package_name == "adobereader":
             self.install_dir = programs_dir / "AdobeReader"
