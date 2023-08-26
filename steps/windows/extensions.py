@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils.windows_registry import *
+from utils.windows.windows_registry import *
 from utils.log import log
 
 

@@ -1,7 +1,7 @@
 from steps.step import Step
 from utils import command
 from utils.log import log
-from utils.windows_registry import *
+from utils.windows.windows_registry import *
 
 
 class PrivacyStep(Step):

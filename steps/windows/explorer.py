@@ -1,6 +1,6 @@
 from steps.step import Step, dependency_listener
-from utils.checks import *
-from utils.windows_registry import *
+from utils.windows.checks import *
+from utils.windows.windows_registry import *
 
 
 class ExplorerStep(Step):

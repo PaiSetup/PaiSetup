@@ -2,7 +2,7 @@ import enum
 import tempfile
 import re
 from pathlib import Path
-from utils.windows_registry import HKLM, set_registry_value_string
+from utils.windows.windows_registry import HKLM, set_registry_value_string
 
 custom_packages_dir = Path(__file__).parent / "custom_packages"
 
