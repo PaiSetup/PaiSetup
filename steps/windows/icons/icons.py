@@ -45,6 +45,7 @@ class IconsStep(Step):
             icon_commands.append(icon_command)
 
         # Execute commands
+        log("Setting up icons")
         if self._merge_commands:
             command.run_powershell_command(icon_commands)
         else:
