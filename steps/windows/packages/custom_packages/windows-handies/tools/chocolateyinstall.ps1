@@ -12,7 +12,7 @@ echo "$folder" >> $cacheFilePath
 # Download and unzip package
 $args = @{
     PackageName   = $packageName
-    Url           = "https://github.com/InternalMD/WindowsHandies/releases/download/1.6/WindowsHandies.zip"
+    Url           = "https://github.com/PaiSetup/WindowsHandies/releases/download/1.6/WindowsHandies.zip"
     UnzipLocation = $folder
 }
 Install-ChocolateyZipPackage @args
