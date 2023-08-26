@@ -199,6 +199,7 @@ class PackageInfo:
         elif package_name == "pdfsam.install":
             self.install_dir = programs_dir / "PDFsam"
             self._set_installer(Installer.Msi)
+            self.desktop_files_to_delete.append("PDFsam Basic.lnk")
         elif package_name == "pix":
             # Pix doesn't let us configure anything...
             pass
