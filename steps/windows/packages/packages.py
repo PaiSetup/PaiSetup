@@ -11,9 +11,10 @@ from steps.windows.folders import KnownFolder
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir, skip_already_installed):
+    def __init__(self, root_build_dir, skip_already_installed, is_main_machine):
         super().__init__("Packages")
         self._skip_already_installed = skip_already_installed
+        self._is_main_machine = is_main_machine
         self._packages = []
 
     def express_dependencies(self, dependency_dispatcher):
@@ -24,9 +25,24 @@ class PackagesStep(Step):
         self._games_dir = known_folders[KnownFolder.Games]
 
         dependency_dispatcher.add_packages(
+            "7zip",
+            "adobereader",
             "firefox",
+            "imageglass",
             "notepadplusplus",
+            # "recuva", # broken package
+            "qbittorrent",
+            "beyondcompare",
+            "vlc",
+            "microsoft-windows-terminal",
+            "python3",
         )
+        if self._is_main_machine:
+            dependency_dispatcher.add_packages(
+                "discord",
+                "obsidian",
+                "veracrypt",
+            )
 
     def perform(self):
         log(f"Required packages: {self._packages}")

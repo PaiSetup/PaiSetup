@@ -41,7 +41,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         raise ValueError("Unsupported mode")
 
     # Add packages step. It should be before all other steps. TODO: resolve execution dependencies automatically.
-    steps.append(PackagesStep(build_dir, skip_already_installed=True))
+    steps.append(PackagesStep(build_dir, skip_already_installed=True, is_main_machine=args.mode == SetupMode.main))
 
     # Add the rest of the steps
     steps += [

@@ -140,6 +140,7 @@ class PackageInfo:
             self._append_install_arg(f"/LOADINF={inf_file_path}")
         elif package_name == "godot":
             # Binary file installed in <chocolatey_dir>/bin
+            self.desktop_files_to_delete.append("Godot.lnk")
             pass
         elif package_name == "googlechrome":
             # Techincally it's an MSI installer, but command line args do not work. We cannot select installation dir.
@@ -192,8 +193,8 @@ class PackageInfo:
             self.install_dir = programs_dir / "Notepad++"
             self._set_installer(Installer.Nsis)
         elif package_name == "obsidian":
-            self.install_dir = programs_dir / "Obsidian"
-            self._set_installer(Installer.Nsis)
+            # Technically it's an NSIS installer, but it doesn't allow setting installation dir
+            # https://forum.obsidian.md/t/how-to-change-the-default-installation-path/3492
             self.desktop_files_to_delete.append("Obsidian.lnk")
         elif package_name == "pdfsam.install":
             self.install_dir = programs_dir / "PDFsam"
