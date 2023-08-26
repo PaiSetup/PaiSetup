@@ -2,12 +2,16 @@ from .activate_windows import ActivateWindowsStep
 from .explorer import ExplorerStep
 from .extensions import ExtensionsStep
 from .folders import FoldersStep
+from .games import GamesStep
 from .git import GitStep
 from .hw_tools import HwToolsStep
+from .multimedia_tools import MultimediaToolsStep
 from .icons.icons import IconsStep
 from .packages.packages import PackagesStep
 from .power import PowerStep
 from .privacy import PrivacyStep
+from .programming_common import ProgrammingCommonStep
+from .programming_cpp import ProgrammingCppStep
 from .ssh import SshStep
 from .startup import StartupStep
 from .time import TimeStep
@@ -59,4 +63,19 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         UninstallBloatStep(),
         VscodeStep(build_dir),
     ]
+
+    # Add steps only for my machines
+    if args.mode == SetupMode.main or arg.mode == SetupMode.extra:
+        steps += [
+            GamesStep(),
+        ]
+
+    # Add steps only for main machine
+    if args.mode == SetupMode.main:
+        steps += [
+            MultimediaToolsStep(),
+            ProgrammingCommonStep(),
+            ProgrammingCppStep(False),
+        ]
+
     return steps
