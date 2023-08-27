@@ -35,6 +35,10 @@ class ExtensionsStep(Step):
         super().__init__("Extensions")
         self._app_key_npp = "PaiSetupNpp"
 
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("notepadplusplus")
+        self._npp_install_dir = dependency_dispatcher.get_package_info("notepadplusplus").install_dir
+
     def perform(self):
         # fmt: off
         log("Associating extensions with Notepad++")
@@ -137,7 +141,7 @@ class ExtensionsStep(Step):
 
     def _setup_extension_npp(self, extension, description, new_file_entry):
         # Create application key for Notepad++ for this extension
-        app_path = r"D:\Programs\Notepad++\notepad++.exe"  # TODO
+        app_path = self._npp_install_dir / "notepad++.exe"
         open_command = f'"{app_path}" "%1"'
         application_key_name = f"PaiSetup{extension}"
         self._create_application_key(application_key_name, open_command, description, new_file_entry)
