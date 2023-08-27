@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils import command
 from utils.log import log
 import re
@@ -9,6 +9,7 @@ class ActivateWindowsStep(Step):
         super().__init__("ActivateWindows")
         self._secret_dir = secret_dir
 
+    @dependency_listener
     def is_windows_activated(self):
         powershell_command = [
             '$output = Get-CIMInstance -query "select LicenseStatus from SoftwareLicensingProduct where LicenseStatus=1"  | Format-List LicenseStatus',

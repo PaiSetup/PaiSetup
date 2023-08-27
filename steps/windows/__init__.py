@@ -24,6 +24,8 @@ from utils.setup_mode import SetupMode
 
 
 def get_steps(args, root_dir, build_dir, secret_dir):
+    # TODO check for admin
+
     steps = []
 
     # Add folder step

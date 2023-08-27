@@ -1,6 +1,6 @@
 from steps.step import Step, dependency_listener
-from utils.windows.checks import *
 from utils.windows.windows_registry import *
+from utils.log import log
 
 
 class ExplorerStep(Step):
