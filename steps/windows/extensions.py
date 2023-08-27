@@ -101,7 +101,6 @@ class ExtensionsStep(Step):
         """
 
         # UserChoice field is protected with a permission and for now we are removing it with a workaround.
-        # TODO this takes a long time. Check if user choice is present before doing it
         delete_registry_user_choice(HKCU, extension)
         delete_registry_user_choice(HKLM, extension)
 

@@ -4,7 +4,7 @@ from .bash_scripts import BashScriptsStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
 from .check_mate.check_mate import CheckMateStep
-from .dwm.dwm import DwmStep  # TODO sort alphabetically
+from .dwm.dwm import DwmStep
 from .encryption.encryption import EncryptionStep
 from .file_associations import FileAssociationsStep
 from .firefox import FirefoxStep

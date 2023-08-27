@@ -92,6 +92,11 @@ def delete_registry_user_choice(hive, extension):
     delete UserChoice key anyway. Seems like a bug - DeleteSubKeyTreeTree and Remove-Item do not work.
     """
 
+    try:
+        get_registry_value(hive, rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{extension}\UserChoice", missing_ok=True)
+    except FileNotFoundError:
+        return
+
     if hive == HKCU:
         hive = "[Microsoft.Win32.Registry]::CurrentUser"
     elif hive == HKLM:
