@@ -87,14 +87,15 @@ class PackagesStep(Step):
             log("FAILED", add_indent=True)
             return
 
-        # Verify we really installed something
+        # Verify whether the package was actually installed
         if package_info.install_dir:
-            if not package_info.install_dir.is_dir():
-                raise ValueError(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist")
-            try:
-                next(package_info.install_dir.iterdir())
-            except StopIteration:
-                raise ValueError(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
+            if package_info.install_dir.is_dir():
+                try:
+                    next(package_info.install_dir.iterdir())
+                except StopIteration:
+                    self._warnings.push(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
+            else:
+                self._warnings.push(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist")
 
         # Remove any automatically created desktop icons
         for file_name in package_info.desktop_files_to_delete:
