@@ -4,9 +4,10 @@ from steps.step import Step
 from steps import get_steps
 from utils.dependency_dispatcher import DependencyDispatcher
 from utils.setup_mode import SetupMode
+from utils.os_function import OperatingSystem
 
 from pathlib import Path
-from utils.argparser_utils import EnumAction
+from utils.argparser_utils import EnumAction, PathAction
 from utils.log import log, LogIndent
 import argparse
 
@@ -25,6 +26,8 @@ arg_parser.add_argument("-m", "--mode", type=SetupMode, default=SetupMode.retrie
 arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter steps to perform during setup for a given mode")
 arg_parser.add_argument("-f", "--fetch", action="store_true", help="fetch git repositories which might have changed. Some repositories is still not fetched, e.g. dwm, which does not change very often")
 arg_parser.add_argument("-a", "--no_auto_resolve_dependencies", action="store_true", help="Do not automatically enable disabled steps if they are depended on by other enabled steps. This can lead to errors.")
+if OperatingSystem.current().is_windows():
+    arg_parser.add_argument("-r", "--root_dir", action=PathAction, default="D:\\", help="Main directory for user workspace.")
 args = arg_parser.parse_args()
 args.mode.save_last_mode(root_dir)
 # fmt: on

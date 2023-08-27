@@ -28,7 +28,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
 
     # Add folder step
     if args.mode == SetupMode.main:
-        steps.append(FoldersStep("D:/", include_multimedia=False))
+        steps.append(FoldersStep(args.root_dir, include_multimedia=False))
     elif args.mode == SetupMode.normie:
         steps.append(
             FoldersStep(
@@ -42,7 +42,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
             )
         )
     elif args.mode == SetupMode.extra:
-        steps.append(FoldersStep("D:/", include_multimedia=False, include_projects=False, include_vms=False))
+        steps.append(FoldersStep(args.root_dir, include_multimedia=False, include_projects=False, include_vms=False))
     else:
         raise ValueError("Unsupported mode")
 
