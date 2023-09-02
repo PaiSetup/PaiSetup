@@ -28,6 +28,9 @@ def get_steps(args, root_dir, build_dir, secret_dir):
 
     steps = []
 
+    # Add packages step. It should be before all other steps. TODO: resolve execution dependencies automatically.
+    steps.append(PackagesStep(build_dir, skip_already_installed=True, is_main_machine=args.mode == SetupMode.main))
+
     # Add folder step
     if args.mode == SetupMode.main:
         steps.append(FoldersStep(args.root_dir, include_multimedia=False))
@@ -48,9 +51,6 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     else:
         raise ValueError("Unsupported mode")
 
-    # Add packages step. It should be before all other steps. TODO: resolve execution dependencies automatically.
-    steps.append(PackagesStep(build_dir, skip_already_installed=True, is_main_machine=args.mode == SetupMode.main))
-
     # Add the rest of the steps
     steps += [
         ActivateWindowsStep(secret_dir),
@@ -69,7 +69,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     ]
 
     # Add steps only for my machines
-    if args.mode == SetupMode.main or arg.mode == SetupMode.extra:
+    if args.mode == SetupMode.main or args.mode == SetupMode.extra:
         steps += [
             GamesStep(),
             ToolbarStep(root_dir),
