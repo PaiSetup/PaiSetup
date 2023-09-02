@@ -47,8 +47,8 @@ class FoldersStep(Step):
             self._folders[KnownFolder.Documents] = root_folder / "Documents"
             self._folders[KnownFolder.Programs] = root_folder / "Programs"
         else:
-            self._folders[KnownFolder.Desktop] = self.home() / "Desktop"
-            self._folders[KnownFolder.Documents] = self.home() / "Documents"
+            self._folders[KnownFolder.Desktop] = self._env.home() / "Desktop"
+            self._folders[KnownFolder.Documents] = self._env.home() / "Documents"
             self._folders[KnownFolder.Programs] = Path(self._env.get("programfiles"))
         self._folders[KnownFolder.PublicDesktop] = Path(self._env.get("PUBLIC")) / "Desktop"
 
