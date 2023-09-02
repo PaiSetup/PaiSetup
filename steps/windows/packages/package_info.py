@@ -65,6 +65,7 @@ class PackageInfo:
             self.install_dir = programs_dir / "AdobeReader"
             self._set_installer(Installer.Msi)
             self._append_package_arg(" /NoUpdates")
+            self.desktop_files_to_delete.append("Adobe Acrobat.lnk")
         elif package_name == "adoptopenjdk11":
             self.install_dir = programs_dir / "Java/aojdk11"
             self._append_package_arg(f"/ADDLOCAL=FeatureMain /INSTALLDIR={self.install_dir} /quiet")
