@@ -37,6 +37,7 @@ class UninstallBloatStep(Step):
             "*Microsoft.Xbox.TCUI*",
             "*Microsoft.XboxApp*",
             "*Microsoft.XboxGameOverlay*",
+            "*Microsoft.XboxGamingOverlay*",
             "*Microsoft.XboxIdentityProvider*",
             "*Microsoft.XboxSpeechToTextOverlay*",
             "*Microsoft.YourPhone*",
