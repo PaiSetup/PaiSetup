@@ -13,6 +13,7 @@ if ($programs_dir -ne '') {
 }
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 choco feature enable -n=useRememberedArgumentsForUpgrades
 
 # Install Python
@@ -20,7 +21,7 @@ $python_install_args = ''
 if ($programs_dir -ne '') {
     $python_install_args = "--packageparameters=`"/InstallDir:$programs_dir\Python`""
 } else {
-    $python_install_args = ""
+    $python_install_args = "--packageparameters=`"/InstallDir:$env:ProgramFiles\Python`""
 }
 choco install python311 $python_install_args --yes
 Update-SessionEnvironment
