@@ -251,7 +251,7 @@ class PackageInfo:
             self.desktop_files_to_delete.append("VLC media player.lnk")
 
             # Vlc installer ignores the directory selection argument and goes straight to the registry
-            set_registry_value_string(HKLM, r"SOFTWARE\VideoLAN\VLC", "InstallDir", str(self.install_dir))
+            set_registry_value_string(HKLM, r"SOFTWARE\VideoLAN\VLC", "InstallDir", str(self.install_dir), create_keys=True)
         elif package_name == "vscodium":
             self.install_dir = programs_dir / "Vscodium"
             self._set_installer(Installer.Inno)
@@ -274,20 +274,24 @@ class PackageInfo:
                 m = "" if present else "not "
                 raise ValueError(f"install_dir should{m} be present for {installer}")
 
+        # Surrond install dir with quotes to properly handle filenames with spaces.
+        # Also, some installers may require the quotes (e.g. MSI installer).
+        install_dir = f'\\"{self.install_dir}\\"'
+
         if installer == Installer.Inno:
             assert_install_dir_present()
-            self._append_install_arg(f"/DIR={self.install_dir}")
+            self._append_install_arg(f"/DIR={install_dir}")
         elif installer == Installer.Msi:
             assert_install_dir_present()
             self._append_install_arg(
-                f"INSTALLDIR={self.install_dir} TARGETDIR={self.install_dir} INSTALLLOCATION={self.install_dir} INSTALL_ROOT={self.install_dir} APPLICATIONFOLDER={self.install_dir}"
+                f"INSTALLDIR={install_dir} TARGETDIR={install_dir} INSTALLLOCATION={install_dir} INSTALL_ROOT={install_dir} APPLICATIONFOLDER={install_dir}"
             )
         elif installer == Installer.MsiAdvancedInstaller:
             assert_install_dir_present()
-            self._append_install_arg(f"APPDIR={self.install_dir}")
+            self._append_install_arg(f"APPDIR={install_dir}")
         elif installer == Installer.Nsis:
             assert_install_dir_present()
-            self._append_install_arg(f"/D={self.install_dir}")
+            self._append_install_arg(f"/D={install_dir}")
         elif installer == Installer.CustomPackage:
             assert_install_dir_present()
             self._append_choco_arg(f"--source={custom_packages_dir}")
