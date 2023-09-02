@@ -54,10 +54,9 @@ class PackagesStep(Step):
 
         if not packages_to_install:
             log("All packages already installed")
-            return
-
-        for package in packages_to_install:
-            self.install_package(package)
+        else:
+            for package in packages_to_install:
+                self.install_package(package)
         self._refresh_path()
 
     def install_package(self, package):
