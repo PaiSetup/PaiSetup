@@ -19,9 +19,9 @@ choco feature enable -n=useRememberedArgumentsForUpgrades
 # Install Python
 $python_install_args = ''
 if ($programs_dir -ne '') {
-    $python_install_args = "--packageparameters=`"/InstallDir:$programs_dir\Python`""
+    $python_install_args = "--packageparameters=`"/InstallDir:$programs_dir\Python3`""
 } else {
-    $python_install_args = "--packageparameters=`"/InstallDir:$env:ProgramFiles\Python`""
+    $python_install_args = "--packageparameters=`"/InstallDir:$env:ProgramFiles\Python3`""
 }
 choco install python311 $python_install_args --yes
 Update-SessionEnvironment

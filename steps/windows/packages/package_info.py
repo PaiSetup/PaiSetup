@@ -204,7 +204,7 @@ class PackageInfo:
         elif package_name == "pix":
             # Pix doesn't let us configure anything...
             pass
-        elif package_name == "python3":  # TODO: test this (install dir)
+        elif package_name == "python3":
             # Technically python3 has an MSI installer, but the package already passes installation dir so we have to use the package parameter
             self.install_dir = programs_dir / "Python3"
             self._append_package_arg(f"/InstallDir:{self.install_dir}")
