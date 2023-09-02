@@ -41,6 +41,10 @@ class ExtensionsStep(Step):
 
     def perform(self):
         # fmt: off
+        log("Associating extensions with Powershell")
+        self._setup_extension_powershell(".ps1", "Powershell script", True)
+
+        # fmt: off
         log("Associating extensions with Notepad++")
         extensions_for_npp = [
             (".txt",           "Text file (.txt)",     True),
@@ -57,7 +61,6 @@ class ExtensionsStep(Step):
             (".lua",           None,                   False),
             (".md",            "Markdown file",        False),
             (".nuspec",        None,                   False),
-            (".ps1",           "Powershell script",    False),
             (".psm1",          "Powershell module",    False),
             (".py",            "Python file (.py)",    True),
             (".yaml",          None,                   False),
@@ -111,12 +114,17 @@ class ExtensionsStep(Step):
     def _create_new_file_entry(self, extension):
         set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{extension}\ShellNew", "NullFile", "", create_keys=True)
 
-    def _create_application_key(self, name, open_command, description, new_file_entry):
+    def _create_application_key(
+        self, name, open_command, description, new_file_entry, *, icon=None, run_as_admin_specification=None, default_command="open"
+    ):
         if new_file_entry and description is None:
             raise ValueError("Description is required when creating a new file entry")
 
         # Create entry describing how to open a file with this application
         set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{name}\shell\open\command", "", open_command, create_keys=True)
+
+        # Select default shell command to execute on double-click
+        set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{name}\shell", "", default_command)
 
         # Provide textual description of the application or remove it completely
         if description:
@@ -124,6 +132,23 @@ class ExtensionsStep(Step):
         else:
             delete_registry_value(HKCU, rf"SOFTWARE\Classes\{name}", None)
             delete_registry_value(HKLM, rf"SOFTWARE\Classes\{name}", None)
+
+        # Provide icon for files with given extension
+        if icon:
+            set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{name}\DefaultIcon", None, icon, create_keys=True)
+        else:
+            delete_registry_sub_key_tree(HKCU, rf"SOFTWARE\Classes\{name}", "DefaultIcon")
+            delete_registry_sub_key_tree(HKLM, rf"SOFTWARE\Classes\{name}", "DefaultIcon")
+
+        # Generate administrator command
+        if run_as_admin_specification:
+            runas_name, runas_command = run_as_admin_specification
+
+            set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{name}\shell\runas\Command", None, runas_command, create_keys=True)
+            set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{name}\shell\runas", None, runas_name)
+        else:
+            delete_registry_sub_key_tree(HKLM, rf"SOFTWARE\Classes\{name}", "runas")
+            delete_registry_sub_key_tree(HKCU, rf"SOFTWARE\Classes\{name}", "runas")
 
     def _setup_extension(self, extension, application_key_name, new_file_entry):
         # Default value of the extension key points to application key. It can be empty, meaning
@@ -146,6 +171,25 @@ class ExtensionsStep(Step):
         self._create_application_key(application_key_name, open_command, description, new_file_entry)
 
         # Associate extension with the application key
+        self._setup_extension(extension, application_key_name, new_file_entry)
+
+    def _setup_extension_powershell(self, extension, description, new_file_entry):
+        app_path = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"  # TODO query this? Can it change?
+        open_command = f'"{app_path}" "%1"'
+        application_key_name = f"PaiSetup{extension}"
+        icon = f'"{app_path}",0'
+        runas = ("Run with powershell (admin)", open_command)
+        default_command = "Run with powershell"  # This command is already present in the system, we don't have to create it
+        self._create_application_key(
+            application_key_name,
+            open_command,
+            description,
+            new_file_entry,
+            icon=icon,
+            run_as_admin_specification=runas,
+            default_command=default_command,
+        )
+
         self._setup_extension(extension, application_key_name, new_file_entry)
 
 
