@@ -57,7 +57,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ExplorerStep(),
         ExtensionsStep(),
         GitStep(),
-        HwToolsStep(),
+        HwToolsStep(gaming=args.mode == SetupMode.main),
         IconsStep(),
         PowerStep(),
         PrivacyStep(),
