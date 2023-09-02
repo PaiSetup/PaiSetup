@@ -23,7 +23,7 @@ class PackagesStep(Step):
         self._hw_tools_dir = known_folders[KnownFolder.HwTools]
         self._desktop_dir = known_folders[KnownFolder.Desktop]
         self._public_desktop_dir = known_folders[KnownFolder.PublicDesktop]
-        self._games_dir = known_folders[KnownFolder.Games]
+        self._games_dir = known_folders.get(KnownFolder.Games)
 
         dependency_dispatcher.add_packages(
             "7zip",
