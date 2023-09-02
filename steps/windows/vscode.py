@@ -11,6 +11,8 @@ class VscodeStep(VscodeStepBase):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("vscodium")
+        self._vscode_command = dependency_dispatcher.get_package_info("vscodium").install_dir / "bin\\codium"
+        self._vscode_command = f'"{self._vscode_command}"'
 
     def perform(self):
         self._install_extensions()
@@ -20,7 +22,7 @@ class VscodeStep(VscodeStepBase):
         return Path(self._env.get("APPDATA")) / "VSCodium\\User"
 
     def _get_vscode_command(self):
-        return "D:/Programs/VsCodium/bin/codium"
+        return self._vscode_command
 
     def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
         # TODO implement this
