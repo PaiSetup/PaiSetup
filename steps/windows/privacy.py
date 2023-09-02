@@ -10,19 +10,19 @@ class PrivacyStep(Step):
 
     def perform(self):
         log("Disable Windows Feedback Experience program")
-        set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo", "Enabled", "0")
-        set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Siuf\Rules", "PeriodInNanoSeconds", "0")
+        set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo", "Enabled", "0", create_keys=True)
+        set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Siuf\Rules", "PeriodInNanoSeconds", "0", create_keys=True)
         set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Siuf\Rules", "NumberOfSIUFInPeriod", "0")
 
         log("Disable Cortana search")
         set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\Windows\Windows Search", "AllowCortana", "0")
 
         log("Disable Bing search")
-        set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\Windows Search", "DisableWebSearch", "1")
+        set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\Windows Search", "DisableWebSearch", "1", create_keys=True)
         set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Windows\CurrentVersion\Search", "BingSearchEnabled", "0")
 
         log("Disable cloud content")
-        set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableCloudOptimizedContent", "1")
+        set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableCloudOptimizedContent", "1", create_keys=True)
         set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableSoftLanding", "1")
         set_registry_value_dword(HKLM, "SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableWindowsConsumerFeatures", "1")
         set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager", "ContentDeliveryAllowed", "0")
@@ -33,7 +33,7 @@ class PrivacyStep(Step):
         set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager", "SystemPaneSuggestionsEnabled", "0")
 
         log("Disable WiFi sense")
-        set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting", "value", "0")
+        set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting", "value", "0", create_keys=True)
         set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots", "value", "0")
         set_registry_value_dword(HKLM, "SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config", "value", "0")
 
@@ -46,7 +46,7 @@ class PrivacyStep(Step):
         set_registry_value_dword(
             HKLM, "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", "SensorPermissionState", "0"
         )
-        set_registry_value_dword(HKLM, "SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", "Status", "0")
+        set_registry_value_dword(HKLM, "SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", "Status", "0", create_keys=True)
 
         log("Disable typing information")
         set_registry_value_dword(HKCU, "SOFTWARE\Microsoft\Input\TIPC", "Enabled", "0")
