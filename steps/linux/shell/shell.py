@@ -42,8 +42,13 @@ class ShellStep(Step):
             "Move some dotfiles out of home dir",
             [
                 'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
-                'alias wget=wget --hsts-file="\$XDG_DATA_HOME/wget-hsts"'
+                'export WGETRC="$XDG_CONFIG_HOME/wgetrc"',
             ],
+        )
+        self._file_writer.write_lines(
+            ".config/wgetrc",
+            [f"hsts-file={self._env.get('XDG_CACHE_HOME')}/wget-hsts"],
+            file_type=FileType.ConfigFile,
         )
 
     def _setup_bash(self):
