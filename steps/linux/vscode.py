@@ -14,7 +14,7 @@ class VscodeStep(VscodeStepBase):
             "code",
             "code-features",  # Fixes some issues with loading ms-python.python extension
         )
-        dependency_dispatcher.register_homedir_file(".vscode-oss")
+        dependency_dispatcher.register_homedir_file(".vscode")
 
         # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
