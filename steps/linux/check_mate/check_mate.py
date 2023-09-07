@@ -83,7 +83,7 @@ class CheckMateStep(Step):
 
     @dependency_listener
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
-        script = f"{self._env.get('SCRIPTS_PATH')}/core/linux/is_daemon_running.sh"
+        script = self._current_step_dir / "is_daemon_running.sh"
         script_args = f"{command_regex} {name}"
         self.register_periodic_check(script, 3, script_args=script_args, **kwargs)
 
