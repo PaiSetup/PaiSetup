@@ -171,6 +171,13 @@ class HomeDirectoryStep(Step):
             [". ~/.config/user-dirs.dirs"],
         )
 
+        # Set the variables in xinitrc too. We need it that early, so all GUI applications will have them loaded.
+        self._file_writer.write_lines(
+            ".config/user-dirs.conf",
+            ["enabled=false"],
+            file_type=FileType.ConfigFile
+        )
+
     def _generate_files_whitelist(self):
         """
         We generate a file containing list of files that are allowed to be in home directory.
