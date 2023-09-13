@@ -32,6 +32,9 @@ class BashScriptsStep(Step):
         self._env.set("SCRIPTS_PATH", self._scripts_path)
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("shellcheck")
+        dependency_dispatcher.add_packages(
+            "shellcheck",
+            "python-music-tag",  # Needed by music_tagger.py
+        )
         dependency_dispatcher.set_folder_icon(self._scripts_root_dir, "scripts")
         dependency_dispatcher.register_homedir_file(self._scripts_root_dir)
