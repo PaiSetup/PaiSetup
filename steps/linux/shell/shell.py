@@ -9,7 +9,7 @@ class ShellStep(Step):
         self._root_dir = root_dir
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("exa")
+        dependency_dispatcher.add_packages("eza")
         dependency_dispatcher.register_homedir_file(".bashrc")
         dependency_dispatcher.register_homedir_file(".bash_logout")
         dependency_dispatcher.register_homedir_file(".bash_profile")
@@ -32,8 +32,8 @@ class ShellStep(Step):
             ".profile",
             "ls aliases",
             [
-                "alias ls=exa",
-                "alias ll='exa -la'",
+                "alias ls=eza",
+                "alias ll='eza -la'",
                 "alias xo='xdg-open'",
             ],
         )
