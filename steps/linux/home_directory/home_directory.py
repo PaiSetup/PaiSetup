@@ -42,10 +42,10 @@ class HomeDirectoryStep(Step):
             self._xdg_custom.pop("XDG_MULTIMEDIA_DIR")
 
     def express_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.set_folder_icon(self.get_xdg_dir("XDG_DESKTOP_DIR"), "desktop")
-        dependency_dispatcher.set_folder_icon(self.get_xdg_dir("XDG_DOWNLOAD_DIR"), "downloads")
-        dependency_dispatcher.set_folder_icon(self.get_xdg_dir("XDG_MOUNTS_DIR"), "mounts")
-        dependency_dispatcher.set_folder_icon(self.get_xdg_dir("XDG_WORK_DIR"), "work")
+        dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DESKTOP_DIR"), "desktop")
+        dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DOWNLOAD_DIR"), "downloads")
+        dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_MOUNTS_DIR"), "mounts")
+        dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_WORK_DIR"), "work")
         dependency_dispatcher.set_folder_icon(self._root_dir, "pai_setup")
 
         check_script = Path(__file__).parent / "setup_mount_dir.sh"
@@ -54,7 +54,7 @@ class HomeDirectoryStep(Step):
         check_script = Path(__file__).parent / "verify_homedir.sh"
         dependency_dispatcher.register_periodic_check(check_script, 45, multi_line=True)
 
-        multimedia_dir = self.get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
+        multimedia_dir = self._get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
         if multimedia_dir is not None:
             dependency_dispatcher.set_folder_icon(multimedia_dir, "multimedia")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "avatars", "avatars")
@@ -69,8 +69,7 @@ class HomeDirectoryStep(Step):
             dependency_dispatcher.set_folder_icon(multimedia_dir / "tv_series", "tv_series")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "wallpapers", "wallpapers")
 
-    @dependency_listener
-    def get_xdg_dir(self, name, must_succeed=True):
+    def _get_xdg_dir(self, name, must_succeed=True):
         result = self._xdg_defaults.get(name)
         if result is None:
             result = self._xdg_custom.get(name)
@@ -120,7 +119,7 @@ class HomeDirectoryStep(Step):
         for xdg_dir in itertools.chain(self._xdg_defaults.values(), self._xdg_custom.values()):
             (self._env.home() / xdg_dir).mkdir(exist_ok=True)
 
-        multimedia_dir = self.get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
+        multimedia_dir = self._get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
         if multimedia_dir is not None:
             # These directories are excluded from sync and we'll create them manually
             (multimedia_dir / "movies").mkdir(exist_ok=True)
