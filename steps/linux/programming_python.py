@@ -31,7 +31,7 @@ class ProgrammingPythonStep(Step):
             "Python config",
             [
                 'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',
-                f'export PYTHONPATH="$PYTHONPATH:{self._env.get("PAI_SETUP_ROOT")}"', # TODO use variable in the script
+                f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
             ],
         )
 
