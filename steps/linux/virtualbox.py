@@ -14,6 +14,7 @@ class VirtualBoxStep(Step):
             "virtualbox-guest-iso",
             "virtualbox-host-dkms",
         )
+        dependency_dispatcher.register_homedir_file("vm")
         dependency_dispatcher.set_folder_icon(self._vm_dir, "vm")
 
     def perform(self):

@@ -48,7 +48,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         GpuStep(),
         FirefoxStep(is_default_browser=True),
         ThunarStep(is_main_machine=args.mode == SetupMode.main),
-        HomeDirectoryStep(is_main_machine=args.mode == SetupMode.main),
+        HomeDirectoryStep(root_dir, is_main_machine=args.mode == SetupMode.main),
         BluetoothStep(),
         JavaStep(),
         QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
