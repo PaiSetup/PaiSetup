@@ -141,9 +141,7 @@ class HomeDirectoryStep(Step):
                             old_path.rmdir()
                             log(f"{new_path}: OK ({old_path} existed, but it was removed)")
                         except OSError:
-                            log(
-                                f"{new_path}: WARNING - both {new_path} and {old_path} exist"
-                            )  # TODO we want to keep the prefix before "WARNING". Add a new parameter to WarningHub.push?
+                            self._warnings.push(f"{new_path}: both {new_path} and {old_path} exist")
                     else:
                         log(f"{new_path}: OK")
                 else:
@@ -162,7 +160,7 @@ class HomeDirectoryStep(Step):
                         path.rmdir()
                         log(f"{path}: OK (removed)")
                     except OSError:
-                        log(f"{path}: WARNING - {path} exists, but should be removed")
+                        self._warnings.push(f"{path}: directory exists, but should be removed")
                 else:
                     log(f"{path}: OK")
 
