@@ -48,7 +48,7 @@ class ShellStep(Step):
         )
         self._file_writer.write_lines(
             ".config/wgetrc",
-            [f"hsts-file={self._env.get('XDG_CACHE_HOME')}/wget-hsts"], # TODO this will probably not work on first setup
+            [f"hsts-file={self._env.home()}/.cache/wget-hsts"],
             file_type=FileType.ConfigFile,
         )
 
