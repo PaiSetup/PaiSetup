@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# TODO fix this to work good with multiline checkmate
+header_printed=0
 for mapped_drive in $(find /dev/mapper/ -mindepth 1 -not -path /dev/mapper/control); do
-    echo "Veracrypt \"$(basename "$mapped_drive")\" drive is unlocked"
+    if [ "$header_printed" = 0 ]; then
+        header_printed=1
+        echo "Veracrypt drives unlocked"
+    fi
+    echo "$mapped_drive"
 done
