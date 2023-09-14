@@ -126,7 +126,6 @@ class PackagesStep(Step):
                 "linux-lts-headers",
                 # General
                 "consolas-font",
-                "openssh",
                 "yay-git",
                 "dash-static-musl",
                 "unzip",

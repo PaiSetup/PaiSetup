@@ -41,7 +41,6 @@
     - run commands
         ```
         git clone https://github.com/PaiSetup/PaiSetup
-        PaiSetup/pre_setup/ssh_setup.sh <private_key_path> <git_user_name>
         PaiSetup/setup.py
         ```
     - Reboot
@@ -87,5 +86,3 @@ https://mariadb.com/kb/en/operating-system-error-codes/
 NOTE: Audio may not work on first boot, due to some drivers not being enabled. Maybe I could enable them with modprobe, but it's just easier to reboot.
 
 TODO: merge arch.sh and arch_grub.sh scripts into one
-
-TODO: perform ssh config as a step in setup.py

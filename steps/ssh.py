@@ -3,6 +3,7 @@ from utils import command
 from utils.log import log
 from pathlib import Path
 from utils.services.file_writer import FileType
+from utils.os_function import linux_only, windows_only
 import shutil
 import os
 import stat
@@ -13,8 +14,14 @@ class SshStep(Step):
         super().__init__("Ssh")
         self._secret_dir = secret_dir
 
+    @windows_only
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("git")
+
+    @linux_only
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("openssh")
+        dependency_dispatcher.register_homedir_file(".ssh")
 
     def perform(self):
         src_ssh_key_path = self._find_ssh_key()

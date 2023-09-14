@@ -12,7 +12,7 @@ from .power import PowerStep
 from .privacy import PrivacyStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
-from .ssh import SshStep
+from steps.ssh import SshStep
 from .startup import StartupStep
 from .time import TimeStep
 from .toolbar import ToolbarStep

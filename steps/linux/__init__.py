@@ -25,6 +25,7 @@ from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
 from .raspberry_pi import RaspberryPiStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
+from steps.ssh import SshStep
 from .shell.shell import ShellStep
 from .st.st import StStep
 from .thunar import ThunarStep
@@ -64,6 +65,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ProgrammingRustStep(),
         ProgrammingCommonStep(),
         ProgrammingGamedevStep(),
+        SshStep(secret_dir),
         CheckMateStep(build_dir),
         LightDmStep(),
         EncryptionStep(),

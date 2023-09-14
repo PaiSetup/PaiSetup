@@ -225,9 +225,6 @@ class HomeDirectoryStep(Step):
         ):
             self.register_homedir_file(homedir_file, allow_multipart=True)
 
-        # Add some files which don't belong to any step and it's not worth creating new steps
-        self.register_homedir_file(".ssh")  # TODO create SshStep and move it there? We could use it anyway, similar to Windows
-
         # Generate a file with all whitelisted files (including those registered by other steps)
         log("Generating homedir whitelist file")
         self._homedir_whitelisted_files = sorted(set(self._homedir_whitelisted_files))
