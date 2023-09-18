@@ -155,6 +155,7 @@ class PackagesStep(Step):
                 "vlc",
                 "mpv",
                 "nomacs",
+                "qt5-imageformats",  # For webp support in nomacs
                 "libreoffice-still",
                 "feh",
                 "gimp",
