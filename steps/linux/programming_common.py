@@ -19,7 +19,8 @@ class ProgrammingCommonStep(Step):
             # Text editing
             "tmux",
             "nano",
-            "vim",
+            "vim", # TODO do we need this?
+            "neovim",
             "bcompare",
             # System monitoring
             "htop",

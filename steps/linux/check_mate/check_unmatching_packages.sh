@@ -27,7 +27,7 @@ if [ $? = 0 ]; then
     packages="$(echo "$packages" | grep -E '<|>')"
     if [ -n "$packages" ]; then
         echo "$(echo "$packages" | wc -l) packages do not match with PaiSetup"
-        echo $packages
+        echo "$packages"
     fi
 else
     echo "Could not gather PaiSetup packages"
