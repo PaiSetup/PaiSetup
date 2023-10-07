@@ -36,6 +36,7 @@ class ShellStep(Step):
                 "alias ls=eza",
                 "alias ll='eza -la'",
                 "alias xo='xdg-open'",
+                "alias less='less -N'",
             ],
         )
         self._file_writer.write_section(

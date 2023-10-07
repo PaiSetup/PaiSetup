@@ -14,6 +14,7 @@ from .gtk_theme.gtk_theme import GtkThemeStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
+from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .packages import PackagesStep
 from .picard import PicardStep
@@ -60,6 +61,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         StStep(build_dir, fetch_git=False),
         BashScriptsStep(fetch_git=args.fetch),
         VscodeStep(build_dir),
+        NeovimStep(),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
         ProgrammingRustStep(),
