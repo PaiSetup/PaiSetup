@@ -16,6 +16,7 @@ class ProgrammingCommonStep(Step):
             "man-db",
             "ntfs-3g",
             "xorg-xev",
+            "xclip",
             # Text editing
             "tmux",
             "nano",
