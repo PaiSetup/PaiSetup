@@ -1,5 +1,6 @@
 from steps.step import Step
 from utils.services.file_writer import FileType
+from xml.dom import minidom
 
 
 class ThunarStep(Step):
@@ -46,39 +47,43 @@ class ThunarStep(Step):
 
     def _get_uca_xml_contents(self):
         pai_setup_root = self._env.get("PAI_SETUP_ROOT")
-        extensions = ["png", "jpg", "jpeg", "avif"]
-        extensions = ";".join([f"*.{x}" for x in extensions])
+        image_extensions = ["png", "jpg", "jpeg", "avif"]
+        image_extensions = ";".join([f"*.{x}" for x in image_extensions])
 
-        return f"""
-<?xml version="1.0" encoding="UTF-8"?>
-<actions>
-<action>
-    <icon>utilities-terminal</icon>
-    <name>Open Terminal Here</name>
-    <unique-id>1637948686926980-1</unique-id>
-    <command>st</command>
-    <description>Example for a custom action</description>
-    <patterns>*</patterns>
-    <startup-notify/>
-    <directories/>
-</action>
-<action>
-    <icon>preferences-desktop-wallpaper</icon>
-    <name>Set wallpaper and generate colors</name>
-    <unique-id>1638740948234297-1</unique-id>
-    <command>bash -c  &quot;{pai_setup_root}/steps/linux/gui/select_wallpaper.sh  %f 1&quot;</command>
-    <description></description>
-    <patterns>{extensions}</patterns>
-    <image-files/>
-</action>
-<action>
-    <icon></icon>
-    <name>Copy contents to clipboard</name>
-    <unique-id>1639403858591371-1</unique-id>
-    <command>cat %f | tr -d &apos;\n&apos; | xclip -selection CLIPBOARD</command>
-    <description></description>
-    <patterns>*</patterns>
-    <text-files/>
-</action>
-</actions>
-"""
+        actions = [
+            {
+                "name": "Open terminal here",
+                "command": "st",
+                "description": "Example for a custom action",
+                "patterns": "*",
+                "directories": None,
+            },
+            {
+                "name": "Set wallpaper and generate colors",
+                "command": f'bash -c "{pai_setup_root}/steps/linux/gui/select_wallpaper.sh  %f 1"',
+                "patterns": image_extensions,
+                "image-files": None,
+            },
+            {
+                "name": "Copy contents to clipboard",
+                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
+                "patterns": "*",
+                "text-files": None,
+            },
+        ]
+
+        document = minidom.Document()
+        root = document.createElement("actions")
+        document.appendChild(root)
+        for action in actions:
+            action_node = document.createElement("action")
+            root.appendChild(action_node)
+            for property_name, property_value in action.items():
+                property_node = document.createElement(property_name)
+                action_node.appendChild(property_node)
+
+                if property_value is not None:
+                    property_value_node = document.createTextNode(property_value)
+                    property_node.appendChild(property_value_node)
+
+        return document.toprettyxml(indent="    ")
