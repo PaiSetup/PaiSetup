@@ -1,6 +1,7 @@
 from steps.step import Step
 from utils.services.file_writer import FileType
 from xml.dom import minidom
+from utils.log import log
 
 
 class ThunarStep(Step):
@@ -20,13 +21,12 @@ class ThunarStep(Step):
 
     def perform(self):
         self._setup_bookmarks()
-        self._file_writer.write_lines(
-            ".config/Thunar/uca.xml",
-            [self._get_uca_xml_contents()],
-            file_type=FileType.Xml,
-        )
+        self._generate_uca_xml()
 
     def _setup_bookmarks(self):
+        file_path = self._env.home() / ".config/gtk-3.0/bookmarks"
+        log(f"Generating bookmarks config - {file_path}")
+
         dirs = [
             (self._env.home() / "downloads", "Downloads"),
             (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
@@ -40,12 +40,15 @@ class ThunarStep(Step):
         dirs = [f"file:///{path} {name}" for path, name in dirs]
 
         self._file_writer.write_lines(
-            ".config/gtk-3.0/bookmarks",
+            file_path,
             dirs,
             file_type=FileType.ConfigFileNoComments,
         )
 
-    def _get_uca_xml_contents(self):
+    def _generate_uca_xml(self):
+        file_path = self._env.home() / ".config/Thunar/uca.xml"
+        log(f"Generating custom actions config - {file_path}")
+
         pai_setup_root = self._env.get("PAI_SETUP_ROOT")
         image_extensions = ["png", "jpg", "jpeg", "avif"]
         image_extensions = ";".join([f"*.{x}" for x in image_extensions])
@@ -86,4 +89,8 @@ class ThunarStep(Step):
                     property_value_node = document.createTextNode(property_value)
                     property_node.appendChild(property_value_node)
 
-        return document.toprettyxml(indent="    ")
+        self._file_writer.write_lines(
+            file_path,
+            [document.toprettyxml(indent="    ")],
+            file_type=FileType.Xml,
+        )
