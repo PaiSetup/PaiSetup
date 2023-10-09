@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import Step, dependency_listener
 from utils.services.file_writer import FileType
 from xml.dom import minidom
 from utils.log import log
@@ -9,6 +9,29 @@ class ThunarStep(Step):
         super().__init__("Thunar")
         self._is_main_machine = is_main_machine
         self.disable_suspending_command = ""
+        self.actions = []
+
+        self.add_thunar_custom_action(
+            {
+                "name": "Open terminal here",
+                "command": "st",
+                "directories": None,
+            }
+        )
+        self.add_thunar_custom_action(
+            {
+                "name": "Set wallpaper and generate colors",
+                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/select_wallpaper.sh  %f 1"',
+                "image-files": None,
+            }
+        )
+        self.add_thunar_custom_action(
+            {
+                "name": "Copy contents to clipboard",
+                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
+                "text-files": None,
+            }
+        )
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -18,6 +41,10 @@ class ThunarStep(Step):
             "tumbler",  # needed for thumbnails
             "ffmpegthumbnailer",  # needed for video thumbnails
         )
+
+    @dependency_listener
+    def add_thunar_custom_action(self, action):
+        self.actions.append(action)
 
     def perform(self):
         self._setup_bookmarks()
@@ -49,36 +76,10 @@ class ThunarStep(Step):
         file_path = self._env.home() / ".config/Thunar/uca.xml"
         log(f"Generating custom actions config - {file_path}")
 
-        pai_setup_root = self._env.get("PAI_SETUP_ROOT")
-        image_extensions = ["png", "jpg", "jpeg", "avif"]
-        image_extensions = ";".join([f"*.{x}" for x in image_extensions])
-
-        actions = [
-            {
-                "name": "Open terminal here",
-                "command": "st",
-                "description": "Example for a custom action",
-                "patterns": "*",
-                "directories": None,
-            },
-            {
-                "name": "Set wallpaper and generate colors",
-                "command": f'bash -c "{pai_setup_root}/steps/linux/gui/select_wallpaper.sh  %f 1"',
-                "patterns": image_extensions,
-                "image-files": None,
-            },
-            {
-                "name": "Copy contents to clipboard",
-                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
-                "patterns": "*",
-                "text-files": None,
-            },
-        ]
-
         document = minidom.Document()
         root = document.createElement("actions")
         document.appendChild(root)
-        for action in actions:
+        for action in self.actions:
             action_node = document.createElement("action")
             root.appendChild(action_node)
             for property_name, property_value in action.items():
