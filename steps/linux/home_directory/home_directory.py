@@ -141,7 +141,7 @@ class HomeDirectoryStep(Step):
                             old_path.rmdir()
                             log(f"{new_path}: OK ({old_path} existed, but it was removed)")
                         except OSError:
-                            self._warnings.push(f"{new_path}: both {new_path} and {old_path} exist")
+                            self._logger.push_warning(f"{new_path}: both {new_path} and {old_path} exist")
                     else:
                         log(f"{new_path}: OK")
                 else:
@@ -160,7 +160,7 @@ class HomeDirectoryStep(Step):
                         path.rmdir()
                         log(f"{path}: OK (removed)")
                     except OSError:
-                        self._warnings.push(f"{path}: directory exists, but should be removed")
+                        self._logger.push_warning(f"{path}: directory exists, but should be removed")
                 else:
                     log(f"{path}: OK")
 

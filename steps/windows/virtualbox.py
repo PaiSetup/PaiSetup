@@ -18,13 +18,13 @@ class VirtualBoxStep(Step):
 
     def perform(self):
         if self._vm_dir is None:
-            self._warnings.push("VM directory is not set")
+            self._logger.push_warning("VM directory is not set")
             return
         if not self._virtualbox_install_dir:
-            self._warnings.push("Could not find VirtualBox info")
+            self._logger.push_warning("Could not find VirtualBox info")
             return
         if not self._virtualbox_install_dir.is_dir():
-            self._warnings.push("VirtualBox is not installed")
+            self._logger.push_warning("VirtualBox is not installed")
             return
 
         log(f"Setting {self._vm_dir} as default VirtualBox machine directory")

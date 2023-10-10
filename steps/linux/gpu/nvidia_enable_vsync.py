@@ -5,10 +5,10 @@ from utils.log import log
 import re
 
 
-def main(warning_hub):
+def main(logger):
     def warning(message):
-        if warning_hub is not None:
-            warning_hub.push(message)
+        if logger is not None:
+            logger.push_warning(message)
         else:
             log(f"WARNING: {message}")
 

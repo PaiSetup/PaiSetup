@@ -25,7 +25,7 @@ class ToolbarStep(Step):
 
     def perform(self):
         if self._toolbar_dir is None:
-            self._warnings.push("toolbar directory is not set")
+            self._logger.push_warning("toolbar directory is not set")
             return
 
         log(f"Cleaning toolbar directory {self._toolbar_dir}")

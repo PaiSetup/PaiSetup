@@ -1,6 +1,6 @@
 from utils.services.env import EnvManager
 from utils.services.file_writer import FileWriter
-from utils.services.warning_hub import WarningHub
+from utils.services.logger import Logger
 
 
 class Step:
@@ -24,7 +24,7 @@ class Step:
             raise ValueError("setup_external_services may be called only once")
         cls._env = EnvManager(root_dir)
         cls._file_writer = FileWriter(cls._env.home())
-        cls._warnings = WarningHub(logs_dir)
+        cls._logger = Logger(logs_dir)
 
     @classmethod
     def finalize_services(cls):
@@ -34,7 +34,7 @@ class Step:
         """
         cls._env.finalize()
         cls._file_writer.finalize()
-        cls._warnings.finalize()
+        cls._logger.finalize()
 
     def register_as_dependency_listener(self, dependency_dispatcher):
         """

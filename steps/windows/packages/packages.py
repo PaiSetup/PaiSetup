@@ -77,7 +77,7 @@ class PackagesStep(Step):
         try:
             command.run_command(install_command)
         except command.CommandError as e:
-            self._warnings.push_with_report(
+            self._logger.push_warning_with_report(
                 f'Installation of "{package}" failed.',
                 f"install_error_{package}",
                 e.stdout,
@@ -92,9 +92,9 @@ class PackagesStep(Step):
                 try:
                     next(package_info.install_dir.iterdir())
                 except StopIteration:
-                    self._warnings.push(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
+                    self._logger.push_warning(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
             else:
-                self._warnings.push(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist")
+                self._logger.push_warning(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist")
 
         # Remove any automatically created desktop icons
         for file_name in package_info.desktop_files_to_delete:

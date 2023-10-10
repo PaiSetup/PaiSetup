@@ -1,6 +1,6 @@
 import utils
 
-class WarningHub:
+class Logger:
     def __init__(self, log_dir):
         self._warnings = []
         self._log_dir = log_dir
@@ -9,12 +9,12 @@ class WarningHub:
             if file.suffix == ".log":
                 file.unlink()
 
-    def push(self, text, *, print=True):
+    def push_warning(self, text, *, print=True):
         self._warnings.append(text)
         if print:
             utils.log.log(f"WARNING: {text}")
 
-    def push_with_report(
+    def push_warning_with_report(
         self,
         text,
         report_name,
@@ -23,11 +23,11 @@ class WarningHub:
         print=True,
     ):
         log_file_path = (self._log_dir / report_name).with_suffix(".log")
-        self.push(f"{text} See logs at {log_file_path}", print=print)
+        self.push_warning(f"{text} See logs at {log_file_path}", print=print)
 
         if log_file_path.exists():
             # Generate a self-warning and ignore. We will overwrite the old log.
-            self.push(f"Multiple warning reports written to {log_file_path}")
+            self.push_warning(f"Multiple warning reports written to {log_file_path}")
 
         with open(log_file_path, "w") as log_file:
             log_file.write(report_content)

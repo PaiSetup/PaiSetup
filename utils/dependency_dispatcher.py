@@ -29,7 +29,7 @@ class Listener:
                     step.set_enabled(True)
                     step.express_dependencies(self._dependency_dispatcher)
                 else:
-                    step._warnings.push(f"automatic dependency resolving is disabled, but {method.__qualname__} is used as a dependency.")
+                    step._logger.push_warning(f"automatic dependency resolving is disabled, but {method.__qualname__} is used as a dependency.")
 
             # Call all methods, but return early if any of them returns a value
             result = method(*args, **kwargs)
