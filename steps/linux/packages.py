@@ -145,6 +145,7 @@ class PackagesStep(Step):
                 "losslesscut-bin",  # cutting video
                 "dos2unix",
                 "nmap",
+                "flamegraph",
                 # Unixporn
                 "neofetch",
                 "cava",
