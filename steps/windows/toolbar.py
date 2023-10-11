@@ -1,6 +1,5 @@
 from steps.step import Step
 from steps.windows.folders import KnownFolder
-from utils.log import log
 import pythoncom
 from win32com.shell import shell, shellcon
 
@@ -28,12 +27,12 @@ class ToolbarStep(Step):
             self._logger.push_warning("toolbar directory is not set")
             return
 
-        log(f"Cleaning toolbar directory {self._toolbar_dir}")
+        self._logger.log(f"Cleaning toolbar directory {self._toolbar_dir}")
         for file in self._toolbar_dir.iterdir():
             if file.suffix == ".lnk":
                 file.unlink()
 
-        log("Creating link to Powershell window inside PaiSetup")
+        self._logger.log("Creating link to Powershell window inside PaiSetup")
         self._create_link(
             self._toolbar_dir / "PaiSetupPS.lnk",
             "powershell.exe",
@@ -41,7 +40,7 @@ class ToolbarStep(Step):
             as_admin=True,
         )
 
-        log("Creating link to Audioswitch")
+        self._logger.log("Creating link to Audioswitch")
         self._create_link(
             self._toolbar_dir / "Audioswitch.lnk",
             "Audioswitch.exe",
@@ -50,7 +49,7 @@ class ToolbarStep(Step):
         """
         Do we even need this? It may be nice, but I don't like hardcoding the path
 
-        log("Creating link to VSCodium window inside PaiSetup")
+        self._logger.log("Creating link to VSCodium window inside PaiSetup")
         self._create_link(
             self._toolbar_dir / "PaiSetupVSCODE.lnk",
             "D:\\Programs\\VsCodium\\bin\\codium.cmd",

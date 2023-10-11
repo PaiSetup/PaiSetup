@@ -1,7 +1,6 @@
 from steps.step import Step
 from pathlib import Path
 import os
-from utils.log import log
 from utils.services.file_writer import FileType
 
 
@@ -28,7 +27,7 @@ class FirefoxStep(Step):
         css_content = self.get_css_content()
         for profile_dir in profile_dirs:
             css_file_path = profile_dir / "chrome/userChrome.css"
-            log(f"Installing custom css to {css_file_path}")
+            self._logger.log(f"Installing custom css to {css_file_path}")
             self._file_writer.write_lines(
                 css_file_path,
                 [css_content],
@@ -36,7 +35,7 @@ class FirefoxStep(Step):
             )
 
             js_file_path = profile_dir / "user.js"
-            log(f"Setting up preferences")
+            self._logger.log(f"Setting up preferences")
             self._file_writer.write_lines(
                 js_file_path,
                 [

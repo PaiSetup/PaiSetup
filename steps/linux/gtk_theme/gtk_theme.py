@@ -1,6 +1,5 @@
 from steps.step import Step, dependency_listener
 from utils import command
-from utils.log import log, LogIndent
 from pathlib import Path
 from utils.services.file_writer import FileType, FileWriter
 from utils import external_project as ext
@@ -66,21 +65,21 @@ class GtkThemeStep(Step):
 
     def _generate_widget_theme(self):
         if self._widget_theme_path.exists() and not self._regenerate_widget_theme:
-            log(f"Widget theme {self._widget_theme_path} already present")
+            self._logger.log(f"Widget theme {self._widget_theme_path} already present")
             return
-        log(f"Widget theme {self._widget_theme_path} generation")
+        self._logger.log(f"Widget theme {self._widget_theme_path} generation")
         command.run_command(str(self._current_step_dir / "generate_widget_theme.sh"), shell=True)
 
     def _download_icon_theme(self):
-        log("Downloading icon theme")
+        self._logger.log("Downloading icon theme")
         dst_dir = self._current_step_dir / "icon_theme"
         ext.download_github_zip("PaiSetup", "GtkIconTheme", dst_dir, False)
 
     def _generate_icon_theme(self):
         if self._icon_theme_path.exists() and not self._regenerate_icon_theme:
-            log(f"Icon theme {self._icon_theme_path} already present")
+            self._logger.log(f"Icon theme {self._icon_theme_path} already present")
             return
-        log(f"Icon theme {self._icon_theme_path} generation")
+        self._logger.log(f"Icon theme {self._icon_theme_path} generation")
         command.run_command(str(self._current_step_dir / "generate_icon_theme.sh"), shell=True)
 
     def _generate_downsized_emblems(self, sizes_to_generate):
@@ -105,26 +104,26 @@ class GtkThemeStep(Step):
                     return
 
             # Perform downsizing
-            log(f"Generating {size_to_generate}x{size_to_generate} emblems")
+            self._logger.log(f"Generating {size_to_generate}x{size_to_generate} emblems")
             downsized_emblems_dir.mkdir()
             for original_file_path in original_emblems_dir.glob("*"):
                 downsized_file_path = downsized_emblems_dir / original_file_path.name
                 command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
 
     def _assign_emblems(self):
-        log("Setting emblems to directories")
-        with LogIndent():
+        self._logger.log("Setting emblems to directories")
+        with self._logger.indent():
             for path, emblem in self._emblems.items():
                 resolved_path = self._file_writer.resolve_path(path)
                 log_line = f"{resolved_path}: {emblem}"
                 if not os.path.isdir(resolved_path):
-                    log(f"{log_line} (warning: directory does not exist - skipping)")
+                    self._logger.log(f"{log_line} (warning: directory does not exist - skipping)")
                     continue
-                log(log_line)
+                self._logger.log(log_line)
                 command.run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
 
     def _generate_gtk2_config(self):
-        log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
+        self._logger.log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Ensure gkt2 configs are in ~/.config",
@@ -140,7 +139,7 @@ class GtkThemeStep(Step):
         )
 
     def _generate_gtk3_config(self):
-        log("Generating gtk 3.0 config")  # Example application using gtk 3.0 - Thunar
+        self._logger.log("Generating gtk 3.0 config")  # Example application using gtk 3.0 - Thunar
         self._file_writer.write_lines(
             ".config/gtk-3.0/settings.ini",
             [

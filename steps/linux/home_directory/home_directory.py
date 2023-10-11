@@ -2,7 +2,6 @@ from steps.step import Step, dependency_listener
 from pathlib import Path
 import os
 import itertools
-from utils.log import log, LogIndent
 from utils import command
 from utils.services.file_writer import FileType
 
@@ -92,14 +91,14 @@ class HomeDirectoryStep(Step):
             try:
                 filename = filename.relative_to("/home/maciej")
             except ValueError:
-                log(f"ERROR: incorrect path passed: {file}")
+                self._logger.log(f"ERROR: incorrect path passed: {file}")
                 raise
 
         if len(filename.parts) != 1:
             if allow_multipart:
                 filename = filename.parts[0]
             else:
-                log(f"ERROR: incorrect path passed: {file}")
+                self._logger.log(f"ERROR: incorrect path passed: {file}")
                 raise ValueError()
 
         self._homedir_whitelisted_files.append(str(filename))
@@ -129,7 +128,7 @@ class HomeDirectoryStep(Step):
             (multimedia_dir / "tv_series").mkdir(exist_ok=True)
 
     def _cleanup_existing_xdg_dirs(self):
-        with LogIndent("Making sure existing XDG dirs are ok"):
+        with self._logger.indent("Making sure existing XDG dirs are ok"):
             # We renamed some default XDG dirs to different names, so we check if they are renamed in the filesystem
             for old, new in self._xdg_renamed.values():
                 old_path = self._env.home() / old
@@ -139,18 +138,18 @@ class HomeDirectoryStep(Step):
                     if old_path.exists():
                         try:
                             old_path.rmdir()
-                            log(f"{new_path}: OK ({old_path} existed, but it was removed)")
+                            self._logger.log(f"{new_path}: OK ({old_path} existed, but it was removed)")
                         except OSError:
                             self._logger.push_warning(f"{new_path}: both {new_path} and {old_path} exist")
                     else:
-                        log(f"{new_path}: OK")
+                        self._logger.log(f"{new_path}: OK")
                 else:
                     if old_path.exists():
                         old_path.rename(new_path)
-                        log(f"{new_path}: OK (renamed from {old_path})")
+                        self._logger.log(f"{new_path}: OK (renamed from {old_path})")
                     else:
                         new_path.mkdir()
-                        log(f"{new_path}: OK (created)")
+                        self._logger.log(f"{new_path}: OK (created)")
 
             # We removed some default XDG dirs, so we check if they are truly gone
             for name in self._xdg_removed.values():
@@ -158,11 +157,11 @@ class HomeDirectoryStep(Step):
                 if path.exists():
                     try:
                         path.rmdir()
-                        log(f"{path}: OK (removed)")
+                        self._logger.log(f"{path}: OK (removed)")
                     except OSError:
                         self._logger.push_warning(f"{path}: directory exists, but should be removed")
                 else:
-                    log(f"{path}: OK")
+                    self._logger.log(f"{path}: OK")
 
             # Perform above removals on startup
             removals = [f"rmdir ~/{default_value} 2>/dev/null" for default_value in self._xdg_removed.values()]
@@ -227,6 +226,6 @@ class HomeDirectoryStep(Step):
             self.register_homedir_file(homedir_file, allow_multipart=True)
 
         # Generate a file with all whitelisted files (including those registered by other steps)
-        log("Generating homedir whitelist file")
+        self._logger.log("Generating homedir whitelist file")
         self._homedir_whitelisted_files = sorted(set(self._homedir_whitelisted_files))
         self._file_writer.write_lines(self._homedir_whitelist, self._homedir_whitelisted_files, file_type=FileType.ConfigFileNoComments)

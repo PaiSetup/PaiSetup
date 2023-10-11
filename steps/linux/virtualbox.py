@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils import command
-from utils.log import log, LogIndent
 
 
 class VirtualBoxStep(Step):
@@ -18,6 +17,6 @@ class VirtualBoxStep(Step):
         dependency_dispatcher.set_folder_icon(self._vm_dir, "vm")
 
     def perform(self):
-        log(f"Setting {self._vm_dir} as default VirtualBox machine directory")
+        self._logger.log(f"Setting {self._vm_dir} as default VirtualBox machine directory")
         self._vm_dir.mkdir(exist_ok=True)
         command.run_command(f"vboxmanage setproperty machinefolder {self._vm_dir}")

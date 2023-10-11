@@ -1,7 +1,6 @@
 from steps.step import Step, dependency_listener
 from utils import command
 from utils.os_helpers import Pushd
-from utils.log import log
 import utils.external_project as ext
 from utils import command
 from pathlib import Path
@@ -46,14 +45,14 @@ class PackagesStep(Step):
             )
 
     def perform(self):
-        log(f"Required packages: {self._packages}")
+        self._logger.log(f"Required packages: {self._packages}")
         if self._skip_already_installed:
             packages_to_install = self._get_missing_packages(self._packages)
         else:
             packages_to_install = self._packages
 
         if not packages_to_install:
-            log("All packages already installed")
+            self._logger.log("All packages already installed")
         else:
             for package in packages_to_install:
                 self.install_package(package)
@@ -73,7 +72,7 @@ class PackagesStep(Step):
             install_command += f' --install-arguments="{package_info.install_args}"'
         if package_info.package_args:
             install_command += f' --packageparameters="{package_info.package_args}"'
-        log(install_command)
+        self._logger.log(install_command)
         try:
             command.run_command(install_command)
         except command.CommandError as e:
@@ -83,7 +82,7 @@ class PackagesStep(Step):
                 e.stdout,
                 print=False,
             )
-            log("FAILED", add_indent=True)
+            self._logger.log("FAILED", add_indent=True)
             return
 
         # Verify whether the package was actually installed
@@ -92,9 +91,13 @@ class PackagesStep(Step):
                 try:
                     next(package_info.install_dir.iterdir())
                 except StopIteration:
-                    self._logger.push_warning(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty")
+                    self._logger.push_warning(
+                        f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory is empty"
+                    )
             else:
-                self._logger.push_warning(f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist")
+                self._logger.push_warning(
+                    f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist"
+                )
 
         # Remove any automatically created desktop icons
         for file_name in package_info.desktop_files_to_delete:
@@ -171,7 +174,7 @@ class PackagesStep(Step):
         return missing_packages
 
     def _refresh_path(self):
-        log("Refreshing PATH variable")
+        self._logger.log("Refreshing PATH variable")
         powershell_command = [
             "Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1",
             "refreshenv | out-null",

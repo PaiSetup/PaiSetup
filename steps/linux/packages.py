@@ -1,7 +1,6 @@
 from steps.step import Step, dependency_listener
 from utils import command
 from utils.os_helpers import Pushd
-from utils.log import log
 import utils.external_project as ext
 
 
@@ -23,35 +22,36 @@ class PackagesStep(Step):
 
     def _install_yay(self):
         if not command.get_missing_packages(["yay"], self._known_package_groups):
-            log("yay is already installed")
+            self._logger.log("yay is already installed")
         else:
-            log("Downloading yay")
+            self._logger.log("Downloading yay")
             build_dir = self.root_build_dir / "yay"
             ext.download(
                 "https://aur.archlinux.org/yay-git.git",
                 "master",
                 build_dir,
+                logger=self._logger,
             )
-            log("Installing yay")
+            self._logger.log("Installing yay")
             with Pushd(build_dir):
                 command.run_command("makepkg -si --noconfirm")
 
     def _set_yay_permissions(self):
-        log("Setting permissions for tmp yay directory")
+        self._logger.log("Setting permissions for tmp yay directory")
         command.run_command("sudo mkdir /tmp/yay -p")
         command.run_command("sh -c 'sudo chown $USER /tmp/yay'")
         command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
     def _install_packages(self):
-        log(f"Required packages: {self._packages}")
+        self._logger.log(f"Required packages: {self._packages}")
         missing_packages = command.get_missing_packages(self._packages, self._known_package_groups)
         if not missing_packages:
-            log("Already installed")
+            self._logger.log("Already installed")
         else:
             packages_option = " ".join(missing_packages)
             assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
             install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
-            log(f"Running command: {install_command}")
+            self._logger.log(f"Running command: {install_command}")
             command.run_command(install_command, print_stdout=self.print_installation)
 
     def _mark_packages_explicit(self):
@@ -60,7 +60,7 @@ class PackagesStep(Step):
         # fixes this issue
         packages_option = self._get_packages(True)
         packages_option = " ".join(packages_option)
-        log(f"Making packages installed as explicit: {packages_option}.")
+        self._logger.log(f"Making packages installed as explicit: {packages_option}.")
         command.run_command(f"yay -D --asexplicit {packages_option}")
 
     def _mark_packages_deps(self):

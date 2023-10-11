@@ -3,7 +3,6 @@ from pathlib import Path
 from shutil import copyfile
 import os
 from utils.services.file_writer import FileType, LinePlacement
-from utils.log import log
 import utils.external_project as ext
 from utils import command
 from ..gui.gui import GuiStep
@@ -31,8 +30,8 @@ class AwesomeStep(GuiStep):
         super().express_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages(
             "awesome",
-            "lua", # not strictly needed, but useful for prototyping
-            "jq", # needed for parsing json when getting currency exchange
+            "lua",  # not strictly needed, but useful for prototyping
+            "jq",  # needed for parsing json when getting currency exchange
         )
         dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
 
@@ -47,14 +46,14 @@ class AwesomeStep(GuiStep):
         self._file_writer.remove_file("/usr/share/xsessions/awesome.desktop")
 
     def _setup_awesome_config(self):
-        log("Symlinking rc.lua into ~/.config")
+        self._logger.log("Symlinking rc.lua into ~/.config")
         self._file_writer.write_symlink(
             src=self._current_step_dir / "config",
             link=".config/awesome",
         )
 
     def _setup_xinitrc_awesome(self):
-        log(f"Generating {self._xinitrc_path}")
+        self._logger.log(f"Generating {self._xinitrc_path}")
         self._file_writer.write_section(
             self._xinitrc_path,
             "Call base script",
@@ -96,7 +95,7 @@ class AwesomeStep(GuiStep):
         )
 
     def _setup_xresources(self):
-        log(f"Generating {self._xresources_path}")
+        self._logger.log(f"Generating {self._xresources_path}")
         self._file_writer.write_section(
             self._xresources_path,
             "Apps styles",
@@ -126,7 +125,7 @@ class AwesomeStep(GuiStep):
         )
 
     def _setup_app_keybindings_code(self):
-        log(f"Generating {self._app_keybindings_path}")
+        self._logger.log(f"Generating {self._app_keybindings_path}")
         lines = [
             'local awful = require("awful")',
             'local gears = require("gears")',

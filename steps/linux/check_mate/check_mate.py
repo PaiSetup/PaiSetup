@@ -1,6 +1,5 @@
 from steps.step import Step, dependency_listener
 import os
-from utils.log import log, LogIndent
 from utils import command
 from pathlib import Path
 from utils.services.file_writer import FileType, FileWriter

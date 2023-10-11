@@ -3,7 +3,6 @@ from utils import command
 import os
 from enum import Enum
 from pathlib import Path
-from utils.log import log
 from .nvidia_enable_vsync import main as nvidia_enable_vsync
 
 
@@ -22,9 +21,9 @@ class GpuStep(Step):
     def perform(self):
         if self._vendors:
             vendors_string = ", ".join((v.name for v in self._vendors))
-            log(f"Detected gpu vendors: {vendors_string}")
+            self._logger.log(f"Detected gpu vendors: {vendors_string}")
         else:
-            log("No gpu vendors detected")
+            self._logger.log("No gpu vendors detected")
 
         if GpuVendor.Nvidia in self._vendors:
             if self._has_display:

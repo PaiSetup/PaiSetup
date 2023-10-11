@@ -1,6 +1,5 @@
 from steps.vscode.vscode_base import VscodeStepBase
 from utils import command
-from utils.log import log
 from pathlib import Path
 
 
@@ -26,4 +25,4 @@ class VscodeStep(VscodeStepBase):
 
     def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
         # TODO implement this
-        log(f"Skipping installing extension {vsix_name} from GitHub (not implemented)")
+        self._logger.log(f"Skipping installing extension {vsix_name} from GitHub (not implemented)")

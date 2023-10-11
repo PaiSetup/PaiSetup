@@ -1,7 +1,6 @@
 from steps.step import Step
 from utils import external_project as ext
 from utils import command
-from utils.log import log
 from steps.windows.folders import KnownFolder
 from pathlib import Path
 
@@ -26,7 +25,7 @@ class IconsStep(Step):
         self.setup_icons()
 
     def download_icons(self):
-        log("Downloading icons")
+        self._logger.log("Downloading icons")
         ext.download_github_zip("PaiSetup", "WindowsIcons", self._icons_dir, False)
 
     def setup_icons(self):
@@ -45,7 +44,7 @@ class IconsStep(Step):
             icon_commands.append(icon_command)
 
         # Execute commands
-        log("Setting up icons")
+        self._logger.log("Setting up icons")
         if self._merge_commands:
             command.run_powershell_command(icon_commands)
         else:

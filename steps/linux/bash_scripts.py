@@ -16,6 +16,7 @@ class BashScriptsStep(Step):
             "https://github.com/InternalMD/Scripts.git",
             "master",
             self._scripts_root_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
         )
 

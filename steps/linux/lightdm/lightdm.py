@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
 from pathlib import Path
 
 
@@ -18,13 +17,13 @@ class LightDmStep(Step):
     def perform(self):
         # Enable service
         service_name = "lightdm.service"
-        log(f"Enabling {service_name}")
+        self._logger.log(f"Enabling {service_name}")
         command.run_command(f"sudo systemctl enable {service_name}")
 
         # Configure
         current_step_dir = Path(__file__).parent
         config_path = "/usr/share/lightdm"
-        log(f"Setting up config files in {config_path}")
+        self._logger.log(f"Setting up config files in {config_path}")
         command.run_command(f"sudo mkdir -p {config_path}/lightdm.conf.d")
         command.run_command(f"sudo mkdir -p {config_path}/lightdm-gtk-greeter.conf.d")
         command.run_command(f"sudo cp {current_step_dir}/lightdm.conf {config_path}/lightdm.conf.d/")

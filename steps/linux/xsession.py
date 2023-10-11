@@ -3,7 +3,6 @@ from utils import command
 import os
 from pathlib import Path
 from utils.services.file_writer import FileType
-from utils.log import log
 
 
 class XsessionStep(Step):
@@ -17,7 +16,7 @@ class XsessionStep(Step):
 
     def perform(self):
         for name, xinitrc_path in self._xsessions:
-            log(f"Creating a script and .desktop file for {name} session")
+            self._logger.log(f"Creating a script and .desktop file for {name} session")
 
             # First create a script that simply calls our xinitrc. Unfortunately we cannot create
             # a reusable script and simply pass an argument in .desktop file, because some DMs

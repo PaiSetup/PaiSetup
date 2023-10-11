@@ -4,7 +4,6 @@ from shutil import copyfile
 import os
 from utils.services.file_writer import FileType, LinePlacement
 from utils.keybinding import KeyBinding
-from utils.log import log
 import utils.external_project as ext
 from utils import command
 from ..gui.gui import GuiStep
@@ -84,30 +83,33 @@ class DwmStep(GuiStep):
             "https://git.suckless.org/dwm",
             "6.2",
             dwm_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
             clean=True,
         )
-        ext.make(dwm_dir, patches_dir=self._current_step_dir / "dwm")
+        ext.make(dwm_dir, patches_dir=self._current_step_dir / "dwm", logger=self._logger)
 
         dwmblocks_dir = self.root_build_dir / "dwmblocks"
         ext.download(
             "https://github.com/torrinfail/dwmblocks",
             "96cbb453",
             dwmblocks_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
             clean=True,
         )
-        ext.make(dwmblocks_dir, patches_dir=self._current_step_dir / "dwmblocks")
+        ext.make(dwmblocks_dir, patches_dir=self._current_step_dir / "dwmblocks", logger=self._logger)
 
         dmenu_dir = self.root_build_dir / "dmenu"
         ext.download(
             "https://git.suckless.org/dmenu",
             "5.0",
             dmenu_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
             clean=True,
         )
-        ext.make(dmenu_dir, patches_dir=self._current_step_dir / "dmenu")
+        ext.make(dmenu_dir, patches_dir=self._current_step_dir / "dmenu", logger=self._logger)
 
     def _setup_xinitrc_dwm(self):
         self._file_writer.write_section(

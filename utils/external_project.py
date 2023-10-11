@@ -3,7 +3,6 @@ from pathlib import Path
 from utils.os_helpers import Pushd
 import tempfile
 import shutil
-from utils.log import log, LogIndent
 from utils.os_function import OperatingSystem
 import multiprocessing
 
@@ -19,12 +18,13 @@ def download(
     revision,
     directory,
     *,
+    logger,
     has_submodules=False,
     clean=False,
     fetch=False,
     chmod_needed=False,
 ):
-    log(f"Downloading {url} to {directory}")
+    logger.log(f"Downloading {url} to {directory}")
 
     # Download code
     git_dir = Path(directory) / ".git"
@@ -54,19 +54,21 @@ def download(
 def cmake(
     project_dir,
     *,
+    logger,
     build_dir_name="build",
     cmake_args="",
 ):
     build_dir = project_dir / build_dir_name
     build_dir.mkdir(parents=False, exist_ok=True)
     with Pushd(build_dir):
-        log(f"Configure CMake project: {project_dir}")
+        logger.log(f"Configure CMake project: {project_dir}")
         command.run_command(f"cmake .. {cmake_args}")
 
 
 def make(
     build_dir,
     *,
+    logger,
     patches_dir=None,
     target="install",
 ):
@@ -74,11 +76,11 @@ def make(
         # Apply patches
         if patches_dir:
             diffs = list(Path(patches_dir).glob("*.diff"))
-            log(f"Applying {len(diffs)} patches")
-            with LogIndent():
+            logger.log(f"Applying {len(diffs)} patches")
+            with logger.indent():
                 diffs.sort()
                 for diff in diffs:
-                    log(diff)
+                    logger.log(diff)
                     apply_patch(diff)
 
         # Get thread count
@@ -86,7 +88,7 @@ def make(
         multicore_arg = f"-j{cores}"
 
         # Compile
-        log(f"Building and installing with {cores} threads")
+        logger.log(f"Building and installing with {cores} threads")
         command.run_command(f"sudo make {target} {multicore_arg}")
 
 

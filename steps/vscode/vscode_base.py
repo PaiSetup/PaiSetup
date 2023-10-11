@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
 from pathlib import Path
 
 
@@ -15,7 +14,7 @@ class VscodeStepBase(Step):
         self._settings_path = current_step_dir / "settings.json"
 
     def _symlink_settings(self):
-        log("Symlinking VScode settings")
+        self._logger.log("Symlinking VScode settings")
 
         config_dir = self._get_vscode_config_dir()
         system_keybindings_path = config_dir / "keybindings.json"
@@ -68,7 +67,7 @@ class VscodeStepBase(Step):
     def _install_extensions_with_commad(self, extension_names):
         args = (f"--install-extension {x}" for x in extension_names)
         args = " ".join(args)
-        log(f"Installing extensions: {', '.join(extension_names)}")
+        self._logger.log(f"Installing extensions: {', '.join(extension_names)}")
         command.run_command(f"{self._get_vscode_command()} {args}", shell=True)
 
     def _install_python_package(self, package_name, import_name=None):
@@ -77,7 +76,7 @@ class VscodeStepBase(Step):
         try:
             command.run_command(f'python -c "import {import_name}"')
         except command.CommandError:
-            log(f"Installing {package_name} Python package")
+            self._logger.log(f"Installing {package_name} Python package")
             command.run_command(f"pip install {package_name}")
 
     def _get_vscode_config_dir(self):

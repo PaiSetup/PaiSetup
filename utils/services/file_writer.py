@@ -1,7 +1,6 @@
 from utils import command
 import os
 import tempfile
-from utils.log import log
 from enum import Enum
 from pathlib import Path
 

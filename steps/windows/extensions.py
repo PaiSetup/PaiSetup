@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils.windows.windows_registry import *
-from utils.log import log
 
 
 class ExtensionsStep(Step):
@@ -41,11 +40,11 @@ class ExtensionsStep(Step):
 
     def perform(self):
         # fmt: off
-        log("Associating extensions with Powershell")
+        self._logger.log("Associating extensions with Powershell")
         self._setup_extension_powershell(".ps1", "Powershell script", True)
 
         # fmt: off
-        log("Associating extensions with Notepad++")
+        self._logger.log("Associating extensions with Notepad++")
         extensions_for_npp = [
             (".txt",           "Text file (.txt)",     True),
             (".cmake",         None,                   False),
@@ -70,7 +69,7 @@ class ExtensionsStep(Step):
         for extension, description, new_file_entry in extensions_for_npp:
             self._setup_extension_npp(extension, description, new_file_entry)
 
-        log("Removing unneeded context menu entries")
+        self._logger.log("Removing unneeded context menu entries")
         new_file_entries_to_remove = [".rtf", ".docx", ".pptx", ".xlsx", ".rar", ".zip", ".bmp", ".rtf"]
         for extension in new_file_entries_to_remove:
             self._clear_new_file_entry(extension)

@@ -1,6 +1,5 @@
 from steps.step import Step, dependency_listener
 from utils import command
-from utils.log import log
 import re
 
 
@@ -27,16 +26,16 @@ class ActivateWindowsStep(Step):
                 regex_section = "([A-Z0-9]{5})"
                 regex = f"{regex_section}"
                 if re.match(regex, key):
-                    log(f"Found a key in {file_path}")
+                    self._logger.log(f"Found a key in {file_path}")
                     return key
                 else:
-                    log(f"Key found in {file_path} is invalid")
+                    self._logger.log(f"Key found in {file_path} is invalid")
         except FileNotFoundError:
-            log(f"Key not found in {file_path}")
+            self._logger.log(f"Key not found in {file_path}")
 
     def perform(self):
         if self.is_windows_activated():
-            log("Windows already activated")
+            self._logger.log("Windows already activated")
             return
 
         key = self.get_key()

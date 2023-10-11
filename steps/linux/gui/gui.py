@@ -63,10 +63,11 @@ class GuiStep(Step):
             "git://git.2f30.org/colors",
             "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
             colors_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
             clean=False,
         )
-        ext.make(colors_dir)
+        ext.make(colors_dir, logger=self._logger)
 
     def _setup_xresources_theme(self):
         self._file_writer.write_lines(

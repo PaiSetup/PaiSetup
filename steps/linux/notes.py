@@ -29,6 +29,7 @@ class NotesStep(Step):
             "https://github.com/InternalMD/Notes.git",
             "master",
             self._notes_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
         )
 

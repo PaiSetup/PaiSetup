@@ -1,7 +1,6 @@
 from steps.step import Step, dependency_listener
 from utils.services.file_writer import FileType
 from xml.dom import minidom
-from utils.log import log
 
 
 class ThunarStep(Step):
@@ -52,7 +51,7 @@ class ThunarStep(Step):
 
     def _setup_bookmarks(self):
         file_path = self._env.home() / ".config/gtk-3.0/bookmarks"
-        log(f"Generating bookmarks config - {file_path}")
+        self._logger.log(f"Generating bookmarks config - {file_path}")
 
         dirs = [
             (self._env.home() / "downloads", "Downloads"),
@@ -74,7 +73,7 @@ class ThunarStep(Step):
 
     def _generate_uca_xml(self):
         file_path = self._env.home() / ".config/Thunar/uca.xml"
-        log(f"Generating custom actions config - {file_path}")
+        self._logger.log(f"Generating custom actions config - {file_path}")
 
         document = minidom.Document()
         root = document.createElement("actions")

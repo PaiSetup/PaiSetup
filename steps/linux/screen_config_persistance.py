@@ -3,7 +3,6 @@ from utils import command
 import os
 from pathlib import Path
 from utils.services.file_writer import FileType
-from utils.log import log
 
 
 class ScreenConfigPersistanceStep(Step):

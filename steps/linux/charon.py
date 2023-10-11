@@ -3,7 +3,6 @@ import json
 import os
 from utils.services.file_writer import FileType
 from pathlib import Path
-from utils.log import log
 import utils.external_project as ext
 
 
@@ -64,16 +63,17 @@ class CharonStep(Step):
         self._generate_charon_configs()
 
     def _compile_charon(self):
-        log("Compiling Charon")
+        self._logger.log("Compiling Charon")
         ext.download(
             "https://github.com/DziubanMaciej/Charon.git",
             "583047b",
             self.charon_dir,
+            logger=self._logger,
             has_submodules=True,
             fetch=self.fetch_git,
         )
-        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF")
-        ext.make(self.charon_dir / "build")
+        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF", logger=self._logger)
+        ext.make(self.charon_dir / "build", logger=self._logger)
 
     def _generate_charon_configs(self):
         for call in self._immediate_charon_calls:

@@ -8,7 +8,6 @@ from utils.os_function import OperatingSystem
 
 from pathlib import Path
 from utils.argparser_utils import EnumAction, PathAction
-from utils.log import log, LogIndent
 import argparse
 
 # Prepare common paths
@@ -72,10 +71,9 @@ if args.list_packages:
 # Run the steps
 for step in steps:
     if step.is_enabled() and step.is_method_overriden(Step.perform):
-        log(f"Performing step: {step.name}")
-        with LogIndent():
+        Step._logger.log(f"Performing step: {step.name}")
+        with Step._logger.indent():
             step.perform()
-log("END")
 
 # Finalize services
 Step.finalize_services()

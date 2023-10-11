@@ -2,7 +2,6 @@ from steps.step import Step
 from pathlib import Path
 from utils.services.file_writer import FileType
 import utils.external_project as ext
-from utils.log import log
 
 
 class StStep(Step):
@@ -18,12 +17,13 @@ class StStep(Step):
             "https://git.suckless.org/st",
             "0.8.4",
             self.st_dir,
+            logger=self._logger,
             fetch=self.fetch_git,
             clean=True,
         )
-        ext.make(self.st_dir, patches_dir=current_step_dir)
+        ext.make(self.st_dir, patches_dir=current_step_dir, logger=self._logger)
 
-        log('Creating "terminal" command to call st')
+        self._logger.log('Creating "terminal" command to call st')
         self._file_writer.write_executable_script("terminal", ['st -e \\"\$@\\"'])
 
         self._file_writer.write_section(

@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
 from pathlib import Path
 from utils.services.file_writer import FileType
 from utils.os_function import linux_only, windows_only
@@ -26,7 +25,7 @@ class SshStep(Step):
     def perform(self):
         src_ssh_key_path = self._find_ssh_key()
         if src_ssh_key_path is None:
-            log("Could not find ssh key")
+            self._logger.log("Could not find ssh key")
             return
 
         ssh_dir = self._env.home() / ".ssh"
@@ -35,7 +34,7 @@ class SshStep(Step):
         ssh_key_path = ssh_dir / src_ssh_key_path.stem
         ssh_public_key_path = ssh_key_path.with_suffix(".pub")
 
-        log("Setting ssh config")
+        self._logger.log("Setting ssh config")
         self._file_writer.write_lines(
             ssh_config_path,
             [
@@ -47,20 +46,20 @@ class SshStep(Step):
             file_type=FileType.ConfigFile,
         )
 
-        log(f"Copying ssh key {src_ssh_key_path} -> {ssh_key_path}")
+        self._logger.log(f"Copying ssh key {src_ssh_key_path} -> {ssh_key_path}")
         shutil.copy(src_ssh_key_path, ssh_key_path)
 
-        log(f"Generating public key {ssh_public_key_path} from private key")
+        self._logger.log(f"Generating public key {ssh_public_key_path} from private key")
         public_key_command = f'ssh-keygen -f "{ssh_key_path}" -y'
         public_key = command.run_command(public_key_command, return_stdout=True)
         self._file_writer.write_lines(ssh_public_key_path, [public_key], file_type=FileType.ConfigFileNoComments)
 
-        log("Setting up known_hosts for typical sites")
+        self._logger.log("Setting up known_hosts for typical sites")
         known_hosts_command = "ssh-keyscan github.com"
         known_hosts = command.run_command(known_hosts_command, return_stdout=True).splitlines()
         self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
 
-        log(f"Setting permissions for ssh files (read-write only for the user {self._env.get('USER')})")
+        self._logger.log(f"Setting permissions for ssh files (read-write only for the user {self._env.get('USER')})")
         os.chmod(ssh_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
         os.chmod(ssh_config_path, stat.S_IRUSR | stat.S_IWUSR)
         os.chmod(ssh_known_hosts_path, stat.S_IRUSR | stat.S_IWUSR)

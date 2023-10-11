@@ -1,6 +1,5 @@
 from steps.step import Step, dependency_listener
 from utils.windows.windows_registry import *
-from utils.log import log
 
 
 class ExplorerStep(Step):
@@ -28,7 +27,7 @@ class ExplorerStep(Step):
         # self._reset_explorer()
 
     def _setup_system_icons_on_desktop(self):
-        log("Setting up system icons on desktop")
+        self._logger.log("Setting up system icons on desktop")
 
         # Show "This PC" on Desktop
         set_registry_value_dword(
@@ -36,14 +35,14 @@ class ExplorerStep(Step):
         )
 
     def _setup_shown_files(self):
-        log("Setting up shown files")
+        self._logger.log("Setting up shown files")
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Hidden", 1)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt", 0)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", "ShowFrequent", 0)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", "ShowRecent", 0)
 
     def _setup_taskbar(self):
-        log("Cleaning taskbar")
+        self._logger.log("Cleaning taskbar")
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCortanaButton", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowTaskViewButton", 0)
@@ -53,7 +52,7 @@ class ExplorerStep(Step):
         set_registry_value_dword(HKLM, r"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "NoTaskGrouping", 1)
 
     def _setup_context_menus(self):
-        log("Cleaning context menus")
+        self._logger.log("Cleaning context menus")
         delete_registry_sub_key_tree(HKCR, r"Directory\Background\shell", "AnyCode")
         delete_registry_sub_key_tree(HKCR, r"Directory\Background\shellex\ContextMenuHandlers", "NvCplDesktopContext")
         delete_registry_sub_key_tree(HKCR, r"Directory\shell", "AddToPlaylistVLC")
@@ -79,7 +78,7 @@ class ExplorerStep(Step):
         )
 
     def _set_dark_theme(self):
-        log("Enabling dark theme")
+        self._logger.log("Enabling dark theme")
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", 0)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", 0)
 
@@ -87,7 +86,7 @@ class ExplorerStep(Step):
         if len(self._quick_access_folder_for_removal) == 0 and len(self._quick_access_folder_for_addition) == 0:
             return
 
-        log("Setting up quick access")
+        self._logger.log("Setting up quick access")
         powershell_command = [
             "$object = New-Object -com shell.application",
             "$quickAccessItems = $object.Namespace('shell:::{679F85CB-0220-4080-B29B-5540CC05AAB6}').Items()",
@@ -102,7 +101,7 @@ class ExplorerStep(Step):
         command.run_powershell_command(powershell_command)
 
     def _remove_bloat_folders(self):
-        log("Removing bloat folders")
+        self._logger.log("Removing bloat folders")
         delete_registry_sub_key_tree(
             HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace", "{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
         )
@@ -111,5 +110,5 @@ class ExplorerStep(Step):
         )
 
     def _reset_explorer(self):
-        log("Resetting explorer")
+        self._logger.log("Resetting explorer")
         command.run_powershell_command("stop-process -name explorer -force")

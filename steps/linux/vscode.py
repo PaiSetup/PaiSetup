@@ -1,6 +1,5 @@
 from steps.vscode.vscode_base import VscodeStepBase
 from utils import command
-from utils.log import log
 from pathlib import Path
 
 
@@ -29,7 +28,7 @@ class VscodeStep(VscodeStepBase):
         if len(self._env.get("DISPLAY")) > 0:
             super()._install_extensions()
         else:
-            log("Skipping extensions installation (no graphical display)")
+            self._logger.log("Skipping extensions installation (no graphical display)")
 
     def _create_terminal_vim_desktop_file(self):
         self._file_writer.patch_dot_desktop_file(
@@ -58,10 +57,10 @@ class VscodeStep(VscodeStepBase):
         """
 
         if self._is_extension_installed(extension_name):
-            log(f"Installing extension {vsix_name} from GitHub (skipped)")
+            self._logger.log(f"Installing extension {vsix_name} from GitHub (skipped)")
             return
 
-        log(f"Installing extension {vsix_name} from GitHub")
+        self._logger.log(f"Installing extension {vsix_name} from GitHub")
 
         self._extensions_download_dir.mkdir(exist_ok=True)
 

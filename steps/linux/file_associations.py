@@ -1,6 +1,6 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
+
 import os
 
 
@@ -168,7 +168,7 @@ class FileAssociationsStep(Step):
         #    xdg-mime query default "$(xdg-mime query filetype "file")"
 
         for application, mime_types in associations:
-            log(f"Associating {len(mime_types)} with {application}")
+            self._logger.log(f"Associating {len(mime_types)} with {application}")
 
             # This command will update ~/.config/mimeapps.list file
             command.run_command(f"xdg-mime default {application} {' '.join(mime_types)}")

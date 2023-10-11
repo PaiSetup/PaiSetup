@@ -1,6 +1,5 @@
 from steps.step import Step
 from utils import command
-from utils.log import log
 from utils.windows.windows_registry import *
 
 
@@ -23,7 +22,7 @@ class StartupStep(Step):
             "DmClientOnScenarioDownload",
         ]
         powershell_script = [f"Get-ScheduledTask {task} -ErrorAction SilentlyContinue | Disable-ScheduledTask | Out-Null" for task in tasks]
-        log("Removing startup tasks")
+        self._logger.log("Removing startup tasks")
         command.run_powershell_command(powershell_script)
 
     def _remove_services(self):
@@ -32,12 +31,12 @@ class StartupStep(Step):
             "DiagTrack",
         ]
         powershell_script = [f'Stop-Service "{service}"; Set-Service "{service}" -StartupType Disabled' for service in services]
-        log("Removing services")
+        self._logger.log("Removing services")
         command.run_powershell_command(powershell_script)
 
     def _remove_startup_entries(self):
         # TODO these should ideally be added by other steps through dependency dispatcher
-        log("Removing startup entries")
+        self._logger.log("Removing startup entries")
         self._remove_startup_entry("BCClipboard")
         self._remove_startup_entry("CCleaner Smart Cleaning")
         self._remove_startup_entry("Discord")
