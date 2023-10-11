@@ -119,7 +119,7 @@ class GtkThemeStep(Step):
                 if not os.path.isdir(resolved_path):
                     self._logger.log(f"{log_line} (warning: directory does not exist - skipping)")
                     continue
-                self._logger.log(log_line)
+                self._logger.log(log_line, short_message=emblem)
                 command.run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
 
     def _generate_gtk2_config(self):
