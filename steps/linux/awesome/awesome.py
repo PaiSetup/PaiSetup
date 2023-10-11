@@ -9,10 +9,9 @@ from ..gui.gui import GuiStep
 
 
 class AwesomeStep(GuiStep):
-    def __init__(self, root_build_dir, fetch_git, is_default_wm):
+    def __init__(self, root_build_dir, is_default_wm):
         super().__init__("Awesome")
         self.root_build_dir = root_build_dir
-        self.fetch_git = fetch_git
         self._current_step_dir = Path(__file__).parent
 
         self._config_path = ".config/PaiSetup/awesome"
