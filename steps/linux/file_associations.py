@@ -9,21 +9,6 @@ class FileAssociationsStep(Step):
         super().__init__("FileAssociations")
 
     def perform(self):
-        self._create_terminal_vim_desktop_file()
-        self._setup_associations()
-
-    def _create_terminal_vim_desktop_file(self):
-        self._file_writer.patch_dot_desktop_file(
-            "vim.desktop",
-            "terminal_vim.desktop",
-            {
-                "Exec": lambda *args,: "terminal vim %F",
-                "Terminal": lambda *args: "false",
-                "Name": lambda *args: "Vim in new terminal",
-            },
-        )
-
-    def _setup_associations(self):
         image_mimes = [
             "image/bmp",
             "image/cgm",
@@ -157,7 +142,7 @@ class FileAssociationsStep(Step):
             ("org.gnome.Rhythmbox3.desktop", music_mimes),
             ("org.nomacs.ImageLounge.desktop", image_mimes),
             ("qpdfview.desktop", pdf_mimes),
-            ("terminal_vim.desktop", text_types),
+            ("terminal_nvim.desktop", text_types),
         ]
 
         # Check available .desktop files with following command:

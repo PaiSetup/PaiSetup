@@ -44,7 +44,7 @@ class Stdout:
 
     @staticmethod
     def ignore():
-        return Stdout(subprocess.DEVNULL, False)
+        return Stdout(subprocess.PIPE, False) # We could use DEVNULL, but we need the outputs to throw errors
 
     @staticmethod
     def return_back():

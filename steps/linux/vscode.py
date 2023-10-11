@@ -22,7 +22,7 @@ class VscodeStep(VscodeStepBase):
     def perform(self):
         self._install_extensions()
         self._symlink_settings()
-        self._create_terminal_vim_desktop_file()
+        self._create_desktop_file()
 
     def _install_extensions(self):
         if len(self._env.get("DISPLAY")) > 0:
@@ -30,7 +30,7 @@ class VscodeStep(VscodeStepBase):
         else:
             self._logger.log("Skipping extensions installation (no graphical display)")
 
-    def _create_terminal_vim_desktop_file(self):
+    def _create_desktop_file(self):
         self._file_writer.patch_dot_desktop_file(
             "code-oss.desktop",
             "code_new_window.desktop",

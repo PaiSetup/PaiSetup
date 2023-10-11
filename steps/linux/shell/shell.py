@@ -25,7 +25,7 @@ class ShellStep(Step):
             "Some constants",
             [
                 f"export PAI_SETUP_ROOT={self._root_dir}",
-                "export EDITOR=vim",
+                "export EDITOR=nvim",
                 "export FILE_MANAGER=thunar",
             ],
         )
@@ -36,6 +36,7 @@ class ShellStep(Step):
                 "alias ls=eza",
                 "alias ll='eza -la'",
                 "alias xo='xdg-open'",
+                "alias less='less -N'",
             ],
         )
         self._file_writer.write_section(
