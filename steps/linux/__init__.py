@@ -69,7 +69,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         CheckMateStep(build_dir),
         LightDmStep(),
         EncryptionStep(),
-        CharonStep(build_dir, fetch_git=args.full),
+        CharonStep(build_dir, full=args.full),
         PicardStep(),
         NotesStep(fetch_git=args.full),
         VirtualBoxStep(),

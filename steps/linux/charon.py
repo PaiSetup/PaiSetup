@@ -18,10 +18,10 @@ class ImmediateCharonCall:
 
 
 class CharonStep(Step):
-    def __init__(self, root_build_dir, fetch_git):
+    def __init__(self, root_build_dir, full):
         super().__init__("Charon")
         self.charon_dir = root_build_dir / "charon"
-        self.fetch_git = fetch_git
+        self._full = full
         self._log_file_path = self._env.home() / ".log/charon"
 
         funny_normal_path = self._env.home() / "multimedia/funny"
@@ -63,17 +63,17 @@ class CharonStep(Step):
         self._generate_charon_configs()
 
     def _compile_charon(self):
-        self._logger.log("Compiling Charon")
-        ext.download(
-            "https://github.com/DziubanMaciej/Charon.git",
-            "583047b",
-            self.charon_dir,
-            logger=self._logger,
-            has_submodules=True,
-            fetch=self.fetch_git,
-        )
-        ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF", logger=self._logger)
-        ext.make(self.charon_dir / "build", logger=self._logger)
+        if ext.should_build(self._full, ["Charon"]):
+            ext.download(
+                "https://github.com/DziubanMaciej/Charon.git",
+                "583047b",
+                self.charon_dir,
+                logger=self._logger,
+                has_submodules=True,
+                fetch=self._full,
+            )
+            ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF", logger=self._logger)
+            ext.make(self.charon_dir / "build", logger=self._logger)
 
     def _generate_charon_configs(self):
         for call in self._immediate_charon_calls:
