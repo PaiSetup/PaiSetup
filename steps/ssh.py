@@ -54,10 +54,11 @@ class SshStep(Step):
         public_key = command.run_command(public_key_command, stdout=command.Stdout.return_back())
         self._file_writer.write_lines(ssh_public_key_path, [public_key], file_type=FileType.ConfigFileNoComments)
 
-        self._logger.log("Setting up known_hosts for typical sites")
-        known_hosts_command = "ssh-keyscan github.com"
-        known_hosts = command.run_command(known_hosts_command, stdout=command.Stdout.return_back()).splitlines()
-        self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
+        if not ssh_known_hosts_path.exists():
+            self._logger.log("Setting up known_hosts for typical sites")
+            known_hosts_command = "ssh-keyscan github.com"
+            known_hosts = command.run_command(known_hosts_command, stdout=command.Stdout.return_back()).splitlines()
+            self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
 
         self._logger.log(f"Setting permissions for ssh files (read-write only for the user {self._env.get('USER')})")
         os.chmod(ssh_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
