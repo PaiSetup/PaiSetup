@@ -27,7 +27,8 @@ class GpuStep(Step):
 
         if GpuVendor.Nvidia in self._vendors:
             if self._has_display:
-                nvidia_enable_vsync(self._logger)
+                with self._logger.indent("Enabling NVIDIA vsync"):
+                    nvidia_enable_vsync(self._logger)
             self._file_writer.write_section(
                 ".config/PaiSetup/xinitrc_base",
                 "Enabling vsync on Nvidia",

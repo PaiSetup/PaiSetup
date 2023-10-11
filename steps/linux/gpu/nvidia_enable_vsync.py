@@ -5,6 +5,7 @@ import re
 
 
 def main(logger):
+    logger.log("Checking current graphics settings")
     output = command.run_command("nvidia-settings --q CurrentMetaMode", stdout=command.Stdout.return_back())
     output = [x for x in output.splitlines() if "Attribute" in x]  # One line per display
     for output_line in output:
@@ -15,9 +16,9 @@ def main(logger):
         display = regex[1]
         config = regex[2]
         if "ForceFullCompositionPipeline=On" in config:
-            logger.log(f"Vsync already enabled for {display}")
+            logger.log(f"Vsync already enabled for {display}. Skipping.")
         else:
-            logger.log(f"Enabling vsync for {display}")
+            logger.log(f"Enabling vsync for {display}.")
             config = config.replace("}", ", ForceFullCompositionPipeline=On}")
             command.run_command(f'nvidia-settings --assign "CurrentMetaMode[{display}]={config}"')
 
