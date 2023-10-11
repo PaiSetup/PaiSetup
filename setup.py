@@ -71,7 +71,7 @@ if args.list_packages:
 # Run the steps
 for step in steps:
     if step.is_enabled() and step.is_method_overriden(Step.perform):
-        Step._logger.log(f"Performing step: {step.name}")
+        Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
         with Step._logger.indent():
             step.perform()
 
