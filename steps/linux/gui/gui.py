@@ -58,16 +58,17 @@ class GuiStep(Step):
         dependency_dispatcher.register_homedir_file(".xsession-errors.old")
 
     def _compile_color_generator(self):
-        colors_dir = self.root_build_dir / "colors"
-        ext.download(
-            "git://git.2f30.org/colors",
-            "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
-            colors_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-            clean=False,
-        )
-        ext.make(colors_dir, logger=self._logger)
+        if ext.should_build(self._full, ["colors"]):
+            colors_dir = self.root_build_dir / "colors"
+            ext.download(
+                "git://git.2f30.org/colors",
+                "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
+                colors_dir,
+                logger=self._logger,
+                fetch=self._full,
+                clean=False,
+            )
+            ext.make(colors_dir, logger=self._logger)
 
     def _setup_xresources_theme(self):
         self._file_writer.write_lines(

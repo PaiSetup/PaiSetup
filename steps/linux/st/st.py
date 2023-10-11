@@ -15,7 +15,7 @@ class StStep(Step):
         self._generate_configs()
 
     def _build(self):
-        if self._full or ext.verify_binaries(["st", "terminal"]):
+        if not ext.should_build(self._full, ["st", "terminal"]):
             self._logger.log("Already built. Skipping.")
             return
 

@@ -55,7 +55,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
         XsessionStep(),
         GitStep(),
-        DwmStep(build_dir, fetch_git=False, is_default_wm=False),
+        DwmStep(build_dir, full=args.full, is_default_wm=False),
         AwesomeStep(build_dir, is_default_wm=True),
         StStep(build_dir, full=args.full),
         BashScriptsStep(fetch_git=args.full),

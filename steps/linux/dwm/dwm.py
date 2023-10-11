@@ -11,10 +11,10 @@ from ..check_mate.check_mate import CheckMateStep
 
 
 class DwmStep(GuiStep):
-    def __init__(self, root_build_dir, fetch_git, is_default_wm):
+    def __init__(self, root_build_dir, full, is_default_wm):
         super().__init__("Dwm")
         self.root_build_dir = root_build_dir
-        self.fetch_git = fetch_git
+        self._full = full
         self._current_step_dir = Path(__file__).parent
 
         self._config_path = ".config/PaiSetup/dwm"
@@ -78,38 +78,41 @@ class DwmStep(GuiStep):
         dependency_dispatcher.register_periodic_daemon_check("dwmblocks", "dwmblocks", profile=self._periodic_check_profile)
 
     def _compile_projects(self):
-        dwm_dir = self.root_build_dir / "dwm"
-        ext.download(
-            "https://git.suckless.org/dwm",
-            "6.2",
-            dwm_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dwm_dir, patches_dir=self._current_step_dir / "dwm", logger=self._logger)
+        if ext.should_build(self._full, ["dwm"]):
+            dwm_dir = self.root_build_dir / "dwm"
+            ext.download(
+                "https://git.suckless.org/dwm",
+                "6.2",
+                dwm_dir,
+                logger=self._logger,
+                fetch=self._full,
+                clean=True,
+            )
+            ext.make(dwm_dir, patches_dir=self._current_step_dir / "dwm", logger=self._logger)
 
-        dwmblocks_dir = self.root_build_dir / "dwmblocks"
-        ext.download(
-            "https://github.com/torrinfail/dwmblocks",
-            "96cbb453",
-            dwmblocks_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dwmblocks_dir, patches_dir=self._current_step_dir / "dwmblocks", logger=self._logger)
+        if ext.should_build(self._full, ["dwmblocks"]):
+            dwmblocks_dir = self.root_build_dir / "dwmblocks"
+            ext.download(
+                "https://github.com/torrinfail/dwmblocks",
+                "96cbb453",
+                dwmblocks_dir,
+                logger=self._logger,
+                fetch=self._full,
+                clean=True,
+            )
+            ext.make(dwmblocks_dir, patches_dir=self._current_step_dir / "dwmblocks", logger=self._logger)
 
-        dmenu_dir = self.root_build_dir / "dmenu"
-        ext.download(
-            "https://git.suckless.org/dmenu",
-            "5.0",
-            dmenu_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-            clean=True,
-        )
-        ext.make(dmenu_dir, patches_dir=self._current_step_dir / "dmenu", logger=self._logger)
+        if ext.should_build(self._full, ["dmenu"]):
+            dmenu_dir = self.root_build_dir / "dmenu"
+            ext.download(
+                "https://git.suckless.org/dmenu",
+                "5.0",
+                dmenu_dir,
+                logger=self._logger,
+                fetch=self._full,
+                clean=True,
+            )
+            ext.make(dmenu_dir, patches_dir=self._current_step_dir / "dmenu", logger=self._logger)
 
     def _setup_xinitrc_dwm(self):
         self._file_writer.write_section(

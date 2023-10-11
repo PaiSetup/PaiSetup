@@ -13,8 +13,10 @@ def apply_patch(file):
         command.run_command(f"git commit -am {file.name}")
 
 
-def verify_binaries(binaries):
-    return all((shutil.which(x) for x in binaries))
+def should_build(full, binaries):
+    if full:
+        return True
+    return any((shutil.which(x) is None for x in binaries))
 
 
 def download(
