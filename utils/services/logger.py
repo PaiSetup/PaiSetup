@@ -18,7 +18,7 @@ class LogIndent:
 
 
 class Logger:
-    def __init__(self, log_dir, perf_analyzer):
+    def __init__(self, log_dir, perf_analyzer, disabled):
         self._indent_level = 0
         self._indent = ""
         self._last_log_time = None
@@ -26,6 +26,7 @@ class Logger:
         self._warnings = []
         self._log_dir = log_dir
         self._perf_analyzer = perf_analyzer
+        self._disabled = disabled
 
         for file in log_dir.iterdir():
             if file.suffix == ".log":
@@ -46,7 +47,7 @@ class Logger:
         self._last_log_time = log_time
 
         indent_increase = 1 if add_indent else 0
-        if not silent:
+        if not self._disabled and not silent:
             with LogIndent(self, indent_increase=indent_increase):
                 print(f"[{delta_time_ms_str}] {self._indent}{message}")
 

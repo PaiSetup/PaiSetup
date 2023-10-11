@@ -32,12 +32,15 @@ args.mode.save_last_mode(root_dir)
 # fmt: on
 
 # Setup services
-Step.setup_external_services(root_dir, logs_dir)
+disable_logger = args.list_steps or args.list_packages
+Step.setup_external_services(root_dir, logs_dir, disable_logger)
 
 # Setup steps. They can be safely commented out if neccessary
+Step._logger.log("Initializing steps")
 steps = get_steps(args, root_dir, build_dir, secret_dir)
 
 # Filter steps by command line args
+Step._logger.log("Filtering steps")
 if args.steps != None:
     allowed_names = [x.lower() for x in args.steps]
     for step in steps:
@@ -45,10 +48,12 @@ if args.steps != None:
             step.set_enabled(False)
 
 # Setup env
+Step._logger.log("Setting up environment variables")
 for step in steps:
     step.register_env_variables()
 
 # Handle cross-step dependencies
+Step._logger.log("Handling steps dependencies")
 dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
     step.register_as_dependency_listener(dependencies)
@@ -69,11 +74,12 @@ if args.list_packages:
     exit(0)
 
 # Run the steps
-for step in steps:
-    if step.is_enabled() and step.is_method_overriden(Step.perform):
-        Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
-        with Step._logger.indent():
-            step.perform()
+with Step._logger.indent("Executing steps"):
+    for step in steps:
+        if step.is_enabled() and step.is_method_overriden(Step.perform):
+            Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
+            with Step._logger.indent():
+                step.perform()
 
 # Finalize services
 Step.finalize_services()
