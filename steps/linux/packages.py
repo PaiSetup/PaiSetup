@@ -21,20 +21,21 @@ class PackagesStep(Step):
         self._mark_packages_deps()
 
     def _install_yay(self):
-        if not command.get_missing_packages(["yay"], self._known_package_groups):
-            self._logger.log("yay is already installed")
-        else:
-            self._logger.log("Downloading yay")
-            build_dir = self.root_build_dir / "yay"
-            ext.download(
-                "https://aur.archlinux.org/yay-git.git",
-                "master",
-                build_dir,
-                logger=self._logger,
-            )
-            self._logger.log("Installing yay")
-            with Pushd(build_dir):
-                command.run_command("makepkg -si --noconfirm")
+        with self._logger.indent("Installing yay"):
+            if not command.get_missing_packages(["yay"], self._known_package_groups):
+                self._logger.log("Already installed. Skipping")
+            else:
+                self._logger.log("Downloading yay")
+                build_dir = self.root_build_dir / "yay"
+                ext.download(
+                    "https://aur.archlinux.org/yay-git.git",
+                    "master",
+                    build_dir,
+                    logger=self._logger,
+                )
+                self._logger.log("Installing yay")
+                with Pushd(build_dir):
+                    command.run_command("makepkg -si --noconfirm")
 
     def _set_yay_permissions(self):
         self._logger.log("Setting permissions for tmp yay directory")
@@ -43,31 +44,33 @@ class PackagesStep(Step):
         command.run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
     def _install_packages(self):
-        self._logger.log(f"Required packages: {self._packages}")
-        missing_packages = command.get_missing_packages(self._packages, self._known_package_groups)
-        if not missing_packages:
-            self._logger.log("Already installed")
-        else:
-            packages_option = " ".join(missing_packages)
-            assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
-            install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
-            self._logger.log(f"Running command: {install_command}")
-            stdout = command.Stdout.print_to_console() if self.print_installation else command.Stdout.ignore()
-            command.run_command(install_command, stdout=stdout)
+        with self._logger.indent(f"Installing packages: {self._packages}"):
+            missing_packages = command.get_missing_packages(self._packages, self._known_package_groups)
+            if not missing_packages:
+                self._logger.log("All packages are already installed.")
+            else:
+                packages_option = " ".join(missing_packages)
+                assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
+                install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
+                self._logger.log(f"Running command: {install_command}")
+                stdout = command.Stdout.print_to_console() if self.print_installation else command.Stdout.ignore()
+                command.run_command(install_command, stdout=stdout)
 
     def _mark_packages_explicit(self):
         # Mark all packages we install here as explictly installed. Sometimes a package can be already
         # installed as a dependency and then it won't show up in "yay -Qeq" invocation. This command
         # fixes this issue
-        packages_option = self._get_packages(True)
-        packages_option = " ".join(packages_option)
-        self._logger.log(f"Making packages installed as explicit: {packages_option}.")
-        command.run_command(f"yay -D --asexplicit {packages_option}")
+        with self._logger.indent(f"Marking packages installed as explicit"):
+            packages_option = self._get_packages(True)
+            packages_option = " ".join(packages_option)
+            self._logger.log(packages_option)
+            command.run_command(f"yay -D --asexplicit {packages_option}")
 
     def _mark_packages_deps(self):
         # In February 2022 base-devel stopped being a package group and started being a metapackage
         # (an empty package with only dependencies). This means all its packages should be switched
         # from "explicitly installed" to "installed as a dependency"
+        self._logger.log("Marking packages installed as deps")
         packages_option = command.run_command(f"pactree base-devel --depth 1 -l", shell=False, stdout=command.Stdout.return_back())
         packages_option = packages_option.replace("\n", " ")
         packages_option = packages_option.replace("base-devel ", "")
