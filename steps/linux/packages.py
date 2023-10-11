@@ -52,7 +52,8 @@ class PackagesStep(Step):
             assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
             install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
             self._logger.log(f"Running command: {install_command}")
-            command.run_command(install_command, print_stdout=self.print_installation)
+            stdout = command.Stdout.print_to_console() if self.print_installation else command.Stdout.ignore()
+            command.run_command(install_command, stdout=stdout)
 
     def _mark_packages_explicit(self):
         # Mark all packages we install here as explictly installed. Sometimes a package can be already
@@ -67,7 +68,7 @@ class PackagesStep(Step):
         # In February 2022 base-devel stopped being a package group and started being a metapackage
         # (an empty package with only dependencies). This means all its packages should be switched
         # from "explicitly installed" to "installed as a dependency"
-        packages_option = command.run_command(f"pactree base-devel --depth 1 -l", shell=False, return_stdout=True)
+        packages_option = command.run_command(f"pactree base-devel --depth 1 -l", shell=False, stdout=command.Stdout.return_back())
         packages_option = packages_option.replace("\n", " ")
         packages_option = packages_option.replace("base-devel ", "")
         command.run_command(f"yay -D --asdeps {packages_option}")
@@ -95,7 +96,7 @@ class PackagesStep(Step):
             packages = [x for x in self._packages if x not in self._known_package_groups]
             groups = [x for x in self._packages if x in self._known_package_groups]
             if groups:
-                packages_from_groups = command.run_command(f"yay -Qqg {' '.join(groups)}", return_stdout=True).strip().split("\n")
+                packages_from_groups = command.run_command(f"yay -Qqg {' '.join(groups)}", stdout=command.Stdout.return_back()).strip().split("\n")
                 packages += packages_from_groups
             return packages
         else:

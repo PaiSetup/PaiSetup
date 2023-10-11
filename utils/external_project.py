@@ -9,7 +9,7 @@ import multiprocessing
 
 def apply_patch(file):
     with open(file, "rb", 0) as file:
-        command.run_command("patch", stdin=file)
+        command.run_command("patch", stdin=command.Stdin.file(file))
         command.run_command(f"git commit -am {file.name}")
 
 

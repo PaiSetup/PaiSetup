@@ -47,7 +47,7 @@ elif is_terminate_button():
 
 # Run CheckMate and see what warnings we have
 check_mate_command = "check_mate_client read -p 50198 -r 1"
-warnings = command.run_command(check_mate_command, return_stdout=True, print_stdout=False)
+warnings = command.run_command(check_mate_command, stdout=command.Stdout.return_back())
 warnings = warnings.split("\n\n") # Warnings from different clients are separated by an empty line
 warnings = (x.strip().split("\n") for x in warnings if x) # Split output from each client into lines
 warnings = ([x for x in y if x] for y in warnings) # Eliminate empty lines

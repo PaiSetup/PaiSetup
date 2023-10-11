@@ -5,7 +5,7 @@ import re
 
 
 def main(logger):
-    output = command.run_command("nvidia-settings --q CurrentMetaMode", return_stdout=True)
+    output = command.run_command("nvidia-settings --q CurrentMetaMode", stdout=command.Stdout.return_back())
     output = [x for x in output.splitlines() if "Attribute" in x]  # One line per display
     for output_line in output:
         regex = re.search(":: ([0-9a-zA-Z-]+): (.*)", output_line)

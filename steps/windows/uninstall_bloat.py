@@ -89,4 +89,4 @@ class UninstallBloatStep(Step):
 
         for app in unnecessary_microsoft_apps + sponsored_apps:
             powershell_script.append(f"uninstall_app {app}")
-        command.run_powershell_command(powershell_script, print_stdout=True)
+        command.run_powershell_command(powershell_script, stdout=command.Stdout.print_to_console())
