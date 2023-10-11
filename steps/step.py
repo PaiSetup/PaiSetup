@@ -1,6 +1,7 @@
 from utils.services.env import EnvManager
 from utils.services.file_writer import FileWriter
 from utils.services.logger import Logger
+from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Step:
@@ -24,7 +25,8 @@ class Step:
             raise ValueError("setup_external_services may be called only once")
         cls._env = EnvManager(root_dir)
         cls._file_writer = FileWriter(cls._env.home())
-        cls._logger = Logger(logs_dir)
+        cls._perf_analyzer = PerfAnalyzer()
+        cls._logger = Logger(logs_dir, cls._perf_analyzer)
 
     @classmethod
     def finalize_services(cls):
@@ -34,6 +36,7 @@ class Step:
         """
         cls._env.finalize()
         cls._file_writer.finalize()
+        cls._perf_analyzer.finalize()
         cls._logger.finalize()
 
     def register_as_dependency_listener(self, dependency_dispatcher):

@@ -2,3 +2,4 @@
 .lastmode
 *.py[cod]
 desktop.ini
+flamegraph.svg

@@ -18,38 +18,38 @@ class LogIndent:
 
 
 class Logger:
-    def __init__(self, log_dir):
+    def __init__(self, log_dir, perf_analyzer):
         self._indent_level = 0
         self._indent = ""
         self._last_log_time = None
 
         self._warnings = []
         self._log_dir = log_dir
+        self._perf_analyzer = perf_analyzer
 
         for file in log_dir.iterdir():
             if file.suffix == ".log":
                 file.unlink()
 
-    def _get_log_delta_time(self):
+    def log(self, message, add_indent=False):
+        # Calculate delta time
         width = 13
-
         log_time = time.time()
         if self._last_log_time is None:
-            content = " " * width
+            delta_time_ms = None
+            delta_time_ms_str = " " * width
         else:
-            time_ms = (log_time - self._last_log_time) * 1000
-            content = f"+{time_ms:.2f}ms".rjust(width)
+            delta_time_ms = (log_time - self._last_log_time) * 1000
+            delta_time_ms_str = f"+{delta_time_ms:.2f}ms".rjust(width)
 
+        # Update last log time
         self._last_log_time = log_time
-
-        return f"[{content}] "
-
-    def log(self, message, add_indent=False):
-        log_time = self._get_log_delta_time()
 
         indent_increase = 1 if add_indent else 0
         with LogIndent(self, indent_increase=indent_increase):
-            print(f"{log_time}{self._indent}{message}")
+            print(f"[{delta_time_ms_str}] {self._indent}{message}")
+
+        self._perf_analyzer.notify_log(message, delta_time_ms, self._indent_level + indent_increase)
 
     def update_indent(self, new_indent_level):
         self._indent_level = new_indent_level

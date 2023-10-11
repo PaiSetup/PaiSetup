@@ -80,7 +80,7 @@ def make(
             with logger.indent():
                 diffs.sort()
                 for diff in diffs:
-                    logger.log(diff)
+                    logger.log(str(diff))
                     apply_patch(diff)
 
         # Get thread count

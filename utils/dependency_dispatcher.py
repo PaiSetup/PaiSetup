@@ -24,7 +24,7 @@ class Listener:
             # If there is a dependency on disabled step, it must be enabled
             if not step.is_enabled():
                 if self._dependency_dispatcher.is_auto_resolve_enabled():
-                    self._logger.log(f"INFO: automatic dependency resolving is enabled. Enabling {step.name} step")
+                    step._logger.log(f"INFO: automatic dependency resolving is enabled. Enabling {step.name} step")
                     step.set_enabled(True)
                     step.express_dependencies(self._dependency_dispatcher)
                 else:
