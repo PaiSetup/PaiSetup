@@ -31,7 +31,7 @@ class Logger:
             if file.suffix == ".log":
                 file.unlink()
 
-    def log(self, message, short_message=None, add_indent=False):
+    def log(self, message, short_message=None, add_indent=False, silent=False):
         # Calculate delta time
         width = 13
         log_time = time.time()
@@ -46,13 +46,18 @@ class Logger:
         self._last_log_time = log_time
 
         indent_increase = 1 if add_indent else 0
-        with LogIndent(self, indent_increase=indent_increase):
-            print(f"[{delta_time_ms_str}] {self._indent}{message}")
+        if not silent:
+            with LogIndent(self, indent_increase=indent_increase):
+                print(f"[{delta_time_ms_str}] {self._indent}{message}")
 
         message_for_perf_analyzer = message
         if short_message is not None:
             message_for_perf_analyzer = short_message
         self._perf_analyzer.notify_log(message_for_perf_analyzer, delta_time_ms, self._indent_level + indent_increase)
+
+    def silent_log(self, *args, **kwargs):
+        kwargs["silent"] = True
+        self.log(*args, **kwargs)
 
     def update_indent(self, new_indent_level):
         self._indent_level = new_indent_level

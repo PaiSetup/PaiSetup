@@ -61,6 +61,7 @@ class PackagesStep(Step):
         # installed as a dependency and then it won't show up in "yay -Qeq" invocation. This command
         # fixes this issue
         with self._logger.indent(f"Marking packages installed as explicit"):
+            self._logger.silent_log("Finding packages to mark")
             packages_option = self._get_packages(True)
             packages_option = " ".join(packages_option)
             self._logger.log(packages_option)
