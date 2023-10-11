@@ -5,12 +5,20 @@ import utils.external_project as ext
 
 
 class StStep(Step):
-    def __init__(self, root_build_dir, fetch_git):
+    def __init__(self, root_build_dir, full):
         super().__init__("St")
         self.st_dir = root_build_dir / "st"
-        self.fetch_git = fetch_git
+        self._full = full
 
     def perform(self):
+        self._build()
+        self._generate_configs()
+
+    def _build(self):
+        if self._full or ext.verify_binaries(["st", "terminal"]):
+            self._logger.log("Already built. Skipping.")
+            return
+
         current_step_dir = Path(__file__).parent
 
         ext.download(
@@ -18,7 +26,7 @@ class StStep(Step):
             "0.8.4",
             self.st_dir,
             logger=self._logger,
-            fetch=self.fetch_git,
+            fetch=self._full,
             clean=True,
         )
         ext.make(self.st_dir, patches_dir=current_step_dir, logger=self._logger)
@@ -26,6 +34,7 @@ class StStep(Step):
         self._logger.log('Creating "terminal" command to call st')
         self._file_writer.write_executable_script("terminal", ['st -e \\"\$@\\"'])
 
+    def _generate_configs(self):
         self._file_writer.write_section(
             ".profile",
             "Command for calling default terminal",
