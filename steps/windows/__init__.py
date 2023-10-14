@@ -56,12 +56,10 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ActivateWindowsStep(secret_dir),
         ExplorerStep(),
         ExtensionsStep(),
-        GitStep(),
         HwToolsStep(gaming=args.mode == SetupMode.main),
         IconsStep(),
         PowerStep(),
         PrivacyStep(),
-        SshStep(secret_dir),
         TimeStep(),
         StartupStep(),
         UninstallBloatStep(),
@@ -72,6 +70,8 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     if args.mode == SetupMode.main or args.mode == SetupMode.extra:
         steps += [
             GamesStep(),
+            GitStep(),
+            SshStep(secret_dir, args.full),
             ToolbarStep(root_dir),
             VirtualBoxStep(),
         ]
