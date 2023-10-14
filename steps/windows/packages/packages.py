@@ -36,6 +36,7 @@ class PackagesStep(Step):
             "vlc",
             "microsoft-windows-terminal",
             "python3",
+            "flamegraph",  # For performance analyzer
         )
         if self._is_main_machine:
             dependency_dispatcher.add_packages(
