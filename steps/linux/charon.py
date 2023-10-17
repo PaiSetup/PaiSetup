@@ -7,7 +7,7 @@ import utils.external_project as ext
 
 
 class ImmediateCharonCall:
-    def __init__(self, config_name, name, counter_start, dst_name, dst_dir, dst_backup_dir, use_for_images):
+    def __init__(self, config_name, name, counter_start, dst_name, dst_dir, dst_backup_dir, use_for_images, use_for_videos):
         self.config_path = f".config/charon/{config_name}"
         self.name = name
         self.counter_start = counter_start
@@ -15,6 +15,7 @@ class ImmediateCharonCall:
         self.dst_name = dst_name
         self.dst_backup_dir = dst_backup_dir
         self.use_for_images = use_for_images
+        self.use_for_videos = use_for_videos
 
 
 class CharonStep(Step):
@@ -29,22 +30,34 @@ class CharonStep(Step):
 
         self._immediate_charon_calls = [
             ImmediateCharonCall(
-                config_name="immediate_internet.json",
+                config_name="immediate_internet_img.json",
                 name="Transfer to Funny/Internet",
                 dst_name="####",
                 counter_start=1,
                 dst_dir=funny_normal_path / "Internet",
                 dst_backup_dir=funny_backup_path / "Internet",
                 use_for_images=True,
+                use_for_videos=False,
             ),
             ImmediateCharonCall(
-                config_name="immediate_life.json",
+                config_name="immediate_internet_vid.json",
+                name="Transfer to Funny/Internet/Video",
+                dst_name="###",
+                counter_start=0,
+                dst_dir=funny_normal_path / "Internet/Video",
+                dst_backup_dir=funny_backup_path / "Internet/Video",
+                use_for_images=False,
+                use_for_videos=True,
+            ),
+            ImmediateCharonCall(
+                config_name="immediate_life_img.json",
                 name="Transfer to Funny/Life",
                 dst_name="###",
                 counter_start=1,
                 dst_dir=funny_normal_path / "Life",
                 dst_backup_dir=funny_backup_path / "Life",
                 use_for_images=True,
+                use_for_videos=False
             ),
         ]
 
@@ -56,6 +69,8 @@ class CharonStep(Step):
             }
             if call.use_for_images:
                 action["image-files"] = None
+            if call.use_for_videos:
+                action["video-files"] = None
             dependency_dispatcher.add_thunar_custom_action(action)
 
     def perform(self):
