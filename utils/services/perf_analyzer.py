@@ -1,5 +1,6 @@
 from utils import command
 from utils.os_function import OperatingSystem
+from pathlib import Path
 
 
 class PerfAnalyzer:
@@ -65,3 +66,4 @@ class PerfAnalyzer:
             else:
                 flamegraph_command = "flamegraph.pl"
             command.run_command(flamegraph_command, shell=True, stdin=command.Stdin.string(lines), stdout=command.Stdout.print_to_file(file))
+            print("Flamegraph written to", Path(file.name).resolve())
