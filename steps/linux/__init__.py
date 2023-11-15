@@ -4,6 +4,7 @@ from .bash_scripts import BashScriptsStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
 from .check_mate.check_mate import CheckMateStep
+from .clion.clion import ClionStep
 from .dwm.dwm import DwmStep
 from .encryption.encryption import EncryptionStep
 from .file_associations import FileAssociationsStep
@@ -46,6 +47,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
         FileAssociationsStep(),
         AudioStep(),
+        ClionStep(),
         ScreenConfigPersistanceStep(),
         GpuStep(),
         FirefoxStep(is_default_browser=True),
