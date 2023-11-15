@@ -24,7 +24,7 @@ get_unmatching_packages() {
 
 packages="$(get_unmatching_packages)"
 if [ $? = 0 ]; then
-    packages="$(echo "$packages" | grep -E '<|>')"
+    packages="$(echo "$packages" | grep -E '<|>' | sed "s/\s//g")"
     if [ -n "$packages" ]; then
         echo "$(echo "$packages" | wc -l) packages do not match with PaiSetup"
         echo "$packages"
