@@ -33,6 +33,10 @@ class ProgrammingCppStep(Step):
                 "opencl-headers",
             )
 
+        # Author refuses to conform to XDG specification: https://github.com/baldurk/renderdoc/pull/1741.
+        # Maybe I could do my own AUR with this PR cherry-pick on top?
+        dependency_dispatcher.register_homedir_file(".renderdoc")
+
     def perform(self):
         self._file_writer.write_lines(
             ".config/gdb/gdbinit",
