@@ -7,8 +7,9 @@ class JavaStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
-            "java-environment-common",
+            # "java-environment-common", # Needed only for JDK
             "java-runtime-common",
+            "jre-openjdk",
         )
 
     def perform(self):
