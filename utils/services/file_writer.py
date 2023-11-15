@@ -335,7 +335,4 @@ class FileWriter:
         assignement = line[assignment_sign_start:assignment_sign_end+1]
         value = line[assignment_sign_end + 1:]
 
-        if '=' in key or '=' in value:
-            return None
-
         return key, assignement, value

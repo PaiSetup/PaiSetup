@@ -20,6 +20,7 @@ class ProgrammingPythonStep(Step):
         dependency_dispatcher.add_packages(
             "python",
             "python-pip",
+            "python-pytube", # TODO move to BashScripts once they are merged from external repo to PaiSetup
             "bpython",
             "tk",
         )
