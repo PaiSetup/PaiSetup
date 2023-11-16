@@ -19,6 +19,7 @@ from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .packages import PackagesStep
 from .picard import PicardStep
+from .plex import PlexStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .programming_gamedev import ProgrammingGamedevStep
@@ -64,6 +65,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         BashScriptsStep(fetch_git=args.full),
         VscodeStep(build_dir),
         NeovimStep(),
+        PlexStep(),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
         ProgrammingRustStep(),

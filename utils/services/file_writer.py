@@ -198,8 +198,10 @@ class FileWriter:
         src = self.resolve_path(src)
         link = self.resolve_path(link)
         self._ensure_file_is_deleted(link)
-        os.symlink(src, link)
-        return link
+        try:
+            os.symlink(src, link)
+        except PermissionError:
+            command.run_command(f"sudo ln -s {src} {link}")
 
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name

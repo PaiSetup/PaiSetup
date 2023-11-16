@@ -59,6 +59,11 @@
         - */home/maciej/multimedia/tv_series*
       - Syncs:
         - */home/maciej/multimedia* <-> *Backup/multimedia*
+    - Plex
+      - Plex home should be in `/usr/lib/plexmediaserver`, but it could be different. It is auto-discovered in setup, see logs.
+      - Libraries
+        - *<PLEX_HOME>/Movies*
+        - *<PLEX_HOME>/TvShows*
 
 
 
