@@ -19,7 +19,7 @@ from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .packages import PackagesStep
 from .picard import PicardStep
-from .plex import PlexStep
+from .plex.plex import PlexStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .programming_gamedev import ProgrammingGamedevStep
