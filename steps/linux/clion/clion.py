@@ -20,7 +20,7 @@ class ClionStep(Step):
 
         src_file = self._current_step_dir / "keybindings.xml"
         for config_dir in config_dirs:
-            dst_file = config_dir / "keymaps" / "XWin copy.xml"
+            dst_file = config_dir / "keymaps" / "PaiSetup.xml"
             self._file_writer.write_symlink(src_file, dst_file)
 
     def _find_clion_config_dirs(self):
