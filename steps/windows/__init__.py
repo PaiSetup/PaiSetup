@@ -1,4 +1,5 @@
 from .activate_windows import ActivateWindowsStep
+from .bash_scripts import BashScriptsStep
 from .explorer import ExplorerStep
 from .extensions import ExtensionsStep
 from .folders import FoldersStep
@@ -69,6 +70,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     # Add steps only for my machines
     if args.mode == SetupMode.main or args.mode == SetupMode.extra:
         steps += [
+            BashScriptsStep(True),
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),

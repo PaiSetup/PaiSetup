@@ -3,7 +3,8 @@ from steps.bash_scripts_base import BashScriptsStepBase
 
 class BashScriptsStep(BashScriptsStepBase):
     def __init__(self, fetch_git):
-        super().__init__("BashScripts", fetch_git, self._env.home() / "scripts")
+        super().__init__("BashScripts", fetch_git)
+        self.setup_scripts_root_dir(self._env.home() / "scripts")
 
     def perform(self):
         super().perform()

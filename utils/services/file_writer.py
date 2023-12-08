@@ -3,6 +3,7 @@ import os
 import tempfile
 from enum import Enum
 from pathlib import Path
+from utils.os_function import OperatingSystem
 
 
 class FileType(Enum):
@@ -174,7 +175,7 @@ class FileWriter:
             command.run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
 
         # Setup permissions if this is the first time we touch this file
-        if is_first_access and FileType.is_executable(file_type):
+        if OperatingSystem.current().is_linux() and is_first_access and FileType.is_executable(file_type):
             command.run_command(f"sudo chmod +x {path}")
 
         # Return resolved path
