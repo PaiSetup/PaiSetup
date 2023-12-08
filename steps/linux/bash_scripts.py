@@ -1,25 +1,12 @@
-from steps.step import Step
-import utils.external_project as ext
-import os
-from pathlib import Path
+from steps.bash_scripts_base import BashScriptsStepBase
 
 
-class BashScriptsStep(Step):
+class BashScriptsStep(BashScriptsStepBase):
     def __init__(self, fetch_git):
-        super().__init__("BashScripts")
-        self._scripts_root_dir = self._env.home() / "scripts"
-        self._scripts_path = self._scripts_root_dir / "BashUtils"
-        self.fetch_git = fetch_git
+        super().__init__("BashScripts", fetch_git, self._env.home() / "scripts")
 
     def perform(self):
-        ext.download(
-            "https://github.com/InternalMD/Scripts.git",
-            "master",
-            self._scripts_root_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-        )
-
+        super().perform()
         self._file_writer.write_section(
             ".profile",
             "Convenience scripts",
