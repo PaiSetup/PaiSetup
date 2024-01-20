@@ -1,9 +1,15 @@
 <keymap version="1" name="PaiSetup" parent="Default for XWin">
   <action id="CIDR.Lang.IntroduceDefine" />
+  <action id="CMake.ReloadCMakeProject">
+    <keyboard-shortcut first-keystroke="f4" />
+  </action>
   <action id="ChangesView.ShelveSilently" />
   <action id="CloseContent">
     <keyboard-shortcut first-keystroke="ctrl f4" />
     <keyboard-shortcut first-keystroke="ctrl w" />
+  </action>
+  <action id="CollapseAllRegions">
+    <keyboard-shortcut first-keystroke="ctrl m" second-keystroke="ctrl o" />
   </action>
   <action id="Console.TableResult.SetDefault" />
   <action id="CopyElement" />
@@ -13,6 +19,7 @@
     <keyboard-shortcut first-keystroke="ctrl alt d" />
   </action>
   <action id="EditSource" />
+  <action id="EditorScrollToCenter" />
   <action id="EditorSelectWord" />
   <action id="ExternalSystem.OpenConfig" />
   <action id="Graph.RouteEdges" />
@@ -69,4 +76,5 @@
   <action id="UsageFiltering.ReadAccess" />
   <action id="UsageFiltering.WriteAccess" />
   <action id="UsageGrouping.DirectoryStructure" />
+  <action id="Vcs.ShowMessageHistory" />
 </keymap>
