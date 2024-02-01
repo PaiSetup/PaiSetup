@@ -21,6 +21,11 @@
   <action id="EditSource" />
   <action id="EditorScrollToCenter" />
   <action id="EditorSelectWord" />
+  <action id="ExpandRegionRecursively">
+    <keyboard-shortcut first-keystroke="ctrl alt add" />
+    <keyboard-shortcut first-keystroke="ctrl alt equals" />
+    <keyboard-shortcut first-keystroke="ctrl m" second-keystroke="ctrl m" />
+  </action>
   <action id="ExternalSystem.OpenConfig" />
   <action id="Graph.RouteEdges" />
   <action id="Jdbc.OpenEditor.Data" />
