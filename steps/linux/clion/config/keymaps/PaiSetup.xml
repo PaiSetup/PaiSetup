@@ -3,6 +3,7 @@
   <action id="CMake.ReloadCMakeProject">
     <keyboard-shortcut first-keystroke="f4" />
   </action>
+  <action id="ChangesView.Revert" />
   <action id="ChangesView.ShelveSilently" />
   <action id="CloseContent">
     <keyboard-shortcut first-keystroke="ctrl f4" />
@@ -11,22 +12,29 @@
   <action id="CollapseAllRegions">
     <keyboard-shortcut first-keystroke="ctrl m" second-keystroke="ctrl o" />
   </action>
+  <action id="CompareTwoFiles" />
   <action id="Console.TableResult.SetDefault" />
   <action id="CopyElement" />
   <action id="DatabaseView.OpenFamilyAction" />
+  <action id="DatabaseView.Tools.RevertChanges" />
   <action id="Debug">
     <keyboard-shortcut first-keystroke="shift f9" />
     <keyboard-shortcut first-keystroke="ctrl alt d" />
   </action>
+  <action id="Diff.ShowDiff" />
   <action id="EditSource" />
   <action id="EditorScrollToCenter" />
   <action id="EditorSelectWord" />
+  <action id="EditorToggleUseSoftWraps">
+    <keyboard-shortcut first-keystroke="ctrl alt z" />
+  </action>
   <action id="ExpandRegionRecursively">
     <keyboard-shortcut first-keystroke="ctrl alt add" />
     <keyboard-shortcut first-keystroke="ctrl alt equals" />
     <keyboard-shortcut first-keystroke="ctrl m" second-keystroke="ctrl m" />
   </action>
   <action id="ExternalSystem.OpenConfig" />
+  <action id="FileChooser.GotoDesktop" />
   <action id="Graph.RouteEdges" />
   <action id="Jdbc.OpenEditor.Data" />
   <action id="MethodHierarchy" />
@@ -49,6 +57,8 @@
     <keyboard-shortcut first-keystroke="shift f10" />
     <keyboard-shortcut first-keystroke="ctrl alt w" />
   </action>
+  <action id="RunDashboard.CopyConfiguration" />
+  <action id="SendEOF" />
   <action id="ShowBookmarks" />
   <action id="ShowReformatFileDialog">
     <keyboard-shortcut first-keystroke="shift ctrl alt l" />
@@ -81,5 +91,8 @@
   <action id="UsageFiltering.ReadAccess" />
   <action id="UsageFiltering.WriteAccess" />
   <action id="UsageGrouping.DirectoryStructure" />
+  <action id="Vcs.RollbackChangedLines" />
   <action id="Vcs.ShowMessageHistory" />
+  <action id="XDebugger.CopyWatch" />
+  <action id="openAssertEqualsDiff" />
 </keymap>
