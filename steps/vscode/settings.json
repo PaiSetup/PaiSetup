@@ -8,12 +8,15 @@
         "editor.defaultFormatter": "xaver.clang-format"
     },
     "rust-client.rustupPath": "/usr/bin/rustup",
-    "python.formatting.provider": "black",
-    "python.formatting.blackPath": "black",
-    "python.formatting.blackArgs": [
-        "--line-length",
-        "150"
-    ],
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "isort.args": [ "--profile", "black"],
+    "black-formatter.args": ["--line-length", "150"],
     "explorer.confirmDragAndDrop": false,
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"

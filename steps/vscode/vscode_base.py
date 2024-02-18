@@ -1,6 +1,7 @@
+from pathlib import Path
+
 from steps.step import Step
 from utils import command
-from pathlib import Path
 
 
 class VscodeStepBase(Step):
@@ -49,6 +50,8 @@ class VscodeStepBase(Step):
         python_packages.append("autopep8")
         python_packages.append("black")
         extensions_command.append("ms-python.python")
+        extensions_command.append("ms-python.isort")
+        extensions_command.append("ms-python.black-formatter")
 
         # Install everything
         self._install_extensions_with_commad(extensions_command)
