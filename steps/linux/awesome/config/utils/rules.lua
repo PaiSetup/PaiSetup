@@ -79,6 +79,10 @@ local function get_tag_mappings_rules(tags)
             properties = { tag = tags.web }
         },
         {
+            rule = { class = "jetbrains-clion" },
+            properties = { tag = tags.code },
+        },
+        {
             rule = { class = "Gimp" },
             properties = { tag = tags.draw },
         },
