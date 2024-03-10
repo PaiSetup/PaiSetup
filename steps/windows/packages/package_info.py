@@ -77,6 +77,9 @@ class PackageInfo:
             self.install_dir = programs_dir / "BeyondCompare"
             self._set_installer(Installer.Inno)
             self.desktop_files_to_delete.append("Beyond Compare 4.lnk")
+        elif package_name == "dependencies":
+            self.install_dir = programs_dir / "Dependencies"
+            self._append_package_arg(f"/installDir={self.install_dir}")
         elif package_name == "discord":
             # Selecting installation dir isn't allowed: https://twitter.com/discord/status/843624938674311168
             self.desktop_files_to_delete.append("Discord.lnk")

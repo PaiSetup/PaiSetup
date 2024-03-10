@@ -34,6 +34,7 @@ class PackagesStep(Step):
             "qbittorrent",
             "beyondcompare",
             "vlc",
+            "dependencies",
             "microsoft-windows-terminal",
             "python3",
             "flamegraph",  # For performance analyzer
