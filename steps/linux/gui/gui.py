@@ -1,10 +1,11 @@
+import json
+from pathlib import Path
+
+import utils.external_project as ext
 from steps.step import Step
 from utils import command
-from utils.services.file_writer import FileType
-from pathlib import Path
-import utils.external_project as ext
-import json
 from utils.keybinding import KeyBinding
+from utils.services.file_writer import FileType
 
 perform_called = False
 express_dependencies_called = False
@@ -34,6 +35,7 @@ class GuiStep(Step):
             "xorg-xrandr",
             "xorg-xinit",
             "xorg-server",
+            "xorg-xwininfo",
             "nitrogen",
             "picom-ibhagwan-git",
             "ulauncher",
