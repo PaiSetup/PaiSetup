@@ -1,3 +1,6 @@
+from steps.ssh import SshStep
+from utils.setup_mode import SetupMode
+
 from .audio import AudioStep
 from .awesome.awesome import AwesomeStep
 from .bash_scripts import BashScriptsStep
@@ -28,14 +31,13 @@ from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
 from .raspberry_pi import RaspberryPiStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
-from steps.ssh import SshStep
 from .shell.shell import ShellStep
 from .st.st import StStep
 from .thunar import ThunarStep
+from .vagrant import VagrantStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
 from .xsession import XsessionStep
-from utils.setup_mode import SetupMode
 
 
 def get_steps(args, root_dir, build_dir, secret_dir):
@@ -79,6 +81,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         PicardStep(),
         NotesStep(fetch_git=args.full),
         VirtualBoxStep(),
+        VagrantStep(),
         RaspberryPiStep(),
     ]
 
