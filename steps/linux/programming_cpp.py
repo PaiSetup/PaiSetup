@@ -1,5 +1,6 @@
-from steps.step import Step
 from pathlib import Path
+
+from steps.step import Step
 from utils.services.file_writer import FileType
 
 
@@ -28,7 +29,7 @@ class ProgrammingCppStep(Step):
             dependency_dispatcher.add_packages(
                 "vulkan-devel",
                 "glm",
-                "glfw-x11",
+                "glfw",
                 "renderdoc-bin",
                 "opencl-headers",
             )

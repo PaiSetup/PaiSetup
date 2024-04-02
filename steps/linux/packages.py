@@ -1,7 +1,7 @@
+import utils.external_project as ext
 from steps.step import Step, dependency_listener
 from utils import command
 from utils.os_helpers import Pushd
-import utils.external_project as ext
 
 
 class PackagesStep(Step):
@@ -146,6 +146,7 @@ class PackagesStep(Step):
                 "dos2unix",
                 "nmap",
                 "flamegraph",
+                "xxd-standalone",
                 # Unixporn
                 "neofetch",
                 "cava",

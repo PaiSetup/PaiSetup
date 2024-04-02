@@ -1,5 +1,6 @@
-from steps.step import Step
 from pathlib import Path
+
+from steps.step import Step
 from utils.services.file_writer import FileType, LinePlacement
 
 
@@ -45,6 +46,7 @@ class ShellStep(Step):
             [
                 'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
                 'export WGETRC="$XDG_CONFIG_HOME/wgetrc"',
+                "alias yarn='yarn --use-yarnrc \"$XDG_CONFIG_HOME/yarn/config\"'",
             ],
         )
         self._file_writer.write_lines(

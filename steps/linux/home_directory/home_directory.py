@@ -1,7 +1,8 @@
-from steps.step import Step, dependency_listener
-from pathlib import Path
-import os
 import itertools
+import os
+from pathlib import Path
+
+from steps.step import Step, dependency_listener
 from utils import command
 from utils.services.file_writer import FileType
 
@@ -224,6 +225,9 @@ class HomeDirectoryStep(Step):
             (x[1] for x in self._xdg_renamed.values()),
         ):
             self.register_homedir_file(homedir_file, allow_multipart=True)
+
+        # Add loose folders not managed by any step
+        self.register_homedir_file(".gnupg")
 
         # Generate a file with all whitelisted files (including those registered by other steps)
         self._logger.log("Generating homedir whitelist file")
