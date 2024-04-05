@@ -27,3 +27,13 @@ class BashScriptsStep(BashScriptsStepBase):
         )
         dependency_dispatcher.set_folder_icon(self._scripts_root_dir, "scripts")
         dependency_dispatcher.register_homedir_file(self._scripts_root_dir)
+
+        ftag_path = f"{self._scripts_root_dir}/ftag/ftag"
+        dependency_dispatcher.add_thunar_custom_action(
+            {
+                "name": "ftag",
+                "command": f'st -e sh -c "{ftag_path} --file %F"',
+                "image-files": None,
+                "video-files": None,
+            }
+        )
