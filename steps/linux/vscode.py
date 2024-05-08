@@ -1,6 +1,7 @@
+from pathlib import Path
+
 from steps.vscode.vscode_base import VscodeStepBase
 from utils import command
-from pathlib import Path
 
 
 class VscodeStep(VscodeStepBase):
@@ -12,6 +13,8 @@ class VscodeStep(VscodeStepBase):
         dependency_dispatcher.add_packages(
             "code",
             "code-features",  # Fixes some issues with loading ms-python.python extension
+            "autopep8",
+            "python-black",
         )
         dependency_dispatcher.register_homedir_file(".vscode")
 

@@ -2,6 +2,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils import command
+from utils.os_function import OperatingSystem
 
 
 class VscodeStepBase(Step):
@@ -47,8 +48,9 @@ class VscodeStepBase(Step):
         extensions_command.append("vadimcn.vscode-lldb")
 
         # Python
-        python_packages.append("autopep8")
-        python_packages.append("black")
+        if not OperatingSystem.current().is_linux():  # On Arch there is a separate pacman package for this...
+            python_packages.append("autopep8")
+            python_packages.append("black")
         extensions_command.append("ms-python.python")
         extensions_command.append("ms-python.isort")
         extensions_command.append("ms-python.black-formatter")
