@@ -1,6 +1,7 @@
+from xml.dom import minidom
+
 from steps.step import Step, dependency_listener
 from utils.services.file_writer import FileType
-from xml.dom import minidom
 
 
 class ThunarStep(Step):
@@ -62,6 +63,7 @@ class ThunarStep(Step):
                 (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
                 (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
                 (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
+                (self._env.home() / "multimedia/movies", "Multimedia/Movies"),
             ]
         dirs = [f"file:///{path} {name}" for path, name in dirs]
 
