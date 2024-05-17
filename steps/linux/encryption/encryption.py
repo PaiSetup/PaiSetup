@@ -1,5 +1,6 @@
-from steps.step import Step
 from pathlib import Path
+
+from steps.step import Step
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType
 
@@ -12,6 +13,7 @@ class EncryptionStep(Step):
         dependency_dispatcher.add_packages(
             "cryptsetup",
             "cryptomator-bin",
+            "veracrypt",
         )
         dependency_dispatcher.add_keybindings(
             KeyBinding("x").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/linux/encryption/mount_nice.sh"),
