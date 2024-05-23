@@ -1,82 +1,82 @@
 #!/bin/sh
 
-# Constants
-image_path="$1"
-device_name="$2"
-mount_point="$3"
-mapped_device_path="/dev/mapper/$device_name"
-notify_success=1  # 0 means notify
+# Inputs
+image_path="$1"                           # Path to encrypted partition file
+mapping_name="$2"                         # Selected name passed to cryptsetup
+mount_path="$3"                           # Path to decrypted partition
+mapping_path="/dev/mapper/$mapping_name"  # Path of mapped partition inside devfs
 
-# Check current state
-sudo cryptsetup status "$device_name" >/dev/null 2>&1
-is_opened="$?"  # 0 means opened
-mount | grep -q "/dev/mapper/$device_name"
+# Constants
+notify_success=0 # 0 means notify
+
+# Current state
+sudo cryptsetup status "$mapping_name" >/dev/null 2>&1
+is_mapped="$?"  # 0 means opened
+mount | grep -q "/dev/mapper/$mapping_name"
 is_mounted="$?"  # 0 means mounted
 
-# Take actions
-if [ "$is_mounted" = 0 ]; then
-    # Device is fully mounted
+# -------------------------------------------------------------------------- Functions realizing encryption/decryption
 
-    # First unmount device from the filesystem
-    sudo umount "$mapped_device_path" || {
-       notify-send "❌ Error" "Error unmounting $mapped_device_path from $mount_point."
-       exit 1
+perform_map() {
+    $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$mapping_name"
+    if ! sudo cryptsetup status "$mapping_name" >/dev/null 2>&1; then
+        notify-send "❌ Error" "Could not map $mapping_name."
+        return 1
+    fi
+}
+
+perform_unmap() {
+    sudo cryptsetup close "$mapping_name" || {
+       notify-send "❌ Error" "Could not unmap $mapping_name. It's still unlocked (insecure)."
+       return 1
     }
+}
 
-    # Cleanup remaining directory
-    sudo rmdir "$mount_point" || {
-        notify-send "⚠ Warning" "Could not cleanup $mount_point directory after unmounting $mapped_device_path."
+perform_mount() {
+    sudo mkdir -p "$mount_path" || {
+        notify-send "❌ Error" "Could not create mountpoint in $mount_path"
+        return 1
     }
-
-    # Lock the device, so it's not accessible
-    sudo cryptsetup close "$device_name" || {
-       notify-send "❌ Error" "Could not close $device_name. It's still unlocked (insecure)."
-       exit 1
+    sudo chown maciej "$mount_path" && sudo chgrp maciej "$mount_path" && sudo chmod 700 "$mount_path" || {
+        notify-send "⚠ Warning" "Could not setup correct permissions for the mount point: $mount_path."
     }
+    sudo mount "$mapping_path" "$mount_path" -o dmask=000 -o fmask=000 || {
+        notify-send "❌ Error" "Could not mount \"$mapping_name\" device. Device is left unlocked and insecure!"
+        return 1
+    }
+    $FILE_MANAGER "$mount_path" >/dev/null 2>&1 &
+}
 
+perform_umount() {
+    sudo umount "$mapping_path" || {
+       notify-send "❌ Error" "Error unmounting $mapping_path from $mount_path."
+       return 1
+    }
+    sudo rmdir "$mount_path" || {
+        notify-send "⚠ Warning" "Could not cleanup $mount_path directory after unmounting $mapping_path."
+    }
     rm -rf ~/.cache/thumbnails/ ~/.thumbnails
+}
 
-    [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly unmounted and locked."
+# -------------------------------------------------------------------------- Main procedure
+if [ "$is_mounted" = 0 ]; then
+    # Partition is mapped and mounted (fully unlocked).
+    perform_umount || exit 1
+    perform_unmap  || exit 1
+    [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$mapping_name\" is unmounted and unmapped."
 else
-    if [ "$is_opened" = 0 ]; then
-        # Device is not mounted, but it's opened (decrypted). We have to lock it.
-        sudo cryptsetup close "$device_name" || {
-            notify-send "❌ Error" "Could not close $device_name. It's still unlocked (insecure)."
-            exit 1
-        }
-
-        [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$device_name\" has been successfuly locked."
+    if [ "$is_mapped" = 0 ]; then
+        # Partition is mapped, but not mounted.
+        perform_unmap || exit 1
+        [ "$notify_success" = 0 ] && notify-send "✅ Drive encrypted" "Veracrypt device \"$mapping_name\" is unmounted and unmapped."
     else
-        # Device is fully locked
-
-        # Prepare mountpoint directory
-        sudo mkdir -p "$mount_point" || {
-            notify-send "❌ Error" "Could not create mountpoint in $mount_point"
+        # Partition is not mapped and not mounted (fully locked).
+        perform_map   || exit 1
+        perform_mount || {
+            perform_unmap
             exit 1
         }
-
-        # Apply permissions
-        sudo chown maciej "$mount_point" && sudo chgrp maciej "$mount_point" && sudo chmod 700 "$mount_point" || {
-            notify-send "⚠ Warning" "Could not setup correct permissions for the mount point: $mount_point."
-        }
-
-        # Unlock the deivce, so it's accessible
-        $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$device_name"
-        if ! sudo cryptsetup status "$device_name" >/dev/null 2>&1; then
-            notify-send "❌ Error" "Could not open $device_name."
-            exit 1
-        fi
-
-        # Mount the device in the filesystem
-        sudo mount "$mapped_device_path" "$mount_point" -o dmask=000 -o fmask=000 || {
-            notify-send "❌ Error" "Could not mount \"$device_name\" device. Device is left unlocked and insecure!"
-            exit 1
-        }
-
-        # Open mounted device
-        $FILE_MANAGER "$mount_point" >/dev/null 2>&1 &
-
-        [ "$notify_success" = 0 ] && notify-send "✅ Drive decrypted" "Veracrypt image $image_path has been successfuly decrypted and mapped to $mount_point."
+        [ "$notify_success" = 0 ] && notify-send "✅ Drive decrypted" "Veracrypt image \"$mapping_name\" is mapped and mounted to $mount_path."
     fi
 fi
 
