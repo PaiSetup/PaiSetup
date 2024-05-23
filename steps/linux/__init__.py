@@ -29,6 +29,7 @@ from .programming_gamedev import ProgrammingGamedevStep
 from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
+from .qtile.qtile import QtileStep
 from .raspberry_pi import RaspberryPiStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
@@ -79,6 +80,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         EncryptionStep(),
         CharonStep(build_dir, full=args.full),
         PicardStep(),
+        QtileStep(),
         NotesStep(fetch_git=args.full),
         VirtualBoxStep(),
         VagrantStep(),
