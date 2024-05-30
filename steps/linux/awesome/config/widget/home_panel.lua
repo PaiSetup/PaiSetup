@@ -27,7 +27,7 @@ end
 
 ----------------------------------------------------------------------------------- Generic widgets
 
-local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, center_vertically)
+local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, center_vertically, scroll_vertically)
     -- This function wraps a bash script that is periodically called and its results
     -- are used to populate rows of a vertical layout. It does not know how to create
     -- the rows, but uses callbacks specified by the caller. Parameters:
@@ -88,6 +88,22 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
     if center_vertically then
         widget = wibox.container.place(widget)
     end
+
+    if scroll_vertically then
+        widget = wibox.widget {
+            layout = wibox.container.scroll.vertical,
+            step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+            speed = 100,
+            widget
+        }
+        widget:connect_signal("mouse::enter", function ()
+            widget:pause()
+        end)
+        widget:connect_signal("mouse::leave", function ()
+            widget:continue()
+        end)
+    end
+
     return widget
 end
 
@@ -258,7 +274,8 @@ local function create_repo_widget(pai_setup_root)
     local command = pai_setup_root .. "/steps/linux/awesome/get_repos.sh"
     local interval = 10
     local center_vertically = false
-    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically)
+    local scroll_vertically = true
+    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically, scroll_vertically)
 end
 
 local function create_calendar_widget()
@@ -348,7 +365,8 @@ local function create_currency_widget(pai_setup_root)
     local command = pai_setup_root .. "/steps/linux/awesome/get_currency_exchange.sh"
     local interval = 3600
     local center_vertically = true
-    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically)
+    local scroll_vertically = true
+    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically, scroll_vertically)
 end
 
 local function create_system_usage_widget(pai_setup_root)
