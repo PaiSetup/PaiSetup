@@ -204,37 +204,40 @@ end
 local function create_repo_widget(pai_setup_root)
     -- This widget can display git repositories present in the system and some info about
     -- them. It relies upon get_repos.sh script written in bash. The script produces output
-    -- like following: <repo_path> <master_branch> <flag1> <flag2> <flag3>, where
+    -- like following: <repo_path> <master_branch> <current_branch> <flag1> <flag2> <flag3>, where
     --    repo_path - filesystem path to the repository
     --    master_branch - main branch used by repository ("master" or "main")
     --    flag1, flag2, flag3 - zero or more warnings about the state of repository
 
     local function create_row()
         local flag_color = "#c94c4c"
-
         -- Prepare textboxes. We have to store both raw textboxes and their wrapped versions,
         -- because we set text on the former, but alter visibility of the latter.
         local caption_repo = wibox.widget.textbox()
-        local caption_branch = wibox.widget.textbox()
+        local caption_master_branch = wibox.widget.textbox()
+        local caption_current_branch = wibox.widget.textbox()
         local caption_flag1 = wibox.widget.textbox()
         local caption_flag2 = wibox.widget.textbox()
         local caption_flag3 = wibox.widget.textbox()
         local wrapped_caption_repo = wrap_caption(caption_repo, beautiful.color_gray_dark)
-        local wrapped_caption_branch = wrap_caption(caption_branch, beautiful.color_theme)
+        local wrapped_caption_master_branch = wrap_caption(caption_master_branch, beautiful.color_theme)
+        local wrapped_caption_current_branch = wrap_caption(caption_current_branch, beautiful.color_theme)
         local wrapped_caption_flag1 = wrap_caption(caption_flag1, flag_color)
         local wrapped_caption_flag2 = wrap_caption(caption_flag2, flag_color)
         local wrapped_caption_flag3 = wrap_caption(caption_flag3, flag_color)
 
         -- Create row
-        local row = wibox.layout.fixed.horizontal(wrapped_caption_repo, wrapped_caption_branch, wrapped_caption_flag1, wrapped_caption_flag2, wrapped_caption_flag3)
+        local row = wibox.layout.fixed.horizontal(wrapped_caption_repo, wrapped_caption_master_branch, wrapped_caption_current_branch, wrapped_caption_flag1, wrapped_caption_flag2, wrapped_caption_flag3)
         row.spacing = tile_size * 0.03
         row.caption_repo = caption_repo
-        row.caption_branch = caption_branch
+        row.caption_master_branch = caption_master_branch
+        row.caption_current_branch = caption_current_branch
         row.caption_flag1 = caption_flag1
         row.caption_flag2 = caption_flag2
         row.caption_flag3 = caption_flag3
         row.wrapped_caption_repo = wrapped_caption_repo
-        row.wrapped_caption_branch = wrapped_caption_branch
+        row.wrapped_caption_master_branch = wrapped_caption_master_branch
+        row.wrapped_caption_current_branch = wrapped_caption_current_branch
         row.wrapped_caption_flag1 = wrapped_caption_flag1
         row.wrapped_caption_flag2 = wrapped_caption_flag2
         row.wrapped_caption_flag3 = wrapped_caption_flag3
@@ -250,13 +253,23 @@ local function create_repo_widget(pai_setup_root)
 
         -- Report main branch of the repository.
         if repo_type == 'git' then
-            local master_branch = matcher()
             row.caption_repo.text = " " .. repo_path
-            row.caption_branch.text = master_branch
-            row.wrapped_caption_branch.visible = master_branch ~= '?'
+
+            local master_branch = matcher()
+            row.caption_master_branch.text = " " .. master_branch
+            row.wrapped_caption_master_branch.visible = master_branch ~= '?'
+
+            local current_branch = matcher()
+            if current_branch == '?' then
+                row.caption_current_branch.text = " DETACHED"
+            else
+                row.caption_current_branch.text = " " .. current_branch
+            end
+            row.wrapped_caption_current_branch.visible = current_branch ~= master_branch
         else
             row.caption_repo.text = "   " .. repo_path
-            row.wrapped_caption_branch.visible = false
+            row.wrapped_caption_master_branch.visible = false
+            row.wrapped_caption_current_branch.visible = false
         end
 
         -- Report additional warnings

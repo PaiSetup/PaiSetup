@@ -24,25 +24,31 @@ report_git() {
         master_branch="?"
     fi
 
+    # Get current branch
+    current_branch="$(git branch --show-current)"
+    if [ -z "$current_branch" ]; then
+        current_branch="?"
+    fi
+
     # Check for uncomitted changes
     if [ -n "$(git status --porcelain)" ]; then
         flags="$flags uncomitted"
     fi
 
-    if [ "$master_branch" != "?" ]; then
+    if [ "$current_branch" != "?" ]; then
         # Check for unpushed commits
-        if ! git merge-base --is-ancestor $master_branch origin/$master_branch; then
+        if ! git merge-base --is-ancestor $current_branch origin/$current_branch; then
             flags="$flags unpushed"
         fi
 
         # Check for unpulled commits
-        if ! git merge-base --is-ancestor origin/$master_branch $master_branch; then
+        if ! git merge-base --is-ancestor origin/$current_branch $current_branch; then
             flags="$flags unpulled"
         fi
     fi
 
     # Return results
-    echo "git $path $master_branch$flags"
+    echo "git $path $master_branch $current_branch$flags"
 }
 
 report_nogit() {
