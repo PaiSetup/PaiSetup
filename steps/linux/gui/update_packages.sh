@@ -12,7 +12,7 @@ echo '[1/4] Installing new packages'
 sudo pacman -Syu $confirmation_arg
 
 echo '[2/4] Removing orphans'
-pacman -Qtdq | sudo pacman -Rns
+pacman -Qtdq | xargs sudo pacman -Rns $confirmation_arg
 
 echo '[3/4] Clearing pacman cache'
 sudo pacman -Sc --noconfirm
