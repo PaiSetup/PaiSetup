@@ -31,9 +31,16 @@ class BashScriptsStep(BashScriptsStepBase):
         ftag_path = f"{self._scripts_root_dir}/ftag/ftag"
         dependency_dispatcher.add_thunar_custom_action(
             {
-                "name": "ftag",
+                "name": "ftag: tag a file",
                 "command": f'st -e sh -c "{ftag_path} --file %F"',
                 "image-files": None,
                 "video-files": None,
+            }
+        )
+        dependency_dispatcher.add_thunar_custom_action(
+            {
+                "name": "ftag: generate symlinks",
+                "command": f'st -e sh -c "{ftag_path} --generate"',
+                "directories": None,
             }
         )
