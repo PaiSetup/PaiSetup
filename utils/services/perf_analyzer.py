@@ -1,6 +1,7 @@
+from pathlib import Path
+
 from utils import command
 from utils.os_function import OperatingSystem
-from pathlib import Path
 
 
 class PerfAnalyzer:
@@ -19,7 +20,7 @@ class PerfAnalyzer:
         self._max_indent_level = 0
 
     def notify_log(self, message, delta_time_ms, indent_level):
-        # Last time we called notify_log we kept pending_operation, because we were still needed its duration.
+        # Last time we called notify_log we kept pending_operation, because we still needed its duration.
         # Now we have it, so information about the operation is complete and we can add it to our database.
         if self._pending_operation is not None:
             self._pending_operation.duration_ms = delta_time_ms
@@ -29,7 +30,7 @@ class PerfAnalyzer:
         # at indent level 0.
         indent_level += 1
 
-        # We now some things about this operation, but we still don't know its duration, because at this point
+        # We know some things about this operation, but we still don't know its duration, because at this point
         # it is just starting. We'll get to know the duration, when next operation starts.
         self._pending_operation = PerfAnalyzer.Operation(message, indent_level)
 
