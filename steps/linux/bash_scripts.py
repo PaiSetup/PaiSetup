@@ -44,3 +44,17 @@ class BashScriptsStep(BashScriptsStepBase):
                 "directories": None,
             }
         )
+        dependency_dispatcher.add_thunar_custom_action(
+            {
+                "name": "ftag: tag all",
+                "command": f'st -e sh -c "{ftag_path} --tag_all"',
+                "directories": None,
+            }
+        )
+        dependency_dispatcher.add_thunar_custom_action(
+            {
+                "name": "ftag: create query",
+                "command": f'st -e sh -c "{ftag_path} --create_query"',
+                "directories": None,
+            }
+        )
