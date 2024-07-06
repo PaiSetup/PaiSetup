@@ -107,7 +107,7 @@ class GuiStep(Step):
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Set wallpaper",
-            ["$PAI_SETUP_ROOT/steps/linux/gui/select_random_wallpaper.sh 0"],
+            ["$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh 0"],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",

@@ -86,7 +86,7 @@ return function (pai_setup_root, terminal)
             create_button("", "Cancel",              function()                               end),
             create_button("", "Shutdown",            function() awful.spawn("shutdown now")   end),
             create_button("", "Update and shutdown", function()
-                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/linux/gui/update_packages.sh 0'"
+                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/linux/gui/scripts/update_packages.sh 0'"
                 time_before_shutdown = 3 -- not really needed, but it doesn't hurt
                 awful.spawn.easy_async_with_shell(update_command, function()
                     gears.timer.start_new(time_before_shutdown, function() awful.spawn("shutdown now") end)
@@ -94,7 +94,7 @@ return function (pai_setup_root, terminal)
             end),
             create_button("", "Reboot",              function() awful.spawn("reboot")         end),
             create_button("", "Reboot to Windows",   function()
-                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/linux/gui/reboot_to_windows.sh'"
+                update_command = terminal .. " sh -c '$PAI_SETUP_ROOT/steps/linux/gui/scripts/reboot_to_windows.sh'"
                 awful.spawn(update_command)
             end),
             create_button("", "Exit GUI",            function() awful.spawn("pkill awesome")  end),

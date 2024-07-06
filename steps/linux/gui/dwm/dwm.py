@@ -31,19 +31,16 @@ class DwmStep(GuiStep):
 
         # fmt: off
         self._keybindings = [
-            KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/select_random_wallpaper.sh"),
+            KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh"),
             KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
-            KeyBinding("BackSpace").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/shutdown.sh"),
+            KeyBinding("BackSpace").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/dwm/shutdown_dmenu.sh"),
 
-            KeyBinding("XF86AudioMute").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/set_volume.sh 0"),
-            KeyBinding("XF86AudioLowerVolume").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/set_volume.sh 1"),
-            KeyBinding("XF86AudioRaiseVolume").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/set_volume.sh 2"),
+            KeyBinding("XF86AudioMute").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/set_volume.sh 0"),
+            KeyBinding("XF86AudioLowerVolume").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/set_volume.sh 1"),
+            KeyBinding("XF86AudioRaiseVolume").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/set_volume.sh 2"),
 
-            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/set_brightness.sh 0"),
-            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/set_brightness.sh 1"),
-
-            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/access_rhythmbox.sh 3 1"),
-            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/access_rhythmbox.sh 2 1"),
+            KeyBinding("XF86AudioLowerVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/access_rhythmbox.sh 3 1"),
+            KeyBinding("XF86AudioRaiseVolume").mod().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/access_rhythmbox.sh 2 1"),
         ]
         # fmt: on
 

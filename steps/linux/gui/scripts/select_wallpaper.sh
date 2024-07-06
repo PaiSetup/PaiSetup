@@ -107,7 +107,7 @@ setup_wm() (
     reset_wm="$1"
     if [ "$reset_wm" != 0 ]; then
         echo "  resetting WM" >&2
-        $PAI_SETUP_ROOT/steps/linux/gui/reset_wm.sh
+        $PAI_SETUP_ROOT/steps/linux/gui/scripts/reset_wm.sh
     fi
 )
 

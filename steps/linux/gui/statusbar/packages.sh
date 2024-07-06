@@ -19,7 +19,7 @@ if [ "$BUTTON" = "$BUTTON_INFO" ]; then
 fi
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
-    command="$PAI_SETUP_ROOT/steps/linux/gui/update_packages.sh 1"
+    command="$PAI_SETUP_ROOT/steps/linux/gui/scripts/update_packages.sh 1"
     $TERMINAL sh -c "$command" >/dev/null 2>&1 &
 fi
 
