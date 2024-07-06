@@ -8,13 +8,13 @@ from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
 from .check_mate.check_mate import CheckMateStep
 from .clion.clion import ClionStep
-from .dwm.dwm import DwmStep
 from .encryption.encryption import EncryptionStep
 from .file_associations import FileAssociationsStep
 from .firefox import FirefoxStep
 from .git import GitStep
 from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
+from .gui.dwm.dwm import DwmStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep

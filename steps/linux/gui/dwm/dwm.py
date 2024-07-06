@@ -1,13 +1,14 @@
-from steps.step import Step, dependency_listener
+import os
 from pathlib import Path
 from shutil import copyfile
-import os
-from utils.services.file_writer import FileType, LinePlacement
-from utils.keybinding import KeyBinding
+
 import utils.external_project as ext
+from steps.linux.check_mate.check_mate import CheckMateStep
+from steps.linux.gui.gui import GuiStep
+from steps.step import Step, dependency_listener
 from utils import command
-from ..gui.gui import GuiStep
-from ..check_mate.check_mate import CheckMateStep
+from utils.keybinding import KeyBinding
+from utils.services.file_writer import FileType, LinePlacement
 
 
 class DwmStep(GuiStep):
@@ -155,7 +156,7 @@ class DwmStep(GuiStep):
         self._file_writer.write_section(
             self._xinitrc_path,
             "Run DWM",
-            ['dbus-launch --sh-syntax --exit-with-session "$PAI_SETUP_ROOT/steps/linux/dwm/launch_dwm.sh"'],
+            ['dbus-launch --sh-syntax --exit-with-session "$PAI_SETUP_ROOT/steps/linux/gui/dwm/launch_dwm.sh"'],
             line_placement=LinePlacement.End,
         )
 
