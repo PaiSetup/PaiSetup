@@ -40,7 +40,11 @@ perform_mount() {
     sudo chown maciej "$mount_path" && sudo chgrp maciej "$mount_path" && sudo chmod 700 "$mount_path" || {
         notify-send "⚠ Warning" "Could not setup correct permissions for the mount point: $mount_path."
     }
-    sudo mount "$mapping_path" "$mount_path" -o dmask=000 -o fmask=000 || {
+    uid=$(id -u $(whoami))
+    gid=$(id -g $(whoami))
+    fmask=177 # File permissions. User: read-write, Group: none, Other: none
+    dmask=077 # Directory permissions. User: read-write-execute, Group: none, Other: none
+    sudo mount "$mapping_path" "$mount_path" -o uid=$uid,gid=$gid,fmask=$fmask,dmask=$dmask || {
         notify-send "❌ Error" "Could not mount \"$mapping_name\" device. Device is left unlocked and insecure!"
         return 1
     }
