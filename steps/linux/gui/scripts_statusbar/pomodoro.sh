@@ -88,7 +88,7 @@ fi
 if [ "$BUTTON" = "$BUTTON_INFO" ] || [ "$state_changed" = 0 ]; then
     if [ "$is_active" = 0 ]; then
         if [ "$state_changed" = 0 ]; then
-            paplay "$PAI_SETUP_ROOT/steps/linux/gui/statusbar/pomodoro_tone.ogg" >/dev/null 2>&1 &
+            paplay "$PAI_SETUP_ROOT/steps/linux/gui/scripts_statusbar/pomodoro_tone.ogg" >/dev/null 2>&1 &
         fi
 
         if [ "$is_break" = 0 ]; then
