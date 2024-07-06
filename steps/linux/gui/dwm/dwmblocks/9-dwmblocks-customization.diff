@@ -2,7 +2,7 @@ diff --git a/blocks.def.h b/blocks.def.h
 index 9c22d68..b3ea30c 100644
 --- a/blocks.def.h
 +++ b/blocks.def.h
-@@ -1,11 +1,21 @@
+@@ -1,11 +1,19 @@
  //Modify this file to change what commands output to your statusbar, and recompile using the make command.
  static const Block blocks[] = {
 -	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
@@ -21,9 +21,8 @@ index 9c22d68..b3ea30c 100644
 +    {"",         "$PAI_SETUP_ROOT/steps/linux/gui/dwm/status_bar.sh 7 8 1 5 pomodoro.sh",           1,                    20},
 +    {"",         "$PAI_SETUP_ROOT/steps/linux/gui/dwm/status_bar.sh 7 8 2 5 audio_switch.sh",       10,                   22},
 +    {"",         "$PAI_SETUP_ROOT/steps/linux/gui/dwm/status_bar.sh 7 8 3 5 tray.sh",               60,                   11},
-+    {"",         "$PAI_SETUP_ROOT/steps/linux/gui/dwm/status_bar.sh 7 8 4 5 warnings.sh",           10,                   15},
  };
-
+ 
  //sets delimeter between status commands. NULL character ('\0') means no delimeter.
 -static char delim[] = " | ";
 +static char delim[] = "";
