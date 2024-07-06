@@ -10,11 +10,10 @@ class QtileStep(GuiStep):
         super().__init__("Qtile")
         self._current_step_dir = Path(__file__).parent
 
+        self._qtile_config_script_path = self._current_step_dir / "config.py"
         self._config_path = ".config/PaiSetup/qtile"
-        self._xresources_path = f"{self._config_path}/Xresources"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
 
-        self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
 
     @dependency_listener
@@ -63,6 +62,6 @@ class QtileStep(GuiStep):
         self._file_writer.write_section(
             self._xinitrc_path,
             "Run Qtile",
-            ["exec qtile start"],
+            [f"exec qtile start -c {self._qtile_config_script_path}"],
             line_placement=LinePlacement.End,
         )
