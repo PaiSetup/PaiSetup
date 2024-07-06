@@ -15,6 +15,7 @@ from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
 from .gui.awesome.awesome import AwesomeStep
 from .gui.dwm.dwm import DwmStep
+from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
@@ -29,7 +30,6 @@ from .programming_gamedev import ProgrammingGamedevStep
 from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
-from .qtile.qtile import QtileStep
 from .raspberry_pi import RaspberryPiStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep

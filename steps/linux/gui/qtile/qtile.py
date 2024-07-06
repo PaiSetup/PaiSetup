@@ -1,9 +1,8 @@
 from pathlib import Path
 
+from steps.linux.gui.gui import GuiStep
 from steps.step import dependency_listener
 from utils.services.file_writer import LinePlacement
-
-from ..gui.gui import GuiStep
 
 
 class QtileStep(GuiStep):
