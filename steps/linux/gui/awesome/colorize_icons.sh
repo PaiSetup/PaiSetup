@@ -1,7 +1,7 @@
 #!/bin/sh
 
-src_dir="$PAI_SETUP_ROOT/steps/linux/awesome/config/icons"
-dst_dir="$PAI_SETUP_ROOT/steps/linux/awesome/config/icons_colorized"
+src_dir="$PAI_SETUP_ROOT/steps/linux/gui/awesome/config/icons"
+dst_dir="$PAI_SETUP_ROOT/steps/linux/gui/awesome/config/icons_colorized"
 mkdir -p "$dst_dir"
 rm "$dst_dir"/* 2>/dev/null
 

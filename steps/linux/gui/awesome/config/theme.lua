@@ -114,7 +114,7 @@ theme.wibar_height = dpi(30)
 
 
 ----------------------------------------------------------------------------------- Layout icons
-local icons_dir = pai_setup .. "/steps/linux/awesome/config/icons_colorized/"
+local icons_dir = pai_setup .. "/steps/linux/gui/awesome/config/icons_colorized/"
 theme.layout_fairh = icons_dir.."fairh.png"
 theme.layout_fairv = icons_dir.."fairv.png"
 theme.layout_floating  = icons_dir.."floating.png"

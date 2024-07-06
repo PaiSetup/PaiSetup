@@ -188,7 +188,7 @@ local function create_disk_usage_widget(pai_setup_root)
         extra_caption.text = used .. " / " .. size .. " (" .. value .. "%)"
     end
     local interval = 5
-    local command = pai_setup_root .. "/steps/linux/awesome/get_disk_usage.sh "
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_disk_usage.sh "
 
     -- Widget for mountpoints
     local widget1 = create_arcchart_widget(set_captions_callback, true, command .. "/",         interval)
@@ -284,7 +284,7 @@ local function create_repo_widget(pai_setup_root)
         row.wrapped_caption_flag3.visible = flag3 ~= ''
     end
 
-    local command = pai_setup_root .. "/steps/linux/awesome/get_repos.sh"
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_repos.sh"
     local interval = 10
     local center_vertically = false
     local scroll_vertically = true
@@ -375,7 +375,7 @@ local function create_currency_widget(pai_setup_root)
         row.left_currency.text = matcher()
         row.right_currency.text = matcher()
     end
-    local command = pai_setup_root .. "/steps/linux/awesome/get_currency_exchange.sh"
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_currency_exchange.sh"
     local interval = 3600
     local center_vertically = true
     local scroll_vertically = true
@@ -390,7 +390,7 @@ local function create_system_usage_widget(pai_setup_root)
         middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
         extra_caption.text = value .. "%"
     end
-    local command = pai_setup_root .. "/steps/linux/awesome/get_cpu_usage.sh"
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_cpu_usage.sh"
     local cpu_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
 
     -- Memory widget
@@ -398,7 +398,7 @@ local function create_system_usage_widget(pai_setup_root)
         middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
         extra_caption.text = value .. "%"
     end
-    local command = pai_setup_root .. "/steps/linux/awesome/get_mem_usage.sh"
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_mem_usage.sh"
     local mem_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
 
     -- Combine them

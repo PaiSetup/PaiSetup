@@ -2,7 +2,6 @@ from steps.ssh import SshStep
 from utils.setup_mode import SetupMode
 
 from .audio import AudioStep
-from .awesome.awesome import AwesomeStep
 from .bash_scripts import BashScriptsStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
@@ -14,6 +13,7 @@ from .firefox import FirefoxStep
 from .git import GitStep
 from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
+from .gui.awesome.awesome import AwesomeStep
 from .gui.dwm.dwm import DwmStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .java import JavaStep

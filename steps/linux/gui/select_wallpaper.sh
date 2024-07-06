@@ -100,7 +100,7 @@ setup_wm() (
             ;;
         "awesome")
             # If AwesomeWM calls this script, it will restart shortly and load the new icons
-            $PAI_SETUP_ROOT/steps/linux/awesome/colorize_icons.sh 2>&1 | sed "s/^/  /g"
+            $PAI_SETUP_ROOT/steps/linux/gui/awesome/colorize_icons.sh 2>&1 | sed "s/^/  /g"
             ;;
     esac
 
