@@ -35,6 +35,7 @@ from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
 from .st.st import StStep
 from .thunar import ThunarStep
+from .ulauncher import UlauncherStep
 from .vagrant import VagrantStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
@@ -62,6 +63,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
         XsessionStep(),
         GitStep(),
+        UlauncherStep(),
         DwmStep(build_dir, full=args.full, is_default_wm=False),
         AwesomeStep(build_dir, is_default_wm=True),
         StStep(build_dir, full=args.full),
