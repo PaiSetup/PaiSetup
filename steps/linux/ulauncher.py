@@ -21,7 +21,7 @@ class UlauncherStep(Step):
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "App launcher",
-            ["ulauncher --hide-window &"],
+            ["systemctl --user start ulauncher"],
         )
 
     def _setup_ulauncher_config(self):
