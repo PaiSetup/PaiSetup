@@ -53,6 +53,18 @@ local function get_floating_clients_rule()
     }
 end
 
+local function get_non_floating_clients_rule()
+    return {
+        rule_any = {
+            class = {
+                "Xephyr",
+            },
+        },
+        properties = { floating = false }
+    }
+end
+
+
 local function get_no_border_rules(tags)
     return {
         {
@@ -121,6 +133,7 @@ return {
     get_default_rule = get_default_rule,
     get_no_border_rules = get_no_border_rules,
     get_floating_clients_rule = get_floating_clients_rule,
+    get_non_floating_clients_rule = get_non_floating_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
     get_home_panel_cava_rule = get_home_panel_cava_rule,
 }
