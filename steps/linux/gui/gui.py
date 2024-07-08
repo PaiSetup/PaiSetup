@@ -33,6 +33,7 @@ class GuiStep(Step):
             "xorg-xrandr",
             "xorg-xinit",
             "xorg-server",
+            "xorg-server-xephyr",
             "xorg-xwininfo",
             "nitrogen",
             "picom-ibhagwan-git",

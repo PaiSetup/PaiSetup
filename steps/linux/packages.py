@@ -170,6 +170,7 @@ class PackagesStep(Step):
                 "playerctl",
                 "gst-plugins-bad",  # Audio plugins
                 "gst-plugins-ugly",  # Audio plugins
+                "obs-studio",  # Recording
                 # Communicators
                 "discord",
             ]
