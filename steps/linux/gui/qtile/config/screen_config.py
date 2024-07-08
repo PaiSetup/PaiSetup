@@ -1,11 +1,20 @@
+import os
+
 from libqtile import bar, widget
 from libqtile.config import Screen
 
 
 class ScreenConfig:
     def __init__(self):
+        wallpaper_path = os.environ["XDG_CONFIG_HOME"]
+        wallpaper_path = f"{wallpaper_path}/PaiSetup/wallpaper"
+
         self.screens = [
-            Screen(top=self._create_bar()),
+            Screen(
+                top=self._create_bar(),
+                wallpaper=wallpaper_path,
+                wallpaper_mode="stretch",
+            ),
         ]
 
     def _create_bar(self):
