@@ -3,7 +3,12 @@ class KeyBinding:
         self.hold_ctrl = False
         self.hold_shift = False
         self.hold_mod = False
-        self.keys = keys
+        if type(keys) is str:
+            self.keys = [keys]
+        elif type(keys) is list:
+            self.keys = keys
+        else:
+            raise ValueError("keys should be a string or a list of strings")
         self.command = ""
         self.command_shell = False
         if not isinstance(self.keys, list):

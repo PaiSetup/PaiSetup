@@ -2,9 +2,7 @@ from libqtile.config import Key
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
-mod = "mod4"
-shift = "shift"
-ctrl = "control"
+from utils.modkeys import *
 
 
 # A list of available commands that can be bound to keys can be found
@@ -71,6 +69,10 @@ class KeyConfig:
             Key([mod, shift], "Return", lazy.spawn(terminal), desc="Launch terminal"),
             Key([mod, shift], "KP_Enter", lazy.spawn(terminal), desc="Launch terminal"),
         ]
+
+        from generated.app_keys import app_keys
+
+        self.keys += app_keys
 
     def _append_wayland_vt_changing_keys(self):
         # This is taken from the default config. Not sure why, but it looks like it's needed for Wayland.
