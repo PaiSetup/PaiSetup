@@ -10,7 +10,7 @@ class QtileStep(GuiStep):
         super().__init__("Qtile")
         self._current_step_dir = Path(__file__).parent
 
-        self._qtile_config_script_path = self._current_step_dir / "config.py"
+        self._qtile_config_script_path = self._current_step_dir / "config/config.py"
         self._config_path = ".config/PaiSetup/qtile"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
 

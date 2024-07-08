@@ -13,7 +13,7 @@ fi
 
 test_display=:16
 
-Xephyr -br -ac -noreset -screen 800x600 $test_display &
+Xephyr -br -ac -noreset -screen 1920x1080 $test_display &
 pid_xephyr=$!
 
 DISPLAY=$test_display $xinitrc_path &
