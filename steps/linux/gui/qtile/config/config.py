@@ -5,11 +5,21 @@ from mouse_config import MouseConfig
 from screen_config import ScreenConfig
 from widget_defaults_config import WidgetDefaultsConfig
 
+from utils.xrdb import Xrdb
+
+xrdb = Xrdb()
+colors = {
+    "theme": xrdb.get_resource("color1"),
+    "gray_light": xrdb.get_resource("color2"),
+    "gray_dark": xrdb.get_resource("color3"),
+    "font": xrdb.get_resource("color4"),
+}
+
 # Create configs
 group_config = GroupConfig()
 key_config = KeyConfig()
 layout_config = LayoutConfig()
-screen_config = ScreenConfig()
+screen_config = ScreenConfig(colors)
 widget_defaults_config = WidgetDefaultsConfig()
 mouse_config = MouseConfig()
 

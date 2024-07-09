@@ -14,6 +14,7 @@ class QtileStep(GuiStep):
         self._app_keybindings_path = self._current_step_dir / "config/generated/app_keys.py"
         self._config_path = ".config/PaiSetup/qtile"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
+        self._xresources_path = f"{self._config_path}/Xresources"
 
         self._keybindings = []
 
@@ -29,6 +30,7 @@ class QtileStep(GuiStep):
     def perform(self):
         self._setup_xinitrc_qtile()
         self._setup_app_keybindings_code()
+        self._setup_xresources()
 
         # Qtile places this file during installation, but we don't need it,
         # we generate our own session files.
@@ -66,6 +68,36 @@ class QtileStep(GuiStep):
             "Run Qtile",
             [f"exec qtile start -c {self._qtile_config_script_path}"],
             line_placement=LinePlacement.End,
+        )
+
+    def _setup_xresources(self):
+        self._logger.log(f"Generating {self._xresources_path}")
+        self._file_writer.write_section(
+            self._xresources_path,
+            "Apps styles",
+            [f'#include "{self._env.home() / ".config/XresourcesApp"}"'],
+            file_type=FileType.XResources,
+        )
+        self._file_writer.write_section(
+            self._xresources_path,
+            "Theme colors",
+            [
+                f'#include "{self._env.home() / ".config/XresourcesTheme"}"',
+                "#define COL_THEME2 #878787",
+                "#define COL_THEME3 #555555",
+            ],
+            file_type=FileType.XResources,
+        )
+        self._file_writer.write_section(
+            self._xresources_path,
+            "Colors readable by Qtile",
+            [
+                "color1: COL_THEME1",
+                "color2: COL_THEME2",
+                "color3: COL_THEME3",
+                "color4: #ffffff",
+            ],
+            file_type=FileType.XResources,
         )
 
     def _setup_app_keybindings_code(self):

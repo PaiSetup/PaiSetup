@@ -123,15 +123,6 @@ class DwmStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
-            "Load Xresources",
-            [
-                "rm ~/.config/Xresources 2>/dev/null",
-                f"ln -sf ~/{self._xresources_path} ~/.config/Xresources",
-                f"xrdb ~/.config/Xresources",
-            ],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
             "Run dwmblocks",
             ["dwmblocks &"],
         )

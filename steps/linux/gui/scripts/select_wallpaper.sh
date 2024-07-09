@@ -68,12 +68,10 @@ setup_apps() (
     file_path="$1"
     main_color="$2"
 
-    # XResources (consumed by window managers)
+    # XResources theme (consumed by window managers)
     echo "  XResources" >&2
     xresources_theme_file=~/.config/XresourcesTheme
-    xresources_main_file=~/.config/Xresources
     echo "$main_color" | awk '{ printf("#define COL_THEME%d %s\n", NR, $0)}' > "$xresources_theme_file"
-    xrdb "$xresources_main_file"
 
     # Cava
     echo "  Cava" >&2
@@ -103,12 +101,11 @@ setup_wm() (
             $PAI_SETUP_ROOT/steps/linux/gui/awesome/colorize_icons.sh 2>&1 | sed "s/^/  /g"
             ;;
     esac
+)
 
-    reset_wm="$1"
-    if [ "$reset_wm" != 0 ]; then
-        echo "  resetting WM" >&2
-        $PAI_SETUP_ROOT/steps/linux/gui/scripts/reset_wm.sh
-    fi
+load_xresources() (
+    xresources_main_file=~/.config/PaiSetup/$WM/Xresources
+    xrdb "$xresources_main_file"
 )
 
 # Execute above functions
@@ -117,4 +114,10 @@ file_path="$1"
 file_path="$(get_png_file "$file_path")"    || exit 1
 main_color="$(get_main_color "$file_path")" || exit 1
 setup_apps "$file_path" "$main_color"       || exit 1
-setup_wm "$reset_wm"                        || exit 1
+setup_wm                                    || exit 1
+load_xresources                             || exit 1
+
+if [ "$reset_wm" != 0 ]; then
+    echo "  resetting WM" >&2
+    $PAI_SETUP_ROOT/steps/linux/gui/scripts/reset_wm.sh
+fi

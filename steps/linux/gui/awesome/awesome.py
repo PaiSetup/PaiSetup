@@ -64,15 +64,6 @@ class AwesomeStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
-            "Load Xresources",
-            [
-                "rm ~/.config/Xresources 2>/dev/null",
-                f"ln -sf ~/{self._xresources_path} ~/.config/Xresources",
-                f"xrdb ~/.config/Xresources",
-            ],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
             "Define mouse button values for statusbar scripts",
             [
                 "export BUTTON_ACTION=1",
