@@ -1,9 +1,10 @@
-import subprocess
-import shlex
 import os
-from utils.os_function import OperatingSystem, windows_only
-from pathlib import Path
 import re
+import shlex
+import subprocess
+from pathlib import Path
+
+from utils.os_function import OperatingSystem, windows_only
 
 
 class CommandError(Exception):
@@ -44,7 +45,7 @@ class Stdout:
 
     @staticmethod
     def ignore():
-        return Stdout(subprocess.PIPE, False) # We could use DEVNULL, but we need the outputs to throw errors
+        return Stdout(subprocess.PIPE, False)  # We could use DEVNULL, but we need the outputs to throw errors
 
     @staticmethod
     def return_back():
@@ -59,11 +60,18 @@ class Stdout:
         return Stdout(file_handle, False)
 
 
-def run_command(command, *, shell=False, stdin=Stdin.empty(), stdout=Stdout.ignore(), stderr=Stdout.ignore()):
+def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), stdout=Stdout.ignore(), stderr=Stdout.ignore()):
     if not shell and not OperatingSystem.current().is_windows():
         command = shlex.split(command)
+    if background:
+        if stdout.should_return or stderr.should_return:
+            raise ValueError("Cannot run a background process which returns results.")
+        if stdin.communicate_arg:
+            raise ValueError("Cannot run a background process which gets stdin.")  # This may be to conservative...
 
     process = subprocess.Popen(command, shell=shell, stdin=stdin.popen_arg, stdout=stdout.popen_arg, stderr=stderr.popen_arg)
+    if background:
+        return None
     output = process.communicate(input=stdin.communicate_arg)
     return_value = process.wait()
 

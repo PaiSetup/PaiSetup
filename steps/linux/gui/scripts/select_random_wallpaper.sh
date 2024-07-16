@@ -13,4 +13,4 @@ get_wallpapers_directories() {
 get_wallpapers_directories                                    |
     xargs -I{} find "{}" \( -name "*.png" -o -name "*.jpg" \) |
     shuf -n 1                                                 |
-    xargs -I{} $PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.sh "{}" "$@"
+    xargs -I{} $PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py "{}" "$@"
