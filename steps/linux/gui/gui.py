@@ -46,15 +46,17 @@ class GuiStep(Step):
             "bc",  # for float calculations in set_brightness.sh
         )
 
+        # fmt: off
         dependency_dispatcher.add_keybindings(
-            KeyBinding("s").mod().shift().execute("flameshot gui"),
-            KeyBinding("b").mod().shift().executeShell("$BROWSER"),
-            KeyBinding("b").mod().shift().ctrl().executeShell("$BROWSER_PRIVATE"),
-            KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
-            KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh --restart_wm"),
-            KeyBinding("q").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/restart_wm.sh"),
-            KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
+            KeyBinding("s").mod().shift().desc("Screenshot").execute("flameshot gui"),
+            KeyBinding("b").mod().shift().desc("Browser").executeShell("$BROWSER"),
+            KeyBinding("b").mod().shift().ctrl().desc("Browser (incognito)").executeShell("$BROWSER_PRIVATE"),
+            KeyBinding("e").mod().shift().desc("Files").executeShell("$FILE_MANAGER"),
+            KeyBinding("w").mod().shift().desc("Change wallpaper").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh --restart_wm"),
+            KeyBinding("q").mod().shift().desc("Restart GUI").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/restart_wm.sh"),
+            KeyBinding(["Return", "KP_Enter"]).mod().shift().desc("Terminal").executeShell("$TERMINAL"),
         )
+        # fmt: on
 
         dependency_dispatcher.register_homedir_file(".Xauthority")
         dependency_dispatcher.register_homedir_file(".xsession-errors")

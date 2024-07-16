@@ -129,7 +129,7 @@ class QtileStep(GuiStep):
                 else:
                     command = f'"{command}"'
 
-                line = f'    Key({modifiers}, "{key}", lazy.spawn({command})),'
+                line = f'    Key({modifiers}, "{key}", lazy.spawn({command}), desc="{keybinding.description}"),'
                 lines.append(line)
 
         lines.append("]")

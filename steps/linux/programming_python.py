@@ -1,7 +1,8 @@
-from steps.step import Step
 from pathlib import Path
-from utils.services.file_writer import FileType
+
+from steps.step import Step
 from utils.keybinding import KeyBinding
+from utils.services.file_writer import FileType
 
 
 class ProgrammingPythonStep(Step):
@@ -20,11 +21,11 @@ class ProgrammingPythonStep(Step):
         dependency_dispatcher.add_packages(
             "python",
             "python-pip",
-            "python-pytube", # TODO move to BashScripts once they are merged from external repo to PaiSetup
+            "python-pytube",  # TODO move to BashScripts once they are merged from external repo to PaiSetup
             "bpython",
             "tk",
         )
-        dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL python"))
+        dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL python").desc("Python"))
 
     def perform(self):
         self._file_writer.write_section(

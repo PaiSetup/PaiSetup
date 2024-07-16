@@ -139,7 +139,7 @@ class AwesomeStep(GuiStep):
 
                     modifiers = f"{{{', '.join(modifiers)}}}"
                     lines.append(
-                        f'        awful.key({modifiers}, "{key}", function () {spawn_function}("{keybinding.command}") end, {{description = "", group = "App launching"}}),'
+                        f'        awful.key({modifiers}, "{key}", function () {spawn_function}("{keybinding.command}") end, {{description = "{keybinding.description}", group = "Generated"}}),'
                     )
             lines[-1] = lines[-1][:-1]  # Remove trailing comma from last line
         else:

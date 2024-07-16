@@ -1,7 +1,7 @@
-from steps.step import Step
 from pathlib import Path
+
+from steps.step import Step
 from utils.services.file_writer import FileType
-from utils.keybinding import KeyBinding
 
 
 class ProgrammingGamedevStep(Step):

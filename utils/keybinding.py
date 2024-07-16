@@ -13,6 +13,7 @@ class KeyBinding:
         self.command_shell = False
         if not isinstance(self.keys, list):
             self.keys = [self.keys]
+        self.description = "UNKNOWN"
 
     def ctrl(self):
         self.hold_ctrl = True
@@ -33,4 +34,8 @@ class KeyBinding:
     def executeShell(self, command):
         self.command = command
         self.command_shell = True
+        return self
+
+    def desc(self, description):
+        self.description = description
         return self

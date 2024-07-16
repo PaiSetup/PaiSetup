@@ -1,7 +1,8 @@
-from steps.step import Step
-import utils.external_project as ext
-from pathlib import Path
 import os
+from pathlib import Path
+
+import utils.external_project as ext
+from steps.step import Step
 from utils.keybinding import KeyBinding
 
 
@@ -13,7 +14,7 @@ class NotesStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
-        dependency_dispatcher.add_keybindings(KeyBinding("t").mod().shift().execute("obsidian e"))
+        dependency_dispatcher.add_keybindings(KeyBinding("t").mod().shift().execute("obsidian e").desc("Obsidian"))
         dependency_dispatcher.set_folder_icon(self._notes_dir, "notes")
         dependency_dispatcher.register_homedir_file(self._notes_dir)
 
