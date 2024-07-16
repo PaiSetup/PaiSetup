@@ -77,7 +77,6 @@ def generate_main_color(wallpaper_file, cache_dir):
             main_color = f.readline().strip()
     else:
         # We have to calculate the color from image
-        cache_dir.mkdir(parents=True, exist_ok=True)
         with open(wallpaper_file, "rb") as f:
             try:
                 main_color = run_command("colors -n1", stdin=Stdin.file(f), stdout=Stdout.return_back())
@@ -174,6 +173,8 @@ if __name__ == "__main__":
     path_args.add_argument("--current_wallpaper_symlink_path", type=Path, default=home/".config/PaiSetup/wallpaper",           help="Path for a symlink to the wallpaper that can be used by window managers.")
     args = arg_parser.parse_args()
     # fmt: on
+
+    args.cache_dir.mkdir(parents=True, exist_ok=True)
 
     if args.wallpaper_file is None:
         wallpaper_file = get_random_wallpaper_file(home, args.cache_dir)
