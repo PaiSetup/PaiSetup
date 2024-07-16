@@ -251,7 +251,6 @@ globalkeys = gears.table.join(
     --------------------------- Awesome WM control
     awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                            {description = "show help",           group = "AwesomeWM"}),
     awful.key({ modkey, "Shift" }, "q",         awesome.restart,                                                    {description = "reload awesome",      group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "w",         function () utils.set_random_wallpaper(pai_setup)              end, {description = "change wallpaper",    group = "AwesomeWM"}),
     awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(pai_setup, terminal)                end, {description = "show shutdown popup", group = "AwesomeWM"}),
 
     --------------------------- Layout control

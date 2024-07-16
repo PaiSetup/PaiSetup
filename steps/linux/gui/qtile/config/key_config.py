@@ -2,7 +2,6 @@ from libqtile.config import Key
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
-from utils.misc_actions import set_random_wallpaper
 from utils.modkeys import *
 
 
@@ -61,7 +60,6 @@ class KeyConfig:
         self.keys += [
             Key([mod, ctrl], "r", lazy.reload_config(), desc="Reload the config"),
             Key([mod, ctrl], "w", lazy.restart(), desc="Shutdown Qtile"),
-            Key([mod, shift], "w", lazy.function(set_random_wallpaper)),
         ]
 
     def _append_app_spawning_keys(self):

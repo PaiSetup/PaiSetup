@@ -31,7 +31,6 @@ class DwmStep(GuiStep):
 
         # fmt: off
         self._keybindings = [
-            KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh"),
             KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
             KeyBinding("BackSpace").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/dwm/shutdown_dmenu.sh"),
 

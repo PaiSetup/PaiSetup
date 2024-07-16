@@ -118,10 +118,10 @@ def setup_wm(pai_setup_root, wm):
             pass
 
 
-def reset_wm(pai_setup_root, reset_wm, wm):
-    if reset_wm:
+def restart_wm(pai_setup_root, restart_wm, wm):
+    if restart_wm:
         print(f"  Resetting {wm}")
-        command = str(pai_setup_root / "steps/linux/gui/scripts/reset_wm.sh")
+        command = str(pai_setup_root / "steps/linux/gui/scripts/restart_wm.sh")
         run_command(command)
 
 
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description="Set a wallpaper", allow_abbrev=False)
     arg_parser.add_argument("wallpaper_file",   type=Path,           help="Path to a wallpaper to set.")
     arg_parser.add_argument("-q", "--quiet",    action="store_true", help="Do not print info.")
-    arg_parser.add_argument("-r", "--reset_wm", action="store_true", help="Reset the window manager after setting up wallpaper and colorschemes.")
+    arg_parser.add_argument("-r", "--restart_wm", action="store_true", help="Reset the window manager after setting up wallpaper and colorschemes.")
     path_args = arg_parser.add_argument_group("Path arguments", "These arguments have sane defaults and should generally be left unchanged.")
     path_args.add_argument("--color_cache_dir",                type=Path, default=home/".cache/PaiSetupWallpapers",            help="Directory for cached colorschemes.")
     path_args.add_argument("--xresources_theme_path",          type=Path, default=home/".config/XresourcesTheme",              help="Path to Xresources file storing wallpaper-specific theme.")
@@ -154,4 +154,4 @@ if __name__ == "__main__":
     setup_current_wallpaper_symlink(wallpaper_file, args.current_wallpaper_symlink_path)
     setup_gtk_theme(pai_setup_root)
     setup_wm(pai_setup_root, wm)
-    reset_wm(pai_setup_root, args.reset_wm, wm)
+    restart_wm(pai_setup_root, args.restart_wm, wm)

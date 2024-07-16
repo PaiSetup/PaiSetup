@@ -15,13 +15,6 @@ local function set_wallpaper(s)
     end
 end
 
-local function set_random_wallpaper(pai_setup_root)
-    local command = pai_setup_root .. "/steps/linux/gui/scripts/select_random_wallpaper.sh"
-    awful.spawn.easy_async_with_shell(command, function()
-        awesome.restart()
-    end)
-end
-
 local function taglist_square_top_rect(color)
     local img = cairo.ImageSurface(cairo.Format.ARGB32, 50, 3)
     local cr = cairo.Context(img)
@@ -125,7 +118,6 @@ end
 
 return {
     set_wallpaper = set_wallpaper,
-    set_random_wallpaper = set_random_wallpaper,
     enable_viewed_tag_preserving = enable_viewed_tag_preserving,
     taglist_square_top_rect = taglist_square_top_rect,
     get_per_tag_keys = get_per_tag_keys,
