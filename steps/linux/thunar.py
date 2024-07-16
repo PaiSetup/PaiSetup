@@ -21,7 +21,7 @@ class ThunarStep(Step):
         self.add_thunar_custom_action(
             {
                 "name": "Set wallpaper and generate colors",
-                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.sh %f --restart_wm"',
+                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
                 "image-files": None,
             }
         )

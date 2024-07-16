@@ -52,7 +52,7 @@ class GuiStep(Step):
             KeyBinding("b").mod().shift().desc("Browser").executeShell("$BROWSER"),
             KeyBinding("b").mod().shift().ctrl().desc("Browser (incognito)").executeShell("$BROWSER_PRIVATE"),
             KeyBinding("e").mod().shift().desc("Files").executeShell("$FILE_MANAGER"),
-            KeyBinding("w").mod().shift().desc("Change wallpaper").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh --restart_wm"),
+            KeyBinding("w").mod().shift().desc("Change wallpaper").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py --restart_wm"),
             KeyBinding("q").mod().shift().desc("Restart GUI").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/restart_wm.sh"),
             KeyBinding(["Return", "KP_Enter"]).mod().shift().desc("Terminal").executeShell("$TERMINAL"),
         )
@@ -110,7 +110,7 @@ class GuiStep(Step):
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Set wallpaper",
-            ["$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh & >/dev/null"],
+            ["$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py & >/dev/null"],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",

@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import random
 from pathlib import Path
 
 from utils.command import CommandError, Stdin, Stdout, run_command
@@ -9,6 +10,37 @@ from utils.command import CommandError, Stdin, Stdout, run_command
 
 class SelectWallpaperException(Exception):
     pass
+
+
+def get_random_wallpaper_file(home, color_cache_directory):
+    # Get a list of directories with wallpapers.
+    cache_file = color_cache_directory / "directories"
+    if cache_file.is_file():
+        # The list of directories is cached
+        with open(cache_file, "r") as f:
+            wallpaper_dirs = f.readlines()
+            wallpaper_dirs = [Path(x.strip()) for x in wallpaper_dirs]
+    else:
+        # The list of directories is not cached, we have to generate it. This could just be
+        # hardcoded, but we'll search for directories named "wallpapers" to be more flexible.
+        wallpaper_dirs = []
+        for root, dirs, files in os.walk(home, topdown=False):
+            for d in dirs:
+                if d == "wallpapers":
+                    wallpaper_dirs.append(Path(root) / d)
+
+        # Cache list of directories we've just generated.
+        with open(cache_file, "w") as f:
+            lines = [f"{x}\n" for x in wallpaper_dirs]
+            f.writelines(lines)
+
+    # Get a list of potential wallpapers
+    wallpapers = []
+    for wallpaper_dir in wallpaper_dirs:
+        wallpapers += [x for x in wallpaper_dir.iterdir() if x.suffix in [".png", ".jpg"]]
+
+    # Randomize a wallpaper
+    return random.choice(wallpapers)
 
 
 def convert_to_png(wallpaper_file):
@@ -132,9 +164,9 @@ if __name__ == "__main__":
 
     # fmt: off
     arg_parser = argparse.ArgumentParser(description="Set a wallpaper", allow_abbrev=False)
-    arg_parser.add_argument("wallpaper_file",   type=Path,           help="Path to a wallpaper to set.")
-    arg_parser.add_argument("-q", "--quiet",    action="store_true", help="Do not print info.")
-    arg_parser.add_argument("-r", "--restart_wm", action="store_true", help="Reset the window manager after setting up wallpaper and colorschemes.")
+    arg_parser.add_argument("-f", "--wallpaper_file", type=Path,           help="Path to a wallpaper to set.")
+    arg_parser.add_argument("-q", "--quiet",          action="store_true", help="Do not print info.")
+    arg_parser.add_argument("-r", "--restart_wm",     action="store_true", help="Reset the window manager after setting up wallpaper and colorschemes.")
     path_args = arg_parser.add_argument_group("Path arguments", "These arguments have sane defaults and should generally be left unchanged.")
     path_args.add_argument("--color_cache_dir",                type=Path, default=home/".cache/PaiSetupWallpapers",            help="Directory for cached colorschemes.")
     path_args.add_argument("--xresources_theme_path",          type=Path, default=home/".config/XresourcesTheme",              help="Path to Xresources file storing wallpaper-specific theme.")
@@ -144,7 +176,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
     # fmt: on
 
-    wallpaper_file = convert_to_png(args.wallpaper_file)
+    if args.wallpaper_file is None:
+        wallpaper_file = get_random_wallpaper_file(home, args.color_cache_dir)
+    wallpaper_file = convert_to_png(wallpaper_file)
     main_color = generate_main_color(wallpaper_file, args.color_cache_dir)
     print(f"Setting a wallpaper {wallpaper_file}")
     print(f"  main_color={main_color}")
