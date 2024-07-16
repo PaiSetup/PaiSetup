@@ -242,16 +242,11 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end,  {description = "focus the next screen",     group = "Screen switching"}),
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,  {description = "focus the previous screen", group = "Screen switching"}),
 
-    --------------------------- Program launching
-    awful.key({ modkey }, "r",                   function () menubar.show()               end, {description = "show the menubar",  group = "launcher"}),
-    awful.key({ modkey, "Shift"   }, "Return",   function () awful.spawn(terminal)        end, {description = "open a terminal",   group = "launcher"}),
-    awful.key({ modkey, "Shift"   }, "KP_Enter", function () awful.spawn(terminal)        end, {description = "open a terminal",   group = "launcher"}),
-    awful.key({ modkey, "Shift"   }, "s",        function () awful.spawn("flameshot gui") end, {description = "make a screenshot", group = "launcher"}),
-
-    --------------------------- Awesome WM control
-    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                            {description = "show help",           group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "q",         awesome.restart,                                                    {description = "reload awesome",      group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(pai_setup, terminal)                end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    --------------------------- Awesome WM control`
+    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                             {description = "show help",           group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "q",         awesome.restart,                                     {description = "reload awesome",      group = "AwesomeWM"}),
+    awful.key({ modkey, "Shift" }, "BackSpace", function () shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    awful.key({ modkey          }, "r",         function () menubar.show()                      end, {description = "show the menubar",    group = "launcher"}),
 
     --------------------------- Layout control
     awful.key(           { modkey }, "l", function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),

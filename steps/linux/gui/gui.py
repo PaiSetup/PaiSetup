@@ -52,6 +52,7 @@ class GuiStep(Step):
             KeyBinding("b").mod().shift().ctrl().executeShell("$BROWSER_PRIVATE"),
             KeyBinding("e").mod().shift().executeShell("$FILE_MANAGER"),
             KeyBinding("w").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_random_wallpaper.sh --restart_wm"),
+            KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
         )
 
         dependency_dispatcher.register_homedir_file(".Xauthority")

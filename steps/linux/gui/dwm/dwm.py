@@ -31,7 +31,6 @@ class DwmStep(GuiStep):
 
         # fmt: off
         self._keybindings = [
-            KeyBinding(["Return", "KP_Enter"]).mod().shift().executeShell("$TERMINAL"),
             KeyBinding("BackSpace").mod().shift().executeShell("$PAI_SETUP_ROOT/steps/linux/gui/dwm/shutdown_dmenu.sh"),
 
             KeyBinding("XF86AudioMute").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/set_volume.sh 0"),

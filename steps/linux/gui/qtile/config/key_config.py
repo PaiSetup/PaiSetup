@@ -1,3 +1,4 @@
+from generated.app_keys import app_keys
 from libqtile.config import Key
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
@@ -60,18 +61,10 @@ class KeyConfig:
         self.keys += [
             Key([mod, ctrl], "r", lazy.reload_config(), desc="Reload the config"),
             Key([mod, ctrl], "w", lazy.restart(), desc="Shutdown Qtile"),
+            Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
         ]
 
     def _append_app_spawning_keys(self):
-        terminal = guess_terminal()
-        self.keys += [
-            Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-            Key([mod, shift], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-            Key([mod, shift], "KP_Enter", lazy.spawn(terminal), desc="Launch terminal"),
-        ]
-
-        from generated.app_keys import app_keys
-
         self.keys += app_keys
 
     def _append_wayland_vt_changing_keys(self):
