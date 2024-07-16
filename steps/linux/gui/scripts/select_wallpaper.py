@@ -167,7 +167,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("-f", "--wallpaper_file", type=Path,           help="Path to a wallpaper to set.")
     arg_parser.add_argument("-r", "--restart_wm",     action="store_true", help="Reset the window manager after setting up wallpaper and colorschemes.")
     path_args = arg_parser.add_argument_group("Path arguments", "These arguments have sane defaults and should generally be left unchanged.")
-    path_args.add_argument("--cache_dir",                      type=Path, default=home/".cache/PaiSetupWallpapers",            help="Directory for wallpaper setting cache. The script caches colorschemes and wallpaper directories")
+    path_args.add_argument("--cache_dir",                      type=Path, default=home/".cache/PaiSetup/wallpapers",            help="Directory for wallpaper setting cache. The script caches colorschemes and wallpaper directories")
     path_args.add_argument("--xresources_theme_path",          type=Path, default=home/".config/XresourcesTheme",              help="Path to Xresources file storing wallpaper-specific theme.")
     path_args.add_argument("--xresources_main_path",           type=Path, default=home/".config/PaiSetup" / wm / "Xresources", help="Path to main Xresources file.")
     path_args.add_argument("--cava_theme_file",                type=Path, default=home/".config/cava/config",                  help="Path to cava theme file.")
