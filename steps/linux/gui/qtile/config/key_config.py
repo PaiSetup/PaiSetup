@@ -60,7 +60,6 @@ class KeyConfig:
     def _append_general_keys(self):
         self.keys += [
             Key([mod, ctrl], "r", lazy.reload_config(), desc="Reload the config"),
-            Key([mod, ctrl], "w", lazy.restart(), desc="Shutdown Qtile"),
             Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
         ]
 
