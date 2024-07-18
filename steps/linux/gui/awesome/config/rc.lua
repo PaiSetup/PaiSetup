@@ -143,9 +143,7 @@ local memory_widget = script_widget("memory.sh", {button_info}, 5)
 local volume_widget = script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60)
 local packages_widget = script_widget("packages.sh", {button_info, button_action}, 60, " ?")
 local time_widget = script_widget("date.sh", {button_action}, 30)
-local screen_capture_widget = script_widget("screen_capture.sh", {button_info, button_action}, 10)
 local plex_widget = script_widget(pai_setup_steps .. "plex/status_bar_script.sh", {button_info, button_action}, 60)
-local pomodoro_widget = script_widget("pomodoro.sh", {button_info, button_action}, 10)
 local audio_switch_widget = script_widget("audio_switch.sh", {button_info, button_action, button_scroll_up, button_scroll_down}, 10)
 local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = tray_widget()
@@ -189,9 +187,7 @@ awful.screen.connect_for_each_screen(function(s)
             widget_wrappers.grp({packages_widget}),
             widget_wrappers.grp({time_widget}),
             widget_wrappers.grp({
-                screen_capture_widget,
                 plex_widget,
-                pomodoro_widget,
                 trash_widget,
                 tray_widget,
                 warnings_widget,
