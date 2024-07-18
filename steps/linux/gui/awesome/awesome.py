@@ -64,17 +64,6 @@ class AwesomeStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
-            "Define mouse button values for statusbar scripts",
-            [
-                "export BUTTON_ACTION=1",
-                "export BUTTON_TERMINATE=2",
-                "export BUTTON_INFO=3",
-                "export BUTTON_SCROLL_UP=4",
-                "export BUTTON_SCROLL_DOWN=5",
-            ],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
             "Run picom",
             ["picom -b --no-fading-openclose  &"],
         )
