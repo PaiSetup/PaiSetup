@@ -1,6 +1,7 @@
-from steps.step import Step, dependency_listener
-from utils import command
 import re
+
+from steps.step import Step, dependency_listener
+from utils.command import *
 
 
 class ActivateWindowsStep(Step):
@@ -15,7 +16,7 @@ class ActivateWindowsStep(Step):
             "$isActivated = -Not [string]::IsNullOrEmpty($output)",
             "echo $isActivated",
         ]
-        output = command.run_powershell_command(powershell_command, stdout=command.Stdout.return_back(), shell=True)
+        output = run_powershell_command(powershell_command, stdout=Stdout.return_back(), shell=True)
         return output.strip() == "True"
 
     def get_key(self):
@@ -42,5 +43,5 @@ class ActivateWindowsStep(Step):
         if not key:
             return
 
-        command.run_powershell_command(f"slmgr /ipk {key}")
-        command.run_powershell_command("slmgr /ato")
+        run_powershell_command(f"slmgr /ipk {key}")
+        run_powershell_command("slmgr /ato")

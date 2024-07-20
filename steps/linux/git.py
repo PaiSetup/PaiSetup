@@ -1,7 +1,8 @@
-from steps.step import Step
-from utils import command
 import os
 from pathlib import Path
+
+from steps.step import Step
+from utils.command import *
 from utils.services.file_writer import FileType
 
 
@@ -20,8 +21,8 @@ class GitStep(Step):
         gitconfig_path.touch(exist_ok=True)
 
         self._logger.log(f"Setting git user")
-        command.run_command("git config --global user.name MaciejDziuban")
-        command.run_command("git config --global user.email dziuban.maciej@gmail.com")
+        run_command("git config --global user.name MaciejDziuban")
+        run_command("git config --global user.email dziuban.maciej@gmail.com")
 
         self._logger.log(f"Adding git completion to .bashrc")
         self._file_writer.write_section(

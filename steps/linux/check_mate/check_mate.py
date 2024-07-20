@@ -1,7 +1,8 @@
-from steps.step import Step, dependency_listener
 import os
-from utils import command
 from pathlib import Path
+
+from steps.step import Step, dependency_listener
+from utils.command import *
 from utils.services.file_writer import FileType, FileWriter
 
 
@@ -128,4 +129,4 @@ class CheckMateStep(Step):
 
             # Call the launch script in current environment, if it's the default one
             if profile.is_default_profile:
-                command.run_command(f"{profile.launch_script_path} >/dev/null 2>&1", shell=True)
+                run_command(f"{profile.launch_script_path} >/dev/null 2>&1", shell=True)

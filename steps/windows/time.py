@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class TimeStep(Step):
@@ -10,4 +10,4 @@ class TimeStep(Step):
         powershell_command = [
             'Set-TimeZone "Central European Standard Time"',
         ]
-        command.run_powershell_command(powershell_command)
+        run_powershell_command(powershell_command)

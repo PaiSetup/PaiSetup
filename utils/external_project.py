@@ -1,16 +1,17 @@
-from utils import command
-from pathlib import Path
-from utils.os_helpers import Pushd
-import tempfile
-import shutil
-from utils.os_function import OperatingSystem
 import multiprocessing
+import shutil
+import tempfile
+from pathlib import Path
+
+from utils.command import *
+from utils.os_function import OperatingSystem
+from utils.os_helpers import Pushd
 
 
 def apply_patch(file):
     with open(file, "rb", 0) as file:
-        command.run_command("patch", stdin=command.Stdin.file(file))
-        command.run_command(f"git commit -am {file.name}")
+        run_command("patch", stdin=Stdin.file(file))
+        run_command(f"git commit -am {file.name}")
 
 
 def should_build(full, binaries):
@@ -36,25 +37,25 @@ def download(
     git_dir = Path(directory) / ".git"
     clone_needed = not git_dir.is_dir()
     if clone_needed:
-        command.run_command(f"git clone {url} {directory}")
+        run_command(f"git clone {url} {directory}")
 
     # Go to directory and configure project
     with Pushd(directory):
         if clone_needed and has_submodules:
-            command.run_command(f"git submodule init")
-            command.run_command(f"git submodule update")
+            run_command(f"git submodule init")
+            run_command(f"git submodule update")
 
         if fetch and not clone_needed:
-            command.run_command("git fetch --prune")
+            run_command("git fetch --prune")
 
         if clean:
-            command.run_command(f"git reset --hard")
-            command.run_command(f"git clean -fxd --exclude build")
+            run_command(f"git reset --hard")
+            run_command(f"git clean -fxd --exclude build")
 
-        command.run_command(f"git checkout {revision}")
+        run_command(f"git checkout {revision}")
 
         if chmod_needed:
-            command.run_command(f"sudo chmod ugo+rw {directory} -R")
+            run_command(f"sudo chmod ugo+rw {directory} -R")
 
 
 def cmake(
@@ -68,7 +69,7 @@ def cmake(
     build_dir.mkdir(parents=False, exist_ok=True)
     with Pushd(build_dir):
         logger.log(f"Configure CMake project: {project_dir}")
-        command.run_command(f"cmake .. {cmake_args}")
+        run_command(f"cmake .. {cmake_args}")
 
 
 def make(
@@ -95,7 +96,7 @@ def make(
 
         # Compile
         logger.log(f"Building and installing with {cores} threads")
-        command.run_command(f"sudo make {target} {multicore_arg}")
+        run_command(f"sudo make {target} {multicore_arg}")
 
 
 def download_github_zip(user, repo, dst_dir, re_download=False):
@@ -117,10 +118,10 @@ def download_github_zip(user, repo, dst_dir, re_download=False):
                 "$ProgressPreference = 'SilentlyContinue'",
                 f'Invoke-WebRequest "{url}" -OutFile "{zipfile.name}"',
             ]
-            command.run_powershell_command(url)
+            run_powershell_command(url)
         else:
             download_command = f'wget "{url}" -O "{output_file}"'
-            command.run_command(download_command)
+            run_command(download_command)
 
         dst_parent_dir = dst_dir.parent
         with Pushd(dst_parent_dir):
@@ -130,10 +131,10 @@ def download_github_zip(user, repo, dst_dir, re_download=False):
                     "$ProgressPreference = 'SilentlyContinue'",
                     f'Expand-Archive {zipfile.name} -DestinationPath "."',
                 ]
-                command.run_powershell_command(unzip_command)
+                run_powershell_command(unzip_command)
             else:
                 unzip_command = f"unzip {zipfile.name}"
-                command.run_command(unzip_command)
+                run_command(unzip_command)
 
             # In the zip there is one folder called <ProjectName>-<BranchName>. Rename it to the name of desired destination director
             Path(f"{repo}-master").rename(dst_dir)

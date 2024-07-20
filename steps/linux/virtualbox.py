@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class VirtualBoxStep(Step):
@@ -19,4 +19,4 @@ class VirtualBoxStep(Step):
     def perform(self):
         self._logger.log(f"Setting {self._vm_dir} as default VirtualBox machine directory")
         self._vm_dir.mkdir(exist_ok=True)
-        command.run_command(f"vboxmanage setproperty machinefolder {self._vm_dir}")
+        run_command(f"vboxmanage setproperty machinefolder {self._vm_dir}")

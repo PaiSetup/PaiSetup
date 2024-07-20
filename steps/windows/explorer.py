@@ -98,7 +98,7 @@ class ExplorerStep(Step):
             ]
         for folder in self._quick_access_folder_for_addition:
             powershell_command += [f"$object.Namespace('{folder}').Self.InvokeVerb('pintohome')"]
-        command.run_powershell_command(powershell_command)
+        run_powershell_command(powershell_command)
 
     def _remove_bloat_folders(self):
         self._logger.log("Removing bloat folders")
@@ -111,4 +111,4 @@ class ExplorerStep(Step):
 
     def _reset_explorer(self):
         self._logger.log("Resetting explorer")
-        command.run_powershell_command("stop-process -name explorer -force")
+        run_powershell_command("stop-process -name explorer -force")

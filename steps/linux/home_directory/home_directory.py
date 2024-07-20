@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from steps.step import Step, dependency_listener
-from utils import command
+from utils.command import *
 from utils.services.file_writer import FileType
 
 

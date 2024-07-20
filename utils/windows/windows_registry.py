@@ -3,7 +3,8 @@ from utils.os_function import require_windows
 require_windows()
 
 import winreg
-from utils import command
+
+from utils.command import *
 
 HKCU = winreg.HKEY_CURRENT_USER
 HKLM = winreg.HKEY_LOCAL_MACHINE
@@ -111,4 +112,4 @@ def delete_registry_user_choice(hive, extension):
         "    $key.Close()",
         "}",
     ]
-    command.run_powershell_command(powershell_command)
+    run_powershell_command(powershell_command)

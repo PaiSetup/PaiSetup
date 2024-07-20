@@ -1,6 +1,7 @@
-from steps.vscode.vscode_base import VscodeStepBase
-from utils import command
 from pathlib import Path
+
+from steps.vscode.vscode_base import VscodeStepBase
+from utils.command import *
 
 
 class VscodeStep(VscodeStepBase):

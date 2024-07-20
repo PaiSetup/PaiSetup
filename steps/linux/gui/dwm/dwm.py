@@ -6,7 +6,7 @@ import utils.external_project as ext
 from steps.linux.check_mate.check_mate import CheckMateStep
 from steps.linux.gui.gui import GuiStep
 from steps.step import Step, dependency_listener
-from utils import command
+from utils.command import *
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType, LinePlacement
 

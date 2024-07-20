@@ -5,7 +5,7 @@ import os
 import random
 from pathlib import Path
 
-from utils.command import CommandError, Stdin, Stdout, run_command
+from utils.command import *
 
 
 class SelectWallpaperException(Exception):

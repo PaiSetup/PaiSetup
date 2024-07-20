@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class GitStep(Step):
@@ -11,5 +11,5 @@ class GitStep(Step):
 
     def perform(self):
         self._logger.log(f"Setting git user")
-        command.run_command("git config --global user.name MaciejDziuban")
-        command.run_command("git config --global user.email dziuban.maciej@gmail.com")
+        run_command("git config --global user.name MaciejDziuban")
+        run_command("git config --global user.email dziuban.maciej@gmail.com")

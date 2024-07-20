@@ -1,6 +1,6 @@
 from steps.step import Step
-from utils import command
 from steps.windows.folders import KnownFolder
+from utils.command import *
 
 
 class VirtualBoxStep(Step):
@@ -28,4 +28,4 @@ class VirtualBoxStep(Step):
 
         self._logger.log(f"Setting {self._vm_dir} as default VirtualBox machine directory")
         vboxmanage_path = self._virtualbox_install_dir / "VBoxManage.exe"
-        command.run_command(f"{vboxmanage_path} setproperty machinefolder {self._vm_dir}")
+        run_command(f"{vboxmanage_path} setproperty machinefolder {self._vm_dir}")

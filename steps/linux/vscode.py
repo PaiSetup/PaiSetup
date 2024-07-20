@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from steps.vscode.vscode_base import VscodeStepBase
-from utils import command
+from utils.command import *
 
 
 class VscodeStep(VscodeStepBase):
@@ -69,5 +69,5 @@ class VscodeStep(VscodeStepBase):
 
         api_address = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
         download_command = f"curl {api_address} | grep 'browser_download_url.*{vsix_name}' | awk '{{print $2}}' | xargs wget -O {self._extensions_download_dir/vsix_name}"
-        command.run_command(download_command, shell=True)
-        command.run_command(f"{self._get_vscode_command()} --install-extension {self._extensions_download_dir/vsix_name}")
+        run_command(download_command, shell=True)
+        run_command(f"{self._get_vscode_command()} --install-extension {self._extensions_download_dir/vsix_name}")

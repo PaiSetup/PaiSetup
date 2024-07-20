@@ -1,10 +1,11 @@
-from steps.step import Step, dependency_listener
-from utils import command
-from pathlib import Path
-from utils.services.file_writer import FileType, FileWriter
-from utils import external_project as ext
 import os
 import shutil
+from pathlib import Path
+
+from steps.step import Step, dependency_listener
+from utils import external_project as ext
+from utils.command import *
+from utils.services.file_writer import FileType, FileWriter
 
 
 class GtkThemeStep(Step):
@@ -68,7 +69,7 @@ class GtkThemeStep(Step):
             self._logger.log(f"Widget theme {self._widget_theme_path} already present")
             return
         self._logger.log(f"Widget theme {self._widget_theme_path} generation")
-        command.run_command(str(self._current_step_dir / "generate_widget_theme.sh"), shell=True)
+        run_command(str(self._current_step_dir / "generate_widget_theme.sh"), shell=True)
 
     def _download_icon_theme(self):
         self._logger.log("Downloading icon theme")
@@ -80,7 +81,7 @@ class GtkThemeStep(Step):
             self._logger.log(f"Icon theme {self._icon_theme_path} already present")
             return
         self._logger.log(f"Icon theme {self._icon_theme_path} generation")
-        command.run_command(str(self._current_step_dir / "generate_icon_theme.sh"), shell=True)
+        run_command(str(self._current_step_dir / "generate_icon_theme.sh"), shell=True)
 
     def _generate_downsized_emblems(self, sizes_to_generate):
         original_size = 512
@@ -108,7 +109,7 @@ class GtkThemeStep(Step):
             downsized_emblems_dir.mkdir()
             for original_file_path in original_emblems_dir.glob("*"):
                 downsized_file_path = downsized_emblems_dir / original_file_path.name
-                command.run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
+                run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
 
     def _assign_emblems(self):
         self._logger.log("Setting emblems to directories")
@@ -120,7 +121,7 @@ class GtkThemeStep(Step):
                     self._logger.log(f"{log_line} (warning: directory does not exist - skipping)")
                     continue
                 self._logger.log(log_line, short_message=emblem)
-                command.run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
+                run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
 
     def _generate_gtk2_config(self):
         self._logger.log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance

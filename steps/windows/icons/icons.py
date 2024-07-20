@@ -1,8 +1,9 @@
-from steps.step import Step
-from utils import external_project as ext
-from utils import command
-from steps.windows.folders import KnownFolder
 from pathlib import Path
+
+from steps.step import Step
+from steps.windows.folders import KnownFolder
+from utils import external_project as ext
+from utils.command import *
 
 
 class IconsStep(Step):
@@ -46,7 +47,7 @@ class IconsStep(Step):
         # Execute commands
         self._logger.log("Setting up icons")
         if self._merge_commands:
-            command.run_powershell_command(icon_commands)
+            run_powershell_command(icon_commands)
         else:
             for icon_command in icon_commands:
-                command.run_powershell_command([icon_command])
+                run_powershell_command([icon_command])

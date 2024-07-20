@@ -1,6 +1,8 @@
-from steps.step import Step
-from utils.command import run_command, Stdout
 from pathlib import Path
+
+from steps.step import Step
+from utils.command import *
+
 
 class PlexStep(Step):
     """
@@ -26,7 +28,6 @@ class PlexStep(Step):
         plex_dirs = f"{plex_movies_dir} {plex_tv_series_dir}"
         self._setup_permissions(plex_dirs)
 
-
     def _find_plex_home(self):
         self._logger.log("Discovering Plex home directory")
         result = run_command("sudo su -l plex -s /usr/bin/sh -c '/usr/bin/echo $HOME'", stdout=Stdout.return_back())
@@ -37,7 +38,7 @@ class PlexStep(Step):
     def _create_symlinks_for_libraries(self, plex_movies_dir, plex_tv_series_dir):
         self._logger.log("Creating symlinks for Plex libraries")
 
-        movies_dir = self._env.home() / "multimedia" / "movies" # TODO get this from HomedirStep
+        movies_dir = self._env.home() / "multimedia" / "movies"  # TODO get this from HomedirStep
         self._file_writer.write_symlink(movies_dir, plex_movies_dir)
 
         tv_series_dir = self._env.home() / "multimedia" / "tv_series"

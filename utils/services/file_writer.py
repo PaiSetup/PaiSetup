@@ -1,8 +1,9 @@
-from utils import command
 import os
 import tempfile
 from enum import Enum
 from pathlib import Path
+
+from utils.command import *
 from utils.os_function import OperatingSystem
 
 
@@ -172,11 +173,11 @@ class FileWriter:
             with open(path, "a") as file:
                 file.writelines(lines)
         except PermissionError:
-            command.run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
+            run_command(f'echo "{lines}" | sudo tee {path} >/dev/null', shell=True)
 
         # Setup permissions if this is the first time we touch this file
         if OperatingSystem.current().is_linux() and is_first_access and FileType.is_executable(file_type):
-            command.run_command(f"sudo chmod +x {path}")
+            run_command(f"sudo chmod +x {path}")
 
         # Return resolved path
         return path
@@ -202,7 +203,7 @@ class FileWriter:
         try:
             os.symlink(src, link)
         except PermissionError:
-            command.run_command(f"sudo ln -s {src} {link}")
+            run_command(f"sudo ln -s {src} {link}")
 
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name
@@ -216,7 +217,7 @@ class FileWriter:
         except FileNotFoundError:
             pass
         except PermissionError:
-            command.run_command(f"sudo rm {path}")
+            run_command(f"sudo rm {path}")
 
     def patch_dot_desktop_file(self, source_name, destination_name, patch_functions):
         """
@@ -241,7 +242,7 @@ class FileWriter:
             section = ""
             for untrimmed_line in src:
                 line = untrimmed_line.strip()
-                modified_line = untrimmed_line[:-1] # Remove the newline
+                modified_line = untrimmed_line[:-1]  # Remove the newline
 
                 if line.startswith("#"):
                     pass
@@ -278,18 +279,18 @@ class FileWriter:
 
         file_path = self.resolve_path(file_path)
         with open(file_path, "r") as real_file:
-            with tempfile.NamedTemporaryFile(mode='w', delete=False, prefix=f"{file_path}.tmp_") as tmp_file:
+            with tempfile.NamedTemporaryFile(mode="w", delete=False, prefix=f"{file_path}.tmp_") as tmp_file:
                 section = ""
                 for line in real_file:
-                    line = line[:-1] # Remove the newline
+                    line = line[:-1]  # Remove the newline
                     line_content, line_comment = FileWriter._split_comment(line)
 
                     # Find out type of current line
-                    if not line_content: # Empty line
+                    if not line_content:  # Empty line
                         pass
-                    elif line_content.startswith('[') and line_content.endswith(']'): # Section line
+                    elif line_content.startswith("[") and line_content.endswith("]"):  # Section line
                         section = line_content[1:-1]
-                    elif assignement := FileWriter._split_assignment(line_content): # Key-value, pair line
+                    elif assignement := FileWriter._split_assignment(line_content):  # Key-value, pair line
                         key, assignement, value = assignement
 
                         # Apply a patch function if it matches
@@ -307,20 +308,19 @@ class FileWriter:
         os.rename(tmp_file.name, str(file_path))
 
     @staticmethod
-    def _split_comment(line, comment_signs=['#']):
+    def _split_comment(line, comment_signs=["#"]):
         comment_start = [line.find(comment_sign) for comment_sign in comment_signs]
         comment_start = min(comment_start)
         if comment_start == -1:
             return (line, "")
 
-        while comment_start > 0 and line[comment_start - 1] == ' ':
+        while comment_start > 0 and line[comment_start - 1] == " ":
             comment_start -= 1
 
         return (
             line[:comment_start],
             line[comment_start:],
         )
-
 
     @staticmethod
     def _split_assignment(line):
@@ -329,13 +329,13 @@ class FileWriter:
         if assignment_sign_start == -1:
             return None
 
-        while assignment_sign_start > 0 and line[assignment_sign_start - 1] == ' ':
+        while assignment_sign_start > 0 and line[assignment_sign_start - 1] == " ":
             assignment_sign_start -= 1
-        while assignment_sign_end < len(line) - 2 and line[assignment_sign_end + 1] == ' ':
+        while assignment_sign_end < len(line) - 2 and line[assignment_sign_end + 1] == " ":
             assignment_sign_end += 1
 
         key = line[:assignment_sign_start]
-        assignement = line[assignment_sign_start:assignment_sign_end+1]
-        value = line[assignment_sign_end + 1:]
+        assignement = line[assignment_sign_start : assignment_sign_end + 1]
+        value = line[assignment_sign_end + 1 :]
 
         return key, assignement, value

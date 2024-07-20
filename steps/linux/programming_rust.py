@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class ProgrammingRustStep(Step):
@@ -16,7 +16,7 @@ class ProgrammingRustStep(Step):
         self._env.set("RUSTUP_HOME", self._rustup_home)
 
     def perform(self):
-        command.run_command("rustup default stable")
+        run_command("rustup default stable")
 
         rust_config = [
             f'export CARGO_HOME="{self._cargo_home}"',

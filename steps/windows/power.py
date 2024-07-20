@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class PowerStep(Step):
@@ -12,4 +12,4 @@ class PowerStep(Step):
             "Powercfg /Change standby-timeout-ac 0",
             "Powercfg /Change monitor-timeout-ac 120",
         ]
-        command.run_powershell_command(powershell_command)
+        run_powershell_command(powershell_command)

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import utils.external_project as ext
 from steps.step import Step
-from utils import command
+from utils.command import *
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType
 

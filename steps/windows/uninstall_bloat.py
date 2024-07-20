@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils import command
+from utils.command import *
 
 
 class UninstallBloatStep(Step):
@@ -89,4 +89,4 @@ class UninstallBloatStep(Step):
 
         for app in unnecessary_microsoft_apps + sponsored_apps:
             powershell_script.append(f"uninstall_app {app}")
-        command.run_powershell_command(powershell_script, stdout=command.Stdout.print_to_console())
+        run_powershell_command(powershell_script, stdout=Stdout.print_to_console())

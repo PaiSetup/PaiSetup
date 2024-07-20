@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from steps.step import Step
-from utils import command
+from utils.command import *
 from utils.os_function import OperatingSystem
 
 
@@ -64,7 +64,7 @@ class VscodeStepBase(Step):
 
     def _is_extension_installed(self, extension_name):
         try:
-            command.run_command(f"{self._get_vscode_command()} --list-extensions | grep '^{extension_name}$'", shell=True)
+            run_command(f"{self._get_vscode_command()} --list-extensions | grep '^{extension_name}$'", shell=True)
             return True
         except:
             return False
@@ -73,16 +73,16 @@ class VscodeStepBase(Step):
         args = (f"--install-extension {x}" for x in extension_names)
         args = " ".join(args)
         self._logger.log(f"Installing extensions: {', '.join(extension_names)}")
-        command.run_command(f"{self._get_vscode_command()} {args}", shell=True)
+        run_command(f"{self._get_vscode_command()} {args}", shell=True)
 
     def _install_python_package(self, package_name, import_name=None):
         if import_name is None:
             import_name = package_name
         try:
-            command.run_command(f'python -c "import {import_name}"')
-        except command.CommandError:
+            run_command(f'python -c "import {import_name}"')
+        except CommandError:
             self._logger.log(f"Installing {package_name} Python package")
-            command.run_command(f"pip install {package_name}")
+            run_command(f"pip install {package_name}")
 
     def _get_vscode_config_dir(self):
         raise NotImplementedError()

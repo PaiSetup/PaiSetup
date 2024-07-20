@@ -1,7 +1,7 @@
-from steps.step import Step
-from utils import command
-
 import os
+
+from steps.step import Step
+from utils.command import *
 
 
 class FileAssociationsStep(Step):
@@ -156,4 +156,4 @@ class FileAssociationsStep(Step):
             self._logger.log(f"Associating {len(mime_types)} with {application}")
 
             # This command will update ~/.config/mimeapps.list file
-            command.run_command(f"xdg-mime default {application} {' '.join(mime_types)}")
+            run_command(f"xdg-mime default {application} {' '.join(mime_types)}")

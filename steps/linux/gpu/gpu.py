@@ -1,8 +1,10 @@
-from steps.step import Step
-from utils import command
 import os
 from enum import Enum
 from pathlib import Path
+
+from steps.step import Step
+from utils.command import *
+
 from .nvidia_enable_vsync import main as nvidia_enable_vsync
 
 
@@ -78,7 +80,7 @@ class GpuStep(Step):
             dependency_dispatcher.register_homedir_file(".nvidia-settings-rc")
 
     def _query_gpu_vendors(self):
-        lspci_output = command.run_command("lspci", stdout=command.Stdout.return_back())
+        lspci_output = run_command("lspci", stdout=Stdout.return_back())
         vendors = set()
         for line in lspci_output.splitlines():
             line_lower = line.lower()

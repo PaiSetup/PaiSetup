@@ -1,7 +1,8 @@
-from steps.step import Step, dependency_listener
 from enum import Enum, auto
 from pathlib import Path
-from utils import command
+
+from steps.step import Step, dependency_listener
+from utils.command import *
 
 
 class KnownFolder(Enum):
@@ -101,9 +102,9 @@ class FoldersStep(Step):
         self._create_folders()
 
     def _setup_known_folders(self):
-        command.run_command(f"KnownFolders.exe -f Desktop -p {self._folders[KnownFolder.Desktop]} -m -r")
+        run_command(f"KnownFolders.exe -f Desktop -p {self._folders[KnownFolder.Desktop]} -m -r")
         # TODO it is difficult to move Documents. Investigate it.
-        # command.run_command(f"KnownFolders.exe -f Documents -p {self._folders[KnownFolder.Documents]} -m -r")
+        # run_command(f"KnownFolders.exe -f Documents -p {self._folders[KnownFolder.Documents]} -m -r")
 
     def _create_folders(self):
         for _, path in self._folders.items():
