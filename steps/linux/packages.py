@@ -22,7 +22,7 @@ class PackagesStep(Step):
 
     def _install_yay(self):
         with self._logger.indent("Installing yay"):
-            if not get_missing_packages(["yay"], self._known_package_groups):
+            if not self._get_missing_packages(["yay"]):
                 self._logger.log("Already installed. Skipping")
             else:
                 self._logger.log("Downloading yay")
@@ -45,7 +45,7 @@ class PackagesStep(Step):
 
     def _install_packages(self):
         with self._logger.indent(f"Installing packages: {self._packages}"):
-            missing_packages = get_missing_packages(self._packages, self._known_package_groups)
+            missing_packages = self._get_missing_packages(self._packages)
             if not missing_packages:
                 self._logger.log("All packages are already installed.")
             else:
@@ -105,6 +105,30 @@ class PackagesStep(Step):
             return packages
         else:
             return self._packages
+
+    def _get_missing_packages(self, required_packages):
+        packages = [p for p in required_packages if p not in self._known_package_groups]
+        package_groups = [p for p in required_packages if p in self._known_package_groups]
+
+        # Try to get info on packages and package groups. Pacman will print a line to stderr for each
+        # package that isn't installed.
+        missing = []
+        if packages:
+            packages = " ".join(packages)
+            try:
+                run_command(f"pacman -Qi {packages}")
+            except CommandError as e:
+                missing += e.stderr.splitlines()
+        if package_groups:
+            package_groups = " ".join(package_groups)
+            try:
+                run_command(f"pacman -Qg {package_groups}")
+            except CommandError as e:
+                missing += e.stderr.splitlines()
+
+        # Extract package name from the line
+        missing = [re.search("'([^']+)'", x).group(1) for x in missing]
+        return missing
 
     @dependency_listener
     def list_packages(self, resolve_groups):

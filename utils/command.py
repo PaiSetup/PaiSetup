@@ -105,31 +105,6 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
     return result
 
 
-def get_missing_packages(arg, known_package_groups):
-    packages = [p for p in arg if p not in known_package_groups]
-    package_groups = [p for p in arg if p in known_package_groups]
-
-    # Try to get info on packages and package groups. Pacman will print a line to stderr for each
-    # package that isn't installed.
-    missing = []
-    if packages:
-        packages = " ".join(packages)
-        try:
-            run_command(f"pacman -Qi {packages}")
-        except CommandError as e:
-            missing += e.stderr.splitlines()
-    if package_groups:
-        package_groups = " ".join(package_groups)
-        try:
-            run_command(f"pacman -Qg {package_groups}")
-        except CommandError as e:
-            missing += e.stderr.splitlines()
-
-    # Extract package name from the line
-    missing = [re.search("'([^']+)'", x).group(1) for x in missing]
-    return missing
-
-
 @windows_only
 def run_powershell_command(command, *args, **kwargs):
     if type(command) == list:
