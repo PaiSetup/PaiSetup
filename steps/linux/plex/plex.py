@@ -30,7 +30,7 @@ class PlexStep(Step):
 
     def _find_plex_home(self):
         self._logger.log("Discovering Plex home directory")
-        result = run_command("sudo su -l plex -s /usr/bin/sh -c '/usr/bin/echo $HOME'", stdout=Stdout.return_back())
+        result = run_command("sudo su -l plex -s /usr/bin/sh -c '/usr/bin/echo $HOME'", stdout=Stdout.return_back()).stdout
         result = result.strip()
         self._logger.log(f"Plex home is {result}")
         return Path(result)

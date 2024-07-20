@@ -22,7 +22,7 @@ class LightDmStep(Step):
     def _enable_service(self):
         # Check, if we can skip
         try:
-            out = run_command("systemctl status display-manager", stdout=Stdout.return_back())
+            out = run_command("systemctl status display-manager", stdout=Stdout.return_back()).stdout
             out = out.splitlines()
             out = out[0]
             if "lightdm.service" in out:

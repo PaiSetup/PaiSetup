@@ -8,13 +8,9 @@ from utils.os_function import OperatingSystem, windows_only
 
 
 class CommandError(Exception):
-    def __init__(self, output):
-        self.stdout = self.stderr = None
-        if output is not None:
-            if output[0] is not None:
-                self.stdout = output[0].decode("utf-8")
-            if output[1] is not None:
-                self.stderr = output[1].decode("utf-8")
+    def __init__(self, stdout, stderr):
+        self.stdout = stdout
+        self._stderr = stderr
 
     def __str__(self):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
@@ -60,20 +56,16 @@ class Stdout:
         return Stdout(file_handle, False)
 
 
-# TODO add stdour and stderr returning
 class Command:
     def __init__(self, process):
         self._process = process
-        self._finished = False
         self._return_value = None
+        self.stdout = None
+        self.stderr = None
 
     def wait(self):
-        if not self._finished:
+        if self._return_value is None:
             self._return_value = self._process.wait()
-            self._finished = True
-
-    def get_return_value(self):
-        self._wait()
         return self._return_value
 
 
@@ -86,25 +78,31 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
         if stdin.communicate_arg:
             raise ValueError("Cannot run a background process which gets stdin.")  # This may be to conservative...
 
+    # Launch process
     process = subprocess.Popen(command, shell=shell, stdin=stdin.popen_arg, stdout=stdout.popen_arg, stderr=stderr.popen_arg)
-    if background:
-        return Command(process)
-    output = process.communicate(input=stdin.communicate_arg)
-    return_value = process.wait()
+    result = Command(process)
 
+    # Early return if it's a background process
+    if background:
+        return result
+
+    # Process output
+    (stdout_data, stderr_data) = process.communicate(input=stdin.communicate_arg)
+    if stdout_data:
+        stdout_data = stdout_data.decode("utf-8")
+    if stderr_data:
+        stderr_data = stderr_data.decode("utf-8")
+    if stdout.should_return:
+        result.stdout = stdout_data
+        result.stderr = stderr_data
+
+    # Wait for completion and check result
+    return_value = result.wait()
     if return_value != 0:
         raise CommandError(output)
 
-    result = []
-    if stdout.should_return and output[0] != None:
-        result.append(output[0].decode("utf-8"))
-    if stderr.should_return and output[1] != None:
-        result.append(output[1].decode("utf-8"))
-    if len(result) == 2:
-        return tuple(result)
-    if len(result) == 1:
-        return result[0]
-    return None
+    # Return the command object
+    return result
 
 
 def get_missing_packages(arg, known_package_groups):

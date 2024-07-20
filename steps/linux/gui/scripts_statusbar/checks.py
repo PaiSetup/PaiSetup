@@ -47,7 +47,7 @@ if is_info_button():
 elif is_action_button():
     show_popup = True
     check_mate_command = "check_mate_client refresh_all -p 50198 -r 1"
-    warnings = run_command(check_mate_command)
+    warnings = run_command(check_mate_command, stdout=Stdout.return_back()).stdout
     time.sleep(0.1)  # This is a hack to make some quicker checks finish before the read
 elif is_terminate_button():
     show_popup = True
@@ -55,7 +55,7 @@ elif is_terminate_button():
 
 # Run CheckMate and see what warnings we have
 check_mate_command = "check_mate_client read -p 50198 -r 1"
-warnings = run_command(check_mate_command, stdout=Stdout.return_back())
+warnings = run_command(check_mate_command, stdout=Stdout.return_back()).stdout
 warnings = warnings.split("\n\n")  # Warnings from different clients are separated by an empty line
 warnings = (x.strip().split("\n") for x in warnings if x)  # Split output from each client into lines
 warnings = ([x for x in y if x] for y in warnings)  # Eliminate empty lines

@@ -53,13 +53,13 @@ class SshStep(Step):
 
         self._logger.log(f"Generating public key {ssh_public_key_path} from private key")
         public_key_command = f'ssh-keygen -f "{ssh_key_path}" -y'
-        public_key = run_command(public_key_command, stdout=Stdout.return_back())
+        public_key = run_command(public_key_command, stdout=Stdout.return_back()).stdout
         self._file_writer.write_lines(ssh_public_key_path, [public_key], file_type=FileType.ConfigFileNoComments)
 
         if self._full or not ssh_known_hosts_path.exists():
             self._logger.log("Setting up known_hosts for typical sites")
             known_hosts_command = "ssh-keyscan github.com"
-            known_hosts = run_command(known_hosts_command, stdout=Stdout.return_back()).splitlines()
+            known_hosts = run_command(known_hosts_command, stdout=Stdout.return_back()).stdout.splitlines()
             self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
 
         self._logger.log(f"Setting permissions for ssh files (read-write only for the user {self._env.get('USER')})")

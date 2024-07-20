@@ -166,7 +166,7 @@ class PackagesStep(Step):
         return [line for line in lines if not should_remove(line)]
 
     def _get_missing_packages(self, required_packages):
-        installed_packages = run_command("choco list", stdout=Stdout.return_back())
+        installed_packages = run_command("choco list", stdout=Stdout.return_back()).stdout
         installed_packages = installed_packages.splitlines()
         installed_packages = self._remove_chocolatey_warnings(installed_packages, True)
         installed_packages = [x.split()[0].lower() for x in installed_packages]

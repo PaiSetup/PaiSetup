@@ -80,7 +80,7 @@ class GpuStep(Step):
             dependency_dispatcher.register_homedir_file(".nvidia-settings-rc")
 
     def _query_gpu_vendors(self):
-        lspci_output = run_command("lspci", stdout=Stdout.return_back())
+        lspci_output = run_command("lspci", stdout=Stdout.return_back()).stdout
         vendors = set()
         for line in lspci_output.splitlines():
             line_lower = line.lower()

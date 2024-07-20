@@ -72,7 +72,7 @@ class PackagesStep(Step):
         # (an empty package with only dependencies). This means all its packages should be switched
         # from "explicitly installed" to "installed as a dependency"
         self._logger.log("Marking packages installed as deps")
-        packages_option = run_command(f"pactree base-devel --depth 1 -l", shell=False, stdout=Stdout.return_back())
+        packages_option = run_command(f"pactree base-devel --depth 1 -l", shell=False, stdout=Stdout.return_back()).stdout
         packages_option = packages_option.replace("\n", " ")
         packages_option = packages_option.replace("base-devel ", "")
         run_command(f"yay -D --asdeps {packages_option}")
@@ -100,7 +100,7 @@ class PackagesStep(Step):
             packages = [x for x in self._packages if x not in self._known_package_groups]
             groups = [x for x in self._packages if x in self._known_package_groups]
             if groups:
-                packages_from_groups = run_command(f"yay -Qqg {' '.join(groups)}", stdout=Stdout.return_back()).strip().split("\n")
+                packages_from_groups = run_command(f"yay -Qqg {' '.join(groups)}", stdout=Stdout.return_back()).stdout.strip().split("\n")
                 packages += packages_from_groups
             return packages
         else:

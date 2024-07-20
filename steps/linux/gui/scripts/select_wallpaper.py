@@ -79,7 +79,7 @@ def generate_main_color(wallpaper_file, cache_dir):
         # We have to calculate the color from image
         with open(wallpaper_file, "rb") as f:
             try:
-                main_color = run_command("colors -n1", stdin=Stdin.file(f), stdout=Stdout.return_back())
+                main_color = run_command("colors -n1", stdin=Stdin.file(f), stdout=Stdout.return_back()).stdout
                 main_color = main_color.strip()
             except CommandError:
                 raise (f"Failed to generate colors for {wallpaper_file}")
