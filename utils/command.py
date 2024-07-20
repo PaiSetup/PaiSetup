@@ -60,6 +60,23 @@ class Stdout:
         return Stdout(file_handle, False)
 
 
+# TODO add stdour and stderr returning
+class Command:
+    def __init__(self, process):
+        self._process = process
+        self._finished = False
+        self._return_value = None
+
+    def wait(self):
+        if not self._finished:
+            self._return_value = self._process.wait()
+            self._finished = True
+
+    def get_return_value(self):
+        self._wait()
+        return self._return_value
+
+
 def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), stdout=Stdout.ignore(), stderr=Stdout.ignore()):
     if not shell and not OperatingSystem.current().is_windows():
         command = shlex.split(command)
@@ -71,7 +88,7 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
 
     process = subprocess.Popen(command, shell=shell, stdin=stdin.popen_arg, stdout=stdout.popen_arg, stderr=stderr.popen_arg)
     if background:
-        return None
+        return Command(process)
     output = process.communicate(input=stdin.communicate_arg)
     return_value = process.wait()
 

@@ -129,8 +129,11 @@ def setup_current_wallpaper_symlink(wallpaper_file, current_wallpaper_symlink_pa
 def setup_gtk_theme(pai_setup_root):
     print(f"  Generating GTK widget and icon theme (in background)")
     gtk_theme_scripts_path = pai_setup_root / "steps/linux/gtk_theme"
-    run_command(f"{gtk_theme_scripts_path}/generate_widget_theme.sh", background=False)
-    run_command(f"{gtk_theme_scripts_path}/generate_icon_theme.sh", background=False)
+    commands = [
+        run_command(f"{gtk_theme_scripts_path}/generate_widget_theme.sh", background=True),
+        run_command(f"{gtk_theme_scripts_path}/generate_icon_theme.sh", background=True),
+    ]
+    return commands
 
 
 def setup_wm(pai_setup_root, wm):
@@ -186,6 +189,9 @@ if __name__ == "__main__":
     setup_xresources(args.xresources_main_path, args.xresources_theme_path, main_color)
     setup_cava_theme(args.cava_theme_file, main_color)
     setup_current_wallpaper_symlink(wallpaper_file, args.current_wallpaper_symlink_path)
-    setup_gtk_theme(pai_setup_root)
+    gtk_commands = setup_gtk_theme(pai_setup_root)
     setup_wm(pai_setup_root, wm)
     restart_wm(pai_setup_root, args.restart_wm, wm)
+
+    for c in gtk_commands:
+        c.wait()
