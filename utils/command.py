@@ -88,9 +88,9 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
 
     # Process output
     (stdout_data, stderr_data) = process.communicate(input=stdin.communicate_arg)
-    if stdout_data:
+    if stdout_data is not None:
         stdout_data = stdout_data.decode("utf-8")
-    if stderr_data:
+    if stderr_data is not None:
         stderr_data = stderr_data.decode("utf-8")
     if stdout.should_return:
         result.stdout = stdout_data

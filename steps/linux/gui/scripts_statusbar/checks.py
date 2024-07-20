@@ -25,7 +25,7 @@ def is_button(name):
     try:
         return os.environ[name] == current_button
     except KeyError:
-        return false
+        return False
 
 
 def is_info_button():
