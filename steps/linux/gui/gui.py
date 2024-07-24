@@ -110,7 +110,13 @@ class GuiStep(Step):
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Set wallpaper",
-            ["$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py & >/dev/null"],
+            [
+                "rm ~/.config/PaiSetup/wallpaper",
+                'PYTHONPATH="$PAI_SETUP_ROOT" $PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py & >/dev/null',
+                "until [ -f ~/.config/PaiSetup/wallpaper ]; do",
+                "    sleep 0.1",
+                "done",
+            ],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",

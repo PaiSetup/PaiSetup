@@ -187,8 +187,8 @@ if __name__ == "__main__":
     print(f"  main_color={main_color}")
 
     setup_xresources(args.xresources_main_path, args.xresources_theme_path, main_color)
-    setup_cava_theme(args.cava_theme_file, main_color)
     setup_current_wallpaper_symlink(wallpaper_file, args.current_wallpaper_symlink_path)
+    setup_cava_theme(args.cava_theme_file, main_color)
     gtk_commands = setup_gtk_theme(pai_setup_root)
     setup_wm(pai_setup_root, wm)
     restart_wm(pai_setup_root, args.restart_wm, wm)
