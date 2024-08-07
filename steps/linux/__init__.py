@@ -17,6 +17,7 @@ from .gui.awesome.awesome import AwesomeStep
 from .gui.dwm.dwm import DwmStep
 from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
+from .icon_font.icon_font import IconFontStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
 from .neovim.neovim import NeovimStep
@@ -70,6 +71,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         BashScriptsStep(fetch_git=args.full),
         VscodeStep(build_dir),
         NeovimStep(),
+        IconFontStep(),
         PlexStep(),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),

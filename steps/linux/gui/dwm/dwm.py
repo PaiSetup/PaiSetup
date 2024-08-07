@@ -60,8 +60,6 @@ class DwmStep(GuiStep):
         super().express_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages(
             "xorg-xsetroot",
-            "ttf-joypixels",
-            "ttf-font-awesome",
             "sxhkd",
             "dunst",
             "stalonetray",
