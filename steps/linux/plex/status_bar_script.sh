@@ -18,7 +18,7 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
         if sudo systemctl start $service; then
             is_not_running=0
             show_status=1
-            (sleep 2; $BROWSER $url) & disown
+            (sleep 2; $BROWSER $url) >/dev/null 2>&1 & disown
         else
             notify-send "Failed to start service $service. Wait for a few seconds and try again."
             sudo systemctl stop $service
