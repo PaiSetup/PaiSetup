@@ -96,10 +96,19 @@ if [ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ]; then
 fi
 
 # Print icon
+glyph_icon_headphones_wire=""      # U+F8E2 - PaiIconGlyps
+glyph_icon_headphones_bluetooth="" # U+F8E0 - PaiIconGlyphs
+glyph_icon_headphones_wireless=""  # U+F8E3 - PaiIconGlyps
+glyph_icon_headset=""              # U+F590 - FontAwesome
+glyph_icon_monitor_speakers=""     # U+F108 - FontAwesome
+glyph_icon_speakers=""             # U+F8DE - PaiIconGlyphs
 icon=""
-(pamixer --get-default-sink | grep -q   "USB")      && icon=""
-(pamixer --get-default-sink | grep -qE  "bluez")    && icon=""
-(pamixer --get-default-sink | grep -qiE "wireless") && icon=""
-(pamixer --get-default-sink | grep -qiE "headset")  && icon=""
-(pamixer --get-default-sink | grep -qE "HDMI|VGA")  && icon="  "
+(pamixer --get-default-sink | grep -q   "USB")                                 && icon="$glyph_icon_headphones_wire"
+(pamixer --get-default-sink | grep -qE  "bluez")                               && icon="$glyph_icon_headphones_bluetooth"
+(pamixer --get-default-sink | grep -qiE "wireless")                            && icon="$glyph_icon_headphones_wireless"
+(pamixer --get-default-sink | grep -qiE "headset")                             && icon="$glyph_icon_headset"
+(pamixer --get-default-sink | grep -qE "HDMI|VGA")                             && icon=" $glyph_icon_monitor_speakers "
+(pamixer --get-default-sink | grep -qE "Sound Blaster Play! 3 Analog Stereo")  && icon="$glyph_icon_speakers"
+#icon="$glyph_icon_speakers"
+#icon="$glyph_icon_headphones_wire $glyph_icon_headphones_bluetooth $glyph_icon_headphones_wireless $glyph_icon_headset $glyph_icon_monitor_speakers $glyph_icon_speakers"
 printf "$icon"

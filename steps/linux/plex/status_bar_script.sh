@@ -37,5 +37,5 @@ fi
 if [ "$is_not_running" = 0 ]; then
     printf "🟠"
 else
-    printf ""
+    printf ""
 fi
