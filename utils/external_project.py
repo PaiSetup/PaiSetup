@@ -120,7 +120,7 @@ def download_github_zip(user, repo, dst_dir, re_download=False):
             ]
             run_powershell_command(url)
         else:
-            download_command = f'wget "{url}" -O "{output_file}"'
+            download_command = f'wget "{url}" -O "{zipfile.name}"'
             run_command(download_command)
 
         dst_parent_dir = dst_dir.parent

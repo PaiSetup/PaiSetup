@@ -99,7 +99,7 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
     # Wait for completion and check result
     return_value = result.wait()
     if return_value != 0:
-        raise CommandError(output)
+        raise CommandError(stdout_data, stderr_data)
 
     # Return the command object
     return result
