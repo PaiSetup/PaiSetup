@@ -71,7 +71,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         BashScriptsStep(fetch_git=args.full),
         VscodeStep(build_dir),
         NeovimStep(),
-        IconFontStep(),
+        IconFontStep(full=args.full),
         PlexStep(),
         ProgrammingCppStep(graphics=True, systemc=True),
         ProgrammingPythonStep(),
