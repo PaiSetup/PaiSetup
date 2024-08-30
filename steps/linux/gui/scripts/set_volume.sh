@@ -17,4 +17,5 @@ esac
 
 if [ -z "$2" ] || [ "$2" != 0 ]; then
     pkill -RTMIN+12 dwmblocks
+    awesome-client 'awesome.emit_signal("refresh:volume")'
 fi

@@ -140,7 +140,7 @@ screen.connect_signal("property::geometry", utils.set_wallpaper)
 
 -- Leaf widgets
 local memory_widget = script_widget("memory.sh", {button_info}, 5)
-local volume_widget = script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60)
+local volume_widget = script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60, nil, "refresh:volume")
 local packages_widget = script_widget("packages.sh", {button_info, button_action}, 60, " ?")
 local time_widget = script_widget("date.sh", {button_action}, 30)
 local plex_widget = script_widget(pai_setup_steps .. "plex/status_bar_script.sh", {button_info, button_action}, 60)
