@@ -10,7 +10,7 @@ from utils.os_function import OperatingSystem, windows_only
 class CommandError(Exception):
     def __init__(self, stdout, stderr):
         self.stdout = stdout
-        self._stderr = stderr
+        self.stderr = stderr
 
     def __str__(self):
         print(f"stdout: {self.stdout}\n\nstderr: {self.stderr}")
@@ -94,6 +94,7 @@ def run_command(command, *, shell=False, background=False, stdin=Stdin.empty(), 
         stderr_data = stderr_data.decode("utf-8")
     if stdout.should_return:
         result.stdout = stdout_data
+    if stderr.should_return:
         result.stderr = stderr_data
 
     # Wait for completion and check result
