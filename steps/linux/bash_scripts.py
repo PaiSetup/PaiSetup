@@ -24,6 +24,7 @@ class BashScriptsStep(BashScriptsStepBase):
         dependency_dispatcher.add_packages(
             "shellcheck",
             "python-music-tag",  # Needed by music_tagger.py
+            "python-pytz",  # Needed by size_fixer.py
         )
         dependency_dispatcher.set_folder_icon(self._scripts_root_dir, "scripts")
         dependency_dispatcher.register_homedir_file(self._scripts_root_dir)
