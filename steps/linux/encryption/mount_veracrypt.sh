@@ -85,6 +85,4 @@ else
 fi
 
 # Refresh status icons
-pkill -RTMIN+15 dwmblocks
-check_mate_client refresh Veracrypt -p 50198
-awesome-client 'awesome.emit_signal("refresh:warnings")'
+$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "Veracrypt" "15" "refresh:warnings"
