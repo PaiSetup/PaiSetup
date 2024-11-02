@@ -2,6 +2,7 @@
     "editor.codeLensFontFamily": "consolas",
     "editor.fontFamily": "Consolas",
     "editor.mouseWheelZoom": true,
+    "window.titleBarStyle": "custom",
     "workbench.iconTheme": "vscode-icons",
     "workbench.tree.indent": 16,
     "[cpp]": {
