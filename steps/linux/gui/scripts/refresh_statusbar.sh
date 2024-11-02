@@ -4,7 +4,6 @@ awesome_name="$3"
 
 if [ -n "$checkmate_name" ]; then
     check_mate_client refresh "$checkmate_name" -p 50198
-    echo "check_mate_client refresh "$checkmate_name" -p 50198"
 fi
 
 case "$WM" in
