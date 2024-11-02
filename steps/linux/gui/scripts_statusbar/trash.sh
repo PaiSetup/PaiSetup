@@ -13,32 +13,7 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $FILE_MANAGER $trash_dir
 fi
 if [ "$BUTTON" = "$BUTTON_TERMINATE" ]; then
-    code=$(cat << EOM
-while true; do
-    printf "Cleanup $trash_dir (Y/N)? "
-    read answer
-    if [ "\$answer" = y -o "\$answer" = Y ]; then
-        printf "\nBefore:\n"
-        du -sh "$trash_dir" | sed "s/^/    /g"
-
-        printf "\nCleaning\n"
-        sudo rm -rf "$trash_dir/files/"
-        sudo rm -rf "$trash_dir/info/"
-
-        printf "\nAfter:\n"
-        du -sh "$trash_dir" | sed "s/^/    /g"
-
-        break
-    fi
-    if [ "\$answer" = n -o "\$answer" = N ]; then
-        echo "Aborting..."
-        break
-    fi
-done
-read _
-EOM
-)
-    $TERMINAL sh -c "$code"
+    $TERMINAL sh -c "$PAI_SETUP_ROOT/steps/linux/gui/scripts/cleanup_trash.sh"
 fi
 
 if [ "$size" -ge "$threshold" ]; then
