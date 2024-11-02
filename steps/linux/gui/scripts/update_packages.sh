@@ -20,8 +20,7 @@ sudo pacman -Sc --noconfirm
 echo '[4/4] Clearing yay cache'
 yay -Sc --noconfirm
 
-# Refresh the icon on top bar in DWM
-pkill -RTMIN+13 dwmblocks
+$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "13" "refresh:packages"
 
 if [ "$is_interactive" != 0 ]; then
     printf "\n\e[48;5;28mAll done. Press enter to close this window...\e[0m "

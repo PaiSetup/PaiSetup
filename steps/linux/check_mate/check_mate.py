@@ -56,7 +56,7 @@ class CheckMateStep(Step):
         self.register_periodic_check(self._current_step_dir / "check_network_connectivity.sh", 10)
         self.register_periodic_check(self._current_step_dir / "check_network_interface.sh", 5)
         self.register_periodic_check(self._current_step_dir / "check_scripts_warnings.sh", 5)
-        self.register_periodic_check(self._current_step_dir / "check_trash.sh", 15)
+        self.register_periodic_check(self._current_step_dir / "check_trash.sh", 15, client_name="Trash")
         self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True)
         self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20)
 

@@ -16,6 +16,5 @@ case "$1" in
 esac
 
 if [ -z "$2" ] || [ "$2" != 0 ]; then
-    pkill -RTMIN+12 dwmblocks
-    awesome-client 'awesome.emit_signal("refresh:volume")'
+    $PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "12" "refresh:volume"
 fi

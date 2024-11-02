@@ -41,7 +41,7 @@ action() {
     esac
 
     if [ -z "$2" ] || [ "$2" != 0 ]; then
-        pkill -RTMIN+18 dwmblocks
+        $PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_warnings.sh "" 18
     fi
 }
 
