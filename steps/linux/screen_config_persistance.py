@@ -12,7 +12,9 @@ class ScreenConfigPersistanceStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("autorandr")
-        dependency_dispatcher.register_periodic_check("autorandr -s latest --force >/dev/null", 120, delay_in_seconds=120, shell=True)
+        dependency_dispatcher.register_periodic_check(
+            "autorandr -s latest --force >/dev/null", 120, delay_in_seconds=120, shell=True, client_name="Autorandr"
+        )
 
     def perform(self):
         self._file_writer.write_section(

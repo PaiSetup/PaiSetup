@@ -51,14 +51,14 @@ class CheckMateStep(Step):
             is_global_profile=True,
         )
 
-        self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True)
-        self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60)
-        self.register_periodic_check(self._current_step_dir / "check_network_connectivity.sh", 10)
-        self.register_periodic_check(self._current_step_dir / "check_network_interface.sh", 5)
-        self.register_periodic_check(self._current_step_dir / "check_scripts_warnings.sh", 5)
+        self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True, client_name="Daemons")
+        self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60, client_name="KeyboardLayout")
+        self.register_periodic_check(self._current_step_dir / "check_network_connectivity.sh", 10, client_name="NetworkConnectivity")
+        self.register_periodic_check(self._current_step_dir / "check_network_interface.sh", 5, client_name="NetworkInterface")
+        self.register_periodic_check(self._current_step_dir / "check_scripts_warnings.sh", 5, client_name="ScriptsWarnings")
         self.register_periodic_check(self._current_step_dir / "check_trash.sh", 15, client_name="Trash")
-        self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True)
-        self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20)
+        self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True, client_name="UnmatchingPackages")
+        self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20, client_name="UpdatedKernel")
 
     @dependency_listener
     def register_periodic_check(

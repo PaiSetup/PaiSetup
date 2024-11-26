@@ -49,10 +49,10 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.set_folder_icon(self._root_dir, "pai_setup")
 
         check_script = Path(__file__).parent / "setup_mount_dir.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 3)
+        dependency_dispatcher.register_periodic_check(check_script, 3, client_name="SetupMountDir")
 
         check_script = Path(__file__).parent / "verify_homedir.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 45, multi_line=True)
+        dependency_dispatcher.register_periodic_check(check_script, 45, multi_line=True, client_name="VerifyHomedir")
 
         multimedia_dir = self._get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
         if multimedia_dir is not None:
