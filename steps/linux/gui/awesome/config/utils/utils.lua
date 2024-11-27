@@ -116,10 +116,24 @@ function set_layout_key(mods, key, layout)
     return awful.key(mods, key, function () awful.layout.set(layout) end, {description = "set " .. layout.name .. " for the current tag", group = "layout"})
 end
 
+function spawn_terminal_from_thunar()
+    command = "$PAI_SETUP_ROOT/steps/linux/gui/scripts/get_thunar_cwd.sh"
+    awful.spawn.easy_async_with_shell(command, function(stdout, stderr, exitreason, exitcode)
+        if exitcode == 0 then
+            stdout = stdout:gsub("%s+$", "")
+            terminal_command = "sh -c 'cd \"" .. stdout .. "\" ; $TERMINAL'"
+        else
+            terminal_command = "$TERMINAL"
+        end
+        awful.spawn.with_shell(terminal_command)
+    end)
+end
+
 return {
     set_wallpaper = set_wallpaper,
     enable_viewed_tag_preserving = enable_viewed_tag_preserving,
     taglist_square_top_rect = taglist_square_top_rect,
     get_per_tag_keys = get_per_tag_keys,
     set_layout_key = set_layout_key,
+    spawn_terminal_from_thunar = spawn_terminal_from_thunar,
 }

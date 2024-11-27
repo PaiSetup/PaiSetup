@@ -109,6 +109,7 @@ class AwesomeStep(GuiStep):
         lines = [
             'local awful = require("awful")',
             'local gears = require("gears")',
+            'local utils = require("utils.utils")',
             "local function get_keybindings(modkey)",
         ]
 
@@ -124,11 +125,15 @@ class AwesomeStep(GuiStep):
                     if keybinding.hold_ctrl:
                         modifiers.append('"Control"')
 
-                    spawn_function = "awful.spawn.with_shell" if keybinding.command_shell else "awful.spawn"
+                    if keybinding.command == "$TERMINAL":
+                        spawn_function = "utils.spawn_terminal_from_thunar"
+                    else:
+                        spawn_function = "awful.spawn.with_shell" if keybinding.command_shell else "awful.spawn"
+                        spawn_function = f'function() {spawn_function}("{keybinding.command}") end'
 
                     modifiers = f"{{{', '.join(modifiers)}}}"
                     lines.append(
-                        f'        awful.key({modifiers}, "{key}", function () {spawn_function}("{keybinding.command}") end, {{description = "{keybinding.description}", group = "Generated"}}),'
+                        f'        awful.key({modifiers}, "{key}", {spawn_function}, {{description = "{keybinding.description}", group = "Generated"}}),'
                     )
             lines[-1] = lines[-1][:-1]  # Remove trailing comma from last line
         else:
