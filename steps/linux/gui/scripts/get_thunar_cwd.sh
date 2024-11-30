@@ -8,7 +8,7 @@ if [ "$focused_window_class" != "Thunar" ];  then
 fi
 
 # Save clipboard
-clipboard="$(xclip -o)"
+# clipboard="$(xclip -o)"
 
 # Activate Thunar window and copy the current path
 xdotool windowactivate --sync $focused_window_id || exit 1

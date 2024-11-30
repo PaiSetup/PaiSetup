@@ -20,6 +20,6 @@ DISPLAY=$test_display $xinitrc_path &
 pid_wm=$!
 
 echo "Press enter to stop testing WM"
-read
+read -r _
 kill -9 $pid_xephyr
 kill -9 $pid_wm

@@ -4,9 +4,8 @@ trash_dir=$HOME/.local/share/Trash
 
 while true; do
     printf "Cleanup $trash_dir (Y/N)? "
-    read answer
-    echo "WTF: $answer"
-    if [ "$answer" = y -o "$answer" = Y ]; then
+    read -r answer
+    if [ "$answer" = y ] || [ "$answer" = Y ]; then
         printf "\nBefore:\n"
         du -sh "$trash_dir" | sed "s/^/    /g"
 
@@ -19,9 +18,9 @@ while true; do
 
         break
     fi
-    if [ "$answer" = n -o "$answer" = N ]; then
+    if [ "$answer" = n ] || [ "$answer" = N ]; then
         echo "Aborting..."
         break
     fi
 done
-read _
+read -r _

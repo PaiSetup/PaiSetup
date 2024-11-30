@@ -1,3 +1,5 @@
+#!/bin/sh
+
 checkmate_name="$1"
 dwm_index="$2"
 awesome_name="$3"
@@ -8,7 +10,7 @@ fi
 
 case "$WM" in
     "dwm")
-        if [ -n "$dwm_index"; ]; then
+        if [ -n "$dwm_index" ]; then
             pkill "-RTMIN+$dwm_index" dwmblocks
         fi
         ;;

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 service=plexmediaserver.service
 url=http://localhost:32400/
