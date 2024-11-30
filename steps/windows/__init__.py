@@ -1,27 +1,27 @@
+from steps.ssh import SshStep
+from utils.setup_mode import SetupMode
+
 from .activate_windows import ActivateWindowsStep
-from .bash_scripts import BashScriptsStep
+from .dush import DushStep
 from .explorer import ExplorerStep
 from .extensions import ExtensionsStep
 from .folders import FoldersStep
 from .games import GamesStep
 from .git import GitStep
 from .hw_tools import HwToolsStep
-from .multimedia_tools import MultimediaToolsStep
 from .icons.icons import IconsStep
+from .multimedia_tools import MultimediaToolsStep
 from .packages.packages import PackagesStep
 from .power import PowerStep
 from .privacy import PrivacyStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
-from steps.ssh import SshStep
 from .startup import StartupStep
 from .time import TimeStep
 from .toolbar import ToolbarStep
 from .uninstall_bloat import UninstallBloatStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
-
-from utils.setup_mode import SetupMode
 
 
 def get_steps(args, root_dir, build_dir, secret_dir):
@@ -70,7 +70,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
     # Add steps only for my machines
     if args.mode == SetupMode.main or args.mode == SetupMode.extra:
         steps += [
-            BashScriptsStep(True),
+            DushStep(True),
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),

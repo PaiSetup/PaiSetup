@@ -44,6 +44,7 @@ class GuiStep(Step):
             "pacman-contrib",  # for checkupdates
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
+            "xdotool",  # for getting Thunar's cwd
         )
 
         # fmt: off

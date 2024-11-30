@@ -2,11 +2,11 @@ from steps.ssh import SshStep
 from utils.setup_mode import SetupMode
 
 from .audio import AudioStep
-from .bash_scripts import BashScriptsStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
 from .check_mate.check_mate import CheckMateStep
 from .clion.clion import ClionStep
+from .dush import DushStep
 from .encryption.encryption import EncryptionStep
 from .file_associations import FileAssociationsStep
 from .firefox import FirefoxStep
@@ -22,6 +22,7 @@ from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
 from .neovim.neovim import NeovimStep
 from .notes import NotesStep
+from .nush import NushStep
 from .packages import PackagesStep
 from .picard import PicardStep
 from .plex.plex import PlexStep
@@ -68,7 +69,8 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         DwmStep(build_dir, full=args.full, is_default_wm=False),
         AwesomeStep(build_dir, is_default_wm=True),
         StStep(build_dir, full=args.full),
-        BashScriptsStep(fetch_git=args.full),
+        DushStep(fetch_git=args.full),
+        NushStep(fetch_git=args.full),
         VscodeStep(build_dir),
         NeovimStep(),
         IconFontStep(full=args.full),
