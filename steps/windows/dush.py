@@ -8,7 +8,7 @@ class DushStep(DushStepBase):
 
     def express_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
-        root_dir = known_folders[KnownFolder.Scripts]
+        root_dir = known_folders[KnownFolder.Dush]
         self._projects_dir = known_folders[KnownFolder.Projects]
         self.setup_dush_root_dir(root_dir)
 
