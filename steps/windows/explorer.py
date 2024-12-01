@@ -47,7 +47,9 @@ class ExplorerStep(Step):
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCortanaButton", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowTaskViewButton", 0)
         set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", "PeopleBand", 0, create_keys=True)
-        set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", 2)
+        # set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "IsFeedsAvailable", 0)
+        set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "EnableFeeds", 0)
+        # set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", 2)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\PenWorkspace", "PenWorkspaceButtonDesiredVisibility", 0)
         set_registry_value_dword(HKLM, r"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "NoTaskGrouping", 1)
 

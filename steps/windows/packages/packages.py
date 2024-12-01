@@ -183,5 +183,5 @@ class PackagesStep(Step):
             "refreshenv | out-null",
             "echo $env:PATH",
         ]
-        new_path = run_powershell_command(powershell_command, stdout=Stdout.return_back()).strip()
+        new_path = run_powershell_command(powershell_command, stdout=Stdout.return_back()).stdout.strip()
         self._env.set("PATH", new_path, force=True)

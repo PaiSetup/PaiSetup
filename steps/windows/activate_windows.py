@@ -16,7 +16,7 @@ class ActivateWindowsStep(Step):
             "$isActivated = -Not [string]::IsNullOrEmpty($output)",
             "echo $isActivated",
         ]
-        output = run_powershell_command(powershell_command, stdout=Stdout.return_back(), shell=True)
+        output = run_powershell_command(powershell_command, stdout=Stdout.return_back(), shell=True).stdout
         return output.strip() == "True"
 
     def get_key(self):
