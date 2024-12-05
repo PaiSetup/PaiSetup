@@ -65,7 +65,7 @@ class ThunarStep(Step):
                 (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
                 (self._env.home() / "multimedia/movies", "Multimedia/Movies"),
             ]
-        dirs = [f"file:///{path} {name}" for path, name in dirs]
+        dirs = [f"file://{path} {name}" for path, name in dirs]
 
         self._file_writer.write_lines(
             file_path,
