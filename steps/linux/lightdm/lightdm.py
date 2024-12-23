@@ -12,6 +12,7 @@ class LightDmStep(Step):
         dependency_dispatcher.add_packages(
             "lightdm",
             "lightdm-gtk-greeter",
+            "numlockx",
         )
         dependency_dispatcher.register_homedir_file(".dmrc")
 
