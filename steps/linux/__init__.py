@@ -33,6 +33,7 @@ from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
 from .raspberry_pi import RaspberryPiStep
+from .rpi_led.rpi_led import RpiLedStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
 from .st.st import StStep
@@ -73,6 +74,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         NushStep(fetch_git=args.full),
         VscodeStep(build_dir),
         NeovimStep(),
+        RpiLedStep(),
         IconFontStep(full=args.full),
         PlexStep(),
         ProgrammingCppStep(graphics=True, systemc=True),

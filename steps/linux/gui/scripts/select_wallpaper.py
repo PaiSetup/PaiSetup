@@ -5,6 +5,7 @@ import os
 import random
 from pathlib import Path
 
+from steps.linux.rpi_led.update_rpi_led import main as setup_rpi_led
 from utils.command import *
 
 
@@ -181,6 +182,8 @@ if __name__ == "__main__":
 
     if args.wallpaper_file is None:
         wallpaper_file = get_random_wallpaper_file(home, args.cache_dir)
+    else:
+        wallpaper_file = args.wallpaper_file
     wallpaper_file = convert_to_png(wallpaper_file)
     main_color = generate_main_color(wallpaper_file, args.cache_dir)
     print(f"Setting a wallpaper {wallpaper_file}")
@@ -189,6 +192,7 @@ if __name__ == "__main__":
     setup_xresources(args.xresources_main_path, args.xresources_theme_path, main_color)
     setup_current_wallpaper_symlink(wallpaper_file, args.current_wallpaper_symlink_path)
     setup_cava_theme(args.cava_theme_file, main_color)
+    setup_rpi_led(color=main_color[1:])
     gtk_commands = setup_gtk_theme(pai_setup_root)
     setup_wm(pai_setup_root, wm)
     restart_wm(pai_setup_root, args.restart_wm, wm)
