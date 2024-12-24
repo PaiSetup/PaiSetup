@@ -25,6 +25,6 @@
     "explorer.confirmDelete": false,
     "trailing-spaces.highlightCurrentLine": false,
     "editor.minimap.renderCharacters": false,
-    "window.zoomLevel": -1,
+    "window.zoomLevel": 0.6,
     "git.openRepositoryInParentFolders": "never"
 }
