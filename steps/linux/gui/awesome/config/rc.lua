@@ -32,6 +32,7 @@ local script_widget = require("widget.script_widget")
 local callback_widget = require("widget.callback_widget")
 local tray_widget = require("widget.tray_widget")
 local home_panel = require("widget.home_panel")
+local rpi_led_widget = require("widget.rpi_led_widget")
 local taglist = require("widget.taglist")
 local tasklist = require("widget.tasklist")
 local layout_box = require("widget.layout_box")
@@ -138,7 +139,7 @@ utils.enable_viewed_tag_preserving()
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", utils.set_wallpaper)
 
--- Leaf widgets
+-- Leaf widgets (screen-agnostic)
 local memory_widget = script_widget("memory.sh", {button_info}, 5)
 local volume_widget = script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60, nil, "refresh:volume")
 local packages_widget = script_widget("packages.sh", {button_info, button_action}, 60, " ?", "refresh:packages")
@@ -155,6 +156,9 @@ audio_switch_widget:add_widget_to_update(volume_widget)
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     utils.set_wallpaper(s)
+
+    -- Leaf widgets (screen-specific)
+    local rpi_led_widget = rpi_led_widget(s, pai_setup) -- TODO: do this conditionally
 
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, tags.general, tags.general, tags.general, tags.general, tags.draw, tags.video, tags.home }, s, awful.layout.layouts[1])
@@ -190,6 +194,7 @@ awful.screen.connect_for_each_screen(function(s)
                 plex_widget,
                 trash_widget,
                 tray_widget,
+                rpi_led_widget,
                 warnings_widget,
                 shutdown_popup_widget,
             }),
