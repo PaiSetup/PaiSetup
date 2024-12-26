@@ -92,14 +92,14 @@ async def handle_client(reader, writer):
         tokens = line.split(" ")
         if len(tokens) != 4:
             led_state.set_invalid_state()
-            debug_log('Request "{line}" invalid - must be 4 tokens.')
+            debug_log(f'Request "{line}" invalid - must be 4 tokens.')
             continue
 
         # Convert them ints.
         try:
             tokens_int = [int(x) for x in tokens]
         except ValueError:
-            debug_log('Request "{line}" invalid - must be ints.')
+            debug_log(f'Request "{line}" invalid - must be ints.')
             led_state.set_invalid_state()
             continue
 
