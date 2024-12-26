@@ -8,6 +8,65 @@ home_path = os.environ["HOME"]
 config_path = f"{home_path}/.config/PaiSetup/rpi_led_config"
 
 
+class BrightnessAdjuster:
+    @staticmethod
+    def adjust_brightness(rgb, brightness):
+        hsv = BrightnessAdjuster._rgb_to_hsv(rgb)
+        hsv[2] = brightness
+        rgb = BrightnessAdjuster._hsv_to_rgb(hsv)
+        rgb = [int(x * 100) for x in rgb]
+        return rgb
+
+    @staticmethod
+    def _rgb_to_hsv(rgb):
+        r = rgb[0]
+        g = rgb[1]
+        b = rgb[2]
+        maxc = max(r, g, b)
+        minc = min(r, g, b)
+        v = maxc
+        if minc == maxc:
+            return [0.0, 0.0, v]
+        s = (maxc - minc) / maxc
+        rc = (maxc - r) / (maxc - minc)
+        gc = (maxc - g) / (maxc - minc)
+        bc = (maxc - b) / (maxc - minc)
+        if r == maxc:
+            h = bc - gc
+        elif g == maxc:
+            h = 2.0 + rc - bc
+        else:
+            h = 4.0 + gc - rc
+        h = (h / 6.0) % 1.0
+        return [h, s, v]
+
+    @staticmethod
+    def _hsv_to_rgb(hsv):
+        h = hsv[0]
+        s = hsv[1]
+        v = hsv[2]
+        if s == 0.0:
+            return v, v, v
+        i = int(h * 6.0)
+        f = (h * 6.0) - i
+        p = v * (1.0 - s)
+        q = v * (1.0 - s * f)
+        t = v * (1.0 - s * (1.0 - f))
+        i = i % 6
+        if i == 0:
+            return [v, t, p]
+        if i == 1:
+            return [q, v, p]
+        if i == 2:
+            return [p, v, t]
+        if i == 3:
+            return [p, q, v]
+        if i == 4:
+            return [t, p, v]
+        if i == 5:
+            return [v, p, q]
+
+
 class LedState:
     sections_count = 3
     sections_mask = (1 << sections_count) - 1
@@ -15,6 +74,7 @@ class LedState:
     def __init__(self):
         self.color = [0, 0, 100]
         self.enabled_sections = self.sections_mask
+        self.brightness = 1
 
     def apply(self, logger, color, brightness, enabled_sections):
         # Validate
@@ -45,6 +105,12 @@ class LedState:
             self.brightness = brightness
         if enabled_sections is not None:
             self.enabled_sections = enabled_sections
+
+        # Apply brightness
+        print(self.color)
+        self.color = BrightnessAdjuster.adjust_brightness(self.color, self.brightness)
+        print(self.color)
+
         return True
 
     @staticmethod
