@@ -119,6 +119,22 @@ def setup_cava_theme(cava_config_path, main_color):
         f.writelines(lines)
 
 
+def setup_rpi_led(main_color):
+    def hex_color_to_list(string):
+        if len(string) != 6:
+            return None
+
+        color = [
+            string[0:2],
+            string[2:4],
+            string[4:6],
+        ]
+        color = [int(x, 16) for x in color]
+        return color
+
+    color = hex_color_to_list(main_color[1:])
+
+
 def setup_current_wallpaper_symlink(wallpaper_file, current_wallpaper_symlink_path):
     # Defaul wallpaper is a symlink to an actual png file. It is consumed by window managers
     # during start and set as current wallpaper.
@@ -192,7 +208,7 @@ if __name__ == "__main__":
     setup_xresources(args.xresources_main_path, args.xresources_theme_path, main_color)
     setup_current_wallpaper_symlink(wallpaper_file, args.current_wallpaper_symlink_path)
     setup_cava_theme(args.cava_theme_file, main_color)
-    setup_rpi_led(color=main_color[1:])
+    setup_rpi_led(main_color)
     gtk_commands = setup_gtk_theme(pai_setup_root)
     setup_wm(pai_setup_root, wm)
     restart_wm(pai_setup_root, args.restart_wm, wm)

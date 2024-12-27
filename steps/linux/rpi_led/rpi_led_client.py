@@ -9,48 +9,144 @@ import socket  # Linux-only
 import threading
 import time
 
-import watchdog.events
-import watchdog.observers
+from steps.linux.rpi_led.update_rpi_led import main as update_rpi_led
 
-server_address = "192.168.100.36"
+server_address = "192.168.100.36"  # TODO hostname?
 server_port = 30123
 connect_timeout = 1
 send_interval = 8
-home_path = os.environ["HOME"]
-config_path = f"{home_path}/.config/PaiSetup/rpi_led_config"
+config_cache_path = os.environ["RPI_LED_CACHE"]
+fifo_file_path = os.environ["RPI_LED_FIFO"]
 
 
-class ThreadState:
+class BrightnessAdjuster:
+    @staticmethod
+    def adjust_brightness(rgb, brightness):
+        hsv = BrightnessAdjuster._rgb_to_hsv(rgb)
+        hsv[2] = brightness
+        rgb = BrightnessAdjuster._hsv_to_rgb(hsv)
+        rgb = [int(x * 100) for x in rgb]
+        return rgb
+
+    @staticmethod
+    def _rgb_to_hsv(rgb):
+        r = rgb[0]
+        g = rgb[1]
+        b = rgb[2]
+        maxc = max(r, g, b)
+        minc = min(r, g, b)
+        v = maxc
+        if minc == maxc:
+            return [0.0, 0.0, v]
+        s = (maxc - minc) / maxc
+        rc = (maxc - r) / (maxc - minc)
+        gc = (maxc - g) / (maxc - minc)
+        bc = (maxc - b) / (maxc - minc)
+        if r == maxc:
+            h = bc - gc
+        elif g == maxc:
+            h = 2.0 + rc - bc
+        else:
+            h = 4.0 + gc - rc
+        h = (h / 6.0) % 1.0
+        return [h, s, v]
+
+    @staticmethod
+    def _hsv_to_rgb(hsv):
+        h = hsv[0]
+        s = hsv[1]
+        v = hsv[2]
+        if s == 0.0:
+            return v, v, v
+        i = int(h * 6.0)
+        f = (h * 6.0) - i
+        p = v * (1.0 - s)
+        q = v * (1.0 - s * f)
+        t = v * (1.0 - s * (1.0 - f))
+        i = i % 6
+        if i == 0:
+            return [v, t, p]
+        if i == 1:
+            return [q, v, p]
+        if i == 2:
+            return [p, v, t]
+        if i == 3:
+            return [p, q, v]
+        if i == 4:
+            return [t, p, v]
+        if i == 5:
+            return [v, p, q]
+
+
+class LedState:
+    sections_count = 3
+    sections_mask = (1 << sections_count) - 1
+
+    def __init__(self):
+        self.color = [0, 0, 100]
+        self.enabled_sections = self.sections_mask
+        self.brightness = 1
+
+    @staticmethod
+    def read_from_cache():
+        state = LedState()
+        try:
+            with open(config_cache_path, "r") as file:
+                for line in file:
+                    line = line.strip()
+                    if not state.apply_change(line):
+                        print(f'WARNING: invalid command in cache file: "{line}"')
+        except FileNotFoundError:
+            pass
+        return state
+
+    def write_to_cache(self):
+        color = self.color
+        color = [str(x) for x in color]
+        color = " ".join(color)
+        update_rpi_led(color, self.brightness, self.enabled_sections, config_cache_path)
+
+    @staticmethod
+    def _convert_tokens(tokens, data_type, count, min_value, max_value):
+        if len(tokens) != 1 + count:
+            raise ValueError("Invalid argument count")
+        tokens_converted = [data_type(x) for x in tokens[1:]]
+        if not all((min_value <= x <= max_value for x in tokens_converted)):
+            raise ValueError("Invalid value range")
+        return tokens_converted
+
+    def apply_change(self, str):
+        tokens = str.split(" ")
+        try:
+            match tokens[0]:
+                case "c":
+                    self.color = LedState._convert_tokens(tokens, int, 3, 0, 255)
+                case "b":
+                    self.brightness = LedState._convert_tokens(tokens, float, 1, 0.0, 1.0)[0]
+                case "s":
+                    self.enabled_sections = LedState._convert_tokens(tokens, int, 1, 0, LedState.sections_mask)[0]
+                case _:
+                    raise ValueError("Unknown command type")
+            return True
+        except ValueError as e:
+            return False
+
+    def to_message(self):
+        color = BrightnessAdjuster.adjust_brightness(self.color, self.brightness)
+        tokens = color + [self.enabled_sections]
+        tokens = [str(x) for x in tokens]
+        return " ".join(tokens)
+
+
+class Thread:
     def __init__(self, target_function):
         self.thread = threading.Thread(target=target_function)
         self.condition = threading.Condition()
         self.kill_event = threading.Event()
+        self._connection_stop_signal = socket.socketpair()
 
     def start(self):
         self.thread.start()
-
-    def kill(self):
-        with self.condition:
-            self.kill_event.set()
-            self.condition.notify()
-
-    def join(self):
-        self.thread.join()
-
-
-class LedThread(ThreadState):
-    class ConnectResult(enum.Enum):
-        Success = enum.auto()
-        Error = enum.auto()
-        Killed = enum.auto()
-        Timeout = enum.auto()
-
-    def __init__(self):
-        super().__init__(self._main)
-        self._connection_stop_signal = socket.socketpair()
-
-        self.update_event = threading.Event()
-        self.message = ""
 
     def kill(self):
         with self.condition:
@@ -63,10 +159,18 @@ class LedThread(ThreadState):
         self._connection_stop_signal[0].close
         self._connection_stop_signal[1].close
 
-    def get_led_message(self):
-        if not self.message.endswith("\n"):
-            self.message = f"{self.message}\n"
-        return self.message.encode("ascii")
+
+class LedThread(Thread):
+    class ConnectResult(enum.Enum):
+        Success = enum.auto()
+        Error = enum.auto()
+        Killed = enum.auto()
+        Timeout = enum.auto()
+
+    def __init__(self, initial_led_state):
+        super().__init__(self._main)
+        self.led_state = initial_led_state
+        self.update_event = threading.Event()
 
     def _main(self):
         while not self.kill_event.is_set():
@@ -76,22 +180,22 @@ class LedThread(ThreadState):
                 connect_result, connect_data = self._connect_to_server(sock)
                 match connect_result:
                     case LedThread.ConnectResult.Success:
-                        print("Connected")
+                        print("LED: Connected")
                     case LedThread.ConnectResult.Error:
-                        print(f"Connection error ({connect_data})")  # TODO make sure we waited for at least connect_timeout
+                        print(f"LED: Connection error ({connect_data})")  # TODO make sure we waited for at least connect_timeout
                         continue
                     case LedThread.ConnectResult.Killed:
                         break
                     case LedThread.ConnectResult.Timeout:
-                        print("Connection timeout")
+                        print("LED: Connection timeout")
                         continue
 
                 try:
                     self._communicate_with_server(sock)
                 except (BrokenPipeError, ConnectionResetError):
-                    print("Disconnected")
+                    print("LED: Disconnected")
 
-        print("Led thread finishing...")
+        print("LED: Finishing...")
 
     def _connect_to_server(self, sock_fd):
         sock_fd.setblocking(False)
@@ -124,19 +228,18 @@ class LedThread(ThreadState):
         return (LedThread.ConnectResult.Timeout, "")
 
     def _communicate_with_server(self, sock):
-        sock.sendall(led_state.get_led_message())
+        self._send_to_server(sock)
         while True:
-            with led_state.condition:
-                was_notified = led_state.condition.wait(send_interval)
+            with self.condition:
+                was_notified = self.condition.wait(send_interval)
 
                 # If update_event is set, ObserverThread gave us new data. Send it to the RPI.
-                if led_state.update_event.is_set():
-                    led_state.update_event.clear()
-                    sock.sendall(led_state.get_led_message())
-                    print(f'Updating LED to "{led_state.message.strip()}"')
+                if self.update_event.is_set():
+                    self._send_to_server(sock)
+                    self.update_event.clear()
 
                 # If kill_event is set, main thread got interrupted. End execution.
-                if led_state.kill_event.is_set():
+                if self.kill_event.is_set():
                     break
 
                 # If the wait timed out, periodically check if the socket is still open. Server
@@ -148,53 +251,78 @@ class LedThread(ThreadState):
                     except BlockingIOError:
                         pass
 
+    def _send_to_server(self, sock):
+        message = self.led_state.to_message()
+        print(f'LED: sending "{message}" to RPI')
+        binary_message = (message + "\n").encode("ascii")
+        sock.sendall(binary_message)
 
-class ObserverThread(ThreadState):
-    def __init__(self):
+
+class ObserverThread(Thread):
+    def __init__(self, initial_led_state, led_thread):
         super().__init__(self._main)
+        self._shadow_led_state = initial_led_state
+        self._led_thread = led_thread
 
     def _main(self):
-        self._notify_led()
+        while not self.kill_event.is_set():
+            with open(fifo_file_path, "r", opener=ObserverThread._non_blocking_file_opener) as file:
+                self._handle_opened_fifo_file(file)
+        print("OBSERVER: Finishing...")
 
-        def on_config_modified(event):
-            if event.src_path == config_path:
-                self._notify_led()
+    @staticmethod
+    def _non_blocking_file_opener(path, flags):
+        # We need to open the file with NONBLOCK flag, because open() on FIFO file
+        # blocks until there's a writer available. That means we wouldn't be able
+        # to timeout or interrupt it. Nonblocking mode will give us a file descriptor
+        # immediately, which we can use in select().
+        return os.open(path, flags | os.O_NONBLOCK)
 
-        event_handler = watchdog.events.FileSystemEventHandler()
-        event_handler.on_modified = on_config_modified
-        event_handler.on_created = on_config_modified
-        observer = watchdog.observers.Observer()
-        observer.schedule(event_handler, config_path)
-        observer.start()
-
+    def _handle_opened_fifo_file(self, file):
         while True:
-            with self.condition:
-                self.condition.wait()
-                if self.kill_event.is_set():
+            stop_fd = self._connection_stop_signal[0]
+            file_fd = file.fileno()
+            readable, _, _ = select.select([stop_fd, file_fd], [], [])
+
+            # If stop fd is ready, we have been killed by the main thread.
+            if stop_fd in readable and self.kill_event.is_set():
+                break
+
+            # If file fd is ready, we have new data to read from the file.
+            if file_fd in readable:
+                # Read exactly one line the file. Empty line means file has
+                # been closed.
+                line = file.readline()
+                if not line:
                     break
 
-        observer.stop()
-        observer.join()
-        print("Observer thread finishing...")
+                # Strip the line of whitespace. If it became empty, it means
+                # we had an empty line. Ignore it for robustness.
+                line = line.strip()
+                if not line:
+                    continue
 
-    def _read_config(self):
-        try:
-            with open(config_path, "r") as file:
-                return file.readline()
-        except:
-            return "\n"
+                # Try to apply the command passed via the file. If it's applied
+                # correctly, notify the LED thread, so it makes neccessary changes.
+                if self._shadow_led_state.apply_change(line):
+                    self._send_state_to_led_thread()
+                    self._shadow_led_state.write_to_cache()
+                else:
+                    print(f'WARNING: invalid command passed to fifo "{line}"')
 
-    def _notify_led(self):
-        with led_state.condition:
-            led_state.message = self._read_config()
-            led_state.update_event.set()
-            led_state.condition.notify()
+    def _send_state_to_led_thread(self):
+        with self._led_thread.condition:
+            print(f"OBSERVER: sending {self._shadow_led_state.to_message()} to LED")
+            self._led_thread.led_state = self._shadow_led_state
+            self._led_thread.update_event.set()
+            self._led_thread.condition.notify()
 
 
 # Setup threads
-observer_thread = ObserverThread()
-led_state = LedThread()
-threads = [observer_thread, led_state]
+initial_led_state = LedState.read_from_cache()
+led_thread = LedThread(initial_led_state)
+observer_thread = ObserverThread(initial_led_state, led_thread)
+threads = [observer_thread, led_thread]
 
 # Start threads
 for t in threads:
