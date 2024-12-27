@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from steps.step import Step
+from utils.services.file_writer import LinePlacement
 
 
 class RpiLedStep(Step):
@@ -23,4 +24,5 @@ class RpiLedStep(Step):
                 f"fi",
                 f"{self._daemon_path} &",
             ],
+            line_placement=LinePlacement.Begin,
         )
