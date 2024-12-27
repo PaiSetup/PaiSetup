@@ -118,7 +118,7 @@ class CheckMateStep(Step):
                     line += " -s 1"
                 line += " >/dev/null 2>&1 &"
                 lines.append(line)
-            self._file_writer.write_lines(profile.launch_script_path, lines, file_type=FileType.PosixShell)
+            self._file_writer.write_lines(profile.launch_script_path, lines, file_type=FileType.PosixShell, flush=True)
 
             # Call the launch script in profile-specific xinitrc script
             self._file_writer.write_section(
@@ -129,4 +129,5 @@ class CheckMateStep(Step):
 
             # Call the launch script in current environment, if it's the default one
             if profile.is_default_profile:
+                print(profile.launch_script_path)
                 run_command(f"{profile.launch_script_path} >/dev/null 2>&1", shell=True)
