@@ -21,6 +21,10 @@ def main(color=None, brightness=None, enabled_sections=None, output_to_cache=Fal
         output_file = fifo_file_path
         opener = non_blocking_file_opener
 
+    if type(color) == list:
+        color = [str(x) for x in color]
+        color = " ".join(color)
+
     values = {
         "c": color,
         "b": brightness,

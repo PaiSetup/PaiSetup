@@ -101,9 +101,6 @@ class LedState:
         return state
 
     def write_to_cache(self):
-        color = self.color
-        color = [str(x) for x in color]
-        color = " ".join(color)
         update_rpi_led(color, self.brightness, self.enabled_sections, True, True)
 
     @staticmethod
