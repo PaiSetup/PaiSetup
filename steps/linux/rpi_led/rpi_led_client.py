@@ -4,8 +4,8 @@
 import enum
 import errno  # Linux-only
 import os
-import select
-import socket  # Linux-only
+import select  # Linux-only
+import socket
 import threading
 import time
 
@@ -104,7 +104,7 @@ class LedState:
         color = self.color
         color = [str(x) for x in color]
         color = " ".join(color)
-        update_rpi_led(color, self.brightness, self.enabled_sections, config_cache_path)
+        update_rpi_led(color, self.brightness, self.enabled_sections, True, True)
 
     @staticmethod
     def _convert_tokens(tokens, data_type, count, min_value, max_value):
