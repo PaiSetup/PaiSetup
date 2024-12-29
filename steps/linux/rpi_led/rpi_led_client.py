@@ -101,7 +101,7 @@ class LedState:
         return state
 
     def write_to_cache(self):
-        update_rpi_led(color, self.brightness, self.enabled_sections, True, True)
+        update_rpi_led(self.color, self.brightness, self.enabled_sections, True, True)
 
     @staticmethod
     def _convert_tokens(tokens, data_type, count, min_value, max_value):
