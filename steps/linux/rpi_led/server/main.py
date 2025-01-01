@@ -38,19 +38,26 @@ class LedState:
         self._write_timestamp = 1
         self._read_timestamp = 0
 
+        # Event variable to signal from TCP task to LED task, that state has been updated. Set the
+        # event, so the initial state is processed.
+        self._state_change_event = asyncio.Event()
+        self._state_change_event.set()
+
+    def _set_state(self, mode):
+        self.mode = mode
+        self._write_timestamp += 1
+        self._state_change_event.set()
+
     def set_on_state(self, color, enabled_sections):
         self.enabled_sections = enabled_sections
         self.color = color
-        self.mode = LedState.Mode_On
-        self._write_timestamp += 1
+        self._set_state(LedState.Mode_On)
 
     def set_invalid_state(self):
-        self.mode = LedState.Mode_Invalid
-        self._write_timestamp += 1
+        self._set_state(LedState.Mode_Invalid)
 
     def set_off_state(self):
-        self.mode = LedState.Mode_Off
-        self._write_timestamp += 1
+        self._set_state(LedState.Mode_Off)
 
     def fetch_is_state_dirty(self):
         if self._write_timestamp != self._read_timestamp:
@@ -74,6 +81,14 @@ class LedState:
 
     def get_led_count(self):
         return self._sections[-1]
+
+    async def wait_for_state_change(self, timeout):
+        # await self._state_change_event.wait()
+        try:
+            await asyncio.wait_for(self._state_change_event.wait(), timeout)
+            self._state_change_event.clear()
+        except asyncio.TimeoutError:
+            pass
 
 
 async def handle_client(reader, writer):
@@ -124,8 +139,7 @@ async def blink_debug_led(sleep_time, timeout=None):
 async def control_led():
     # Constants
     animated_modes = [LedState.Mode_Uninitialized, LedState.Mode_Invalid]
-    sleep_duration_normal = 0.1
-    sleep_duration_animated = 0.02
+    timeout_animated = 0.02
 
     # Variables
     time_slept = 0
@@ -134,13 +148,14 @@ async def control_led():
     while True:
         is_animated_mode = led_state.mode in animated_modes
 
-        # Async sleep to let other tasks work. Animated modes need shorted sleep time, so they
-        # don't look snappy. Other modes can be updated more rarely, but it still can't be too
-        # long, otherwise there will be a big delay.
-        # TODO implement a more intelligent waiting mechanism. Maybe asyncio.Condition()?
-        sleep_duration = sleep_duration_animated if is_animated_mode else sleep_duration_normal
-        await asyncio.sleep(sleep_duration)
-        time_slept += sleep_duration
+        # Async wait to let other tasks work. Animated modes need a short timeout duration, so they
+        # don't are regularly updated even though there's no mode change. Non-animated modes can
+        # just wait indefinitely until something changes.
+        timeout = timeout_animated if is_animated_mode else None
+        await led_state.wait_for_state_change(timeout)
+
+        # asyncio.sleep(sleep_duration)
+        time_slept += timeout_animated
 
         # We don't have to always update the LED state. Skip the loop if nothing changed with an
         # exception for modes that we want to animate. Then always go into to LED control logic.
