@@ -12,6 +12,9 @@ class RpiLedStep(Step):
         self._fifo_file_path = self._env.home() / ".config/PaiSetup/rpi_led_fifo"
 
     def perform(self):
+        # This must be done with LinePlacement.Begin, because env variables may
+        # be used in select_wallpaper.py. The daemon could be started any time
+        # and it would work.
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Setup and run rpi_Led daemon",

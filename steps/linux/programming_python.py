@@ -2,7 +2,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.keybinding import KeyBinding
-from utils.services.file_writer import FileType
+from utils.services.file_writer import FileType, LinePlacement
 
 
 class ProgrammingPythonStep(Step):
@@ -35,6 +35,7 @@ class ProgrammingPythonStep(Step):
                 'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',
                 f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
             ],
+            line_placement=LinePlacement.Env,
         )
 
         self._file_writer.write_lines(

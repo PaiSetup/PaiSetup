@@ -73,9 +73,10 @@ class ParseFailureException(Exception):
 
 class LinePlacement(Enum):
     Preamble = 0
-    Begin = 1
-    Normal = 2
-    End = 3
+    Env = 1
+    Begin = 2
+    Normal = 3
+    End = 4
 
 
 class FileDesc:
