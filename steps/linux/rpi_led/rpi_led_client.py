@@ -14,7 +14,7 @@ from steps.linux.rpi_led.update_rpi_led import main as update_rpi_led
 server_address = "192.168.100.36"  # TODO hostname?
 server_port = 30123
 connect_timeout = 1
-send_interval = 8
+minimum_send_interval = 0.015
 config_cache_path = os.environ["RPI_LED_CACHE"]
 fifo_file_path = os.environ["RPI_LED_FIFO"]
 
@@ -168,6 +168,7 @@ class LedThread(Thread):
         super().__init__(self._main)
         self.led_state = initial_led_state
         self.update_event = threading.Event()
+        self._last_send_time = None
 
     def _main(self):
         while not self.kill_event.is_set():
@@ -225,30 +226,66 @@ class LedThread(Thread):
         return (LedThread.ConnectResult.Timeout, "")
 
     def _communicate_with_server(self, sock):
+        # Initial send.
         self._send_to_server(sock)
+
+        # Pacing variable. RPI Pico is not a very powerful machine and we cannot send messages at arbitrary
+        # frequency. We have to pace it to some minimum interval between to sends to not stress the PRI too
+        # much. Before each send we will check whether the time interval between sends is not too small. If
+        # it is, we'll enter pacing mode and ignore all send requests until it ends. When pacing mode ends
+        # we will perform one send with the most recent data.
+        pacing_send_time = None
+
         while True:
             with self.condition:
-                was_notified = self.condition.wait(send_interval)
+                # Wait for something to happen. Other threads can notify us (wake us up) through
+                # the condition variable when state changes. We have a default timeout to regularly
+                # wake up and check whether we're still connected. But if we're in pacing mode, we'll
+                # calculate a timeout to wake us up and perform a send that we previously deferred.
+                timeout = connect_timeout
+                if pacing_send_time is not None:
+                    timeout = pacing_send_time - time.time()  # is negative timeout okay? I think so.
+                was_timeout = not self.condition.wait(timeout)
 
-                # If update_event is set, ObserverThread gave us new data. Send it to the RPI.
+                # If the wait timed out in pacing mode, pace period ended and we can perform a deferred send.
+                # If the wait timed out while not in pacing mode, check if the socket is still open.
+                if was_timeout:
+                    if pacing_send_time is not None:
+                        print("LED: pace period ended")
+                        pacing_send_time = None
+                        self._send_to_server(sock)
+                    else:
+                        try:
+                            # The server never sends anything, so we can use recv() to test if socket still
+                            # works. It returns an empty byte array when socket is closed and throws an
+                            # exception if there's no data t to receive, but the socket is open.
+                            sock.recv(1)
+                            break
+                        except BlockingIOError:
+                            pass
+
+                # If update_event is set, ObserverThread gave us new data which can be sent to the RPI.
                 if self.update_event.is_set():
-                    self._send_to_server(sock)
                     self.update_event.clear()
+
+                    # Check how recent our last send was. If it was too recent, calculate a pacing time - earliest
+                    # time, at which we should make the send. Otherwise, send normally.
+                    if pacing_send_time is None:
+                        current_send_time = time.time()
+                        interval = current_send_time - self._last_send_time
+                        if interval < minimum_send_interval:
+                            print(f"LED: starting pace period with {minimum_send_interval}s timeout.")
+                            pacing_send_time = self._last_send_time + minimum_send_interval
+                        else:
+                            self._send_to_server(sock)
 
                 # If kill_event is set, main thread got interrupted. End execution.
                 if self.kill_event.is_set():
                     break
 
-                # If the wait timed out, periodically check if the socket is still open. Server
-                # never sends anything, so we can use recv() to test this.
-                if not was_notified:
-                    try:
-                        sock.recv(1)  # Returns empty byte array when socket is closed.
-                        break
-                    except BlockingIOError:
-                        pass
-
     def _send_to_server(self, sock):
+        self._last_send_time = time.time()
+
         message = self.led_state.to_message()
         print(f'LED: sending "{message}" to RPI')
         binary_message = (message + "\n").encode("ascii")
