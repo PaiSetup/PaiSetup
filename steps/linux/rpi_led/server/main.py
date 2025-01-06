@@ -93,6 +93,8 @@ class LedState:
 
 async def handle_client(reader, writer):
     debug_log("Client connected")
+    blink_config.off_time = 0.1
+
     while True:
         # Read line from the client and decode it as an ascii string. This could
         # be more efficient if it worked on bytes instead, but I guess it's fine.
@@ -125,15 +127,35 @@ async def handle_client(reader, writer):
         led_state.set_on_state(color, enabled_sections)
 
     debug_log("Client disconnected")
+    blink_config.off_time = 1
     led_state.set_off_state()
 
 
-async def blink_debug_led(sleep_time, timeout=None):
+class BlinkConfig:
+    def __init__(self, on_time, off_time, timeout=None):
+        self.on_time = on_time
+        self.off_time = off_time
+        self.timeout = timeout
+
+
+async def blink_debug_led(blink_config):
+    debug_led.off()
+    is_on = False
+
     time_slept = 0
-    while timeout is None or time_slept < timeout:
+    while blink_config.timeout is None or time_slept < blink_config.timeout:
+        if is_on:
+            debug_led.off()
+            is_on = False
+            sleep_time = blink_config.on_time
+
+        else:
+            debug_led.on()
+            is_on = True
+            sleep_time = blink_config.off_time
+
         await asyncio.sleep(sleep_time)
         time_slept += sleep_time
-        debug_led.toggle()
 
 
 async def control_led():
@@ -183,10 +205,10 @@ async def control_led():
 
 # Connect to wifi
 print("Connecting to Wifi")
-asyncio.run(blink_debug_led(0.05, 1))
+asyncio.run(blink_debug_led(BlinkConfig(0.05, 0.05, 1)))
 if not net.connect():
     print("Failed connecting to Wifi. Blinking sadly forever")
-    asyncio.run(blink_debug_led(0.1))
+    asyncio.run(blink_debug_led(BlinkConfig(0.1, 0.1)))
 print("Connected to Wifi")
 net.set_hostname("RpiLed")
 
@@ -195,9 +217,12 @@ led_state = LedState()
 pin_number = 22
 led.initialize(pin_number, led_state.get_led_count())
 
+# Prepare global variable for blink config, so we can change it from other tasks.
+blink_config = BlinkConfig(1, 1)
+
 # Main tasks
 loop = asyncio.get_event_loop()
 loop.create_task(net.start_async_server(handle_client))
-loop.create_task(blink_debug_led(1))
+loop.create_task(blink_debug_led(blink_config))
 loop.create_task(control_led())
 loop.run_forever()
