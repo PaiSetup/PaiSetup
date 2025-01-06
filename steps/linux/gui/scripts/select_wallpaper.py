@@ -5,7 +5,7 @@ import os
 import random
 from pathlib import Path
 
-from steps.linux.rpi_led.update_rpi_led import main as update_rpi_led
+from steps.linux.rpi_led.client.led_state import LedState
 from utils.command import *
 
 
@@ -132,8 +132,9 @@ def setup_rpi_led(main_color):
         color = [int(x, 16) for x in color]
         return color
 
-    color = hex_color_to_list(main_color[1:])
-    update_rpi_led(color, silent=True)
+    led_state = LedState.read_from_cache()
+    led_state.color = hex_color_to_list(main_color[1:])
+    led_state.write_to_fifo()
 
 
 def setup_current_wallpaper_symlink(wallpaper_file, current_wallpaper_symlink_path):
