@@ -25,6 +25,7 @@ class RpiLedStep(Step):
                 f'    rm -f "$RPI_LED_FIFO"',
                 f'    mkfifo "$RPI_LED_FIFO"',
                 f"fi",
+                f"pkill -f '{self._daemon_path.name}'",
                 f"{self._daemon_path} &",
             ],
             line_placement=LinePlacement.Begin,
