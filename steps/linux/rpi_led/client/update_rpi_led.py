@@ -1,17 +1,6 @@
 #!/bin/python
 
-import os
-
 from steps.linux.rpi_led.client.led_state import LedState
-
-config_cache_path = os.environ["RPI_LED_CACHE"]
-fifo_file_path = os.environ["RPI_LED_FIFO"]
-
-timeout = 0.5
-
-
-def non_blocking_file_opener(path, flags):
-    return os.open(path, flags | os.O_NONBLOCK)
 
 
 def main(color=None, brightness=None, enabled_sections=None, silent=False):
@@ -30,6 +19,7 @@ def main(color=None, brightness=None, enabled_sections=None, silent=False):
         print("Could not apply all parameters")
         return
 
+    # Write changed led state to fifo file with a fallback to cache file
     success, message = led_state.write_to_fifo()
     if not silent:
         print(f"Commands:\n{led_state.convert_to_commands()}")
