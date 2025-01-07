@@ -201,7 +201,7 @@ if __name__ == "__main__":
     if args.wallpaper_file is None:
         wallpaper_file = get_random_wallpaper_file(home, args.cache_dir)
     else:
-        wallpaper_file = args.wallpaper_file
+        wallpaper_file = args.wallpaper_file.resolve()
     wallpaper_file = convert_to_png(wallpaper_file)
     main_color = generate_main_color(wallpaper_file, args.cache_dir)
     print(f"Setting a wallpaper {wallpaper_file}")
