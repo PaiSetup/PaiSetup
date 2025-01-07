@@ -4,7 +4,7 @@ from pathlib import Path
 
 from steps.step import Step, dependency_listener
 from utils.command import *
-from utils.services.file_writer import FileType
+from utils.services.file_writer import FileType, LinePlacement
 
 
 class HomeDirectoryStep(Step):
@@ -204,6 +204,7 @@ class HomeDirectoryStep(Step):
             ".config/PaiSetup/xinitrc_base",
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
+            line_placement=LinePlacement.Env,
         )
 
         # Prevent resetting user-dirs.dirs file on startup.
