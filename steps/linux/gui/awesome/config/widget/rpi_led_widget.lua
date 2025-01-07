@@ -8,8 +8,19 @@ local create_toggle_button = require("widget.toggle_button")
 local dpi = require("beautiful.xresources").apply_dpi
 
 local rpi_led_state = {}
-rpi_led_state.enabled_sections = 7
-rpi_led_state.brightness = 0.5
+rpi_led_state.enabled_sections = 0
+rpi_led_state.brightness = 0
+rpi_led_state.query_rpi_led = function(self)
+    pai_setup = "/home/maciej/linux_setup" -- TODO hardcoded
+    command = pai_setup .. "/steps/linux/rpi_led/client/query_rpi_led.py --brightness --sections"
+    awful.spawn.easy_async_with_shell(command, function(stdout)
+        matcher = stdout:gmatch("[^\r\n]+")
+        rpi_led_state.brightness = matcher()
+        rpi_led_state.enabled_sections = tonumber(matcher())
+
+        awesome.emit_signal("rpi_led::queried_state")
+    end)
+end
 rpi_led_state.update_rpi_led = function(self)
     pai_setup = "/home/maciej/linux_setup" -- TODO hardcoded
     executable = pai_setup .. "/steps/linux/rpi_led/client/update_rpi_led.py"
@@ -40,14 +51,29 @@ rpi_led_state.get_brightness = function(self)
 end
 
 local function create_section_button(icon, index)
-    return create_toggle_button(
+    local function callback(widget, value, index)
+        if widget.send_to_rpi then
+            rpi_led_state:set_section(value, index)
+        end
+    end
+
+    local widget = create_toggle_button(
         icon,
         beautiful.color_theme,
         beautiful.color_gray_dark,
-        rpi_led_state:is_section_enabled(index),
-        function(value, index) rpi_led_state:set_section(value, index) end,
+        true,
+        callback,
         index
     )
+    widget.send_to_rpi = true
+
+    awesome.connect_signal("rpi_led::queried_state", function()
+        widget.send_to_rpi = false
+        widget:set_is_clicked(rpi_led_state:is_section_enabled(index))
+        widget.send_to_rpi = true
+    end)
+
+    return widget
 end
 
 local function create_brightness_slider()
@@ -59,9 +85,20 @@ local function create_brightness_slider()
     widget.handle_shape = gears.shape.circle
     widget.handle_width = dpi(25)
     widget.value = rpi_led_state:get_brightness()
-    widget:connect_signal("property::value", function(widget)
-        rpi_led_state:set_brightness(widget.value)
+    widget.send_to_rpi = true
+
+    widget:connect_signal("property::value", function()
+        if widget.send_to_rpi then
+            rpi_led_state:set_brightness(widget.value)
+        end
     end)
+
+    awesome.connect_signal("rpi_led::queried_state", function()
+        widget.send_to_rpi = false
+        widget.value = rpi_led_state:get_brightness()
+        widget.send_to_rpi = true
+    end)
+
     return widget
 end
 
@@ -129,5 +166,7 @@ end
 return function(screen, pai_setup)
     popup = create_popup(screen, pai_setup)
     button = create_button(popup)
+
+    rpi_led_state.query_rpi_led()
     return button
 end
