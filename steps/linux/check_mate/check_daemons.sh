@@ -6,5 +6,5 @@ $PAI_SETUP_ROOT/steps/linux/check_mate/is_daemon_running.sh << EOM
     flameshot flameshot
     picom picom
     [a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie udiskie
-    [a-zA-Z/]+python[23]? [a-zA-Z_/]+/rpi_led/rpi_led_client.py rpi_led_client
+    [a-zA-Z/]+python[23]? [a-zA-Z_/]+/rpi_led/client/rpi_led_client.py rpi_led_client
 EOM

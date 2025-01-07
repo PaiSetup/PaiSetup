@@ -7,7 +7,7 @@ from utils.services.file_writer import LinePlacement
 class RpiLedStep(Step):
     def __init__(self):
         super().__init__("RpiLed")
-        self._daemon_path = Path(__file__).parent / "rpi_led_client.py"
+        self._daemon_path = Path(__file__).parent / "client/rpi_led_client.py"
         self._cache_file_path = self._env.home() / ".cache/PaiSetup/rpi_led_config"
         self._fifo_file_path = self._env.home() / ".config/PaiSetup/rpi_led_fifo"
 
