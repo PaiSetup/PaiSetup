@@ -27,7 +27,7 @@ class NotesStep(Step):
 
     def perform(self):
         ext.download(
-            "https://github.com/InternalMD/Notes.git",
+            "https://github.com/DziubanMaciej/Notes.git",
             "master",
             self._notes_dir,
             logger=self._logger,

@@ -10,7 +10,7 @@ class NushStep(Step):
 
     def perform(self):
         ext.download(
-            "https://github.com/InternalMD/Nush.git",
+            "https://github.com/PaiSetup/Nush.git",
             "master",
             self._nush_root_dir,
             logger=self._logger,
