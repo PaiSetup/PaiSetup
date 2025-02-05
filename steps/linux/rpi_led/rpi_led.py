@@ -11,6 +11,9 @@ class RpiLedStep(Step):
         self._cache_file_path = self._env.home() / ".cache/PaiSetup/rpi_led_config"
         self._fifo_file_path = self._env.home() / ".config/PaiSetup/rpi_led_fifo"
 
+    def express_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z_/]+/rpi_led/client/rpi_led_client.py", "rpi_led_client")
+
     def perform(self):
         # This must be done with LinePlacement.Begin, because env variables may
         # be used in select_wallpaper.py. The daemon could be started any time

@@ -12,6 +12,7 @@ class UlauncherStep(Step):
 
     def express_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("ulauncher")
+        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher", "ulauncher")
 
     def perform(self):
         self._logger.log("Configuring ulauncher")

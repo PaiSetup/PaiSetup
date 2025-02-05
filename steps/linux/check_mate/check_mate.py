@@ -51,7 +51,6 @@ class CheckMateStep(Step):
             is_global_profile=True,
         )
 
-        self.register_periodic_check(self._current_step_dir / "check_daemons.sh", 3, multi_line=True, client_name="Daemons")
         self.register_periodic_check(self._current_step_dir / "check_keyboard_layout.sh", 60, client_name="KeyboardLayout")
         self.register_periodic_check(self._current_step_dir / "check_network_connectivity.sh", 10, client_name="NetworkConnectivity")
         self.register_periodic_check(self._current_step_dir / "check_network_interface.sh", 5, client_name="NetworkInterface")

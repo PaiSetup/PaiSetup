@@ -40,12 +40,17 @@ class GuiStep(Step):
             "libxft",
             "xorg-setxkbmap",
             "yad",
+            "udiskie",
             "flameshot",
             "pacman-contrib",  # for checkupdates
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
             "xdotool",  # for getting Thunar's cwd
         )
+
+        dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
+        dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
+        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
 
         # fmt: off
         dependency_dispatcher.add_keybindings(

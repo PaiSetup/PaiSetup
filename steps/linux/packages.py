@@ -159,7 +159,6 @@ class PackagesStep(Step):
                 "dash-static-musl",
                 "unzip",
                 "udisks2",
-                "udiskie",
                 "qpdfview",
                 "pdfsam",
                 "zip",
