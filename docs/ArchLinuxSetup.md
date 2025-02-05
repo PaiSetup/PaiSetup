@@ -89,5 +89,3 @@ https://mariadb.com/kb/en/operating-system-error-codes/
 
 # Notes
 NOTE: Audio may not work on first boot, due to some drivers not being enabled. Maybe I could enable them with modprobe, but it's just easier to reboot.
-
-TODO: merge arch.sh and arch_grub.sh scripts into one

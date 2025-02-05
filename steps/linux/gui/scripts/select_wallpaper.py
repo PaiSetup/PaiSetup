@@ -159,7 +159,6 @@ def setup_wm(pai_setup_root, wm):
     match wm:
         case "dwm":
             # If DWM calls this script, we have to set the wallpaper (DWM cannot do this)
-            # TODO create a patch for DWM to set the wallpaper. It will be cleaner.
             print("  Setting wallpaper for DWM")
             run_command("feh --bg-scale ~/.config/PaiSetup/wallpaper")
         case "awesome":
