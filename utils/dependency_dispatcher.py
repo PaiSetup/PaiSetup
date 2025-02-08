@@ -1,4 +1,5 @@
 from enum import Enum
+
 from steps.step import Step
 
 
@@ -54,14 +55,20 @@ class DependencyDispatcher:
         self._listeners = {}
         self._auto_resolve = auto_resolve
 
-    def register_listener(self, method):
-        # Create new listener for this method name if neccessary
-        method_name = method.__name__
-        if method_name not in self._listeners:
-            self._listeners[method_name] = Listener(self)
+    def register_handlers(self, step):
+        """
+        This method detects methods decorated with @dependency_listener and registers them to the
+        dependency dispatcher. Such method can be called by other steps during express_dependencies
+        phase. This method must not be implemented by deriving classes.
+        """
+        for method in dir(step.__class__):
+            method = getattr(step, method)
 
-        # Add the method to listener
-        self._listeners[method_name].register(method)
+            if hasattr(method, "_is_dependency_listener"):
+                method_name = method.__name__
+                if method_name not in self._listeners:
+                    self._listeners[method_name] = Listener(self)
+                self._listeners[method_name].register(method)
 
     def __getattr__(self, method_name):
         if method_name not in self._listeners:
@@ -71,3 +78,11 @@ class DependencyDispatcher:
 
     def is_auto_resolve_enabled(self):
         return self._auto_resolve
+
+def dependency_listener(func):
+    """
+    A decorator used for marking methods of Step implementors as dependency listeners. This allows
+    other steps to depend on the marked method and call it during express_dependencies phase.
+    """
+    func._is_dependency_listener = True
+    return func

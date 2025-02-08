@@ -1,6 +1,7 @@
 import utils.external_project as ext
-from steps.step import Step, dependency_listener
+from steps.step import Step
 from utils.command import *
+from utils.dependency_dispatcher import dependency_listener
 from utils.os_helpers import Pushd
 
 

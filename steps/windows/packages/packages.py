@@ -2,9 +2,10 @@ import re
 from pathlib import Path
 
 import utils.external_project as ext
-from steps.step import Step, dependency_listener
+from steps.step import Step
 from steps.windows.folders import KnownFolder
 from utils.command import *
+from utils.dependency_dispatcher import dependency_listener
 from utils.os_helpers import Pushd
 
 from .package_info import PackageInfo, custom_packages_dir

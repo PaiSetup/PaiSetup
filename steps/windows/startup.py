@@ -1,5 +1,6 @@
-from steps.step import Step, dependency_listener
+from steps.step import Step
 from utils.command import *
+from utils.dependency_dispatcher import dependency_listener
 from utils.windows.shortcut import create_shortcut
 from utils.windows.windows_registry import *
 

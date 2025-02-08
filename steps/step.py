@@ -39,18 +39,6 @@ class Step:
         cls._logger.finalize()
         cls._perf_analyzer.finalize()  # Has to be last
 
-    def register_as_dependency_listener(self, dependency_dispatcher):
-        """
-        This method detects methods decorated with @dependency_listener and registers them to the
-        dependency dispatcher. Such method can be called by other steps during express_dependencies
-        phase. This method must not be implemented by deriving classes.
-        """
-        methods = dir(self.__class__)
-        methods = [getattr(self, x) for x in methods]
-        methods = [x for x in methods if hasattr(x, "_is_dependency_listener")]
-        for method in methods:
-            dependency_dispatcher.register_listener(method)
-
     def register_env_variables(self):
         """
         This method can be implemented by deriving classes.
@@ -97,12 +85,3 @@ class Step:
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__
         return method_name in self_dict and self_dict[method_name] != class_dict[method_name]
-
-
-def dependency_listener(func):
-    """
-    A decorator used for marking methods of Step implementors as dependency listeners. This allows
-    other steps to depend on the marked method and call it during express_dependencies phase.
-    """
-    func._is_dependency_listener = True
-    return func

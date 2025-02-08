@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-from steps.step import Step
-from steps import get_steps
-from utils.dependency_dispatcher import DependencyDispatcher
-from utils.setup_mode import SetupMode
-from utils.os_function import OperatingSystem
-
-from pathlib import Path
-from utils.argparser_utils import EnumAction, PathAction
 import argparse
+from pathlib import Path
+
+from steps import get_steps
+from steps.step import Step
+from utils.argparser_utils import EnumAction, PathAction
+from utils.dependency_dispatcher import DependencyDispatcher
+from utils.os_function import OperatingSystem
+from utils.setup_mode import SetupMode
 
 # Prepare common paths
 root_dir = Path(__file__).parent
@@ -56,7 +56,7 @@ for step in steps:
 Step._logger.log("Handling steps dependencies")
 dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
-    step.register_as_dependency_listener(dependencies)
+    dependencies.register_handlers(step)
 enabled_steps = [step for step in steps if step.is_enabled()]  # Save into variable, because steps may be enabled during iteration
 for step in enabled_steps:
     step.express_dependencies(dependencies)
