@@ -17,7 +17,7 @@ from .privacy import PrivacyStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .startup import StartupStep
-from .time import TimeStep
+from .time.time import TimeStep
 from .toolbar import ToolbarStep
 from .uninstall_bloat import UninstallBloatStep
 from .virtualbox import VirtualBoxStep

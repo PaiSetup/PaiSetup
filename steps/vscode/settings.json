@@ -26,5 +26,6 @@
     "trailing-spaces.highlightCurrentLine": false,
     "editor.minimap.renderCharacters": false,
     "window.zoomLevel": 0.6,
-    "git.openRepositoryInParentFolders": "never"
+    "git.openRepositoryInParentFolders": "never",
+    "security.workspace.trust.untrustedFiles": "open"
 }
