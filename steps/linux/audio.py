@@ -1,5 +1,6 @@
-from steps.step import Step
 import os
+
+from steps.step import Step
 
 
 class AudioStep(Step):
@@ -7,7 +8,7 @@ class AudioStep(Step):
         super().__init__("Audio")
         self._use_pipewire = False
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             # Low level alsa
             "alsa-firmware",

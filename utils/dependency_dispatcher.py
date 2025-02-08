@@ -1,4 +1,4 @@
-from enum import Enum
+import enum
 
 from steps.step import Step
 
@@ -27,7 +27,7 @@ class Listener:
                 if self._dependency_dispatcher.is_auto_resolve_enabled():
                     step._logger.log(f"INFO: automatic dependency resolving is enabled. Enabling {step.name} step")
                     step.set_enabled(True)
-                    step.express_dependencies(self._dependency_dispatcher)
+                    step.push_dependencies(self._dependency_dispatcher)
                 else:
                     step._logger.push_warning(f"automatic dependency resolving is disabled, but {method.__qualname__} is used as a dependency.")
 
@@ -48,7 +48,7 @@ class DependencyDispatcher:
     Each step can express its dependencies, by calling the handler method on an object od DependencyDispatcher.
     DependencyDispatcher will forward the call to the appriopriate registered handler.
     For example GitStep can express its dependency on 'git' package being installed by calling "dispatcher.add_packages('git')".
-    To achieve this the step has to implement express_dependencies().
+    To achieve this the step has to implement push_dependencies().
     """
 
     def __init__(self, auto_resolve):
@@ -58,7 +58,7 @@ class DependencyDispatcher:
     def register_handlers(self, step):
         """
         This method detects methods decorated with @dependency_listener and registers them to the
-        dependency dispatcher. Such method can be called by other steps during express_dependencies
+        dependency dispatcher. Such method can be called by other steps during push_dependencies
         phase. This method must not be implemented by deriving classes.
         """
         for method in dir(step.__class__):
@@ -82,7 +82,7 @@ class DependencyDispatcher:
 def dependency_listener(func):
     """
     A decorator used for marking methods of Step implementors as dependency listeners. This allows
-    other steps to depend on the marked method and call it during express_dependencies phase.
+    other steps to depend on the marked method and call it during push_dependencies phase.
     """
     func._is_dependency_listener = True
     return func

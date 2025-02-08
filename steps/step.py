@@ -53,7 +53,7 @@ class Step:
         """
         pass
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         """
         This method can be implemented by deriving classes.
 

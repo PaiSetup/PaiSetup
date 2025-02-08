@@ -37,7 +37,7 @@ class GpuStep(Step):
                 ["PYTHONPATH=$PAI_SETUP_ROOT $PAI_SETUP_ROOT/steps/linux/gpu/nvidia_enable_vsync.py"],
             )
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         vendor_specific_packages = {
             GpuVendor.Intel: [
                 "vulkan-intel",

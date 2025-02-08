@@ -87,7 +87,7 @@ class CheckMateStep(Step):
         script_args = f"{command_regex} {name}"
         self.register_periodic_check(script, 3, script_args=script_args, **kwargs)
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("check_mate-bin")
 
     def perform(self):

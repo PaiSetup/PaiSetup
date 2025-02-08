@@ -9,7 +9,7 @@ class TimeStep(Step):
         super().__init__("Time")
         self._sync_time_script_path = Path(__file__).parent / "sync_time.ps1"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_startup_entry("sync_time", self._sync_time_script_path, as_admin=True)
 
     def perform(self):

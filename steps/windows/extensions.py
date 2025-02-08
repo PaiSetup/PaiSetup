@@ -34,7 +34,7 @@ class ExtensionsStep(Step):
         super().__init__("Extensions")
         self._app_key_npp = "PaiSetupNpp"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("notepadplusplus")
         self._npp_install_dir = dependency_dispatcher.get_package_info("notepadplusplus").install_dir
 

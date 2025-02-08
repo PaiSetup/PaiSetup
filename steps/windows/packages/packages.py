@@ -18,7 +18,7 @@ class PackagesStep(Step):
         self._is_main_machine = is_main_machine
         self._packages = []
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
         self._programs_dir = known_folders[KnownFolder.Programs]
         self._hw_tools_dir = known_folders[KnownFolder.HwTools]

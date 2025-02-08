@@ -15,7 +15,7 @@ class PlexStep(Step):
     def __init__(self):
         super().__init__("Plex")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("plex-media-server")
 
     def perform(self):

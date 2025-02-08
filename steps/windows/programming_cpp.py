@@ -6,7 +6,7 @@ class ProgrammingCppStep(Step):
         super().__init__("ProgrammingCpp")
         self._graphics = graphics
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "cmake",
             "doxygen.install",

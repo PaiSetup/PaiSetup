@@ -8,7 +8,7 @@ class ProgrammingRustStep(Step):
         self._cargo_home = self._env.home() / ".local/share/cargo"
         self._rustup_home = self._env.home() / ".local/share/rustup"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("rustup")
 
     def register_env_variables(self):

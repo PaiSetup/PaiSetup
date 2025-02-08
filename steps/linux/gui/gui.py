@@ -7,7 +7,7 @@ from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType, LinePlacement
 
 perform_called = False
-express_dependencies_called = False
+push_dependencies_called = False
 
 
 class GuiStep(Step):
@@ -23,11 +23,11 @@ class GuiStep(Step):
         self._setup_xresources_theme()
         self._file_writer.remove_file(".cache/PaiSetup/wallpapers/directories")
 
-    def express_dependencies(self, dependency_dispatcher):
-        global express_dependencies_called
-        if express_dependencies_called:
+    def push_dependencies(self, dependency_dispatcher):
+        global push_dependencies_called
+        if push_dependencies_called:
             return
-        express_dependencies_called = True
+        push_dependencies_called = True
 
         dependency_dispatcher.add_packages(
             "xorg-xrandr",

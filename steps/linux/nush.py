@@ -17,7 +17,7 @@ class NushStep(Step):
             fetch=self._fetch_git,
         )
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "python-music-tag",  # Needed by music_tagger.py
             "python-pytz",  # Needed by size_fixer.py

@@ -16,11 +16,11 @@ class SshStep(Step):
         self._secret_dir = secret_dir
 
     @windows_only
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("git")
 
     @linux_only
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("openssh")
         dependency_dispatcher.register_homedir_file(".ssh")
 

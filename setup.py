@@ -59,7 +59,7 @@ for step in steps:
     dependencies.register_handlers(step)
 enabled_steps = [step for step in steps if step.is_enabled()]  # Save into variable, because steps may be enabled during iteration
 for step in enabled_steps:
-    step.express_dependencies(dependencies)
+    step.push_dependencies(dependencies)
 
 # List steps
 if args.list_steps:

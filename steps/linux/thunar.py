@@ -34,7 +34,7 @@ class ThunarStep(Step):
             }
         )
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "thunar",
             "thunar-archive-plugin",

@@ -24,7 +24,7 @@ class DushStep(DushStepBase):
         self._env.set("DUSH_PATH", self._dush_root_dir)
         self._env.set("DUSH_WORKSPACE", self._env.home() / "work")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "shellcheck",  # needed for sc/scc scripts
         )

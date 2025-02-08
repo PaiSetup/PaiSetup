@@ -1,9 +1,10 @@
-from steps.step import Step
 import json
 import os
-from utils.services.file_writer import FileType
 from pathlib import Path
+
 import utils.external_project as ext
+from steps.step import Step
+from utils.services.file_writer import FileType
 
 
 class ImmediateCharonCall:
@@ -61,7 +62,7 @@ class CharonStep(Step):
             ),
         ]
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         for call in self._immediate_charon_calls:
             action = {
                 "name": call.name,

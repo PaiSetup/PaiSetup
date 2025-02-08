@@ -9,7 +9,7 @@ class ShellStep(Step):
         super().__init__("Shell")
         self._root_dir = root_dir
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("eza")
         dependency_dispatcher.register_homedir_file(".profile")
         dependency_dispatcher.register_homedir_file(".bashrc")

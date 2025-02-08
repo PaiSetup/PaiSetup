@@ -1,5 +1,6 @@
-from steps.step import Step
 import os
+
+from steps.step import Step
 
 
 class BluetoothStep(Step):
@@ -7,7 +8,7 @@ class BluetoothStep(Step):
         super().__init__("Bluetooth")
         self.disable_suspending_command = ""
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "bluez",  # Core driver
             "bluez-utils",  # For bluetoothctl

@@ -7,7 +7,7 @@ class VirtualBoxStep(Step):
         super().__init__("VirtualBox")
         self._vm_dir = self._env.home() / "vm"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "virtualbox",
             "virtualbox-guest-iso",

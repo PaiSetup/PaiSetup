@@ -40,7 +40,7 @@ class GtkThemeStep(Step):
         self._current_step_dir = Path(__file__).parent
         self._emblems = {}
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "gvfs",
             "lxappearance",  # not stricly needed, but useful when checking gtk themes

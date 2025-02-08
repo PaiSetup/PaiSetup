@@ -1,12 +1,14 @@
-from steps.step import Step
 from pathlib import Path
+
+from steps.step import Step
+
 
 class ClionStep(Step):
     def __init__(self):
         super().__init__("Clion")
         self._current_step_dir = Path(__file__).parent
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "clion",
             "clion-jre",

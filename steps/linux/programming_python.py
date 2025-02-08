@@ -9,7 +9,7 @@ class ProgrammingPythonStep(Step):
     def __init__(self):
         super().__init__("Programming Python")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         self._file_writer.write_lines(
             ".config/bpython/config",
             [

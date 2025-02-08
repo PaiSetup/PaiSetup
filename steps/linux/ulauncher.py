@@ -10,7 +10,7 @@ class UlauncherStep(Step):
     def __init__(self):
         super().__init__("Ulauncher")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("ulauncher")
         dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher", "ulauncher")
 

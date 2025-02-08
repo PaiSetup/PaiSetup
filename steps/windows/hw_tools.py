@@ -6,7 +6,7 @@ class HwToolsStep(Step):
         super().__init__("HwTools")
         self._gaming = gaming
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "hwmonitor",
             "crystaldiskmark",

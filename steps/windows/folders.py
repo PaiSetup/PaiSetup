@@ -76,7 +76,7 @@ class FoldersStep(Step):
     def get_known_folders(self):
         return self._folders
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")
 
         home = self._env.home()

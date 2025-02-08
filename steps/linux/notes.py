@@ -12,7 +12,7 @@ class NotesStep(Step):
         self.fetch_git = fetch_git
         self._notes_dir = scripts_dir = self._env.home() / "notes"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
         dependency_dispatcher.add_keybindings(KeyBinding("t").mod().shift().execute("obsidian e").desc("Obsidian"))
         dependency_dispatcher.set_folder_icon(self._notes_dir, "notes")

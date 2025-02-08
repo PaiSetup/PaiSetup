@@ -10,7 +10,7 @@ class ProgrammingCppStep(Step):
         self._graphics = graphics
         self._systemc = systemc
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "base-devel",
             "cmake",

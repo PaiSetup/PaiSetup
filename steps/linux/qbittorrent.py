@@ -1,11 +1,12 @@
 from steps.step import Step
 
+
 class QBitTorrentStep(Step):
     def __init__(self, is_main_machine):
         super().__init__("QBitTorrent")
         self._is_main_machine = is_main_machine
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("qbittorrent")
 
     def perform(self):

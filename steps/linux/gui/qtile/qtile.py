@@ -22,8 +22,8 @@ class QtileStep(GuiStep):
     def add_keybindings(self, *keybindings):
         self._keybindings += keybindings
 
-    def express_dependencies(self, dependency_dispatcher):
-        super().express_dependencies(dependency_dispatcher)
+    def push_dependencies(self, dependency_dispatcher):
+        super().push_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages("qtile")
         dependency_dispatcher.add_xsession("Qtile", self._env.home() / self._xinitrc_path)
 

@@ -9,7 +9,7 @@ class VscodeStep(VscodeStepBase):
         super().__init__(root_build_dir)
         self._root_build_dir = root_build_dir
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "code",
             "code-features",  # Fixes some issues with loading ms-python.python extension

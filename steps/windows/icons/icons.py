@@ -12,7 +12,7 @@ class IconsStep(Step):
         self._icons_dir = Path(__file__).parent / "icons"
         self._merge_commands = False
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")
 
         known_folders = dependency_dispatcher.get_known_folders()

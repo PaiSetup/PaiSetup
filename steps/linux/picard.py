@@ -1,15 +1,16 @@
-from steps.step import Step
 import json
 import os
-from utils.services.file_writer import FileType
+
 import utils.external_project as ext
+from steps.step import Step
+from utils.services.file_writer import FileType
 
 
 class PicardStep(Step):
     def __init__(self):
         super().__init__("Picard")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         config_file_path = self._env.home() / ".config/MusicBrainz/Picard.ini"
         config = self._get_picard_config()
 

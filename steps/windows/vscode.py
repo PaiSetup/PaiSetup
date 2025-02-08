@@ -9,7 +9,7 @@ class VscodeStep(VscodeStepBase):
         super().__init__("Vscodium")
         self._root_build_dir = root_build_dir
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("vscodium")
         self._vscode_command = dependency_dispatcher.get_package_info("vscodium").install_dir / "bin\\codium"
         self._vscode_command = f'"{self._vscode_command}"'

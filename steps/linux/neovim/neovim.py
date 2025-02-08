@@ -1,6 +1,6 @@
-from steps.step import Step
 from pathlib import Path
 
+from steps.step import Step
 
 """
 Neovim configuration
@@ -29,7 +29,7 @@ class NeovimStep(Step):
         self._nvim_dir_physical_path = Path(__file__).parent / "config"
         self._nvim_dir_path = self._env.home() / ".config/nvim"
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("neovim")
         dependency_dispatcher.register_homedir_file(self._vim_dir_path)
 

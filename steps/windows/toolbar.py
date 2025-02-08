@@ -15,7 +15,7 @@ class ToolbarStep(Step):
         super().__init__("Toolbar")
         self._root_dir = root_dir
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")
 
         known_folders = dependency_dispatcher.get_known_folders()

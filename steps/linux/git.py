@@ -10,7 +10,7 @@ class GitStep(Step):
     def __init__(self):
         super().__init__("Git")
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("git")
 
     def perform(self):

@@ -1,6 +1,7 @@
-from steps.step import Step
-from pathlib import Path
 import os
+from pathlib import Path
+
+from steps.step import Step
 from utils.services.file_writer import FileType
 
 
@@ -9,7 +10,7 @@ class FirefoxStep(Step):
         super().__init__("Firefox")
         self._is_default_browser = is_default_browser
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("firefox")
         dependency_dispatcher.register_homedir_file(".mozilla")
 

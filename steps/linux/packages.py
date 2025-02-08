@@ -137,7 +137,7 @@ class PackagesStep(Step):
         packages = "\n".join(packages)
         print(packages)
 
-    def express_dependencies(self, dependency_dispatcher):
+    def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             [
                 # Installed during OS installation
