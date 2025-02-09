@@ -5,7 +5,7 @@ import utils.external_project as ext
 from steps.step import Step
 from steps.windows.folders import KnownFolder
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import dependency_listener, pull_dependency_handler
 from utils.os_helpers import Pushd
 
 from .package_info import PackageInfo, custom_packages_dir
@@ -19,13 +19,6 @@ class PackagesStep(Step):
         self._packages = []
 
     def push_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self._programs_dir = known_folders[KnownFolder.Programs]
-        self._hw_tools_dir = known_folders[KnownFolder.HwTools]
-        self._desktop_dir = known_folders[KnownFolder.Desktop]
-        self._public_desktop_dir = known_folders[KnownFolder.PublicDesktop]
-        self._games_dir = known_folders.get(KnownFolder.Games)
-
         dependency_dispatcher.add_packages(
             "7zip",
             "adobereader",
@@ -47,6 +40,14 @@ class PackagesStep(Step):
                 "obsidian",
                 "veracrypt",
             )
+
+    def pull_dependencies(self, dependency_dispatcher):
+        known_folders = dependency_dispatcher.get_known_folders()
+        self._programs_dir = known_folders[KnownFolder.Programs]
+        self._hw_tools_dir = known_folders[KnownFolder.HwTools]
+        self._desktop_dir = known_folders[KnownFolder.Desktop]
+        self._public_desktop_dir = known_folders[KnownFolder.PublicDesktop]
+        self._games_dir = known_folders.get(KnownFolder.Games)
 
     def perform(self):
         self._logger.log(f"Required packages: {self._packages}")
@@ -137,7 +138,7 @@ class PackagesStep(Step):
         packages = "\n".join(self._packages)
         print(packages)
 
-    @dependency_listener
+    @pull_dependency_handler
     def get_package_info(self, package):
         return PackageInfo(package, self._programs_dir, self._hw_tools_dir, self._games_dir)
 

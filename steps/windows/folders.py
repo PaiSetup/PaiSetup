@@ -3,7 +3,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import pull_dependency_handler
 
 
 class KnownFolder(Enum):
@@ -72,7 +72,7 @@ class FoldersStep(Step):
                 raise ValueError("Illegal folders included for rootless structure")
             self._folders[KnownFolder.HwTools] = self._folders[KnownFolder.Programs]
 
-    @dependency_listener
+    @pull_dependency_handler
     def get_known_folders(self):
         return self._folders
 

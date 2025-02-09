@@ -10,9 +10,9 @@ class VirtualBoxStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("virtualbox")
 
+    def pull_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
         self._vm_dir = known_folders.get(KnownFolder.VirtualMachines)
-
         self._virtualbox_install_dir = dependency_dispatcher.get_package_info("virtualbox").install_dir
 
     def perform(self):

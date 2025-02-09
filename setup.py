@@ -6,9 +6,11 @@ from pathlib import Path
 from steps import get_steps
 from steps.step import Step
 from utils.argparser_utils import EnumAction, PathAction
-from utils.dependency_dispatcher import DependencyDispatcher
+from utils.dependency_dispatcher import DependencyDispatcher, DependencyType
 from utils.os_function import OperatingSystem
 from utils.setup_mode import SetupMode
+
+# from steps.tests.chain import get_steps
 
 # Prepare common paths
 root_dir = Path(__file__).parent
@@ -57,9 +59,7 @@ Step._logger.log("Handling steps dependencies")
 dependencies = DependencyDispatcher(not args.no_auto_resolve_dependencies)
 for step in steps:
     dependencies.register_handlers(step)
-enabled_steps = [step for step in steps if step.is_enabled()]  # Save into variable, because steps may be enabled during iteration
-for step in enabled_steps:
-    step.push_dependencies(dependencies)
+dependencies.resolve_dependencies(steps)
 
 # List steps
 if args.list_steps:
@@ -79,7 +79,7 @@ with Step._logger.indent("Executing steps"):
         if step.is_enabled() and step.is_method_overriden(Step.perform):
             Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
             with Step._logger.indent():
-                step.perform()
+                step.transition_state(Step.State.Performed, None)
 
 # Finalize services
 Step.finalize_services()

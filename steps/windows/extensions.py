@@ -36,6 +36,8 @@ class ExtensionsStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("notepadplusplus")
+
+    def pull_dependencies(self, dependency_dispatcher):
         self._npp_install_dir = dependency_dispatcher.get_package_info("notepadplusplus").install_dir
 
     def perform(self):

@@ -1,3 +1,5 @@
+import enum
+
 from utils.services.env import EnvManager
 from utils.services.file_writer import FileWriter
 from utils.services.logger import Logger
@@ -5,6 +7,13 @@ from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Step:
+    class State(enum.Enum):
+        Initialized = 0
+        PushedDeps = 1
+        PulledDeps = 2
+        Performed = 3
+
+
     """
     Base class for all steps of setting up the working environment. A step is a logical part
     of the whole process, which can be filtered out by its name. Concrete steps should
@@ -14,6 +23,7 @@ class Step:
     def __init__(self, name):
         self.name = name
         self._enabled = True
+        self._state = Step.State.Initialized
 
     @classmethod
     def setup_external_services(cls, root_dir, logs_dir, disable_logger):
@@ -57,7 +67,18 @@ class Step:
         """
         This method can be implemented by deriving classes.
 
-        It allows to call methods of other steps through the DependencyDispatcher mechanism.
+        It allows to call methods of other steps through the DependencyDispatcher mechanism. Pushed
+        dependencies can only transfer data to the receiving step.
+        """
+        pass
+
+    def pull_dependencies(self, dependency_dispatcher):
+        """
+        This method can be implemented by deriving classes.
+
+        It allows to call methods of other steps through the DependencyDispatcher mechanism. Pulled
+        dependencies can only transfer data from the receiving step. All pulled dependencies are
+        executed after all pushed dependencies are done.
         """
         pass
 
@@ -67,7 +88,9 @@ class Step:
 
         It is a main method performing actual operations done by the step. Example operations could
         be creating a file, setting up permissions, downloading a project. Not all steps have to
-        implement this. Some of them may exist only to place dependencies on other steps.
+        implement this. Some of them may exist only to place dependencies on other steps. This method
+        is called after all push_dependencies() and pull_dependencies() have executed and it can use
+        the data transfered through dependencies.
         """
         pass
 
@@ -85,3 +108,24 @@ class Step:
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__
         return method_name in self_dict and self_dict[method_name] != class_dict[method_name]
+
+    def transition_state(self, new_state, dependency_dispatcher):
+        if self._state.value > new_state.value:
+            raise ValueError("Step states cannot go backwards")
+
+        while self._state.value < new_state.value:
+            match self._state:
+                case Step.State.Initialized:
+                    self._state = Step.State.PushedDeps
+                    self.push_dependencies(dependency_dispatcher)
+
+                case Step.State.PushedDeps:
+                    self._state = Step.State.PulledDeps
+                    self.pull_dependencies(dependency_dispatcher)
+
+                case Step.State.PulledDeps:
+                    self._state = Step.State.Performed
+                    self.perform()
+
+                case Step.State.Performed:
+                    raise ValueError("Cannot transition out of Performed state")

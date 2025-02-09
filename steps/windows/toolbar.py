@@ -18,6 +18,7 @@ class ToolbarStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")
 
+    def pull_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
         self._toolbar_dir = known_folders.get(KnownFolder.Toolbar)
 

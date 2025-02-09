@@ -11,6 +11,8 @@ class VscodeStep(VscodeStepBase):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("vscodium")
+
+    def pull_dependencies(self, dependency_dispatcher):
         self._vscode_command = dependency_dispatcher.get_package_info("vscodium").install_dir / "bin\\codium"
         self._vscode_command = f'"{self._vscode_command}"'
 

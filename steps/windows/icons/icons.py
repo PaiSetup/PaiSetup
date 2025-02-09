@@ -15,6 +15,7 @@ class IconsStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("windows-handies")
 
+    def pull_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
         self._root_folder = known_folders.get(KnownFolder.Root)
         self._multimedia_folder = known_folders.get(KnownFolder.Multimedia)
