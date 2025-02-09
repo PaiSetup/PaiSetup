@@ -142,6 +142,13 @@ class PackagesStep(Step):
     def get_package_info(self, package):
         return PackageInfo(package, self._programs_dir, self._hw_tools_dir, self._games_dir)
 
+    @pull_dependency_handler
+    def get_generated_startup_entries(self):
+        p = self._packages
+        p = [self.get_package_info(x).startup_entries for x in p]
+        p = sum(p, [])
+        return p
+
     def _remove_chocolatey_warnings(self, lines, remove_empty_lines=False):
         warnings_line_prefixes = [
             "Chocolatey v",

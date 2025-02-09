@@ -1,7 +1,8 @@
 import enum
-import tempfile
 import re
+import tempfile
 from pathlib import Path
+
 from utils.windows.windows_registry import HKLM, set_registry_value_string
 
 custom_packages_dir = Path(__file__).parent / "custom_packages"
@@ -36,6 +37,7 @@ class PackageInfo:
         self.desktop_files_to_delete = []
         self.install_dir = None
         self.is_custom_package = False
+        self.startup_entries = []
 
         self._set_package(package_name, programs_dir, hw_tools_dir, games_dir)
 
@@ -57,6 +59,9 @@ class PackageInfo:
         else:
             self.package_args = arg
 
+    def _append_startup_entry(self, arg):
+        self.startup_entries.append(arg)
+
     def _set_package(self, package_name, programs_dir, hw_tools_dir, games_dir):
         if package_name == "7zip":
             self.install_dir = programs_dir / "7zip"
@@ -69,6 +74,7 @@ class PackageInfo:
         elif package_name == "adoptopenjdk11":
             self.install_dir = programs_dir / "Java/aojdk11"
             self._append_package_arg(f"/ADDLOCAL=FeatureMain /INSTALLDIR={self.install_dir} /quiet")
+            self._append_startup_entry("SunJavaUpdateSched")
         elif package_name == "audacity":
             self.install_dir = programs_dir / "Audacity"
             self._set_installer(Installer.Inno)
@@ -77,16 +83,19 @@ class PackageInfo:
             self.install_dir = programs_dir / "BeyondCompare"
             self._set_installer(Installer.Inno)
             self.desktop_files_to_delete.append("Beyond Compare 4.lnk")
+            self._append_startup_entry("BCClipboard")
         elif package_name == "dependencies":
             self.install_dir = programs_dir / "Dependencies"
             self._append_package_arg(f"/installDir={self.install_dir}")
         elif package_name == "discord":
             # Selecting installation dir isn't allowed: https://twitter.com/discord/status/843624938674311168
             self.desktop_files_to_delete.append("Discord.lnk")
+            self._append_startup_entry("Discord")
         elif package_name == "ccleaner":
             self.install_dir = programs_dir / "CCleaner"
             self._set_installer(Installer.Nsis)
             self.desktop_files_to_delete.append("CCleaner.lnk")
+            self._append_startup_entry("CCleaner Smart Cleaning")
         elif package_name == "charon":
             self.install_dir = programs_dir / "Charon"
             self._set_installer(Installer.CustomPackage)
@@ -113,11 +122,15 @@ class PackageInfo:
             # Technically it's an NSIS installer, but it ignores /D switch)
             # We can download games to a custom folder, but we have to manually change game library location.
             self.desktop_files_to_delete.append("EA.lnk")
+            self._append_startup_entry("EADM")
         elif package_name == "firefox":
             self.install_dir = programs_dir / "Firefox"
             self._append_package_arg(
                 f"/InstallDir:{self.install_dir} /NoTaskbarShortcut /NoDesktopShortcut /NoStartMenuShortcut /NoMaintenanceService /RemoveDistributionDir /NoAutoUpdate"
             )
+        elif package_name == "flamegraph":
+            self.install_dir = programs_dir / "Flamegraph"
+            self._append_package_arg(f"/folder={self.install_dir}")
         elif package_name == "formatfactory":
             self.install_dir = programs_dir / "FormatFactory"
             self._set_installer(Installer.Nsis)
@@ -169,6 +182,7 @@ class PackageInfo:
         elif package_name == "jre8":
             self.install_dir = programs_dir / "Java/jre8"
             self._append_package_arg(f"/exclude:32 /64dir:{self.install_dir}")
+            self._append_startup_entry("SunJavaUpdateSched")
         elif package_name == "killdisk-freeware":
             self.install_dir = hw_tools_dir / "KillDisk"
             self._set_installer(Installer.Inno)
@@ -228,6 +242,7 @@ class PackageInfo:
             self.install_dir = games_dir / "Steam"
             self._set_installer(Installer.Nsis)
             self.desktop_files_to_delete.append("Steam.lnk")
+            self._append_startup_entry("Steam")
         elif package_name == "sysinternals":
             self.install_dir = programs_dir / "SysInternals"
             self._append_package_arg(f"/InstallDir={self.install_dir}")

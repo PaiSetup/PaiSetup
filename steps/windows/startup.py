@@ -11,20 +11,18 @@ class StartupStep(Step):
         self._entries_to_add = []
         self._entries_to_remove = []
 
-    def perform(self):
-        # TODO these should ideally be added by other steps through dependency dispatcher
-        self.remove_startup_entry("BCClipboard")
-        self.remove_startup_entry("CCleaner Smart Cleaning")
-        self.remove_startup_entry("Discord")
         self.remove_startup_entry("OneDrive")
-        self.remove_startup_entry("Steam")
-        self.remove_startup_entry("SunJavaUpdateSched")
-        self.remove_startup_entry("EADM")
 
+    def perform(self):
         self._remove_scheduled_tasks()
         self._remove_services()
         self._remove_startup_entries()
         self._add_startup_entries()
+
+    def pull_dependencies(self, dependency_dispatcher):
+        entries_to_remove = dependency_dispatcher.get_generated_startup_entries()
+        for entry in entries_to_remove:
+            self.remove_startup_entry(entry)
 
     @dependency_listener
     def add_startup_entry(self, name, script, as_admin):
