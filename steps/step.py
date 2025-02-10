@@ -26,7 +26,7 @@ class Step:
         self._state = Step.State.Initialized
 
     @classmethod
-    def setup_external_services(cls, root_dir, logs_dir, disable_logger):
+    def setup_external_services(cls, root_dir, logs_dir, enable_perf_analyzer, enable_logger):
         """
         A service is an object shared between all steps which provides some utility functions
         while storing its state internally.
@@ -35,8 +35,8 @@ class Step:
             raise ValueError("setup_external_services may be called only once")
         cls._env = EnvManager(root_dir)
         cls._file_writer = FileWriter(cls._env.home())
-        cls._perf_analyzer = PerfAnalyzer()
-        cls._logger = Logger(logs_dir, cls._perf_analyzer, disable_logger)
+        cls._perf_analyzer = PerfAnalyzer(enable_perf_analyzer)
+        cls._logger = Logger(logs_dir, cls._perf_analyzer, enable_logger)
 
     @classmethod
     def finalize_services(cls):

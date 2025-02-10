@@ -18,7 +18,7 @@ class LogIndent:
 
 
 class Logger:
-    def __init__(self, log_dir, perf_analyzer, disabled):
+    def __init__(self, log_dir, perf_analyzer, enabled):
         self._indent_level = 0
         self._indent = ""
         self._last_log_time = None
@@ -26,11 +26,12 @@ class Logger:
         self._warnings = []
         self._log_dir = log_dir
         self._perf_analyzer = perf_analyzer
-        self._disabled = disabled
+        self._enabled = enabled
 
-        for file in log_dir.iterdir():
-            if file.suffix == ".log":
-                file.unlink()
+        if self._log_dir is not None:
+            for file in self._log_dir.iterdir():
+                if file.suffix == ".log":
+                    file.unlink()
 
     def log(self, message, short_message=None, add_indent=False, silent=False):
         # Calculate delta time
@@ -47,7 +48,7 @@ class Logger:
         self._last_log_time = log_time
 
         indent_increase = 1 if add_indent else 0
-        if not self._disabled and not silent:
+        if self._enabled and not silent:
             with LogIndent(self, indent_increase=indent_increase):
                 print(f"[{delta_time_ms_str}] {self._indent}{message}")
 
@@ -83,6 +84,9 @@ class Logger:
         *,
         print=True,
     ):
+        if self._log_dir is None:
+            return
+
         log_file_path = (self._log_dir / report_name).with_suffix(".log")
         self.push_warning(f"{text} See logs at {log_file_path}", print=print)
 

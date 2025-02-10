@@ -78,17 +78,13 @@ class DependencyDispatcher:
     To achieve this the step has to implement push_dependencies().
     """
 
-    def __init__(self, auto_resolve):
+    def __init__(self):
         self._accepted_dependency_type = None
         self._proxies = {
             DependencyType.Push: {},
             DependencyType.Pull: {},
         }
-        self._auto_resolve = auto_resolve
         self._step_stack = []
-
-    def is_auto_resolve_enabled(self):
-        return self._auto_resolve
 
     def register_handlers(self, step):
         """

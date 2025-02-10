@@ -12,7 +12,8 @@ class PerfAnalyzer:
             self.duration_ms = None
             self.suboperations = []
 
-    def __init__(self):
+    def __init__(self, enable):
+        self._enable = enable
         self._pending_operation = None
         self._root_operation = PerfAnalyzer.Operation("root", 0)
         self._root_operation.duration_ms = 0
@@ -20,6 +21,9 @@ class PerfAnalyzer:
         self._max_indent_level = 0
 
     def notify_log(self, message, delta_time_ms, indent_level):
+        if not self._enable:
+            return
+
         # Last time we called notify_log we kept pending_operation, because we still needed its duration.
         # Now we have it, so information about the operation is complete and we can add it to our database.
         if self._pending_operation is not None:
@@ -48,6 +52,9 @@ class PerfAnalyzer:
         self._max_indent_level = max(self._max_indent_level, operation.indent_level)
 
     def finalize(self):
+        if not self._enable:
+            return
+
         lines = []
 
         def process_operation(stack, operation):
