@@ -3,6 +3,12 @@ import enum
 from steps.step import Step
 
 
+class DependencyResolutionMode(enum.Enum):
+    none = "none"
+    pull = "pull"
+    pull_and_push = "pull_and_push"
+
+
 class DependencyType(enum.Enum):
     """
     There are two types of dependencies.
@@ -88,8 +94,7 @@ class FakeDependencyDispatcher:
 
 
 class DependencyGraph:
-    def __init__(self, proxies):
-        self._proxies = proxies
+    def __init__(self):
         self._step_to_methods_push_deps = {}
         self._step_to_methods_pull_deps = {}
         self._steps_to_enable = []
@@ -97,28 +102,31 @@ class DependencyGraph:
     def get_steps_to_enable(self):
         return self._steps_to_enable
 
-    def inspect_steps(self, steps):
+    def inspect_steps(self, steps, proxies, resolution_mode):
         enabled_steps = [step for step in steps if step.is_enabled()]
 
-        for step in enabled_steps:
-            # Perform fake dependencies calls and gather which functions were called
-            push_dispatcher = FakeDependencyDispatcher()
-            step.push_dependencies(push_dispatcher)
-            pull_dispatcher = FakeDependencyDispatcher()
-            step.pull_dependencies(pull_dispatcher)
+        use_push = resolution_mode == DependencyResolutionMode.pull_and_push
+        use_pull = resolution_mode in [DependencyResolutionMode.pull_and_push, DependencyResolutionMode.pull]
 
-            self._step_to_methods_push_deps[step] = self._retrieve_dependent_methods(
-                push_dispatcher.calls,
-                self._proxies[DependencyType.Push],
-                step,
-                enabled_steps
-            )
-            self._step_to_methods_pull_deps[step] = self._retrieve_dependent_methods(
-                pull_dispatcher.calls,
-                self._proxies[DependencyType.Pull],
-                step,
-                enabled_steps
-            )
+        for step in enabled_steps:
+            if use_push:
+                dispatcher = FakeDependencyDispatcher()
+                step.push_dependencies(dispatcher)
+                self._step_to_methods_push_deps[step] = self._retrieve_dependent_methods(
+                    dispatcher.calls,
+                    proxies[DependencyType.Push],
+                    step,
+                    enabled_steps
+                )
+            if use_pull:
+                dispatcher = FakeDependencyDispatcher()
+                step.pull_dependencies(dispatcher)
+                self._step_to_methods_pull_deps[step] = self._retrieve_dependent_methods(
+                    dispatcher.calls,
+                    proxies[DependencyType.Pull],
+                    step,
+                    enabled_steps
+                )
 
     def _retrieve_dependent_methods(self, calls, proxies, step, enabled_steps):
             # Retrieve methods we depend on.
@@ -154,7 +162,8 @@ class DependencyDispatcher:
     To achieve this the step has to implement push_dependencies().
     """
 
-    def __init__(self):
+    def __init__(self, resolution_mode):
+        self._resolution_mode = resolution_mode
         self._current_dependency_type = None
         self._proxies = {
             DependencyType.Push: {},
@@ -176,8 +185,8 @@ class DependencyDispatcher:
 
     def resolve_dependencies(self, steps):
         # Inspect dependencies between steps and build a graph.
-        graph = DependencyGraph(self._proxies)
-        graph.inspect_steps(steps)
+        graph = DependencyGraph()
+        graph.inspect_steps(steps, self._proxies, self._resolution_mode)
 
         # Implicitly enable steps that were disabled, but were required by the graph.
         for step, consumer_step in graph.get_steps_to_enable():

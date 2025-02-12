@@ -1,8 +1,12 @@
 from steps.step import Step
-from utils.dependency_dispatcher import DependencyDispatcher, DependencyType
+from utils.dependency_dispatcher import (
+    DependencyDispatcher,
+    DependencyResolutionMode,
+    DependencyType,
+)
 
 
-def execute_steps(steps, filtered_steps=None, list_steps=False, list_packages=False):
+def execute_steps(steps, filtered_steps=None, dependency_resolution_mode=DependencyResolutionMode.pull_and_push, list_steps=False, list_packages=False):
     # Filter steps by command line args
     Step._logger.log("Filtering steps")
     if filtered_steps != None:
@@ -18,7 +22,7 @@ def execute_steps(steps, filtered_steps=None, list_steps=False, list_packages=Fa
 
     # Handle cross-step dependencies
     Step._logger.log("Handling steps dependencies")
-    dependencies = DependencyDispatcher()
+    dependencies = DependencyDispatcher(dependency_resolution_mode)
     for step in steps:
         dependencies.register_handlers(step)
     dependencies.resolve_dependencies(steps)
