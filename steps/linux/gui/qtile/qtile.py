@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from steps.linux.gui.gui import GuiStep
-from steps.step import dependency_listener
+from utils.dependency_dispatcher import dependency_listener
 from utils.services.file_writer import FileType, LinePlacement
 
 
