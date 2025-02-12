@@ -175,7 +175,7 @@ class ExtensionsStep(Step):
         self._setup_extension(extension, application_key_name, new_file_entry)
 
     def _setup_extension_powershell(self, extension, description, new_file_entry):
-        app_path = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"  # TODO query this? Can it change?
+        app_path = run_command("where powershell", stdout=Stdout.return_back()).stdout.strip()
         open_command = f'"{app_path}" "%1"'
         application_key_name = f"PaiSetup{extension}"
         icon = f'"{app_path}",0'
