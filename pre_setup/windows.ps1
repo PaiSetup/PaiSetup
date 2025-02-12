@@ -31,3 +31,6 @@ python -m pip install pywin32
 
 # Install autohotkey
 choco install autohotkey.portable --version=1.1.37.1 --yes
+
+# Enable creating symlinks
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "0"
