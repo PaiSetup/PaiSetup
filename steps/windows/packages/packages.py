@@ -5,7 +5,7 @@ import utils.external_project as ext
 from steps.step import Step
 from steps.windows.folders import KnownFolder
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener, pull_dependency_handler
+from utils.dependency_dispatcher import pull_dependency_handler, push_dependency_handler
 from utils.os_helpers import Pushd
 
 from .package_info import PackageInfo, custom_packages_dir
@@ -123,7 +123,7 @@ class PackagesStep(Step):
         with Pushd(package_dir):
             run_command("choco pack")
 
-    @dependency_listener
+    @push_dependency_handler
     def add_packages(self, *args):
         for arg in args:
             if arg is None:
@@ -133,7 +133,7 @@ class PackagesStep(Step):
             else:
                 self._packages.append(str(arg))
 
-    @dependency_listener
+    @push_dependency_handler
     def list_packages(self, resolve_groups):
         packages = "\n".join(self._packages)
         print(packages)

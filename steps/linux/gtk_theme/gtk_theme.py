@@ -5,7 +5,7 @@ from pathlib import Path
 from steps.step import Step
 from utils import external_project as ext
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, FileWriter
 
 
@@ -49,7 +49,7 @@ class GtkThemeStep(Step):
         )
         dependency_dispatcher.register_homedir_file(".themes")
 
-    @dependency_listener
+    @push_dependency_handler
     def set_folder_icon(self, path, icon_name):
         path = Path(path)
         if path in self._emblems:

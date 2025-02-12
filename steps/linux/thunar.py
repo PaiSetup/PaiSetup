@@ -1,7 +1,7 @@
 from xml.dom import minidom
 
 from steps.step import Step
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
 
 
@@ -43,7 +43,7 @@ class ThunarStep(Step):
             "ffmpegthumbnailer",  # needed for video thumbnails
         )
 
-    @dependency_listener
+    @push_dependency_handler
     def add_thunar_custom_action(self, action):
         self.actions.append(action)
 

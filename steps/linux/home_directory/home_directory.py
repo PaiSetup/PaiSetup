@@ -4,7 +4,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, LinePlacement
 
 
@@ -86,7 +86,7 @@ class HomeDirectoryStep(Step):
             raise ValueError(f"{name} is not an existing XDG directory name.")
         return result
 
-    @dependency_listener
+    @push_dependency_handler
     def register_homedir_file(self, file, allow_multipart=False):
         filename = Path(file)
         if filename.is_absolute():

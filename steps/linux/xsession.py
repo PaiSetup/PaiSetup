@@ -3,7 +3,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
 
 
@@ -12,7 +12,7 @@ class XsessionStep(Step):
         super().__init__("Xsession")
         self._xsessions = []
 
-    @dependency_listener
+    @push_dependency_handler
     def add_xsession(self, name, xinitrc_path):
         self._xsessions.append((name, xinitrc_path))
 

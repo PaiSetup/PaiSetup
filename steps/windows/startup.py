@@ -1,6 +1,6 @@
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.windows.shortcut import create_shortcut
 from utils.windows.windows_registry import *
 
@@ -10,7 +10,6 @@ class StartupStep(Step):
         super().__init__("Startup")
         self._entries_to_add = []
         self._entries_to_remove = []
-
 
     def perform(self):
         self.remove_startup_entry("OneDrive")
@@ -23,11 +22,11 @@ class StartupStep(Step):
     def pull_dependencies(self, dependency_dispatcher):
         self._entries_to_remove = dependency_dispatcher.get_generated_startup_entries()
 
-    @dependency_listener
+    @push_dependency_handler
     def add_startup_entry(self, name, script, as_admin):
         self._entries_to_add.append((name, script, as_admin))
 
-    @dependency_listener
+    @push_dependency_handler
     def remove_startup_entry(self, name):
         self._entries_to_remove.append(name)
 

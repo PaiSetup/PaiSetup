@@ -1,5 +1,5 @@
 from steps.step import Step
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.windows.windows_registry import *
 
 
@@ -9,11 +9,11 @@ class ExplorerStep(Step):
         self._quick_access_folder_for_removal = []
         self._quick_access_folder_for_addition = []
 
-    @dependency_listener
+    @push_dependency_handler
     def remove_folder_from_quick_access(self, folder):
         self._quick_access_folder_for_removal.append(folder)
 
-    @dependency_listener
+    @push_dependency_handler
     def add_folder_to_quick_access(self, folder):
         self._quick_access_folder_for_addition.append(folder)
 

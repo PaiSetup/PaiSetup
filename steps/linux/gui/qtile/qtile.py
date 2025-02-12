@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from steps.linux.gui.gui import GuiStep
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, LinePlacement
 
 
@@ -18,7 +18,7 @@ class QtileStep(GuiStep):
 
         self._keybindings = []
 
-    @dependency_listener
+    @push_dependency_handler
     def add_keybindings(self, *keybindings):
         self._keybindings += keybindings
 

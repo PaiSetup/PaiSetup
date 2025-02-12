@@ -18,6 +18,7 @@ class DependencyType(enum.Enum):
     and make them available for the source step (in pull_dependencies).
     All pull deps execute after all push deps.
     """
+
     Push = enum.auto()
     Pull = enum.auto()
 
@@ -35,6 +36,7 @@ class Proxy:
     be propagated to a single Proxy object containing 3 different methods. In case of push dependencies
     all 3 methods will be called. Pull dependencies can have only 1 method per Proxy.
     """
+
     def __init__(self, dependency_dispatcher, dependency_type):
         self._dependency_dispatcher = dependency_dispatcher
         self._dependency_type = dependency_type
@@ -48,13 +50,13 @@ class Proxy:
         if self._dependency_type == DependencyType.Pull and len(self._methods):
             raise ValueError("'Pull' dependencies can only have one handler")
 
-        # Acquire the step, which is registering the listener
+        # Acquire the step, which is registering the handler
         try:
             step = method.__self__
         except AttributeError:
-            raise ValueError("Listener should be a method")
+            raise ValueError("Handler should be a method")
         if not issubclass(step.__class__, Step):
-            raise ValueError("Listener should be a method of Step")
+            raise ValueError("Handler should be a method of Step")
 
         # Save the method along with its step for easy access
         self._methods.append(method)
@@ -66,18 +68,23 @@ class Proxy:
 class SuperNiceObject:
     def __init__(self):
         self._get_items_left = 50
+
     def __getattr__(self, _):
         return self
+
     def __len__(self, _):
         return 0
+
     def __getitem__(self, _):
         if self._get_items_left == 0:
             raise TimeoutError("Do not place loops inside pull_dependencies()")
         else:
             self._get_items_left -= 1
             return SuperNiceObject()
+
     def __truediv__(self, _):
         return self
+
     def __call__(self, _):
         return self
 
@@ -89,7 +96,10 @@ class FakeDependencyDispatcher:
     def __getattr__(self, method_name):
         if not method_name.startswith("_"):
             self.calls.add(method_name)
-        def func(*args, **kwargs): return SuperNiceObject()
+
+        def func(*args, **kwargs):
+            return SuperNiceObject()
+
         return func
 
 
@@ -113,39 +123,33 @@ class DependencyGraph:
                 dispatcher = FakeDependencyDispatcher()
                 step.push_dependencies(dispatcher)
                 self._step_to_methods_push_deps[step] = self._retrieve_dependent_methods(
-                    dispatcher.calls,
-                    proxies[DependencyType.Push],
-                    step,
-                    enabled_steps
+                    dispatcher.calls, proxies[DependencyType.Push], step, enabled_steps
                 )
             if use_pull:
                 dispatcher = FakeDependencyDispatcher()
                 step.pull_dependencies(dispatcher)
                 self._step_to_methods_pull_deps[step] = self._retrieve_dependent_methods(
-                    dispatcher.calls,
-                    proxies[DependencyType.Pull],
-                    step,
-                    enabled_steps
+                    dispatcher.calls, proxies[DependencyType.Pull], step, enabled_steps
                 )
 
     def _retrieve_dependent_methods(self, calls, proxies, step, enabled_steps):
-            # Retrieve methods we depend on.
-            dependent_methods = set()
-            for method_name in calls:
-                methods = proxies[method_name].get_methods()
-                for method in methods:
-                    dependent_methods.add(method)
+        # Retrieve methods we depend on.
+        dependent_methods = set()
+        for method_name in calls:
+            methods = proxies[method_name].get_methods()
+            for method in methods:
+                dependent_methods.add(method)
 
-            # Make sure all dependent steps are already enabled. If not, they will be implicitly enabled
-            # and added to this loop.
-            for dependent_method in dependent_methods:
-                dependent_step = dependent_method.__self__
-                if dependent_step not in enabled_steps:
-                    enabled_steps.append(dependent_step)
-                    self._steps_to_enable.append((dependent_step, step))
+        # Make sure all dependent steps are already enabled. If not, they will be implicitly enabled
+        # and added to this loop.
+        for dependent_method in dependent_methods:
+            dependent_step = dependent_method.__self__
+            if dependent_step not in enabled_steps:
+                enabled_steps.append(dependent_step)
+                self._steps_to_enable.append((dependent_step, step))
 
-            # Store dependent methods for this step.
-            return dependent_methods
+        # Store dependent methods for this step.
+        return dependent_methods
 
 
 class DependencyDispatcher:
@@ -154,7 +158,7 @@ class DependencyDispatcher:
 
     Each step can register one or more of its methods as a dependency handler.
     For example PackageStep can register its 'add_packages' method.
-    To achieve this, 'add_packages' method has to be decorated with @dependency_listener.
+    To achieve this, 'add_packages' method has to be decorated with @push_dependency_handler.
 
     Each step can express its dependencies, by calling the handler method on an object od DependencyDispatcher.
     DependencyDispatcher will forward the call to the appriopriate registered handler.
@@ -172,7 +176,7 @@ class DependencyDispatcher:
 
     def register_handlers(self, step):
         """
-        This method detects methods decorated with @dependency_listener and registers them as dependency handlers.
+        This method detects methods decorated with @push_dependency_handler and registers them as dependency handlers.
         """
         for method in dir(step.__class__):
             method = getattr(step, method)
@@ -240,16 +244,19 @@ class DependencyDispatcher:
                 return result
 
 
-
-
-def dependency_listener(func):
+def push_dependency_handler(func):
     """
-    A decorator used for marking methods of Step implementors as dependency listeners. This allows
+    A decorator used for marking methods of Step implementors as dependency handlers. This allows
     other steps to depend on the marked method and call it during push_dependencies phase.
     """
     func._is_push_dependency_handler = True
     return func
 
+
 def pull_dependency_handler(func):
+    """
+    A decorator used for marking methods of Step implementors as dependency handlers. This allows
+    other steps to depend on the marked method and call it during pull_dependencies phase.
+    """
     func._is_pull_dependency_handler = True
     return func

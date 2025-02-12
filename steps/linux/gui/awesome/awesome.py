@@ -6,7 +6,7 @@ import utils.external_project as ext
 from steps.linux.gui.gui import GuiStep
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, LinePlacement
 
 
@@ -23,7 +23,7 @@ class AwesomeStep(GuiStep):
         self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
 
-    @dependency_listener
+    @push_dependency_handler
     def add_keybindings(self, *keybindings):
         self._keybindings += keybindings
 

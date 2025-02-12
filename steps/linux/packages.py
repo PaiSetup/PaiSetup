@@ -1,7 +1,7 @@
 import utils.external_project as ext
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.os_helpers import Pushd
 
 
@@ -88,11 +88,11 @@ class PackagesStep(Step):
             else:
                 packages_list.append(str(arg))
 
-    @dependency_listener
+    @push_dependency_handler
     def add_packages(self, *args):
         PackagesStep._add_packages_to_list(self._packages, *args)
 
-    @dependency_listener
+    @push_dependency_handler
     def add_assumed_packages(self, *args):
         PackagesStep._add_packages_to_list(self._assumed_packages, *args)
 
@@ -131,7 +131,7 @@ class PackagesStep(Step):
         missing = [re.search("'([^']+)'", x).group(1) for x in missing]
         return missing
 
-    @dependency_listener
+    @push_dependency_handler
     def list_packages(self, resolve_groups):
         packages = self._get_packages(resolve_groups)
         packages = "\n".join(packages)

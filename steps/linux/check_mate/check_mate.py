@@ -3,7 +3,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
-from utils.dependency_dispatcher import dependency_listener
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, FileWriter
 
 
@@ -60,7 +60,7 @@ class CheckMateStep(Step):
         self.register_periodic_check(self._current_step_dir / "check_unmatching_packages.sh", 20, multi_line=True, client_name="UnmatchingPackages")
         self.register_periodic_check(self._current_step_dir / "check_updated_kernel.sh", 20, client_name="UpdatedKernel")
 
-    @dependency_listener
+    @push_dependency_handler
     def register_periodic_check(
         self,
         script,
@@ -81,7 +81,7 @@ class CheckMateStep(Step):
         check = CheckMateStep.PeriodicCheck(script, interval_in_seconds, delay_in_seconds, script_args, shell, client_name, multi_line)
         self._profiles[profile].append(check)
 
-    @dependency_listener
+    @push_dependency_handler
     def register_periodic_daemon_check(self, command_regex, name, **kwargs):
         script = self._current_step_dir / "is_daemon_running.sh"
         script_args = f"{command_regex} {name}"
