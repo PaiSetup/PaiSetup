@@ -7,13 +7,6 @@ from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Step:
-    class State(enum.Enum):
-        Initialized = 0
-        PushedDeps = 1
-        PulledDeps = 2
-        Performed = 3
-
-
     """
     Base class for all steps of setting up the working environment. A step is a logical part
     of the whole process, which can be filtered out by its name. Concrete steps should
@@ -23,7 +16,6 @@ class Step:
     def __init__(self, name):
         self.name = name
         self._enabled = True
-        self._state = Step.State.Initialized
 
     @classmethod
     def setup_external_services(cls, root_dir, logs_dir, enable_perf_analyzer, enable_logger):
@@ -108,24 +100,3 @@ class Step:
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__
         return method_name in self_dict and self_dict[method_name] != class_dict[method_name]
-
-    def transition_state(self, new_state, dependency_dispatcher):
-        if self._state.value > new_state.value:
-            raise ValueError("Step states cannot go backwards")
-
-        while self._state.value < new_state.value:
-            match self._state:
-                case Step.State.Initialized:
-                    self._state = Step.State.PushedDeps
-                    self.push_dependencies(dependency_dispatcher)
-
-                case Step.State.PushedDeps:
-                    self._state = Step.State.PulledDeps
-                    self.pull_dependencies(dependency_dispatcher)
-
-                case Step.State.PulledDeps:
-                    self._state = Step.State.Performed
-                    self.perform()
-
-                case Step.State.Performed:
-                    raise ValueError("Cannot transition out of Performed state")

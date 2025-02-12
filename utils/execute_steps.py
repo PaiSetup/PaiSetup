@@ -41,7 +41,7 @@ def execute_steps(steps, filtered_steps=None, list_steps=False, list_packages=Fa
             if step.is_enabled() and step.is_method_overriden(Step.perform):
                 Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
                 with Step._logger.indent():
-                    step.transition_state(Step.State.Performed, None)
+                    step.perform()
 
     # Finalize services
     Step.finalize_services()

@@ -11,18 +11,17 @@ class StartupStep(Step):
         self._entries_to_add = []
         self._entries_to_remove = []
 
-        self.remove_startup_entry("OneDrive")
 
     def perform(self):
+        self.remove_startup_entry("OneDrive")
+
         self._remove_scheduled_tasks()
         self._remove_services()
         self._remove_startup_entries()
         self._add_startup_entries()
 
     def pull_dependencies(self, dependency_dispatcher):
-        entries_to_remove = dependency_dispatcher.get_generated_startup_entries()
-        for entry in entries_to_remove:
-            self.remove_startup_entry(entry)
+        self._entries_to_remove = dependency_dispatcher.get_generated_startup_entries()
 
     @dependency_listener
     def add_startup_entry(self, name, script, as_admin):
