@@ -6,7 +6,7 @@ from utils.command import *
 
 class VscodeStep(VscodeStepBase):
     def __init__(self, root_build_dir):
-        super().__init__("Vscodium")
+        super().__init__(root_build_dir)
         self._root_build_dir = root_build_dir
 
     def push_dependencies(self, dependency_dispatcher):
@@ -25,7 +25,3 @@ class VscodeStep(VscodeStepBase):
 
     def _get_vscode_command(self):
         return self._vscode_command
-
-    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
-        # TODO implement this
-        self._logger.log(f"Skipping installing extension {vsix_name} from GitHub (not implemented)")

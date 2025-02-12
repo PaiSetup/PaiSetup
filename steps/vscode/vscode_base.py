@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from steps.step import Step
@@ -34,7 +35,8 @@ class VscodeStepBase(Step):
         extensions_command.append("vscode-icons-team.vscode-icons")
 
         # C++
-        extensions_github.append(("microsoft", "vscode-cpptools", "cpptools-linux.vsix", "ms-vscode.cpptools"))
+        cpp_tools_vsix_name = "cpptools-linux-x64.vsix" if OperatingSystem.current().is_linux() else "cpptools-windows-x64.vsix"
+        extensions_github.append(("microsoft", "vscode-cpptools", cpp_tools_vsix_name, "ms-vscode.cpptools"))
         extensions_command.append("matepek.vscode-catch2-test-adapter")
         extensions_command.append("twxs.cmake")
         extensions_command.append("ms-vscode.cmake-tools")
@@ -63,11 +65,9 @@ class VscodeStepBase(Step):
             self._install_python_package(x)
 
     def _is_extension_installed(self, extension_name):
-        try:
-            run_command(f"{self._get_vscode_command()} --list-extensions | grep '^{extension_name}$'", shell=True)
-            return True
-        except:
-            return False
+        extensions = run_command(f"{self._get_vscode_command()} --list-extensions", shell=True, stdout=Stdout.return_back()).stdout
+        extensions = extensions.split("\n")
+        return extension_name in extensions
 
     def _install_extensions_with_commad(self, extension_names):
         args = (f"--install-extension {x}" for x in extension_names)
@@ -90,5 +90,50 @@ class VscodeStepBase(Step):
     def _get_vscode_command(self):
         raise NotImplementedError()
 
-    def _install_extension_from_github(self, repo_owner, repo_name, vsix_name, extension_name):
-        raise NotImplementedError()
+    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
+        """
+        This function is for a handful of extension which are not downloadable by vscode OSS (or vscodium)
+        command, because Microsoft says so. So we have to manually pull the .vsix from the web and install
+        it. Parameters:
+        - repo_owner, repo_name - address of Github repository to pull from
+        - vsix_name - name of the actual .vsix file we'll need to download
+        - extension name - name of the extension once it's installed (run code --list-extensions)
+        """
+
+        if self._is_extension_installed(extension_name):
+            self._logger.log(f"Installing extension {vsix_name} from GitHub (skipped)")
+            return
+
+        self._logger.log(f"Installing extension {vsix_name} from GitHub")
+
+        # Download metadata for latest release
+        api_address = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
+        api_download_command = f"curl {api_address}"
+        api_data = run_command(api_download_command, stdout=Stdout.return_back()).stdout
+        api_data = api_data.split("\n")
+
+        # Search for download url for our vsix
+        pattern = rf'"browser_download_url":.*(https.*{vsix_name})'
+        download_url = None
+        for line in api_data:
+            match = re.search(pattern, line)
+            if match:
+                download_url = match.group(1)
+                break
+        if download_url is None:
+            raise ValueError(f"Could not find {vsix_name}")
+
+        # Download the vsix
+        self._extensions_download_dir.mkdir(exist_ok=True)
+        download_command = f"wget -O {self._extensions_download_dir/vsix_name} {download_url}"
+        if OperatingSystem.current().is_windows():
+            # This is insane.
+            # https://stackoverflow.com/questions/28682642/powershell-why-is-using-invoke-webrequest-much-slower-than-a-browser-download
+            download_command = ["$ProgressPreference = 'SilentlyContinue'", download_command]
+            run_powershell_command(download_command)
+        else:
+            run_command(download_command)
+
+        # Install the vsix
+        install_command = f"{self._get_vscode_command()} --install-extension {self._extensions_download_dir/vsix_name}"
+        run_command(install_command, shell=True)

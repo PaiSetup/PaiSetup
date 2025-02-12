@@ -48,26 +48,3 @@ class VscodeStep(VscodeStepBase):
 
     def _get_vscode_command(self):
         return "code"
-
-    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
-        """
-        This function is for a handful of extension which are not downloadable by vscode OSS (or vscodium)
-        command, because Microsoft says so. So we have to manually pull the .vsix from the web and install
-        it. Parameters:
-        - repo_owner, repo_name - address of Github repository to pull from
-        - vsix_name - name of the actual .vsix file we'll need to download
-        - extension name - name of the extension once it's installed (run code --list-extensions)
-        """
-
-        if self._is_extension_installed(extension_name):
-            self._logger.log(f"Installing extension {vsix_name} from GitHub (skipped)")
-            return
-
-        self._logger.log(f"Installing extension {vsix_name} from GitHub")
-
-        self._extensions_download_dir.mkdir(exist_ok=True)
-
-        api_address = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
-        download_command = f"curl {api_address} | grep 'browser_download_url.*{vsix_name}' | awk '{{print $2}}' | xargs wget -O {self._extensions_download_dir/vsix_name}"
-        run_command(download_command, shell=True)
-        run_command(f"{self._get_vscode_command()} --install-extension {self._extensions_download_dir/vsix_name}")
