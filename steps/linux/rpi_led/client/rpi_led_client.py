@@ -229,15 +229,15 @@ class ObserverThread(Thread):
     def _send_state_to_led_thread(self):
         with self._led_thread.condition:
             print(f"OBSERVER: sending {self._shadow_led_state.to_message()} to LED")
-            self._led_thread.led_state = self._shadow_led_state
+            self._led_thread.led_state = self._shadow_led_state.copy()
             self._led_thread.update_event.set()
             self._led_thread.condition.notify()
 
 
 # Setup threads
 initial_led_state = LedState.read_from_cache()
-led_thread = LedThread(initial_led_state)
-observer_thread = ObserverThread(initial_led_state, led_thread)
+led_thread = LedThread(initial_led_state.copy())
+observer_thread = ObserverThread(initial_led_state.copy(), led_thread)
 threads = [observer_thread, led_thread]
 
 # Start threads

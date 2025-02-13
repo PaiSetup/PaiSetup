@@ -13,6 +13,13 @@ class LedState:
         self.enabled_sections = self.sections_mask
         self.brightness = 1
 
+    def copy(self):
+        new = LedState()
+        new.color = self.color.copy()
+        new.enabled_sections = self.enabled_sections
+        new.brightness = self.brightness
+        return new
+
     def to_message(self):
         color = self._adjust_brightness(self.color, self.brightness)
         tokens = color + [self.enabled_sections]
@@ -24,21 +31,29 @@ class LedState:
         state = LedState()
         try:
             with open(config_cache_path, "r") as file:
+                line_count = 0
                 for line in file:
                     line = line.strip()
                     if not state.apply_change(line):
                         print(f'WARNING: invalid command in cache file: "{line}"')
+                    line_count += 1
+            if line_count == 0:
+                print("WARNING: empty cache file")
         except FileNotFoundError:
             pass
         return state
 
     def write_to_cache(self):
+        tmp_config_cache_path = config_cache_path + ".tmp"
+
         commands = self.convert_to_commands()
         try:
-            with open(config_cache_path, "w") as file:
+            with open(tmp_config_cache_path, "w") as file:
                 file.write(commands)
         except:
             return False
+
+        os.rename(tmp_config_cache_path, config_cache_path)
         return True
 
     def write_to_fifo(self):
