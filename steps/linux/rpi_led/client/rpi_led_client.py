@@ -59,17 +59,30 @@ class LedThread(Thread):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 # Try to connect to the server. In case of connection errors, wait for
                 # a while and retry with a new socket.
+                connection_start_time = time.time()
                 connect_result, connect_data = self._connect_to_server(sock)
                 match connect_result:
                     case LedThread.ConnectResult.Success:
                         print("LED: Connected")
                     case LedThread.ConnectResult.Error:
-                        print(f"LED: Connection error ({connect_data})")  # TODO make sure we waited for at least connect_timeout
+                        print(f"LED: Connection error ({connect_data})")
+
+                        # To avoid busy looping, ensure we waited for at least connect_timeout
+                        with self.condition:
+                            timeout = connection_start_time - time.time() + connect_timeout
+                            not self.condition.wait(timeout)
+
                         continue
                     case LedThread.ConnectResult.Killed:
                         break
                     case LedThread.ConnectResult.Timeout:
                         print("LED: Connection timeout")
+
+                        # To avoid busy looping, ensure we waited for at least connect_timeout
+                        with self.condition:
+                            timeout = connection_start_time - time.time() + connect_timeout
+                            not self.condition.wait(timeout)
+
                         continue
 
                 try:
