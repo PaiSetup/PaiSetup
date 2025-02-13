@@ -209,10 +209,7 @@ end)
 
 
 
------------------------------------------------------------------------------------ Extra theme setup (TODO, move this to theme.lua)
-beautiful.taglist_squares_sel = utils.taglist_square_top_rect(beautiful.taglist_fg_focus)
-beautiful.taglist_squares_unsel = utils.taglist_square_top_rect(beautiful.taglist_fg_empty)
-
+----------------------------------------------------------------------------------- Configure menubar
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 menubar.geometry = awful.screen.focused().mywibox:geometry()
 beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width

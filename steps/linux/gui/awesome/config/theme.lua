@@ -5,6 +5,7 @@ local dpi = xresources.apply_dpi
 local gfs = require("gears.filesystem")
 local gears = require("gears")
 local themes_path = gfs.get_themes_dir()
+local utils = require("utils.utils")
 
 local theme = {}
 local pai_setup = os.getenv("PAI_SETUP_ROOT")
@@ -81,6 +82,8 @@ theme.taglist_bg_focus = color_theme
 theme.taglist_bg_volatile = color_urgent
 theme.taglist_bg_urgent = color_urgent
 theme.taglist_shape = gears.shape.rounded_rect
+theme.taglist_squares_sel = utils.taglist_square_top_rect(theme.taglist_fg_focus)
+theme.taglist_squares_unsel = utils.taglist_square_top_rect(theme.taglist_fg_empty)
 
 
 
