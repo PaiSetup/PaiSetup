@@ -27,15 +27,15 @@ local rules_utils = require("utils.rules")
 local app_keybindings = require("utils.app_keybindings")
 
 -- Custom widgets
-local shutdown_popup = require("widget.shutdown_popup")
-local script_widget = require("widget.script_widget")
-local callback_widget = require("widget.callback_widget")
-local tray_widget = require("widget.tray_widget")
-local home_panel = require("widget.home_panel")
+local toggle_shutdown_popup = require("widget.shutdown_popup")
+local create_script_widget = require("widget.script_widget")
+local create_callback_widget = require("widget.callback_widget")
+local create_tray_widget = require("widget.tray_widget")
+local create_home_panel = require("widget.home_panel")
 local create_rpi_led_widget = require("widget.rpi_led_widget")
-local taglist = require("widget.taglist")
-local tasklist = require("widget.tasklist")
-local layout_box = require("widget.layout_box")
+local create_taglist = require("widget.taglist")
+local create_tasklist = require("widget.tasklist")
+local create_layout_box = require("widget.layout_box")
 
 
 ----------------------------------------------------------------------------------- Error handling
@@ -141,16 +141,16 @@ utils.enable_viewed_tag_preserving()
 screen.connect_signal("property::geometry", utils.set_wallpaper)
 
 -- Leaf widgets (screen-agnostic)
-local memory_widget = script_widget("memory.sh", {button_info}, 5)
-local volume_widget = script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60, nil, "refresh:volume")
-local packages_widget = script_widget("packages.sh", {button_info, button_action}, 60, " ?", "refresh:packages")
-local time_widget = script_widget("date.sh", {button_action}, 30)
-local plex_widget = script_widget(pai_setup_steps .. "plex/status_bar_script.sh", {button_info, button_action}, 60)
-local audio_switch_widget = script_widget("audio_switch.sh", {button_info, button_action, button_scroll_up, button_scroll_down}, 10)
-local trash_widget = script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
-local tray_widget = tray_widget()
-local warnings_widget = script_widget("checks.py", {button_action, button_terminate, button_info}, 4, nil, "refresh:warnings")
-local shutdown_popup_widget = callback_widget(function () shutdown_popup(pai_setup, terminal) end, "")
+local memory_widget = create_script_widget("memory.sh", {button_info}, 5)
+local volume_widget = create_script_widget("volume.sh", {button_action, button_scroll_up, button_scroll_down}, 60, nil, "refresh:volume")
+local packages_widget = create_script_widget("packages.sh", {button_info, button_action}, 60, " ?", "refresh:packages")
+local time_widget = create_script_widget("date.sh", {button_action}, 30)
+local plex_widget = create_script_widget(pai_setup_steps .. "plex/status_bar_script.sh", {button_info, button_action}, 60)
+local audio_switch_widget = create_script_widget("audio_switch.sh", {button_info, button_action, button_scroll_up, button_scroll_down}, 10)
+local trash_widget = create_script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
+local tray_widget = create_tray_widget()
+local warnings_widget = create_script_widget("checks.py", {button_action, button_terminate, button_info}, 4, nil, "refresh:warnings")
+local shutdown_popup_widget = create_callback_widget(function () toggle_shutdown_popup(pai_setup, terminal) end, "")
 audio_switch_widget:add_widget_to_update(volume_widget)
 
 -- Setup widgets for each screen
@@ -169,7 +169,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Setup home tag and panel
     get_home_tag(s).is_home = true
-    home_panel(tags.home, pai_setup, user, s)
+    create_home_panel(tags.home, pai_setup, user, s)
 
     -- Create the bar
     s.mywibox = awful.wibar({ position = "top", screen = s, })
@@ -178,10 +178,10 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
         -- Left widgets
-        widget_wrappers.bg(taglist(s, modkey), beautiful.bg_normal),
+        widget_wrappers.bg(create_taglist(s, modkey), beautiful.bg_normal),
 
         -- Middle widget
-        widget_wrappers.center(tasklist(s)),
+        widget_wrappers.center(create_tasklist(s)),
 
         -- Right widgets
         {
@@ -202,7 +202,7 @@ awful.screen.connect_for_each_screen(function(s)
                 warnings_widget,
                 shutdown_popup_widget,
             }),
-            layout_box(s),
+            create_layout_box(s),
         },
     }
 end)
