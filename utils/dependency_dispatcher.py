@@ -91,6 +91,7 @@ class SuperNiceObject:
 
 class FakeDependencyDispatcher:
     def __init__(self):
+        self.is_fake = True
         self.calls = set()
 
     def __getattr__(self, method_name):
@@ -167,6 +168,7 @@ class DependencyDispatcher:
     """
 
     def __init__(self, resolution_mode):
+        self.is_fake = False
         self._resolution_mode = resolution_mode
         self._current_dependency_type = None
         self._proxies = {
@@ -208,6 +210,9 @@ class DependencyDispatcher:
         for step in enabled_steps:
             step.pull_dependencies(self)
 
+        # Disable dependency processing
+        self._current_dependency_type = None
+
     def _get_proxy(self, method_name, dependency_type, create_if_missing):
         proxies_group = self._proxies[dependency_type]
 
@@ -221,6 +226,9 @@ class DependencyDispatcher:
         return proxy
 
     def __getattr__(self, method_name):
+        if self._current_dependency_type is None:
+            raise ValueError("Dependency processing is disabled.")
+
         proxy = self._get_proxy(method_name, self._current_dependency_type, False)
         if proxy is None:
             raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
@@ -242,6 +250,21 @@ class DependencyDispatcher:
             # Pulled dependencies have only one handler and it returns data
             if dependency_type == DependencyType.Pull:
                 return result
+
+    def enable_external_dependency_pulling(self):
+        class Context:
+            def __init__(self, dependency_dispatcher):
+                self._dependency_dispatcher = dependency_dispatcher
+
+            def __enter__(self, *args, **kwargs):
+                self._saved_type = self._dependency_dispatcher._current_dependency_type
+                self._dependency_dispatcher._current_dependency_type = DependencyType.Pull
+                return self
+
+            def __exit__(self, *args, **kwargs):
+                self._dependency_dispatcher._current_dependency_type = self._saved_type
+
+        return Context(self)
 
 
 def push_dependency_handler(func):

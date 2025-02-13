@@ -134,9 +134,8 @@ class PackagesStep(Step):
                 self._packages.append(str(arg))
 
     @push_dependency_handler
-    def list_packages(self, resolve_groups):
-        packages = "\n".join(self._packages)
-        print(packages)
+    def query_installed_packages(self):
+        return self._packages
 
     @pull_dependency_handler
     def get_package_info(self, package):

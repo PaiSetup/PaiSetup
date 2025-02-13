@@ -24,10 +24,15 @@ class GuiStep(Step):
         self._file_writer.remove_file(".cache/PaiSetup/wallpapers/directories")
 
     def push_dependencies(self, dependency_dispatcher):
-        global push_dependencies_called
-        if push_dependencies_called:
-            return
-        push_dependencies_called = True
+        # GuiStep is a base class for multiple steps like DwmStep or AwesomeStep. It has its
+        # dependencies, but they should be pushed only once. Otherwise we'll get duplicated
+        # periodic checks and keybindings. This is kind of a caveman solution to this problem,
+        # but I'm not sure how else to fix it at the moment.
+        if not dependency_dispatcher.is_fake:
+            global push_dependencies_called
+            if push_dependencies_called:
+                return
+            push_dependencies_called = True
 
         dependency_dispatcher.add_packages(
             "xorg-xrandr",

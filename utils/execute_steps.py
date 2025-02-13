@@ -6,7 +6,9 @@ from utils.dependency_dispatcher import (
 )
 
 
-def execute_steps(steps, filtered_steps=None, dependency_resolution_mode=DependencyResolutionMode.pull_and_push, list_steps=False, list_packages=False):
+def execute_steps(
+    steps, filtered_steps=None, dependency_resolution_mode=DependencyResolutionMode.pull_and_push, list_steps=False, list_packages=False
+):
     # Filter steps by command line args
     Step._logger.log("Filtering steps")
     if filtered_steps != None:
@@ -36,7 +38,10 @@ def execute_steps(steps, filtered_steps=None, dependency_resolution_mode=Depende
 
     # List packages
     if list_packages:
-        dependencies.list_packages(True)
+        with dependencies.enable_external_dependency_pulling():
+            packages = dependencies.query_installed_packages()
+        packages = "\n".join(packages)
+        print(packages)
         return
 
     # Run the steps
