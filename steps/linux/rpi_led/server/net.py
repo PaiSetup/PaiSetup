@@ -42,9 +42,10 @@ def connect():
         # No idea why that is, but performing a hard reset always helps. Soft reset
         # also helps but requires more iterations (usually 3-4). I tried to add big
         # sleeps before connecting, but it also didn't help.
-        # TODO check machine.reset_cause() to avoid resetting endlessly, when there's really no Wifi.
-        machine.reset()
-        return False
+        if machine.reset_cause() == machine.PWRON_RESET:
+            machine.reset()
+        else:
+            return False
 
 
 def set_hostname(hostname):
