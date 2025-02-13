@@ -7,11 +7,11 @@ local widget_wrappers = require("widget.wrappers")
 local create_toggle_button = require("widget.toggle_button")
 local dpi = require("beautiful.xresources").apply_dpi
 
+local pai_setup = nil
 local rpi_led_state = {}
 rpi_led_state.enabled_sections = 0
 rpi_led_state.brightness = 0
 rpi_led_state.query_rpi_led = function(self)
-    pai_setup = "/home/maciej/linux_setup" -- TODO hardcoded
     command = pai_setup .. "/steps/linux/rpi_led/client/query_rpi_led.py --brightness --sections"
     awful.spawn.easy_async_with_shell(command, function(stdout)
         matcher = stdout:gmatch("[^\r\n]+")
@@ -22,7 +22,6 @@ rpi_led_state.query_rpi_led = function(self)
     end)
 end
 rpi_led_state.update_rpi_led = function(self)
-    pai_setup = "/home/maciej/linux_setup" -- TODO hardcoded
     executable = pai_setup .. "/steps/linux/rpi_led/client/update_rpi_led.py"
     arg_section = " -s " .. tostring(self.enabled_sections)
     arg_brightness = " -b " .. tostring(self.brightness)
@@ -102,7 +101,7 @@ local function create_brightness_slider()
     return widget
 end
 
-local function create_popup(screen, pai_setup)
+local function create_popup(screen)
     -- Some size constants
     local window_width = dpi(200)
     local window_height = dpi(110)
@@ -163,10 +162,12 @@ local function create_button(widget_to_show)
     return widget
 end
 
-return function(screen, pai_setup)
-    popup = create_popup(screen, pai_setup)
+return function(screen, pai_setup_root)
+    pai_setup = pai_setup_root
+
+    popup = create_popup(screen)
     button = create_button(popup)
 
-    rpi_led_state.query_rpi_led()
+    rpi_led_state:query_rpi_led()
     return button
 end
