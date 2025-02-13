@@ -32,7 +32,7 @@ local script_widget = require("widget.script_widget")
 local callback_widget = require("widget.callback_widget")
 local tray_widget = require("widget.tray_widget")
 local home_panel = require("widget.home_panel")
-local rpi_led_widget = require("widget.rpi_led_widget")
+local create_rpi_led_widget = require("widget.rpi_led_widget")
 local taglist = require("widget.taglist")
 local tasklist = require("widget.tasklist")
 local layout_box = require("widget.layout_box")
@@ -70,6 +70,7 @@ terminal = os.getenv("TERMINAL")
 user = os.getenv("USER")
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
+rpi_led_enabled = os.getenv("RPI_LED_CACHE") ~= nil
 pai_setup = os.getenv("PAI_SETUP_ROOT")
 pai_setup_steps = pai_setup .. "/steps/linux/"
 pai_setup_status_scripts = pai_setup_steps .. "gui/scripts_statusbar/"
@@ -158,7 +159,10 @@ awful.screen.connect_for_each_screen(function(s)
     utils.set_wallpaper(s)
 
     -- Leaf widgets (screen-specific)
-    local rpi_led_widget = rpi_led_widget(s, pai_setup) -- TODO: do this conditionally
+    local rpi_led_widget = nil
+    if rpi_led_enabled then
+        rpi_led_widget = create_rpi_led_widget(s, pai_setup)
+    end
 
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, tags.general, tags.general, tags.general, tags.general, tags.draw, tags.video, tags.home }, s, awful.layout.layouts[1])
