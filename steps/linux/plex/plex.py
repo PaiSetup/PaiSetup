@@ -38,10 +38,10 @@ class PlexStep(Step):
     def _create_symlinks_for_libraries(self, plex_movies_dir, plex_tv_series_dir):
         self._logger.log("Creating symlinks for Plex libraries")
 
-        movies_dir = self._env.home() / "multimedia" / "movies"  # TODO get this from HomedirStep
+        movies_dir = self._env.home() / "multimedia/movies"
         self._file_writer.write_symlink(movies_dir, plex_movies_dir)
 
-        tv_series_dir = self._env.home() / "multimedia" / "tv_series"
+        tv_series_dir = self._env.home() / "multimedia/tv_series"
         self._file_writer.write_symlink(tv_series_dir, plex_tv_series_dir)
 
     def _setup_permissions(self, plex_dirs):
