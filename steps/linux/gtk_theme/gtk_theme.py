@@ -35,7 +35,7 @@ class GtkThemeStep(Step):
         self.icon_theme_name = "PaiSetupIconTheme"
         self._regenerate_widget_theme = regenerate_widget_theme
         self._regenerate_icon_theme = regenerate_icon_theme
-        self._widget_theme_path = self._env.home() / ".themes" / self.widget_theme_name  # TODO can it be moved to ~/.local?
+        self._widget_theme_path = self._env.home() / ".local/share/themes" / self.widget_theme_name
         self._icon_theme_path = self._env.home() / ".local/share/icons" / self.icon_theme_name
         self._current_step_dir = Path(__file__).parent
         self._emblems = {}
@@ -47,7 +47,6 @@ class GtkThemeStep(Step):
             "themix-theme-oomox-git",
             "themix-full-git",
         )
-        dependency_dispatcher.register_homedir_file(".themes")
 
     @push_dependency_handler
     def set_folder_icon(self, path, icon_name):

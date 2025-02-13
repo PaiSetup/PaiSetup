@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Prepare theme directory
+dst_themes_dir="$HOME/.local/share/themes"
+rm -rf "$dst_themes_dir"
+mkdir -p "$dst_themes_dir"
+
 # Our color palette
 COLOR_THEME="$(xrdb -get color1 | tr -d '#')"
 COLOR_GRAY_LIGHT="$(xrdb -get color2 | tr -d '#')"
@@ -30,5 +35,5 @@ WM_BORDER_FOCUS=$COLOR_WTF
 WM_BORDER_UNFOCUS=$COLOR_WTF
 HEREDOC
 
-oomox-cli -o PaiSetupWidgetTheme "$oomox_config"
+oomox-cli -o PaiSetupWidgetTheme "$oomox_config" --target-dir "$dst_themes_dir"
 rm "$oomox_config"
