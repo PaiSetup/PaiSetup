@@ -1,7 +1,8 @@
-from steps.step import Step
 from pathlib import Path
-from utils.services.file_writer import FileType
+
 import utils.external_project as ext
+from steps.step import Step
+from utils.services.file_writer import FileType
 
 
 class StStep(Step):
@@ -39,20 +40,9 @@ class StStep(Step):
             ".profile",
             "Command for calling default terminal",
             [
-                "export TERMINAL='st -e'",
+                "export TERMINAL=st",
+                "export TERMINAL_CMD='st -e'",
             ],
-        )
-        self._file_writer.write_section(
-            ".profile",
-            "Path to inputrc file",
-            [
-                "export INPUTRC=~/.config/inputrc",
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/inputrc",
-            "Enable DELETE key to work in st",
-            ["set enable-keypad on"],
         )
         self._file_writer.write_section(
             ".config/XresourcesApp",

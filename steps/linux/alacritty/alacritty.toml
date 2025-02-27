@@ -1,0 +1,42 @@
+[window]
+opacity = 0.92
+dynamic_title = true
+
+[scrolling]
+history = 5000
+multiplier = 2
+
+[font]
+normal = {family = "Liberation Mono"}
+size = 11
+
+[colors]
+primary = {background = "#222222"}
+
+[cursor]
+style = {blinking = "On"}
+blink_interval = 400
+
+[keyboard]
+bindings = [
+    # Copy paste
+    { key="Insert", mods="Control", action="Copy"},
+    { key="Insert", mods="Shift", action="Paste"},
+
+    # These also work with Shift, but I prefer Ctrl
+    { key="PageUp", mods="Control", action="ScrollPageUp"},
+    { key="PageDown", mods="Control", action="ScrollPageDown"},
+    { key="Home", mods="Control", action="ScrollToTop"},
+    { key="End", mods="Control", action="ScrollToBottom"},
+
+    # Font size
+    { key="Plus", mods="Control", action="IncreaseFontSize"},
+    { key="Minus", mods="Control", action="DecreaseFontSize"},
+
+    # Display buffer search. It searches not only commands (like ctrl+R), but
+    # also their outputs. Nice.
+    { key="R", mods="Alt", action="SearchBackward"},
+
+    # Just testing... This could be useful, although I don't know how yet.
+    { key="A", mods="Alt", chars="ps -aux | grep vlc | awk '{print $2}' | xargs kill -9" },
+]

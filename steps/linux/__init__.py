@@ -1,6 +1,7 @@
 from steps.ssh import SshStep
 from utils.setup_mode import SetupMode
 
+from .alacritty.alacritty import AlacrittyStep
 from .audio import AudioStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
@@ -69,7 +70,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         UlauncherStep(),
         DwmStep(build_dir, full=args.full, is_default_wm=False),
         AwesomeStep(build_dir, is_default_wm=True),
-        StStep(build_dir, full=args.full),
+        AlacrittyStep(),
         DushStep(fetch_git=args.full),
         NushStep(fetch_git=args.full),
         VscodeStep(build_dir),

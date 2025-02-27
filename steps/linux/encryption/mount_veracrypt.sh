@@ -18,7 +18,7 @@ is_mounted="$?"  # 0 means mounted
 # -------------------------------------------------------------------------- Functions realizing encryption/decryption
 
 perform_map() {
-    $TERMINAL sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$mapping_name"
+    $TERMINAL_CMD sudo cryptsetup --type tcrypt --veracrypt open "$image_path" "$mapping_name"
     if ! sudo cryptsetup status "$mapping_name" >/dev/null 2>&1; then
         notify-send "❌ Error" "Could not map $mapping_name."
         return 1

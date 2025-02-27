@@ -20,7 +20,7 @@ fi
 
 if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     command="$PAI_SETUP_ROOT/steps/linux/gui/scripts/update_packages.sh 1"
-    $TERMINAL sh -c "$command" >/dev/null 2>&1 &
+    $TERMINAL_CMD sh -c "$command" >/dev/null 2>&1 &
 fi
 
 printf " %d" "$(checkupdates | wc -l)"

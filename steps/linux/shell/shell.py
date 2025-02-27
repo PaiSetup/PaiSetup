@@ -89,3 +89,15 @@ class ShellStep(Step):
             file_type=FileType.Bash,
             line_placement=LinePlacement.End,
         )
+        self._file_writer.write_section(
+            ".profile",
+            "Path to inputrc file",
+            [
+                "export INPUTRC=~/.config/inputrc",
+            ],
+        )
+        self._file_writer.write_section(
+            ".config/inputrc",
+            "Enable DELETE key to work in terminals",
+            ["set enable-keypad on"],
+        )
