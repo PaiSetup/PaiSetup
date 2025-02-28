@@ -40,6 +40,7 @@ from .shell.shell import ShellStep
 from .st.st import StStep
 from .thunar import ThunarStep
 from .ulauncher import UlauncherStep
+from .useless import UselessStep
 from .vagrant import VagrantStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
@@ -76,6 +77,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         VscodeStep(build_dir),
         NeovimStep(),
         RpiLedStep(),
+        UselessStep(),
         IconFontStep(full=args.full),
         PlexStep(),
         ProgrammingCppStep(graphics=True, systemc=True),

@@ -170,9 +170,7 @@ class PackagesStep(Step):
                 "flamegraph",
                 "xxd-standalone",
                 # Unixporn
-                "neofetch",
                 "cava",
-                "cmatrix",
                 # MTP (for Android phone mounting)
                 "gvfs-mtp",
                 "gvfs-gphoto2",
