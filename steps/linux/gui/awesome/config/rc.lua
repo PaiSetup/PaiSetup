@@ -66,7 +66,7 @@ end
 
 ----------------------------------------------------------------------------------- Variable definitions
 -- Read some handy env variables
-terminal = os.getenv("TERMINAL")
+terminal = os.getenv("TERMINAL_CMD")
 user = os.getenv("USER")
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor

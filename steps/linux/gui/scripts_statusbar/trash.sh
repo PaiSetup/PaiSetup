@@ -13,7 +13,7 @@ if [ "$BUTTON" = "$BUTTON_ACTION" ]; then
     $FILE_MANAGER $trash_dir
 fi
 if [ "$BUTTON" = "$BUTTON_TERMINATE" ]; then
-    $TERMINAL sh -c "$PAI_SETUP_ROOT/steps/linux/gui/scripts/cleanup_trash.sh"
+    $TERMINAL_CMD sh -c "$PAI_SETUP_ROOT/steps/linux/gui/scripts/cleanup_trash.sh"
 fi
 
 if [ "$size" -ge "$threshold" ]; then
