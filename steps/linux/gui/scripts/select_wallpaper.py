@@ -114,7 +114,7 @@ def setup_cava_theme(cava_config_path, main_color):
     with open(cava_config_path, "w") as f:
         lines = [
             "[color]\n",
-            f"foreground = {main_color}\n",
+            f'foreground = "{main_color}"\n',
         ]
         f.writelines(lines)
 
