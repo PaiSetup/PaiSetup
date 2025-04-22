@@ -142,7 +142,8 @@ class FileAssociationsStep(Step):
             ("org.gnome.Rhythmbox3.desktop", music_mimes),
             ("org.nomacs.ImageLounge.desktop", image_mimes),
             ("qpdfview.desktop", pdf_mimes),
-            ("terminal_nvim.desktop", text_types),
+            # ("terminal_nvim.desktop", text_types),
+            ("code-oss.desktop", text_types),
         ]
 
         # Check available .desktop files with following command:
