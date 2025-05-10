@@ -13,7 +13,7 @@ class UselessStep(Step):
             "sl",
             "cmatrix",
             "neofetch",
-            "asciiaquarium",
+            "asciiquarium",
         ]
         dependency_dispatcher.add_packages(packages)
 
