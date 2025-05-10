@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from steps.step import Step
+from utils.command import run_command
 from utils.services.file_writer import FileType
 
 
@@ -12,18 +13,13 @@ class UlauncherStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("ulauncher")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher", "ulauncher")
 
     def perform(self):
         self._logger.log("Configuring ulauncher")
         self._setup_ulauncher_config()
 
         self._logger.log("Enabling ulauncher on startup")
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "App launcher",
-            ["systemctl --user start ulauncher"],
-        )
+        run_command("systemctl --user enable --now ulauncher")
 
     def _setup_ulauncher_config(self):
         config = {
