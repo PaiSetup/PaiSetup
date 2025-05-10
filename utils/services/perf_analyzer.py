@@ -7,7 +7,7 @@ from utils.os_function import OperatingSystem
 class PerfAnalyzer:
     class Operation:
         def __init__(self, description, indent_level):
-            self.description = description
+            self.description = str(description)
             self.indent_level = indent_level
             self.duration_ms = None
             self.suboperations = []

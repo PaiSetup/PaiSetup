@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import utils.external_project as ext
+from steps.linux.systemd import SystemdService
 from steps.step import Step
 from utils.command import *
 from utils.keybinding import KeyBinding
@@ -53,7 +54,7 @@ class GuiStep(Step):
             "xdotool",  # for getting Thunar's cwd
         )
 
-        dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
+        dependency_dispatcher.add_systemd_service(SystemdService("flameshot", "flameshot"))
         dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
         dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
 
@@ -159,11 +160,6 @@ class GuiStep(Step):
             ".config/PaiSetup/xinitrc_base",
             "Set screen save timeout duration to 2 hours",
             ["xset s 7200 &"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Screenshot daemon",
-            ["flameshot &"],
         )
 
     def _setup_picom_config(self):

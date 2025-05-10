@@ -38,6 +38,7 @@ from .rpi_led.rpi_led import RpiLedStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
 from .st.st import StStep
+from .systemd import SystemdStep
 from .thunar import ThunarStep
 from .ulauncher import UlauncherStep
 from .useless import UselessStep
@@ -61,6 +62,7 @@ def get_steps(args, root_dir, build_dir, secret_dir):
         ScreenConfigPersistanceStep(),
         GpuStep(),
         FirefoxStep(is_default_browser=True),
+        SystemdStep(),
         ThunarStep(is_main_machine=args.mode == SetupMode.main),
         HomeDirectoryStep(root_dir, is_main_machine=args.mode == SetupMode.main),
         BluetoothStep(),
