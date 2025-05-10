@@ -23,7 +23,6 @@ class DwmStep(GuiStep):
         self._xresources_path = f"{self._config_path}/Xresources"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
 
-        self._picom_config_path = f"{self._config_path}/picom.conf"
         self._dunst_config_path = f"{self._config_path}/dunstrc"
         self._sxhkd_config_path = f"{self._config_path}/sxhkdrc"
 
@@ -43,7 +42,6 @@ class DwmStep(GuiStep):
         self._setup_xresources()
         self._setup_stalonetrayrc()
         self._setup_dunstrc()
-        self._setup_picom_config()
         self._setup_sxhkdrc()
 
     @push_dependency_handler
@@ -115,11 +113,6 @@ class DwmStep(GuiStep):
             self._xinitrc_path,
             "Run dwmblocks",
             ["dwmblocks &"],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
-            "Run picom",
-            [f"picom -b --no-fading-openclose --config ~/{self._picom_config_path} &"],
         )
         self._file_writer.write_section(
             self._xinitrc_path,
@@ -222,12 +215,6 @@ class DwmStep(GuiStep):
                 "fuzzy_edges 3",
             ],
             file_type=FileType.ConfigFile,
-        )
-
-    def _setup_picom_config(self):
-        self._file_writer.write_lines(
-            self._picom_config_path,
-            ["corner-radius = 8"],
         )
 
     def _setup_dunstrc(self):

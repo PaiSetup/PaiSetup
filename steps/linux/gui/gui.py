@@ -54,9 +54,9 @@ class GuiStep(Step):
             "xdotool",  # for getting Thunar's cwd
         )
 
-        dependency_dispatcher.add_systemd_service(SystemdService("flameshot", "flameshot"))
-        dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
+        dependency_dispatcher.add_systemd_service(SystemdService("flameshot"))
+        dependency_dispatcher.add_systemd_service(SystemdService("picom --no-fading-openclose", "picom"))
+        dependency_dispatcher.add_systemd_service(SystemdService("udiskie"))
 
         # fmt: off
         dependency_dispatcher.add_keybindings(
@@ -106,11 +106,6 @@ class GuiStep(Step):
             ".config/PaiSetup/xinitrc_base",
             "Start in home directory",
             ["cd || exit"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Automounting daemon",
-            ["udiskie &"],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",

@@ -48,11 +48,6 @@ class QtileStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
-            "Run picom",
-            ["picom -b --no-fading-openclose  &"],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
             "Run Qtile",
             [f"exec qtile start -c {self._qtile_config_script_path}"],
             line_placement=LinePlacement.End,

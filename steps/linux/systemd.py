@@ -9,10 +9,15 @@ from utils.services.file_writer import FileType
 
 
 class SystemdService:
-    def __init__(self, name, exec_start, description=None):
-        self.name = name
+    def __init__(self, exec_start, name=None, description=None):
         self.exec_start = exec_start
-        self.description = description if description is not None else name
+        if name is None:
+            if not all((c.isalpha() for c in self.exec_start)):
+                raise ValueError("Name was not specified, but cannot use exec_start, because it contains illegal characters.")
+            self.name = self.exec_start
+        else:
+            self.name = name
+        self.description = description if description is not None else self.name
 
 
 class SystemdStep(Step):
@@ -24,10 +29,6 @@ class SystemdStep(Step):
     def add_systemd_service(self, service):
         self._services.append(service)
         self._services_dir = self._env.home() / ".config/PaiSetup/services"
-
-    def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("ulauncher")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher", "ulauncher")
 
     def perform(self):
         self._clean_services()
@@ -57,11 +58,8 @@ class SystemdStep(Step):
                     flush=True,
                 )
 
-                self._logger.log("Enabling service to run on boot.")
-                run_command(f"systemctl --user enable {service_file_path}")
-
-                self._logger.log("Starting service to run now.")
-                run_command(f"systemctl --user enable {service_file_path}")
+                self._logger.log("Starting and enabling the service.")
+                run_command(f"systemctl --user enable --now {service_file_path}")
 
     def _generate_service_file_content(self, service):
         return f"""\

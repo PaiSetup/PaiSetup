@@ -65,11 +65,6 @@ class AwesomeStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
-            "Run picom",
-            ["picom -b --no-fading-openclose  &"],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
             "Run AwesomeWM",
             ["exec awesome"],
             line_placement=LinePlacement.End,
