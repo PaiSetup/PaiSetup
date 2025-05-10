@@ -24,7 +24,7 @@ from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
 
 
-def get_steps(args, root_dir, build_dir, secret_dir):
+def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     # TODO check for admin
 
     steps = []

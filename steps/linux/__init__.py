@@ -48,12 +48,12 @@ from .vscode import VscodeStep
 from .xsession import XsessionStep
 
 
-def get_steps(args, root_dir, build_dir, secret_dir):
+def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     if args.mode != SetupMode.main:
         raise ValueError("Arch Linux can only be setup as a main machine")
 
     steps = [
-        PackagesStep(build_dir, True),
+        PackagesStep(build_dir, True, install_packages),
         ShellStep(root_dir),
         GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
         FileAssociationsStep(),

@@ -6,10 +6,11 @@ from utils.os_helpers import Pushd
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir, print_installation):
+    def __init__(self, root_build_dir, print_installation, enable_installation):
         super().__init__("Packages")
         self._known_package_groups = ["vulkan-devel"]
         self.root_build_dir = root_build_dir
+        self._enable_installation = enable_installation
         self.print_installation = print_installation
         self._packages = []
         self._assumed_packages = []
@@ -45,6 +46,9 @@ class PackagesStep(Step):
         run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
     def _install_packages(self):
+        if not self._enable_installation:
+            return
+
         with self._logger.indent(f"Installing packages: {self._packages}"):
             missing_packages = self._get_missing_packages(self._packages)
             if not missing_packages:
