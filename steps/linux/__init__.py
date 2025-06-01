@@ -53,7 +53,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     has_multimedia_dir = args.mode == SetupMode.main
 
     match args.mode:
-        case SetupMode.main: # Arch Linux
+        case SetupMode.main:  # Arch Linux
             steps = [
                 PackagesStep(build_dir, True, install_packages),
                 ShellStep(root_dir),
@@ -104,8 +104,10 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         case SetupMode.debian_casual:
             steps = [
                 PackagesDebianStep(install_packages),
+                AwesomeStep(build_dir, is_default_wm=True),
                 ProgrammingPythonStep(),
                 GitStep(),
+                AlacrittyStep(),
                 HomeDirectoryStep(root_dir, has_multimedia_dir=False),
                 DushStep(fetch_git=args.full),
                 NushStep(fetch_git=args.full),

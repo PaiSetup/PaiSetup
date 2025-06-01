@@ -76,6 +76,7 @@ class PackagesDebianStep(Step):
                     "curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg",
                     "sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/keyrings/microsoft-archive-keyring.gpg",
                     "sudo sh -c 'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'",
+                    "rm microsoft.gpg",  # TODO this shouldn't be needed when we do it in tmp dir and cleanup automatically.
                     "sudo apt-get update",  # TODO this is a bit inefficient... Split it somehow to pre-install and install?
                     "sudo apt-get install code",
                 ]
@@ -84,6 +85,27 @@ class PackagesDebianStep(Step):
                 pass
             case "openssh":
                 return DebianPackageApt("openssh-client")
+            case "xorg-xrandr":
+                return DebianPackageApt("x11-xserver-utils")
+            case "xorg-xinit":
+                return DebianPackageApt("xinit")
+            case "xorg-server":
+                return DebianPackageApt("xserver-xorg-core")
+            case "xorg-server-xephyr":
+                return DebianPackageApt("xserver-xephyr")
+            case "xorg-xwininfo":
+                return DebianPackageApt("x11-utils")
+            case "picom-ibhagwan-git":
+                # TODO, we could manually download the fork, but maybe it's time to ditch it... It's no longer maintained.
+                return DebianPackageApt("picom")
+            case "libxft":
+                return DebianPackageApt("libxft2")
+            case "xorg-setxkbmap":
+                return DebianPackageApt("x11-xkb-utils")
+            case "pacman-contrib":
+                pass  # TODO Some Gui scripts use this to check for updates. Port to debian
+            case "libnotify":
+                return DebianPackageApt("libnotify-bin")
 
             case "python":
                 return DebianPackageApt("python3")

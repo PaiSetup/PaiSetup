@@ -31,7 +31,6 @@ class AwesomeStep(GuiStep):
         super().push_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages(
             "awesome",
-            "lua",  # not strictly needed, but useful for prototyping
             "jq",  # needed for parsing json when getting currency exchange
         )
         dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
