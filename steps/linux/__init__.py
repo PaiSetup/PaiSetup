@@ -103,8 +103,9 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
             ]
         case SetupMode.debian_casual:
             steps = [
-                PackagesDebianStep(True, install_packages),
+                PackagesDebianStep(install_packages),
                 ProgrammingPythonStep(),
+                GitStep(),
                 VscodeStep(build_dir),
             ]
         case SetupMode.debian_work:

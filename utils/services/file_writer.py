@@ -240,7 +240,7 @@ class FileWriter:
         except PermissionError:
             run_command(f"sudo rm {path}")
 
-    def patch_dot_desktop_file(self, source_name, destination_name, patch_functions):
+    def patch_dot_desktop_file(self, source_name, destination_name, patch_functions, must_exist=True):
         """
         Takes .desktop file from /usr/share/applications, applies patch functions to its
         contents and creates a new file in a user specific folder for .desktop files.
@@ -257,6 +257,9 @@ class FileWriter:
         """
         source_file_path = f"/usr/share/applications/{source_name}"
         destination_file_path = self._home_path / ".local/share/applications" / destination_name
+
+        if not must_exist and not Path(source_file_path).is_file():
+            return
 
         lines = []
         with open(source_file_path, "r") as src:

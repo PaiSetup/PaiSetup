@@ -14,7 +14,15 @@ class DebianPackageApt(DebianPackage):
         super().__init__(name)
 
     def install(self):
-        command = f"sudo apt-get install --yes {command}"
+        command = f"sudo apt-get install --yes {self._name}"
+        run_command(command)
+
+class DebianPackagePip(DebianPackage):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def install(self):
+        command = f"pip3 install {self._name}"
         run_command(command)
 
 class DebianPackageCommands(DebianPackage):
@@ -25,7 +33,7 @@ class DebianPackageCommands(DebianPackage):
     def install(self):
         # TODO do it in tmp dir
         for command in self._commands:
-            run_command(command)
+            run_command(command, shell=True)
 
 class DebianPackageCustomFunction(DebianPackage):
     def __init__(self, name, command):
@@ -56,9 +64,11 @@ class PackagesDebianStep(Step):
 
         with self._logger.indent(f"Installing packages: {self._packages}"):
             for package_name in self._packages:
-                self._logger.log(f"{package_name}")
-
                 package = PackagesDebianStep._translate_package(package_name)
+                if package is None:
+                    continue
+
+                self._logger.log(f"{package_name}")
                 package.install()
 
     @staticmethod
@@ -70,10 +80,22 @@ class PackagesDebianStep(Step):
                     "curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg",
                     "sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/keyrings/microsoft-archive-keyring.gpg",
                     "sudo sh -c 'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'",
+                    "sudo apt-get update", # TODO this is a bit inefficient... Split it somehow to pre-install and install?
+                    "sudo apt-get install code",
                 ]
-                return DebianPackageCommands(commands)
+                return DebianPackageCommands("code", commands)
+            case "code-features":
+                pass
+            case "autopep8":
+                return DebianPackageApt("python3-autopep8")
+            case "python":
+                return DebianPackageApt("python3")
+            case "python-pip":
+                return DebianPackageApt("python3-pip")
+            case "python-black":
+                return DebianPackageApt("black")
             case _:
-                return DebianPackageApt(package)
+                return DebianPackageApt(package_name)
 
     @push_dependency_handler
     def add_packages(self, *args):
@@ -81,10 +103,9 @@ class PackagesDebianStep(Step):
             if arg is None:
                 pass
             elif isinstance(arg, list):
-                packages_list += arg
+                self._packages += arg
             else:
-                packages_list.append(str(arg))
-        PackagesStep._add_packages_to_list(self._packages, *args)
+                self._packages.append(str(arg))
 
     def _get_missing_packages(self, required_packages):
         # TODO compare required_packages with actually installed packages

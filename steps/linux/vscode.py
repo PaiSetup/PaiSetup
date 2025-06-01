@@ -16,11 +16,11 @@ class VscodeStep(VscodeStepBase):
             "autopep8",
             "python-black",
         )
-        dependency_dispatcher.register_homedir_file(".vscode")
+        #dependency_dispatcher.register_homedir_file(".vscode")
 
         # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
-        dependency_dispatcher.register_homedir_file(".pki")
+        #dependency_dispatcher.register_homedir_file(".pki")
 
     def perform(self):
         self._install_extensions()
@@ -28,20 +28,18 @@ class VscodeStep(VscodeStepBase):
         self._create_desktop_file()
 
     def _install_extensions(self):
-        if len(self._env.get("DISPLAY")) > 0:
+        if len(self._env.get("DISPLAY")) > 0 or True: # TODO wayland xD
             super()._install_extensions()
         else:
             self._logger.log("Skipping extensions installation (no graphical display)")
 
     def _create_desktop_file(self):
-        self._file_writer.patch_dot_desktop_file(
-            "code-oss.desktop",
-            "code_new_window.desktop",
-            {
-                "Name": lambda section, name, value: f"{value} - New window" if section == "Desktop Entry" else value,
-                "Exec": lambda section, name, value: f"{value} --new-window" if section == "Desktop Entry" else value,
-            },
-        )
+        patch_functions = {
+            "Name": lambda section, name, value: f"{value} - New window" if section == "Desktop Entry" else value,
+            "Exec": lambda section, name, value: f"{value} --new-window" if section == "Desktop Entry" else value,
+        },
+        self._file_writer.patch_dot_desktop_file("code-oss.desktop", "code-oss_new_window.desktop", patch_functions, False)
+        self._file_writer.patch_dot_desktop_file("code.desktop", "code_new_window.desktop", patch_functions, False)
 
     def _get_vscode_config_dir(self):
         return Path(".config/Code/User/")

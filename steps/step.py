@@ -39,7 +39,7 @@ class Step:
         cls._env.finalize()
         cls._file_writer.finalize()
         cls._logger.finalize()
-        cls._perf_analyzer.finalize()  # Has to be last
+        # cls._perf_analyzer.finalize()  # Has to be last
 
     def register_env_variables(self):
         """
