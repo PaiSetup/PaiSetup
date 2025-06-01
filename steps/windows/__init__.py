@@ -25,17 +25,34 @@ from .vscode import VscodeStep
 
 
 def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
+    match args.mode:
+        case SetupMode.windows:
+            is_normie = False
+        case SetupMode.windows_normie:
+            is_normie = True
+        case _:
+            raise ValueError("Selected SetupMode is unsupported for Windows")
+
     # TODO check for admin
 
-    steps = []
+    # Add default steps
+    steps = [
+        PackagesStep(build_dir, skip_already_installed=True, is_main_machine=not is_normie),
+        ActivateWindowsStep(secret_dir),
+        ExplorerStep(),
+        ExtensionsStep(),
+        HwToolsStep(gaming=True),
+        IconsStep(),
+        PowerStep(),
+        PrivacyStep(),
+        TimeStep(),
+        StartupStep(),
+        UninstallBloatStep(),
+        VscodeStep(build_dir),
+    ]
 
-    # Add packages step.
-    steps.append(PackagesStep(build_dir, skip_already_installed=True, is_main_machine=args.mode == SetupMode.main))
-
-    # Add folder step
-    if args.mode == SetupMode.main:
-        steps.append(FoldersStep(args.root_dir, include_multimedia=False))
-    elif args.mode == SetupMode.normie:
+    # Add steps specific to my machine or normie machine
+    if is_normie:
         steps.append(
             FoldersStep(
                 None,
@@ -47,40 +64,15 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 include_vms=False,
             )
         )
-    elif args.mode == SetupMode.extra:
-        steps.append(FoldersStep(args.root_dir, include_multimedia=False, include_projects=False, include_vms=False))
     else:
-        raise ValueError("Unsupported mode")
-
-    # Add the rest of the steps
-    steps += [
-        ActivateWindowsStep(secret_dir),
-        ExplorerStep(),
-        ExtensionsStep(),
-        HwToolsStep(gaming=args.mode == SetupMode.main),
-        IconsStep(),
-        PowerStep(),
-        PrivacyStep(),
-        TimeStep(),
-        StartupStep(),
-        UninstallBloatStep(),
-        VscodeStep(build_dir),
-    ]
-
-    # Add steps only for my machines
-    if args.mode == SetupMode.main or args.mode == SetupMode.extra:
         steps += [
-            DushStep(True),
+            FoldersStep(args.root_dir, include_multimedia=False),
+            DushStep(fetch_git=True),
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),
             ToolbarStep(root_dir),
             VirtualBoxStep(),
-        ]
-
-    # Add steps only for main machine
-    if args.mode == SetupMode.main:
-        steps += [
             MultimediaToolsStep(),
             ProgrammingCommonStep(),
             ProgrammingCppStep(False),

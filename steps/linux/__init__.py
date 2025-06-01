@@ -49,55 +49,62 @@ from .xsession import XsessionStep
 
 
 def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
-    if args.mode != SetupMode.main:
-        raise ValueError("Arch Linux can only be setup as a main machine")
+    has_multimedia_dir = args.mode == SetupMode.main
 
-    steps = [
-        PackagesStep(build_dir, True, install_packages),
-        ShellStep(root_dir),
-        GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
-        FileAssociationsStep(),
-        AudioStep(),
-        ClionStep(),
-        ScreenConfigPersistanceStep(),
-        GpuStep(),
-        FirefoxStep(is_default_browser=True),
-        SystemdStep(),
-        ThunarStep(is_main_machine=args.mode == SetupMode.main),
-        HomeDirectoryStep(root_dir, is_main_machine=args.mode == SetupMode.main),
-        BluetoothStep(),
-        JavaStep(),
-        QBitTorrentStep(is_main_machine=args.mode == SetupMode.main),
-        XsessionStep(),
-        GitStep(),
-        UlauncherStep(),
-        DwmStep(build_dir, full=args.full, is_default_wm=False),
-        AwesomeStep(build_dir, is_default_wm=True),
-        AlacrittyStep(),
-        DushStep(fetch_git=args.full),
-        NushStep(fetch_git=args.full),
-        VscodeStep(build_dir),
-        NeovimStep(),
-        RpiLedStep(),
-        UselessStep(),
-        IconFontStep(full=args.full),
-        PlexStep(),
-        ProgrammingCppStep(graphics=True, systemc=True),
-        ProgrammingPythonStep(),
-        ProgrammingRustStep(),
-        ProgrammingCommonStep(),
-        ProgrammingGamedevStep(),
-        SshStep(secret_dir, full=args.full),
-        CheckMateStep(build_dir),
-        LightDmStep(),
-        EncryptionStep(),
-        CharonStep(build_dir, full=args.full),
-        PicardStep(),
-        QtileStep(),
-        NotesStep(fetch_git=args.full),
-        VirtualBoxStep(),
-        VagrantStep(),
-        RaspberryPiStep(),
-    ]
+    match args.mode:
+        case SetupMode.main: # Arch Linux
+            steps = [
+                PackagesStep(build_dir, True, install_packages),
+                ShellStep(root_dir),
+                GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+                FileAssociationsStep(),
+                AudioStep(),
+                ClionStep(),
+                ScreenConfigPersistanceStep(),
+                GpuStep(),
+                FirefoxStep(is_default_browser=True),
+                SystemdStep(),
+                ThunarStep(is_main_machine=has_multimedia_dir),
+                HomeDirectoryStep(root_dir, is_main_machine=has_multimedia_dir),
+                BluetoothStep(),
+                JavaStep(),
+                QBitTorrentStep(is_main_machine=has_multimedia_dir),
+                XsessionStep(),
+                GitStep(),
+                UlauncherStep(),
+                DwmStep(build_dir, full=args.full, is_default_wm=False),
+                AwesomeStep(build_dir, is_default_wm=True),
+                AlacrittyStep(),
+                DushStep(fetch_git=args.full),
+                NushStep(fetch_git=args.full),
+                VscodeStep(build_dir),
+                NeovimStep(),
+                RpiLedStep(),
+                UselessStep(),
+                IconFontStep(full=args.full),
+                PlexStep(),
+                ProgrammingCppStep(graphics=True, systemc=True),
+                ProgrammingPythonStep(),
+                ProgrammingRustStep(),
+                ProgrammingCommonStep(),
+                ProgrammingGamedevStep(),
+                SshStep(secret_dir, full=args.full),
+                CheckMateStep(build_dir),
+                LightDmStep(),
+                EncryptionStep(),
+                CharonStep(build_dir, full=args.full),
+                PicardStep(),
+                QtileStep(),
+                NotesStep(fetch_git=args.full),
+                VirtualBoxStep(),
+                VagrantStep(),
+                RaspberryPiStep(),
+            ]
+        case SetupMode.debian_casual:
+            pass
+        case SetupMode.debian_work:
+            pass
+        case _:
+            raise ValueError("Selected SetupMode is unsupported for Linux")
 
     return steps

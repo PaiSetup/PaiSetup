@@ -2,9 +2,9 @@ from steps.step import Step
 
 
 class QBitTorrentStep(Step):
-    def __init__(self, is_main_machine):
+    def __init__(self, has_multimedia_dir):
         super().__init__("QBitTorrent")
-        self._is_main_machine = is_main_machine
+        self._has_multimedia_dir = has_multimedia_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("qbittorrent")
@@ -13,7 +13,8 @@ class QBitTorrentStep(Step):
         save_paths = [
             self._env.home() / "downloads",
         ]
-        if self._is_main_machine:
+        # TODO use the same push_dependency as for Thunar?
+        if self._has_multimedia_dir:
             save_paths += [
                 self._env.home() / "multimedia/movies",
                 self._env.home() / "multimedia/tv_series",
