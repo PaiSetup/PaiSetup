@@ -25,6 +25,7 @@ from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .nush import NushStep
 from .packages import PackagesStep
+from .packages_debian import PackagesDebianStep
 from .picard import PicardStep
 from .plex.plex import PlexStep
 from .programming_common import ProgrammingCommonStep
@@ -101,7 +102,11 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 RaspberryPiStep(),
             ]
         case SetupMode.debian_casual:
-            pass
+            steps = [
+                PackagesDebianStep(True, install_packages),
+                ProgrammingPythonStep(),
+                VscodeStep(build_dir),
+            ]
         case SetupMode.debian_work:
             pass
         case _:
