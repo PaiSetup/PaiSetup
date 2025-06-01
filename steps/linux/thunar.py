@@ -59,6 +59,7 @@ class ThunarStep(Step):
             (self._env.home() / "downloads", "Downloads"),
             (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
         ]
+        # TODO remove is_main_machine argument and use a push_dependency for this
         if self._is_main_machine:
             dirs += [
                 (self._env.home() / "multimedia/wallpapers", "Wallpapers"),

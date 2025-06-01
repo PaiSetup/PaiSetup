@@ -3,9 +3,11 @@ from pathlib import Path
 
 
 class SetupMode(enum.Enum):
-    main = "main"  # My main machine
-    extra = "extra"  # My extra machine, not a full setup
-    normie = "normie"  # Setup for not very computer-literate people
+    main = "main"  # TODO rename to "arch"
+    windows = "windows"
+    windows_normie = "windows_normie"
+    debian_casual = "debian_casual"
+    debian_work = "debian_work"
 
     @staticmethod
     def retrieve_last_mode(root_dir):

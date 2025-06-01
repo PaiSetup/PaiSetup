@@ -9,7 +9,7 @@ from utils.services.file_writer import FileType, LinePlacement
 
 
 class HomeDirectoryStep(Step):
-    def __init__(self, root_dir, is_main_machine):
+    def __init__(self, root_dir, has_multimedia_dir):
         super().__init__("HomeDirectory")
         self._root_dir = root_dir
         self._homedir_whitelist = Path(__file__).parent / "homedir_whitelist"
@@ -39,7 +39,7 @@ class HomeDirectoryStep(Step):
             "XDG_MOUNTS_DIR": "mounts",
             "XDG_LOG_DIR": ".log",
         }
-        if not is_main_machine:
+        if not has_multimedia_dir:
             self._xdg_custom.pop("XDG_MULTIMEDIA_DIR")
 
     def push_dependencies(self, dependency_dispatcher):
