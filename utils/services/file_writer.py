@@ -226,6 +226,10 @@ class FileWriter:
         except PermissionError:
             run_command(f"sudo ln -s {src} {link}")
 
+    def write_symlink_executable(self, src_path, dst_name):
+        link = Path("/usr/local/bin") / dst_name
+        self.write_symlink(src_path, link)
+
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name
 

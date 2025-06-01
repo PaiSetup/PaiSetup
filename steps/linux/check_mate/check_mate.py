@@ -1,10 +1,10 @@
-import os
 from pathlib import Path
 
+import utils.external_project as ext
 from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
-from utils.services.file_writer import FileType, FileWriter
+from utils.services.file_writer import FileType
 
 
 class CheckMateStep(Step):
@@ -87,10 +87,26 @@ class CheckMateStep(Step):
         script_args = f"{command_regex} {name}"
         self.register_periodic_check(script, 3, script_args=script_args, **kwargs)
 
-    def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("check_mate-bin")
-
     def perform(self):
+        self._install()
+        self._setup_launch_script()
+
+    def _install(self):
+        dst_dir = self._current_step_dir / "bin"
+        ext.download_github_release(
+            "DziubanMaciej",
+            "CheckMate",
+            dst_dir,
+            "v0.4.0",
+            "check_mate_linux_0.4.0.zip",
+            re_download=False,
+        )
+
+        binary_dir = dst_dir / "check_mate_linux_0.4.0"
+        self._file_writer.write_symlink_executable(binary_dir / "check_mate_client", "check_mate_client")
+        self._file_writer.write_symlink_executable(binary_dir / "check_mate_server", "check_mate_server")
+
+    def _setup_launch_script(self):
         for profile, checks in self._profiles.items():
             # Generate launch script for current profile
             lines = []

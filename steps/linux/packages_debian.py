@@ -10,6 +10,9 @@ class DebianPackage:
     def install(self):
         raise NotImplementedError()
 
+    def is_installed(self, apt_context):
+        return self._name in apt_context
+
 
 class DebianPackageApt(DebianPackage):
     def __init__(self, name):
@@ -32,9 +35,9 @@ class DebianPackageCommands(DebianPackage):
 
 
 class DebianPackageCustomFunction(DebianPackage):
-    def __init__(self, name, command):
+    def __init__(self, name, function):
         super().__init__(name)
-        self._function = _function
+        self._function = function
 
     def install(self):
         self._function()
@@ -53,15 +56,14 @@ class PackagesDebianStep(Step):
         if not self._enable_installation:
             return
 
-        missing_packages = self._get_missing_packages(self._packages)
-        if not missing_packages:
-            self._logger.log("All packages are already installed.")
-            return
+        installed_packages = PackagesDebianStep._get_installed_packages()
 
-        with self._logger.indent(f"Installing packages: {self._packages}"):
+        with self._logger.indent("Installing packages"):
             for package_name in self._packages:
                 package = PackagesDebianStep._translate_package(package_name)
                 if package is None:
+                    continue
+                if package.is_installed(installed_packages):
                     continue
 
                 self._logger.log(f"{package_name}")
@@ -106,6 +108,12 @@ class PackagesDebianStep(Step):
                 pass  # TODO Some Gui scripts use this to check for updates. Port to debian
             case "libnotify":
                 return DebianPackageApt("libnotify-bin")
+            case "eza":
+                pass  # TODO no stable package. Build from source?
+            case "ttf-joypixels":
+                pass  # TODO no package
+            case "ttf-font-awesome":
+                return DebianPackageApt("fonts-font-awesome")
 
             case "python":
                 return DebianPackageApt("python3")
@@ -132,9 +140,12 @@ class PackagesDebianStep(Step):
             else:
                 self._packages.append(str(arg))
 
-    def _get_missing_packages(self, required_packages):
-        # TODO compare required_packages with actually installed packages
-        return required_packages
+    @staticmethod
+    def _get_installed_packages():
+        packages = run_command("apt list --installed", stdout=Stdout.return_back()).stdout
+        packages = packages.split("\n")
+        packages = [line[: line.find("/")] for line in packages if line]
+        return packages
 
     @pull_dependency_handler
     def query_installed_packages(self):

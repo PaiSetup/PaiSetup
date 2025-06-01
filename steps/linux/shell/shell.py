@@ -5,12 +5,14 @@ from utils.services.file_writer import FileType, LinePlacement
 
 
 class ShellStep(Step):
-    def __init__(self, root_dir):
+    def __init__(self, root_dir, include_eza):
         super().__init__("Shell")
         self._root_dir = root_dir
+        self._include_eza = include_eza
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("eza")
+        if self._include_eza:
+            dependency_dispatcher.add_packages("eza")
         dependency_dispatcher.register_homedir_file(".profile")
         dependency_dispatcher.register_homedir_file(".bashrc")
         dependency_dispatcher.register_homedir_file(".bash_logout")
@@ -30,16 +32,17 @@ class ShellStep(Step):
                 "export FILE_MANAGER=thunar",
             ],
         )
-        self._file_writer.write_section(
-            ".profile",
-            "ls aliases",
-            [
-                "alias ls=eza",
-                "alias ll='eza -la'",
-                "alias xo='xdg-open'",
-                "alias less='less -N'",
-            ],
-        )
+        if self._include_eza:
+            self._file_writer.write_section(
+                ".profile",
+                "ls aliases",
+                [
+                    "alias ls=eza",
+                    "alias ll='eza -la'",
+                    "alias xo='xdg-open'",
+                    "alias less='less -N'",
+                ],
+            )
         self._file_writer.write_section(
             ".profile",
             "Move some dotfiles out of home dir",
