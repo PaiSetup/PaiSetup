@@ -27,6 +27,7 @@ arg_parser.add_argument("-s", "--steps", nargs="+", metavar="STEP", help="filter
 arg_parser.add_argument("-f", "--full", action="store_true", help="Do not skip any operation for performance. Generate everything from scratch.")
 arg_parser.add_argument("-k", "--skip_packages", action="store_true", help="Skip package installation.")
 arg_parser.add_argument("-d", "--dependency_resolution_mode", type=DependencyResolutionMode, default=DependencyResolutionMode.pull_and_push, action=EnumAction, help="Decide which dependency types are used for implicit dependency resolution.")
+arg_parser.add_argument("-u", "--allow_unsatisfied_push_dependencies", action="store_true", help="Only print warnings when there are not matching handlers for a push dependency. This should be used only for debug purposes")
 if OperatingSystem.current().is_windows():
     arg_parser.add_argument("-r", "--root_dir", action=PathAction, default="D:\\", help="Main directory for user workspace.")
 args = arg_parser.parse_args()
@@ -42,4 +43,4 @@ Step.setup_external_services(root_dir, logs_dir, enable_perf_analyzer, enable_lo
 Step._logger.log("Initializing steps")
 steps = get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
 
-execute_steps(steps, args.steps, args.dependency_resolution_mode, args.list_steps, args.list_packages)
+execute_steps(steps, args.steps, args.dependency_resolution_mode, args.allow_unsatisfied_push_dependencies, args.list_steps, args.list_packages)

@@ -105,7 +105,8 @@ class FakeDependencyDispatcher:
 
 
 class DependencyGraph:
-    def __init__(self):
+    def __init__(self, allow_unsatisfied_push_dependencies):
+        self._allow_unsatisfied_push_dependencies = allow_unsatisfied_push_dependencies
         self._step_to_methods_push_deps = {}
         self._step_to_methods_pull_deps = {}
         self._steps_to_enable = []
@@ -124,19 +125,27 @@ class DependencyGraph:
                 dispatcher = FakeDependencyDispatcher()
                 step.push_dependencies(dispatcher)
                 self._step_to_methods_push_deps[step] = self._retrieve_dependent_methods(
-                    dispatcher.calls, proxies[DependencyType.Push], step, enabled_steps
+                    dispatcher.calls, proxies[DependencyType.Push], True, step, enabled_steps
                 )
             if use_pull:
                 dispatcher = FakeDependencyDispatcher()
                 step.pull_dependencies(dispatcher)
                 self._step_to_methods_pull_deps[step] = self._retrieve_dependent_methods(
-                    dispatcher.calls, proxies[DependencyType.Pull], step, enabled_steps
+                    dispatcher.calls, proxies[DependencyType.Pull], False, step, enabled_steps
                 )
 
-    def _retrieve_dependent_methods(self, calls, proxies, step, enabled_steps):
+    def _retrieve_dependent_methods(self, calls, proxies, is_push, step, enabled_steps):
         # Retrieve methods we depend on.
         dependent_methods = set()
         for method_name in calls:
+            if method_name not in proxies:
+                if is_push and self._allow_unsatisfied_push_dependencies:
+                    # TODO pass logger here...
+                    print(f"WARNING: ignoring dependency {method_name}, because no matching handler was found.")
+                    continue
+                else:
+                    raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
+
             methods = proxies[method_name].get_methods()
             for method in methods:
                 dependent_methods.add(method)
@@ -167,9 +176,10 @@ class DependencyDispatcher:
     To achieve this the step has to implement push_dependencies().
     """
 
-    def __init__(self, resolution_mode):
+    def __init__(self, resolution_mode, allow_unsatisfied_push_dependencies):
         self.is_fake = False
         self._resolution_mode = resolution_mode
+        self._allow_unsatisfied_push_dependencies = allow_unsatisfied_push_dependencies
         self._current_dependency_type = None
         self._proxies = {
             DependencyType.Push: {},
@@ -191,7 +201,7 @@ class DependencyDispatcher:
 
     def resolve_dependencies(self, steps):
         # Inspect dependencies between steps and build a graph.
-        graph = DependencyGraph()
+        graph = DependencyGraph(self._allow_unsatisfied_push_dependencies)
         graph.inspect_steps(steps, self._proxies, self._resolution_mode)
 
         # Implicitly enable steps that were disabled, but were required by the graph.
@@ -231,7 +241,10 @@ class DependencyDispatcher:
 
         proxy = self._get_proxy(method_name, self._current_dependency_type, False)
         if proxy is None:
-            raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
+            if self._allow_unsatisfied_push_dependencies and self._current_dependency_type is DependencyType.Push:
+                return lambda *args, **kwargs: None
+            else:
+                raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
         else:
             return proxy
 

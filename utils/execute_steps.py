@@ -7,7 +7,12 @@ from utils.dependency_dispatcher import (
 
 
 def execute_steps(
-    steps, filtered_steps=None, dependency_resolution_mode=DependencyResolutionMode.pull_and_push, list_steps=False, list_packages=False
+    steps,
+    filtered_steps=None,
+    dependency_resolution_mode=DependencyResolutionMode.pull_and_push,
+    allow_unsatisfied_push_dependencies=False,
+    list_steps=False,
+    list_packages=False,
 ):
     # Filter steps by command line args
     Step._logger.log("Filtering steps")
@@ -24,7 +29,7 @@ def execute_steps(
 
     # Handle cross-step dependencies
     Step._logger.log("Handling steps dependencies")
-    dependencies = DependencyDispatcher(dependency_resolution_mode)
+    dependencies = DependencyDispatcher(dependency_resolution_mode, allow_unsatisfied_push_dependencies)
     for step in steps:
         dependencies.register_handlers(step)
     dependencies.resolve_dependencies(steps)

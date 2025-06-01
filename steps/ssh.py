@@ -27,7 +27,7 @@ class SshStep(Step):
     def perform(self):
         src_ssh_key_path = self._find_ssh_key()
         if src_ssh_key_path is None:
-            self._logger.log("Could not find ssh key")
+            self._logger.push_warning("Could not find ssh key")
             return
 
         ssh_dir = self._env.home() / ".ssh"

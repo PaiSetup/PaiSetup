@@ -66,7 +66,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 FirefoxStep(is_default_browser=True),
                 SystemdStep(),
                 ThunarStep(is_main_machine=has_multimedia_dir),
-                HomeDirectoryStep(root_dir, is_main_machine=has_multimedia_dir),
+                HomeDirectoryStep(root_dir, has_multimedia_dir=has_multimedia_dir),
                 BluetoothStep(),
                 JavaStep(),
                 QBitTorrentStep(is_main_machine=has_multimedia_dir),
@@ -106,6 +106,10 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 PackagesDebianStep(install_packages),
                 ProgrammingPythonStep(),
                 GitStep(),
+                HomeDirectoryStep(root_dir, has_multimedia_dir=False),
+                DushStep(fetch_git=args.full),
+                NushStep(fetch_git=args.full),
+                SshStep(secret_dir, full=args.full),
                 VscodeStep(build_dir),
             ]
         case SetupMode.debian_work:

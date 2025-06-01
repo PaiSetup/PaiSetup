@@ -2,12 +2,14 @@ from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import pull_dependency_handler, push_dependency_handler
 
+
 class DebianPackage:
     def __init__(self, name):
         self._name = name
 
     def install(self):
         raise NotImplementedError()
+
 
 class DebianPackageApt(DebianPackage):
     def __init__(self, name):
@@ -17,13 +19,6 @@ class DebianPackageApt(DebianPackage):
         command = f"sudo apt-get install --yes {self._name}"
         run_command(command)
 
-class DebianPackagePip(DebianPackage):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def install(self):
-        command = f"pip3 install {self._name}"
-        run_command(command)
 
 class DebianPackageCommands(DebianPackage):
     def __init__(self, name, commands):
@@ -34,6 +29,7 @@ class DebianPackageCommands(DebianPackage):
         # TODO do it in tmp dir
         for command in self._commands:
             run_command(command, shell=True)
+
 
 class DebianPackageCustomFunction(DebianPackage):
     def __init__(self, name, command):
@@ -59,8 +55,8 @@ class PackagesDebianStep(Step):
 
         missing_packages = self._get_missing_packages(self._packages)
         if not missing_packages:
-                self._logger.log("All packages are already installed.")
-                return
+            self._logger.log("All packages are already installed.")
+            return
 
         with self._logger.indent(f"Installing packages: {self._packages}"):
             for package_name in self._packages:
@@ -80,20 +76,27 @@ class PackagesDebianStep(Step):
                     "curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg",
                     "sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/keyrings/microsoft-archive-keyring.gpg",
                     "sudo sh -c 'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'",
-                    "sudo apt-get update", # TODO this is a bit inefficient... Split it somehow to pre-install and install?
+                    "sudo apt-get update",  # TODO this is a bit inefficient... Split it somehow to pre-install and install?
                     "sudo apt-get install code",
                 ]
                 return DebianPackageCommands("code", commands)
             case "code-features":
                 pass
-            case "autopep8":
-                return DebianPackageApt("python3-autopep8")
+            case "openssh":
+                return DebianPackageApt("openssh-client")
+
             case "python":
                 return DebianPackageApt("python3")
-            case "python-pip":
-                return DebianPackageApt("python3-pip")
             case "python-black":
                 return DebianPackageApt("black")
+            case "python-music-tag" | "python-pytz":
+                pass  # TODO there's no debian repo for this... Replicate what it does? Use pipx?
+            case "autopep8":
+                return DebianPackageApt("python3-autopep8")
+            case str() if package_name.startswith("python-"):
+                package_name = package_name.replace("python-", "python3-")
+                return DebianPackageApt(package_name)
+
             case _:
                 return DebianPackageApt(package_name)
 
