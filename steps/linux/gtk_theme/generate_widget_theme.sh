@@ -35,5 +35,6 @@ WM_BORDER_FOCUS=$COLOR_WTF
 WM_BORDER_UNFOCUS=$COLOR_WTF
 HEREDOC
 
-oomox-cli -o PaiSetupWidgetTheme "$oomox_config" --target-dir "$dst_themes_dir"
+# TODO(debian) install this from github
+#oomox-cli -o PaiSetupWidgetTheme "$oomox_config" --target-dir "$dst_themes_dir"
 rm "$oomox_config"

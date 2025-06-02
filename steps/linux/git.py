@@ -28,6 +28,7 @@ class GitStep(Step):
         self._file_writer.write_section(
             ".bashrc",
             "Enable git commands completion",
-            [". /usr/share/git/completion/git-completion.bash"],
+            # [". /usr/share/git/completion/git-completion.bash"],
+            [". /etc/bash_completion"],  # TODO(debian) is this on arch as well?
             file_type=FileType.Bash,
         )

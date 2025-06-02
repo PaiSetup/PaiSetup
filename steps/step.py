@@ -39,6 +39,9 @@ class Step:
         cls._env.finalize()
         cls._file_writer.finalize()
         cls._logger.finalize()
+        # TODO(debian) commented this out because there's no debian package.
+        #  1. Add install script for debian
+        #  2. Somehow add flamegraph to package list from framework itself? On arch it was done inside PackagesStep and I missed it.
         # cls._perf_analyzer.finalize()  # Has to be last
 
     def register_env_variables(self):

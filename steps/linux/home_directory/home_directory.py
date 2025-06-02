@@ -175,7 +175,9 @@ class HomeDirectoryStep(Step):
             )
 
     def _setup_xdg_paths(self):
-        # Prepare our custom XDG dirs specification and generate some config files
+        # Prepare our custom XDG dirs specification and generate an XDG config file.
+        # Note this file is not automatically sourced by the system. Some programs
+        # may do it, but in general we have to do it manually in init scripts.
         self._file_writer.write_lines(
             ".config/user-dirs.dirs",
             [
@@ -200,9 +202,17 @@ class HomeDirectoryStep(Step):
             ],
         )
 
-        # Set the variables in xinitrc too. We need it that early, so all GUI applications will have them loaded.
+        # Source the script in xinitrc. Very early.
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
+            "Load XDG variables",
+            [". ~/.config/user-dirs.dirs"],
+            line_placement=LinePlacement.Env,
+        )
+
+        # Non-graphics sessions or wayland won't use xinitrc. Do it in .profile too.
+        self._file_writer.write_section(
+            ".profile",
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
             line_placement=LinePlacement.Env,

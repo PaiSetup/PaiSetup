@@ -19,7 +19,8 @@ class UlauncherStep(Step):
         self._setup_ulauncher_config()
 
         self._logger.log("Enabling ulauncher on startup")
-        run_command("systemctl --user enable --now ulauncher")
+        # TODO(debian) remove this fucking thing
+        # run_command("systemctl --user enable --now ulauncher")
 
     def _setup_ulauncher_config(self):
         config = {
