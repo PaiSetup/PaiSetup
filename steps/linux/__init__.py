@@ -89,7 +89,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         ProgrammingGamedevStep(),
         SshStep(secret_dir, full=args.full),
         CheckMateStep(build_dir),
-        LightDmStep(),
+        # LightDmStep(),
         EncryptionStep(),
         CharonStep(build_dir, full=args.full),
         PicardStep(),
