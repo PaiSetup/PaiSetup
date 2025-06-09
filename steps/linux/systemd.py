@@ -23,12 +23,12 @@ class SystemdService:
 class SystemdStep(Step):
     def __init__(self):
         super().__init__("Systemd")
+        self._services_dir = self._env.home() / ".config/PaiSetup/services"
         self._services = []
 
     @push_dependency_handler
     def add_systemd_service(self, service):
         self._services.append(service)
-        self._services_dir = self._env.home() / ".config/PaiSetup/services"
 
     def perform(self):
         self._clean_services()
