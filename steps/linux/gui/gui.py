@@ -169,6 +169,7 @@ class GuiStep(Step):
         )
 
     def _setup_picom_config(self):
+        # TODO this gets called by dwm, awesome and qtile, so each line is written thrice. Picom accepts it, but it should be fixed.
         self._logger.log("Generating picom config")
         self._file_writer.write_lines(
             ".config/picom.conf",
@@ -180,4 +181,5 @@ class GuiStep(Step):
                 "frame-opacity = 0;",
                 "corner-radius = 10;",
             ],
+            skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
         )

@@ -98,13 +98,12 @@ class FileWriter:
         else:
             return self._home_path / path
 
-    def _ensure_file_is_deleted(self, path):
+    def _ensure_directory(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        self.remove_file(path)
 
     def _recreate_file(self, file_desc):
         # Remove file
-        self._ensure_file_is_deleted(file_desc.path)
+        self.remove_file(file_desc.path)
 
         # Create file
         try:
@@ -117,7 +116,7 @@ class FileWriter:
         if OperatingSystem.current().is_linux() and FileType.is_executable(file_desc.file_type):
             run_command(f"sudo chmod +x {file_desc.path}")
 
-    def _flush_lines_to_file(self, file_desc):
+    def _flush_lines_to_file(self, file_desc, truncate=False):
         # Prepare lines to be written as a single long string.
         lines = list(file_desc.lines.values())
         lines = sum(lines, [])
@@ -130,10 +129,12 @@ class FileWriter:
 
         # Write lines with syscalls if we have permissions. Otherwise, use sudo subprocess.
         try:
-            with open(file_desc.path, "a") as file:
+            mode = "w" if truncate else "a"
+            with open(file_desc.path, mode) as file:
                 file.writelines(lines)
         except PermissionError:
-            run_command(f'echo "{lines}" | sudo tee {file_desc.path} >/dev/null', shell=True)
+            append_arg = "" if truncate else "--append"
+            run_command(f'echo "{lines}" | sudo tee {append_arg} {file_desc.path} >/dev/null', shell=True)
 
     def finalize(self):
         for file_desc in self._files.values():
@@ -147,6 +148,7 @@ class FileWriter:
         file_type=FileType.PosixShell,
         line_placement=LinePlacement.Normal,
         flush=False,
+        skip_recreate=False,
     ):
         path = self.resolve_path(path)
 
@@ -157,7 +159,13 @@ class FileWriter:
         else:
             file_desc = FileDesc(path, file_type)
             self._files[path] = file_desc
-            self._recreate_file(file_desc)
+            if skip_recreate:
+                # If we skip recreating the file, it will still contain its previous contents.
+                # We have to write the lines immediately and use truncate mode, not append.
+                flush = True
+            else:
+                self._ensure_directory(path)
+                self._recreate_file(file_desc)
             self._write_preamble(file_desc)
 
         # Validate if file type changed
@@ -170,7 +178,7 @@ class FileWriter:
 
         # Flush (write immediately) if requested
         if flush:
-            self._flush_lines_to_file(file_desc)
+            self._flush_lines_to_file(file_desc, truncate=skip_recreate)
 
         # Return resolved path
         return path
@@ -220,7 +228,10 @@ class FileWriter:
     ):
         src = self.resolve_path(src)
         link = self.resolve_path(link)
-        self._ensure_file_is_deleted(link)
+
+        self._ensure_directory(link)
+        self.remove_file(link)
+
         try:
             os.symlink(src, link)
         except PermissionError:
