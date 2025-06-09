@@ -100,3 +100,12 @@ class Step:
         self_dict = self.__class__.__dict__
         class_dict = Step.__dict__
         return method_name in self_dict and self_dict[method_name] != class_dict[method_name]
+
+
+# This is a fake step only needed to add packages required by the PaiSetup framework itself.
+class FrameworkStep(Step):
+    def __init__(self):
+        super().__init__("Framework")
+
+    def push_dependencies(self, dependency_dispatcher):
+        dependency_dispatcher.add_packages("flamegraph")

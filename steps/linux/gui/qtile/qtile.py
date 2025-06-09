@@ -6,8 +6,8 @@ from utils.services.file_writer import FileType, LinePlacement
 
 
 class QtileStep(GuiStep):
-    def __init__(self):
-        super().__init__("Qtile")
+    def __init__(self, full):
+        super().__init__("Qtile", full)
         self._current_step_dir = Path(__file__).parent
 
         self._qtile_config_script_path = self._current_step_dir / "config/config.py"
@@ -61,12 +61,6 @@ class QtileStep(GuiStep):
 
     def _setup_xresources(self):
         self._logger.log(f"Generating {self._xresources_path}")
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Apps styles",
-            [f'#include "{self._env.home() / ".config/XresourcesApp"}"'],
-            file_type=FileType.XResources,
-        )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",

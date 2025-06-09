@@ -1,14 +1,17 @@
-import tempfile
-import shutil
 import os
+import shutil
+import tempfile
 
 
 class TmpDir:
     def __enter__(self):
+        self._old_cwd = os.getcwd()
         self.dir = tempfile.mkdtemp()
+        os.chdir(self.dir)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        os.chdir(self._old_cwd)
         shutil.rmtree(self.dir)
 
     def __str__(self):

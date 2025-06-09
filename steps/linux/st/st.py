@@ -5,6 +5,7 @@ from steps.step import Step
 from utils.services.file_writer import FileType
 
 
+# TODO remove st, dwm, dmenu.
 class StStep(Step):
     def __init__(self, root_build_dir, full):
         super().__init__("St")

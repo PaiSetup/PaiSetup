@@ -110,31 +110,60 @@ def download_github_zip(user, repo, dst_dir, re_download=False):
         raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
 
     with tempfile.NamedTemporaryFile(suffix=".zip") as zipfile:
+        zipfile.close()  # This prevents "File is already used by another process" error
+
         # Download the zip package
         url = f"https://github.com/{user}/{repo}/archive/refs/heads/master.zip"
+        wget(url, zipfile.name)
+
+        unzip(zipfile.name, dst_dir.parent)
+
+        # In the zip there is one folder called <ProjectName>-<BranchName>. Rename it to the name of desired destination directory
+        Path(f"{dst_dir.parent}/{repo}-master").rename(dst_dir)
+
+
+def wget(url, zip_path):
+    if OperatingSystem.current().is_windows():
+
+        url = [
+            "$ProgressPreference = 'SilentlyContinue'",
+            f'Invoke-WebRequest "{url}" -OutFile "{zip_path}"',
+        ]
+        run_powershell_command(url)
+    else:
+        download_command = f'wget "{url}" -O "{zip_path}"'
+        run_command(download_command)
+
+
+def unzip(zip_path, dst_path):
+    dst_path.mkdir(exist_ok=True, parents=True)
+    with Pushd(dst_path):
+        # Unzip to the parent of desired destination directory
         if OperatingSystem.current().is_windows():
-            zipfile.close()  # This prevents "File is already used by another process" error
-            url = [
+            unzip_command = [
                 "$ProgressPreference = 'SilentlyContinue'",
-                f'Invoke-WebRequest "{url}" -OutFile "{zipfile.name}"',
+                f'Expand-Archive {zip_path} -DestinationPath "."',
             ]
-            run_powershell_command(url)
+            run_powershell_command(unzip_command)
         else:
-            download_command = f'wget "{url}" -O "{zipfile.name}"'
-            run_command(download_command)
+            unzip_command = f"unzip {zip_path}"
+            run_command(unzip_command)
 
-        dst_parent_dir = dst_dir.parent
-        with Pushd(dst_parent_dir):
-            # Unzip to the parent of desired destination directory
-            if OperatingSystem.current().is_windows():
-                unzip_command = [
-                    "$ProgressPreference = 'SilentlyContinue'",
-                    f'Expand-Archive {zipfile.name} -DestinationPath "."',
-                ]
-                run_powershell_command(unzip_command)
-            else:
-                unzip_command = f"unzip {zipfile.name}"
-                run_command(unzip_command)
 
-            # In the zip there is one folder called <ProjectName>-<BranchName>. Rename it to the name of desired destination director
-            Path(f"{repo}-master").rename(dst_dir)
+def download_github_release(user, repo, dst_dir, release_version, file_name, re_download):
+    # Handle the case when there destination path is already present
+    if dst_dir.is_dir():
+        if re_download:
+            shutil.rmtree(dst_dir)
+        else:
+            return
+    elif dst_dir.exists():
+        raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
+
+    with tempfile.NamedTemporaryFile(suffix=".zip") as zipfile:
+        zipfile.close()  # This prevents "File is already used by another process" error
+
+        address = f"https://github.com/{user}/{repo}/releases/download/{release_version}/{file_name}"
+        wget(address, zipfile.name)
+
+        unzip(zipfile.name, dst_dir)

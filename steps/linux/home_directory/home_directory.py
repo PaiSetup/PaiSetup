@@ -71,6 +71,15 @@ class HomeDirectoryStep(Step):
             dependency_dispatcher.set_folder_icon(multimedia_dir / "tv_series", "tv_series")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "wallpapers", "wallpapers")
 
+            dependency_dispatcher.add_multimedia_directories(
+                [
+                    (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
+                    (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
+                    (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
+                    (self._env.home() / "multimedia/movies", "Multimedia/Movies"),
+                ]
+            )
+
     def _get_xdg_dir(self, name, must_succeed=True):
         result = self._xdg_defaults.get(name)
         if result is None:
@@ -175,7 +184,9 @@ class HomeDirectoryStep(Step):
             )
 
     def _setup_xdg_paths(self):
-        # Prepare our custom XDG dirs specification and generate some config files
+        # Prepare our custom XDG dirs specification and generate an XDG config file.
+        # Note this file is not automatically sourced by the system. Some programs
+        # may do it, but in general we have to do it manually in init scripts.
         self._file_writer.write_lines(
             ".config/user-dirs.dirs",
             [
@@ -200,12 +211,27 @@ class HomeDirectoryStep(Step):
             ],
         )
 
-        # Set the variables in xinitrc too. We need it that early, so all GUI applications will have them loaded.
+        # Source the script in xinitrc. Very early.
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
             line_placement=LinePlacement.Env,
+        )
+
+        # Non-graphics sessions or wayland won't use xinitrc. Do it in .profile and .bashrc too.
+        self._file_writer.write_section(
+            ".profile",
+            "Load XDG variables",
+            [". ~/.config/user-dirs.dirs"],
+            line_placement=LinePlacement.Env,
+        )
+        self._file_writer.write_section(
+            ".bashrc",
+            "Load XDG variables",
+            [". ~/.config/user-dirs.dirs"],
+            line_placement=LinePlacement.Env,
+            file_type=FileType.Bash,
         )
 
         # Prevent resetting user-dirs.dirs file on startup.

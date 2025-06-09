@@ -1,4 +1,4 @@
-from steps.step import Step
+from steps.step import FrameworkStep, Step
 from utils.dependency_dispatcher import (
     DependencyDispatcher,
     DependencyResolutionMode,
@@ -6,21 +6,38 @@ from utils.dependency_dispatcher import (
 )
 
 
+def find_step_by_name(steps, name):
+    for step in steps:
+        if step.name.lower() == name.lower():
+            return step
+    raise ValueError(f'Cannot find step named "{name}"')
+
+
 def execute_steps(
     steps,
-    filtered_steps=None,
-    dependency_resolution_mode=DependencyResolutionMode.pull_and_push,
-    list_steps=False,
-    list_packages=False,
-    pause=False,
+    step_whitelist,
+    step_blacklist,
+    dependency_resolution_mode,
+    allow_unsatisfied_push_dependencies,
+    list_steps,
+    list_packages,
+    pause,
 ):
     # Filter steps by command line args
     Step._logger.log("Filtering steps")
-    if filtered_steps != None:
-        allowed_names = [x.lower() for x in filtered_steps]
+    if step_whitelist and step_blacklist:
+        raise ValueError("Cannot pass both whitelist and blacklist")
+    if step_whitelist:
         for step in steps:
-            if step.name.lower() not in allowed_names:
-                step.set_enabled(False)
+            step.set_enabled(False)
+        for step_name in step_whitelist:
+            find_step_by_name(steps, step_name).set_enabled(True)
+    if step_blacklist:
+        for step_name in step_blacklist:
+            find_step_by_name(steps, step_name).set_enabled(False)
+
+    # Add framework step
+    steps.append(FrameworkStep())
 
     # Setup env
     Step._logger.log("Setting up environment variables")
@@ -29,7 +46,7 @@ def execute_steps(
 
     # Handle cross-step dependencies
     Step._logger.log("Handling steps dependencies")
-    dependencies = DependencyDispatcher(dependency_resolution_mode)
+    dependencies = DependencyDispatcher(dependency_resolution_mode, allow_unsatisfied_push_dependencies)
     for step in steps:
         dependencies.register_handlers(step)
     dependencies.resolve_dependencies(steps)

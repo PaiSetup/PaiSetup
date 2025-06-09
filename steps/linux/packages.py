@@ -171,10 +171,7 @@ class PackagesStep(Step):
                 "losslesscut-bin",  # cutting video
                 "dos2unix",
                 "nmap",
-                "flamegraph",
                 "xxd-standalone",
-                # Unixporn
-                "cava",
                 # MTP (for Android phone mounting)
                 "gvfs-mtp",
                 "gvfs-gphoto2",

@@ -25,6 +25,7 @@ from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .nush import NushStep
 from .packages import PackagesStep
+from .packages_debian.packages_debian import PackagesDebianStep
 from .picard import PicardStep
 from .plex.plex import PlexStep
 from .programming_common import ProgrammingCommonStep
@@ -49,8 +50,6 @@ from .xsession import XsessionStep
 
 
 def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
-    has_multimedia_dir = args.mode == SetupMode.main
-
     match args.mode:
         case SetupMode.main:  # Arch Linux
             steps = [
@@ -64,16 +63,16 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 GpuStep(),
                 FirefoxStep(is_default_browser=True),
                 SystemdStep(),
-                ThunarStep(is_main_machine=has_multimedia_dir),
-                HomeDirectoryStep(root_dir, has_multimedia_dir=has_multimedia_dir),
+                ThunarStep(),
+                HomeDirectoryStep(root_dir, True),
                 BluetoothStep(),
                 JavaStep(),
-                QBitTorrentStep(has_multimedia_dir=has_multimedia_dir),
+                QBitTorrentStep(),
                 XsessionStep(),
                 GitStep(),
                 UlauncherStep(),
                 DwmStep(build_dir, full=args.full, is_default_wm=False),
-                AwesomeStep(build_dir, is_default_wm=True),
+                AwesomeStep(build_dir, full=args.full, is_default_wm=True),
                 AlacrittyStep(),
                 DushStep(fetch_git=args.full),
                 NushStep(fetch_git=args.full),
@@ -94,14 +93,36 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 EncryptionStep(),
                 CharonStep(build_dir, full=args.full),
                 PicardStep(),
-                QtileStep(),
+                QtileStep(full=args.full),
                 NotesStep(fetch_git=args.full),
                 VirtualBoxStep(),
                 VagrantStep(),
                 RaspberryPiStep(),
             ]
         case SetupMode.debian_casual:
-            pass
+            steps = [
+                PackagesDebianStep(install_packages),
+                AwesomeStep(build_dir, full=args.full, is_default_wm=True),
+                ProgrammingPythonStep(),
+                GitStep(),
+                AudioStep(),
+                ThunarStep(),
+                CheckMateStep(build_dir),
+                ShellStep(root_dir),
+                QBitTorrentStep(),
+                IconFontStep(full=args.full),
+                AlacrittyStep(),
+                GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+                FirefoxStep(is_default_browser=True),
+                FileAssociationsStep(),
+                HomeDirectoryStep(root_dir, has_multimedia_dir=False),
+                XsessionStep(),
+                UlauncherStep(),
+                DushStep(fetch_git=args.full),
+                NushStep(fetch_git=args.full),
+                SshStep(secret_dir, full=args.full),
+                VscodeStep(build_dir),
+            ]
         case SetupMode.debian_work:
             pass
         case _:

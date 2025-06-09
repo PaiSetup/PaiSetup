@@ -237,6 +237,10 @@ class FileWriter:
         except PermissionError:
             run_command(f"sudo ln -s {src} {link}")
 
+    def write_symlink_executable(self, src_path, dst_name):
+        link = Path("/usr/local/bin") / dst_name
+        self.write_symlink(src_path, link)
+
     def write_executable_script(self, file_name, lines):
         path = Path("/usr/local/bin") / file_name
 
@@ -251,7 +255,7 @@ class FileWriter:
         except PermissionError:
             run_command(f"sudo rm {path}")
 
-    def patch_dot_desktop_file(self, source_name, destination_name, patch_functions):
+    def patch_dot_desktop_file(self, source_name, destination_name, patch_functions, must_exist=True):
         """
         Takes .desktop file from /usr/share/applications, applies patch functions to its
         contents and creates a new file in a user specific folder for .desktop files.
@@ -268,6 +272,9 @@ class FileWriter:
         """
         source_file_path = f"/usr/share/applications/{source_name}"
         destination_file_path = self._home_path / ".local/share/applications" / destination_name
+
+        if not must_exist and not Path(source_file_path).is_file():
+            return
 
         lines = []
         with open(source_file_path, "r") as src:
@@ -294,7 +301,7 @@ class FileWriter:
                 lines.append(modified_line)
         self.write_lines(destination_file_path, lines, file_type=FileType.ConfigFile)
 
-    def patch_ini_file(self, file_path, patch_functions):
+    def patch_ini_file(self, file_path, patch_functions, must_exist=True):
         """
         Parses an .ini file, applies patch functions to its contents and saves it back to disc.
 
@@ -310,6 +317,10 @@ class FileWriter:
         """
 
         file_path = self.resolve_path(file_path)
+
+        if not must_exist and not Path(file_path).is_file():
+            return
+
         with open(file_path, "r") as real_file:
             with tempfile.NamedTemporaryFile(mode="w", delete=False, prefix=f"{file_path}.tmp_") as tmp_file:
                 section = ""

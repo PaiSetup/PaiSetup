@@ -3,6 +3,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
+from utils.os_function import LinuxDistro
 from utils.services.file_writer import FileType
 
 
@@ -25,9 +26,12 @@ class GitStep(Step):
         run_command("git config --global user.email dziuban.maciej@gmail.com")
 
         self._logger.log(f"Adding git completion to .bashrc")
+        completion_file = "/usr/share/git/completion/git-completion.bash"
+        if LinuxDistro.current().is_debian_like():
+            completion_file = "/usr/share/bash-completion/completions/git"
         self._file_writer.write_section(
             ".bashrc",
             "Enable git commands completion",
-            [". /usr/share/git/completion/git-completion.bash"],
+            [f". {completion_file}"],
             file_type=FileType.Bash,
         )

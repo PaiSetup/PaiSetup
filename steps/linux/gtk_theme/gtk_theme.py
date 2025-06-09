@@ -45,7 +45,7 @@ class GtkThemeStep(Step):
             "gvfs",
             "lxappearance",  # not stricly needed, but useful when checking gtk themes
             "themix-theme-oomox-git",
-            "themix-full-git",
+            "imagemagick",
         )
 
     @push_dependency_handler

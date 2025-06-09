@@ -5,7 +5,6 @@ import os
 import random
 from pathlib import Path
 
-from steps.linux.rpi_led.client.led_state import LedState
 from utils.command import *
 
 
@@ -111,6 +110,7 @@ def setup_xresources(xresources_main_path, xresources_theme_path, main_color):
 
 def setup_cava_theme(cava_config_path, main_color):
     print(f"  Setting cava config: {cava_config_path}")
+    cava_config_path.parent.mkdir(parents=True, exist_ok=True)
     with open(cava_config_path, "w") as f:
         lines = [
             "[color]\n",
@@ -120,6 +120,11 @@ def setup_cava_theme(cava_config_path, main_color):
 
 
 def setup_rpi_led(main_color):
+    if "RPI_LED_CACHE" not in os.environ:
+        return
+
+    from steps.linux.rpi_led.client.led_state import LedState
+
     def hex_color_to_list(string):
         if len(string) != 6:
             return None

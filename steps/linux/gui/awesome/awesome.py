@@ -11,8 +11,8 @@ from utils.services.file_writer import FileType, LinePlacement
 
 
 class AwesomeStep(GuiStep):
-    def __init__(self, root_build_dir, is_default_wm):
-        super().__init__("Awesome")
+    def __init__(self, root_build_dir, full, is_default_wm):
+        super().__init__("Awesome", full)
         self.root_build_dir = root_build_dir
         self._current_step_dir = Path(__file__).parent
 
@@ -31,12 +31,12 @@ class AwesomeStep(GuiStep):
         super().push_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages(
             "awesome",
-            "lua",  # not strictly needed, but useful for prototyping
             "jq",  # needed for parsing json when getting currency exchange
         )
         dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
 
     def perform(self):
+        super().perform()
         self._setup_picom_config()
         self._setup_awesome_config()
         self._setup_xinitrc_awesome()
@@ -78,12 +78,6 @@ class AwesomeStep(GuiStep):
 
     def _setup_xresources(self):
         self._logger.log(f"Generating {self._xresources_path}")
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Apps styles",
-            [f'#include "{self._env.home() / ".config/XresourcesApp"}"'],
-            file_type=FileType.XResources,
-        )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",

@@ -36,11 +36,11 @@ class VscodeStepBase(Step):
 
         # C++
         cpp_tools_vsix_name = "cpptools-linux-x64.vsix" if OperatingSystem.current().is_linux() else "cpptools-windows-x64.vsix"
-        extensions_github.append(("microsoft", "vscode-cpptools", cpp_tools_vsix_name, "ms-vscode.cpptools"))
+        # TODO(debian) not sure if it fails because of debian or the new MS bullshit.
+        # extensions_github.append(("microsoft", "vscode-cpptools", cpp_tools_vsix_name, "ms-vscode.cpptools"))
         extensions_command.append("matepek.vscode-catch2-test-adapter")
         extensions_command.append("twxs.cmake")
         extensions_command.append("ms-vscode.cmake-tools")
-        extensions_command.append("hbenl.test-adapter-converter")
         extensions_command.append("hbenl.vscode-test-explorer")
         extensions_command.append("xaver.clang-format")
         extensions_command.append("shardulm94.trailing-spaces")

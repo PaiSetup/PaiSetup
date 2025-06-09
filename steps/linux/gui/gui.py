@@ -5,6 +5,7 @@ from steps.linux.systemd import SystemdService
 from steps.step import Step
 from utils.command import *
 from utils.keybinding import KeyBinding
+from utils.os_function import LinuxDistro
 from utils.services.file_writer import FileType, LinePlacement
 
 perform_called = False
@@ -12,6 +13,10 @@ push_dependencies_called = False
 
 
 class GuiStep(Step):
+    def __init__(self, name, full):
+        super().__init__(name)
+        self._full = full
+
     def perform(self):
         global perform_called
         if perform_called:
@@ -52,7 +57,10 @@ class GuiStep(Step):
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
             "xdotool",  # for getting Thunar's cwd
+            "cava",
         )
+        # if LinuxDistro.current().is_debian_like():
+        #    dependency_dispatcher.add_packages("libpng-dev")
 
         dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
         dependency_dispatcher.register_periodic_daemon_check("picom", "picom")

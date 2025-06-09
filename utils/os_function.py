@@ -1,6 +1,6 @@
+import enum
 import platform
 import sys
-import enum
 
 _current = None
 
@@ -25,6 +25,33 @@ class OperatingSystem(enum.Enum):
 
     def is_linux(self):
         return self == OperatingSystem.Linux
+
+
+class LinuxDistro:
+    def __init__(self, name):
+        self.name = name
+
+    @staticmethod
+    def current():
+        if not OperatingSystem.current().is_linux():
+            raise ValueError("This is not Linux.")
+
+        with open("/etc/os-release") as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    if key == "ID":
+                        return LinuxDistro(value)
+            raise ValueError("Cannot find distro")
+
+    def is_debian_like(self):
+        return self.name in ["debian", "ubuntu", "mint"]
+
+    def is_arch_like(self):
+        return self.name in ["arch"]
 
 
 def _os_function(implementation_os, func, frame):

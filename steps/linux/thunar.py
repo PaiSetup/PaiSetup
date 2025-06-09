@@ -6,11 +6,14 @@ from utils.services.file_writer import FileType
 
 
 class ThunarStep(Step):
-    def __init__(self, is_main_machine):
+    def __init__(self):
         super().__init__("Thunar")
-        self._is_main_machine = is_main_machine
         self.disable_suspending_command = ""
         self.actions = []
+        self._bookmarks = [
+            (self._env.home() / "downloads", "Downloads"),
+            (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
+        ]
 
         self.add_thunar_custom_action(
             {
@@ -47,6 +50,10 @@ class ThunarStep(Step):
     def add_thunar_custom_action(self, action):
         self.actions.append(action)
 
+    @push_dependency_handler
+    def add_multimedia_directories(self, directories):
+        self._bookmarks += directories
+
     def perform(self):
         self._setup_bookmarks()
         self._generate_uca_xml()
@@ -55,23 +62,10 @@ class ThunarStep(Step):
         file_path = self._env.home() / ".config/gtk-3.0/bookmarks"
         self._logger.log(f"Generating bookmarks config - {file_path}")
 
-        dirs = [
-            (self._env.home() / "downloads", "Downloads"),
-            (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
-        ]
-        # TODO remove is_main_machine argument and use a push_dependency for this
-        if self._is_main_machine:
-            dirs += [
-                (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
-                (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
-                (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
-                (self._env.home() / "multimedia/movies", "Multimedia/Movies"),
-            ]
-        dirs = [f"file://{path} {name}" for path, name in dirs]
-
+        line = [f"file://{path} {name}" for path, name in self._bookmarks]
         self._file_writer.write_lines(
             file_path,
-            dirs,
+            line,
             file_type=FileType.ConfigFileNoComments,
         )
 

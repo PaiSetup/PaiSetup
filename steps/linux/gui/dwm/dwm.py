@@ -14,9 +14,8 @@ from utils.services.file_writer import FileType, LinePlacement
 
 class DwmStep(GuiStep):
     def __init__(self, root_build_dir, full, is_default_wm):
-        super().__init__("Dwm")
+        super().__init__("Dwm", full)
         self.root_build_dir = root_build_dir
-        self._full = full
         self._current_step_dir = Path(__file__).parent
 
         self._config_path = ".config/PaiSetup/dwm"
@@ -36,7 +35,6 @@ class DwmStep(GuiStep):
         # fmt: on
 
     def perform(self):
-        super().perform()
         self._setup_picom_config()
         self._compile_projects()
         self._setup_xinitrc_dwm()
@@ -138,12 +136,6 @@ class DwmStep(GuiStep):
         )
 
     def _setup_xresources(self):
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Apps styles",
-            [f'#include "{self._env.home() / ".config/XresourcesApp"}"'],
-            file_type=FileType.XResources,
-        )
         self._file_writer.write_section(
             self._xresources_path,
             "Theme colors",
