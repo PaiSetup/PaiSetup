@@ -37,6 +37,7 @@ class DwmStep(GuiStep):
 
     def perform(self):
         super().perform()
+        self._setup_picom_config()
         self._compile_projects()
         self._setup_xinitrc_dwm()
         self._setup_xresources()

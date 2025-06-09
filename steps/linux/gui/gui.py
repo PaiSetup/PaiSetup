@@ -42,7 +42,7 @@ class GuiStep(Step):
             "xorg-server-xephyr",
             "xorg-xwininfo",
             "nitrogen",
-            "picom-ibhagwan-git",
+            "picom",
             "libxft",
             "xorg-setxkbmap",
             "yad",
@@ -156,9 +156,22 @@ class GuiStep(Step):
             "Set screen save timeout duration to 2 hours",
             ["xset s 7200 &"],
         )
+        self._file_writer.write_section(
+            ".config/PaiSetup/xinitrc_base",
+            "Screenshot daemon",
+            ["flameshot &"],
+        )
 
     def _setup_picom_config(self):
+        self._logger.log("Generating picom config")
         self._file_writer.write_lines(
             ".config/picom.conf",
-            ["vsync = true;"],
+            [
+                'backend = "xrender"',
+                "vsync = true;",
+                "fade-in-step = 1;",
+                "fade-out-step = 1;",
+                "frame-opacity = 0;",
+                "corner-radius = 10;",
+            ],
         )

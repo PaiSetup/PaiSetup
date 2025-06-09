@@ -28,6 +28,7 @@ class QtileStep(GuiStep):
         dependency_dispatcher.add_xsession("Qtile", self._env.home() / self._xinitrc_path)
 
     def perform(self):
+        self._setup_picom_config()
         self._setup_xinitrc_qtile()
         self._setup_app_keybindings_code()
         self._setup_xresources()
