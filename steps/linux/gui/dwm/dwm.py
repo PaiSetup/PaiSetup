@@ -117,6 +117,11 @@ class DwmStep(GuiStep):
         )
         self._file_writer.write_section(
             self._xinitrc_path,
+            "Run picom",
+            [f"picom -b &"],
+        )
+        self._file_writer.write_section(
+            self._xinitrc_path,
             "Notification daemon",
             [f"dunst -conf ~/{self._dunst_config_path} &"],
         )
