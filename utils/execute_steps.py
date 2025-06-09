@@ -7,7 +7,12 @@ from utils.dependency_dispatcher import (
 
 
 def execute_steps(
-    steps, filtered_steps=None, dependency_resolution_mode=DependencyResolutionMode.pull_and_push, list_steps=False, list_packages=False
+    steps,
+    filtered_steps=None,
+    dependency_resolution_mode=DependencyResolutionMode.pull_and_push,
+    list_steps=False,
+    list_packages=False,
+    pause=False,
 ):
     # Filter steps by command line args
     Step._logger.log("Filtering steps")
@@ -48,6 +53,8 @@ def execute_steps(
     with Step._logger.indent("Executing steps"):
         for step in steps:
             if step.is_enabled() and step.is_method_overriden(Step.perform):
+                if pause:
+                    input()
                 Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
                 with Step._logger.indent():
                     step.perform()
