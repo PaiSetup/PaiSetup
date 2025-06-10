@@ -52,7 +52,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     has_multimedia_dir = args.mode == SetupMode.main
 
     match args.mode:
-        case SetupMode.main: # Arch Linux
+        case SetupMode.main:  # Arch Linux
             steps = [
                 PackagesStep(build_dir, True, install_packages),
                 ShellStep(root_dir),
@@ -65,10 +65,10 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 FirefoxStep(is_default_browser=True),
                 SystemdStep(),
                 ThunarStep(is_main_machine=has_multimedia_dir),
-                HomeDirectoryStep(root_dir, is_main_machine=has_multimedia_dir),
+                HomeDirectoryStep(root_dir, has_multimedia_dir=has_multimedia_dir),
                 BluetoothStep(),
                 JavaStep(),
-                QBitTorrentStep(is_main_machine=has_multimedia_dir),
+                QBitTorrentStep(has_multimedia_dir=has_multimedia_dir),
                 XsessionStep(),
                 GitStep(),
                 UlauncherStep(),
