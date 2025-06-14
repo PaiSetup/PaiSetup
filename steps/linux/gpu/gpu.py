@@ -4,6 +4,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
+from utils.os_function import GraphicsSessionType
 
 from .nvidia_enable_vsync import main as nvidia_enable_vsync
 
@@ -18,7 +19,6 @@ class GpuStep(Step):
     def __init__(self):
         super().__init__("Gpu")
         self._vendors = self._query_gpu_vendors()
-        self._has_display = len(self._env.get("DISPLAY")) > 0
 
     def perform(self):
         if self._vendors:
@@ -28,7 +28,7 @@ class GpuStep(Step):
             self._logger.log("No gpu vendors detected")
 
         if GpuVendor.Nvidia in self._vendors:
-            if self._has_display:
+            if GraphicsSessionType.current().has_graphics():
                 with self._logger.indent("Enabling NVIDIA vsync"):
                     nvidia_enable_vsync(self._logger)
             self._file_writer.write_section(

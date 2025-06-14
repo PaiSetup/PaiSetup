@@ -2,6 +2,7 @@ from pathlib import Path
 
 from steps.vscode.vscode_base import VscodeStepBase
 from utils.command import *
+from utils.os_function import GraphicsSessionType
 
 
 class VscodeStep(VscodeStepBase):
@@ -28,7 +29,7 @@ class VscodeStep(VscodeStepBase):
         self._create_desktop_file()
 
     def _install_extensions(self):
-        if len(self._env.get("DISPLAY")) > 0 or True:  # TODO(debian) add a proper check for wayland
+        if GraphicsSessionType.current().has_graphics():
             super()._install_extensions()
         else:
             self._logger.log("Skipping extensions installation (no graphical display)")

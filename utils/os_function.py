@@ -1,4 +1,5 @@
 import enum
+import os
 import platform
 import sys
 
@@ -52,6 +53,31 @@ class LinuxDistro:
 
     def is_arch_like(self):
         return self.name in ["arch"]
+
+
+class GraphicsSessionType(enum.Enum):
+    Tty = 0
+    X11 = 1
+    Wayland = 2
+    Windows = 3
+
+    @staticmethod
+    def current():
+        if OperatingSystem.current().is_windows():
+            return GraphicsSessionType.Windows
+        else:
+            match os.environ["XDG_SESSION_TYPE"].lower():
+                case "tty":
+                    return GraphicsSessionType.Tty
+                case "x11":
+                    return GraphicsSessionType.X11
+                case "wayland":
+                    return GraphicsSessionType.Wayland
+                case _:
+                    raise ValueError("Unknown session type")
+
+    def has_graphics(self):
+        return self != GraphicsSessionType.Tty
 
 
 def _os_function(implementation_os, func, frame):
