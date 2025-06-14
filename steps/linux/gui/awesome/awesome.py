@@ -1,12 +1,9 @@
-import os
 from pathlib import Path
-from shutil import copyfile
 
-import utils.external_project as ext
+from steps.linux.gui.gui_xorg import WindowManagerXorg
 from steps.step import Step
-from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
-from utils.services.file_writer import FileType, LinePlacement
+from utils.services.file_writer import FileType
 
 
 class AwesomeStep(Step):
@@ -28,12 +25,17 @@ class AwesomeStep(Step):
             "awesome",
             "jq",  # needed for parsing json when getting currency exchange
         )
-        dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
-        dependency_dispatcher.register_xorg_wm("awesome")
+        dependency_dispatcher.register_xorg_wm(
+            WindowManagerXorg(
+                name="awesome",
+                xsession_name="AwesomeWM",
+                launch_command="awesome",
+            )
+        )
 
     def perform(self):
         self._setup_awesome_config()
-        self._setup_xinitrc_awesome()
+
         self._setup_app_keybindings_code()
 
         # Awesome places this file during installation, but we don't need it,
@@ -45,17 +47,6 @@ class AwesomeStep(Step):
         self._file_writer.write_symlink(
             src=self._current_step_dir / "config",
             link=".config/awesome",
-        )
-
-    def _setup_xinitrc_awesome(self):
-        self._logger.log(f"Generating {self._xinitrc_path}")
-        self._file_writer.write_lines(
-            self._xinitrc_path,
-            [
-                "export WM=awesome",
-                ". ~/.config/PaiSetup/xinitrc_base",
-                "exec awesome",
-            ],
         )
 
     def _setup_app_keybindings_code(self):

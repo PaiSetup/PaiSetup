@@ -45,7 +45,6 @@ from .useless import UselessStep
 from .vagrant import VagrantStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
-from .xsession import XsessionStep
 
 
 def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
@@ -67,10 +66,9 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 BluetoothStep(),
                 JavaStep(),
                 QBitTorrentStep(),
-                XsessionStep(),
                 GitStep(),
                 UlauncherStep(),
-                GuiXorg(full=args.full),
+                GuiXorg(full=args.full, root_build_dir=build_dir),
                 AwesomeStep(),
                 AlacrittyStep(),
                 DushStep(fetch_git=args.full),
@@ -116,7 +114,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 FirefoxStep(is_default_browser=True),
                 FileAssociationsStep(),
                 HomeDirectoryStep(root_dir, has_multimedia_dir=False),
-                XsessionStep(),
                 UlauncherStep(),
                 DushStep(fetch_git=args.full),
                 NushStep(fetch_git=args.full),

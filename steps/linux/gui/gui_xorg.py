@@ -9,17 +9,28 @@ from utils.os_function import LinuxDistro
 from utils.services.file_writer import FileType
 
 
+class WindowManagerXorg:
+    def __init__(self, name, xsession_name, launch_command):
+        self.name = name
+        self.xsession_name = xsession_name
+        self.launch_command = launch_command
+        self.config_path = Path(os.environ["HOME"]) / f".config/PaiSetup/{name}"
+
+
 class GuiXorg(Step):
-    def __init__(self, full):
+    def __init__(self, full, root_build_dir):
         super().__init__("GuiXorg")
         self._full = full
+        self._root_build_dir = root_build_dir
         self._window_managers = []
 
     def perform(self):
         self._compile_color_generator()
-        self._generate_xresources()
-        self._generate_xinitrc_base()
         self._generate_picom_config()
+        self._generate_xinitrc_base()
+        self._generate_xinitrc_per_wm()
+        self._generate_xsession_per_wm()
+        self._generate_xresources_per_wm()
 
         self._file_writer.remove_file(".cache/PaiSetup/wallpapers/directories")
 
@@ -79,7 +90,7 @@ class GuiXorg(Step):
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):
             self._logger.log('Compiling "colors" binary')
-            colors_dir = self.root_build_dir / "colors"
+            colors_dir = self._root_build_dir / "colors"
             ext.download(
                 "git://git.2f30.org/colors",
                 "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
@@ -90,34 +101,20 @@ class GuiXorg(Step):
             )
             ext.make(colors_dir, logger=self._logger)
 
-    def _generate_xresources(self):
-        for wm in self._window_managers:
-            self._logger.log(f"Generating Xresources file for {wm}")
-            wm_config_path = self._env.home() / f".config/PaiSetup/{wm}"
-
-            # This value is pulled to a different file, so that we can update it easily from a script.
-            # The color hardcoded here is a placeholder. It will be written by select_wallpaper.py.
-            self._file_writer.write_lines(
-                wm_config_path / "XresourcesTheme",
-                ["#define COL_THEME1 #008866"],
-                file_type=FileType.XResources,
-            )
-
-            # Main Xresources file that should be loaded using xrdb. It is done by select_wallpaper.py
-            self._file_writer.write_lines(
-                wm_config_path / "Xresources",
-                [
-                    f'#include "{wm_config_path / "XresourcesTheme"}"',
-                    "#define COL_THEME2 #878787",
-                    "#define COL_THEME3 #555555",
-                    "",
-                    "color1: COL_THEME1",
-                    "color2: COL_THEME2",
-                    "color3: COL_THEME3",
-                    "color4: #ffffff",
-                ],
-                file_type=FileType.XResources,
-            )
+    def _generate_picom_config(self):
+        self._logger.log("Generating picom config")
+        self._file_writer.write_lines(
+            ".config/picom.conf",
+            [
+                'backend = "xrender"',
+                "vsync = true;",
+                "fade-in-step = 1;",
+                "fade-out-step = 1;",
+                "frame-opacity = 0;",
+                "corner-radius = 10;",
+            ],
+            skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
+        )
 
     def _generate_xinitrc_base(self):
         self._logger.log(f"Generating xinitrc_base")
@@ -191,17 +188,72 @@ class GuiXorg(Step):
             ["picom -b &"],
         )
 
-    def _generate_picom_config(self):
-        self._logger.log("Generating picom config")
-        self._file_writer.write_lines(
-            ".config/picom.conf",
-            [
-                'backend = "xrender"',
-                "vsync = true;",
-                "fade-in-step = 1;",
-                "fade-out-step = 1;",
-                "frame-opacity = 0;",
-                "corner-radius = 10;",
-            ],
-            skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
-        )
+    def _generate_xinitrc_per_wm(self):
+        for wm in self._window_managers:
+            self._logger.log(f"Generating xinitrc for {wm.name}")
+
+            self._file_writer.write_lines(
+                wm.config_path / "xinitrc",
+                [
+                    f"export WM={wm.name}",
+                    ". ~/.config/PaiSetup/xinitrc_base",
+                    f"exec {wm.launch_command}",
+                ],
+            )
+
+    def _generate_xsession_per_wm(self):
+        for wm in self._window_managers:
+            xinitrc_path = wm.config_path / "xinitrc"
+
+            self._logger.log(f"Creating a script and .desktop file for {wm.xsession_name} session")
+
+            # First create a script that simply calls our xinitrc. Unfortunately we cannot create
+            # a reusable script and simply pass an argument in .desktop file, because some DMs
+            # (namely LightDM) ignore .desktop files containing arguments to commands.
+            script_name = self._file_writer.write_executable_script(
+                f"xsession_run_{wm.xsession_name}",
+                [f'exec "{xinitrc_path}"'],
+            )
+
+            # Then create a .desktop file. DMs should scan /usr/share/xsession and allow selecting
+            # them in order to launch a specific session.
+            self._file_writer.write_lines(
+                f"/usr/share/xsessions/{wm.xsession_name}.desktop",
+                [
+                    "[Desktop Entry]",
+                    f"Name={wm.xsession_name}",
+                    f"Comment=Executes {xinitrc_path} script",
+                    f"Exec={script_name}",
+                    f"TryExec={script_name}",
+                    "Type=Application",
+                ],
+                file_type=FileType.ConfigFile,
+            )
+
+    def _generate_xresources_per_wm(self):
+        for wm in self._window_managers:
+            self._logger.log(f"Generating Xresources for {wm.name}")
+
+            # This value is pulled to a different file, so that we can update it easily from a script.
+            # The color hardcoded here is a placeholder. It will be written by select_wallpaper.py.
+            self._file_writer.write_lines(
+                wm.config_path / "XresourcesTheme",
+                ["#define COL_THEME1 #008866"],
+                file_type=FileType.XResources,
+            )
+
+            # Main Xresources file that should be loaded using xrdb. It is done by select_wallpaper.py
+            self._file_writer.write_lines(
+                wm.config_path / "Xresources",
+                [
+                    f'#include "{wm.config_path / "XresourcesTheme"}"',
+                    "#define COL_THEME2 #878787",
+                    "#define COL_THEME3 #555555",
+                    "",
+                    "color1: COL_THEME1",
+                    "color2: COL_THEME2",
+                    "color3: COL_THEME3",
+                    "color4: #ffffff",
+                ],
+                file_type=FileType.XResources,
+            )

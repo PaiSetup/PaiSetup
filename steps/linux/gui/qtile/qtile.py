@@ -1,8 +1,9 @@
 from pathlib import Path
 
+from steps.linux.gui.gui_xorg import WindowManagerXorg
 from steps.step import Step
 from utils.dependency_dispatcher import push_dependency_handler
-from utils.services.file_writer import FileType, LinePlacement
+from utils.services.file_writer import FileType
 
 
 class QtileStep(Step):
@@ -12,8 +13,8 @@ class QtileStep(Step):
 
         self._qtile_config_script_path = self._current_step_dir / "config/config.py"
         self._app_keybindings_path = self._current_step_dir / "config/generated/app_keys.py"
-        self._config_path = ".config/PaiSetup/qtile"
-        self._xinitrc_path = f"{self._config_path}/xinitrc"
+        self._config_path = ""
+        self._xinitrc_path = self._env.home() / f".config/PaiSetup/qtile/xinitrc"
 
         self._keybindings = []
 
@@ -23,26 +24,20 @@ class QtileStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("qtile")
-        dependency_dispatcher.add_xsession("Qtile", self._env.home() / self._xinitrc_path)
+        dependency_dispatcher.register_xorg_wm(
+            WindowManagerXorg(
+                name="qtile",
+                xsession_name="QtileX11",
+                launch_command=f"qtile start -c {self._qtile_config_script_path}",
+            )
+        )
 
     def perform(self):
-        self._setup_xinitrc_qtile()
         self._setup_app_keybindings_code()
 
         # Qtile places this file during installation, but we don't need it,
         # we generate our own session files.
         self._file_writer.remove_file("/usr/share/xsessions/qtile.desktop")
-
-    def _setup_xinitrc_qtile(self):
-        self._logger.log(f"Generating {self._xinitrc_path}")
-        self._file_writer.write_lines(
-            self._xinitrc_path,
-            [
-                "export WM=qtile",
-                ". ~/.config/PaiSetup/xinitrc_base",
-                f"exec qtile start -c {self._qtile_config_script_path}",
-            ],
-        )
 
     def _setup_app_keybindings_code(self):
         self._logger.log(f"Generating {self._app_keybindings_path}")
