@@ -58,7 +58,7 @@ class CharonStep(Step):
                 dst_dir=funny_normal_path / "Life",
                 dst_backup_dir=funny_backup_path / "Life",
                 use_for_images=True,
-                use_for_videos=False
+                use_for_videos=False,
             ),
         ]
 
@@ -82,7 +82,7 @@ class CharonStep(Step):
         if ext.should_build(self._full, ["Charon"]):
             ext.download(
                 "https://github.com/DziubanMaciej/Charon.git",
-                "583047b",
+                "23a67b8",
                 self.charon_dir,
                 logger=self._logger,
                 has_submodules=True,
