@@ -185,6 +185,11 @@ class GuiXorg(Step):
             "Screenshot daemon",
             ["flameshot &"],
         )
+        self._file_writer.write_section(
+            ".config/PaiSetup/xinitrc_base",
+            "Run picom",
+            ["picom -b &"],
+        )
 
     def _generate_picom_config(self):
         self._logger.log("Generating picom config")

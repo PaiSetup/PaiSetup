@@ -35,24 +35,13 @@ class QtileStep(Step):
 
     def _setup_xinitrc_qtile(self):
         self._logger.log(f"Generating {self._xinitrc_path}")
-        self._file_writer.write_section(
+        self._file_writer.write_lines(
             self._xinitrc_path,
-            "Call base script",
             [
                 "export WM=qtile",
                 ". ~/.config/PaiSetup/xinitrc_base",
+                f"exec qtile start -c {self._qtile_config_script_path}",
             ],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
-            "Run picom",
-            ["picom -b &"],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
-            "Run Qtile",
-            [f"exec qtile start -c {self._qtile_config_script_path}"],
-            line_placement=LinePlacement.End,
         )
 
     def _setup_app_keybindings_code(self):

@@ -49,24 +49,13 @@ class AwesomeStep(Step):
 
     def _setup_xinitrc_awesome(self):
         self._logger.log(f"Generating {self._xinitrc_path}")
-        self._file_writer.write_section(
+        self._file_writer.write_lines(
             self._xinitrc_path,
-            "Call base script",
             [
                 "export WM=awesome",
                 ". ~/.config/PaiSetup/xinitrc_base",
+                "exec awesome",
             ],
-        )
-        self._file_writer.write_section(  # TODO move to GuiXorgStep
-            self._xinitrc_path,
-            "Run picom",
-            ["picom -b &"],
-        )
-        self._file_writer.write_section(
-            self._xinitrc_path,
-            "Run AwesomeWM",
-            ["exec awesome"],
-            line_placement=LinePlacement.End,
         )
 
     def _setup_app_keybindings_code(self):
