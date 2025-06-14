@@ -85,4 +85,4 @@ else
 fi
 
 # Refresh status icons
-$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "Veracrypt" "15" "refresh:warnings"
+$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "Veracrypt" "refresh:warnings"

@@ -22,4 +22,4 @@ else
     printf ""
 fi
 
-$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "Trash" "" "refresh:warnings"
+$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "Trash" "refresh:warnings"

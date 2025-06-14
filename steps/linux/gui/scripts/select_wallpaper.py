@@ -162,10 +162,6 @@ def setup_gtk_theme(pai_setup_root):
 
 def setup_wm(pai_setup_root, wm):
     match wm:
-        case "dwm":
-            # If DWM calls this script, we have to set the wallpaper (DWM cannot do this)
-            print("  Setting wallpaper for DWM")
-            run_command("feh --bg-scale ~/.config/PaiSetup/wallpaper")
         case "awesome":
             # If AwesomeWM calls this script, it will restart shortly and load the new icons
             print("  Generating colored icons for AwesomeWM")

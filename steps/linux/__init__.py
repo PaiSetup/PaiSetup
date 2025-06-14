@@ -15,7 +15,6 @@ from .git import GitStep
 from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
 from .gui.awesome.awesome import AwesomeStep
-from .gui.dwm.dwm import DwmStep
 from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .icon_font.icon_font import IconFontStep
@@ -38,7 +37,6 @@ from .raspberry_pi import RaspberryPiStep
 from .rpi_led.rpi_led import RpiLedStep
 from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
-from .st.st import StStep
 from .systemd import SystemdStep
 from .thunar import ThunarStep
 from .ulauncher import UlauncherStep
@@ -71,7 +69,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 XsessionStep(),
                 GitStep(),
                 UlauncherStep(),
-                DwmStep(build_dir, full=args.full, is_default_wm=False),
                 AwesomeStep(build_dir, full=args.full, is_default_wm=True),
                 AlacrittyStep(),
                 DushStep(fetch_git=args.full),

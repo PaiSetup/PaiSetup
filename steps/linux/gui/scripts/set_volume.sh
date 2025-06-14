@@ -16,5 +16,5 @@ case "$1" in
 esac
 
 if [ -z "$2" ] || [ "$2" != 0 ]; then
-    $PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "12" "refresh:volume"
+    $PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "refresh:volume"
 fi

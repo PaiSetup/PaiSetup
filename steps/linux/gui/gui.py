@@ -30,7 +30,7 @@ class GuiStep(Step):
         self._file_writer.remove_file(".cache/PaiSetup/wallpapers/directories")
 
     def push_dependencies(self, dependency_dispatcher):
-        # GuiStep is a base class for multiple steps like DwmStep or AwesomeStep. It has its
+        # GuiStep is a base class for multiple steps like QtileStep or AwesomeStep. It has its
         # dependencies, but they should be pushed only once. Otherwise we'll get duplicated
         # periodic checks and keybindings. This is kind of a caveman solution to this problem,
         # but I'm not sure how else to fix it at the moment.
@@ -177,7 +177,7 @@ class GuiStep(Step):
         )
 
     def _setup_picom_config(self):
-        # TODO this gets called by dwm, awesome and qtile, so each line is written thrice. Picom accepts it, but it should be fixed.
+        # TODO this gets called by awesome and qtile, so each line is written twice. Picom accepts it, but it should be fixed.
         self._logger.log("Generating picom config")
         self._file_writer.write_lines(
             ".config/picom.conf",

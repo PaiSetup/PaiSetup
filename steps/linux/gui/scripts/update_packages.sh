@@ -51,7 +51,7 @@ case $($PAI_SETUP_ROOT/steps/linux/gui/scripts/get_distro.sh) in
         exit 1
 esac
 
-$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "13" "refresh:packages"
+$PAI_SETUP_ROOT/steps/linux/gui/scripts/refresh_statusbar.sh "" "refresh:packages"
 
 if [ "$is_interactive" != 0 ]; then
     printf "\n\e[48;5;28mAll done. Press enter to close this window...\e[0m "
