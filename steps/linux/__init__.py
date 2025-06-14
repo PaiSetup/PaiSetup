@@ -49,7 +49,7 @@ from .vscode import VscodeStep
 
 def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     match args.mode:
-        case SetupMode.main:  # Arch Linux
+        case SetupMode.arch:
             steps = [
                 PackagesStep(build_dir, True, install_packages),
                 ShellStep(root_dir),

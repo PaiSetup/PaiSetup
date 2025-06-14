@@ -1,9 +1,11 @@
 import enum
 from pathlib import Path
 
+from utils.os_function import LinuxDistro, OperatingSystem
+
 
 class SetupMode(enum.Enum):
-    main = "main"  # TODO rename to "arch"
+    arch = "arch"
     windows = "windows"
     windows_normie = "windows_normie"
     debian_casual = "debian_casual"
@@ -16,7 +18,12 @@ class SetupMode(enum.Enum):
             with open(lastmode_file, "r") as file:
                 lastmode = SetupMode(file.readline().strip())
         except (FileNotFoundError, ValueError) as e:
-            lastmode = SetupMode.main
+            if OperatingSystem.current().is_windows():
+                lastmode = SetupMode.windows
+            elif LinuxDistro.current().is_debian_like():
+                lastmode = SetupMode.debian_casual
+            else:
+                lastmode = SetupMode.arch
         return lastmode
 
     def save_last_mode(self, root_dir):
