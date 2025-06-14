@@ -59,7 +59,9 @@ perform_umount() {
     sudo rmdir "$mount_path" || {
         notify-send "⚠ Warning" "Could not cleanup $mount_path directory after unmounting $mapping_path."
     }
-    rm -rf ~/.cache/thumbnails/ ~/.thumbnails
+
+    # Clear caches
+    rm -rf ~/.cache/thumbnails/ ~/.thumbnails ~/.config/vlc/vlc-qt-interface.conf
 }
 
 # -------------------------------------------------------------------------- Main procedure
