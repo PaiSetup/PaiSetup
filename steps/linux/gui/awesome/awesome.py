@@ -3,24 +3,20 @@ from pathlib import Path
 from shutil import copyfile
 
 import utils.external_project as ext
-from steps.linux.gui.gui import GuiStep
 from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, LinePlacement
 
 
-class AwesomeStep(GuiStep):
-    def __init__(self, root_build_dir, full, is_default_wm):
-        super().__init__("Awesome", full)
-        self.root_build_dir = root_build_dir
+class AwesomeStep(Step):
+    def __init__(self):
+        super().__init__("Awesome")
         self._current_step_dir = Path(__file__).parent
 
         self._config_path = ".config/PaiSetup/awesome"
-        self._xresources_path = f"{self._config_path}/Xresources"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
 
-        self._app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
         self._keybindings = []
 
     @push_dependency_handler
@@ -28,19 +24,16 @@ class AwesomeStep(GuiStep):
         self._keybindings += keybindings
 
     def push_dependencies(self, dependency_dispatcher):
-        super().push_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages(
             "awesome",
             "jq",  # needed for parsing json when getting currency exchange
         )
         dependency_dispatcher.add_xsession("AwesomeWM", self._env.home() / self._xinitrc_path)
+        dependency_dispatcher.register_xorg_wm("awesome")
 
     def perform(self):
-        super().perform()
-        self._setup_picom_config()
         self._setup_awesome_config()
         self._setup_xinitrc_awesome()
-        self._setup_xresources()
         self._setup_app_keybindings_code()
 
         # Awesome places this file during installation, but we don't need it,
@@ -64,7 +57,7 @@ class AwesomeStep(GuiStep):
                 ". ~/.config/PaiSetup/xinitrc_base",
             ],
         )
-        self._file_writer.write_section(
+        self._file_writer.write_section(  # TODO move to GuiXorgStep
             self._xinitrc_path,
             "Run picom",
             ["picom -b &"],
@@ -76,32 +69,10 @@ class AwesomeStep(GuiStep):
             line_placement=LinePlacement.End,
         )
 
-    def _setup_xresources(self):
-        self._logger.log(f"Generating {self._xresources_path}")
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Theme colors",
-            [
-                f'#include "{self._env.home() / ".config/XresourcesTheme"}"',
-                "#define COL_THEME2 #878787",
-                "#define COL_THEME3 #555555",
-            ],
-            file_type=FileType.XResources,
-        )
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Colors readable by AwesomeWM",
-            [
-                "color1: COL_THEME1",
-                "color2: COL_THEME2",
-                "color3: COL_THEME3",
-                "color4: #ffffff",
-            ],
-            file_type=FileType.XResources,
-        )
-
     def _setup_app_keybindings_code(self):
-        self._logger.log(f"Generating {self._app_keybindings_path}")
+        app_keybindings_path = f"{self._current_step_dir}/config/utils/app_keybindings.lua"
+
+        self._logger.log(f"Generating {app_keybindings_path}")
         lines = [
             'local awful = require("awful")',
             'local gears = require("gears")',
@@ -142,4 +113,4 @@ class AwesomeStep(GuiStep):
             "    get_keybindings = get_keybindings,",
             "}",
         ]
-        self._file_writer.write_lines(self._app_keybindings_path, lines, file_type=FileType.Lua)
+        self._file_writer.write_lines(app_keybindings_path, lines, file_type=FileType.Lua)

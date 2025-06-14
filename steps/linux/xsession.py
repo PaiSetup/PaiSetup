@@ -7,6 +7,7 @@ from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
 
 
+# TODO move into GuiXorg
 class XsessionStep(Step):
     def __init__(self):
         super().__init__("Xsession")

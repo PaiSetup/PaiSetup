@@ -15,6 +15,7 @@ from .git import GitStep
 from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
 from .gui.awesome.awesome import AwesomeStep
+from .gui.gui_xorg import GuiXorg
 from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .icon_font.icon_font import IconFontStep
@@ -69,7 +70,8 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 XsessionStep(),
                 GitStep(),
                 UlauncherStep(),
-                AwesomeStep(build_dir, full=args.full, is_default_wm=True),
+                GuiXorg(full=args.full),
+                AwesomeStep(),
                 AlacrittyStep(),
                 DushStep(fetch_git=args.full),
                 NushStep(fetch_git=args.full),
@@ -90,7 +92,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 EncryptionStep(),
                 CharonStep(build_dir, full=args.full),
                 PicardStep(),
-                QtileStep(full=args.full),
+                QtileStep(),
                 NotesStep(fetch_git=args.full),
                 VirtualBoxStep(),
                 VagrantStep(),
@@ -99,7 +101,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         case SetupMode.debian_casual:
             steps = [
                 PackagesDebianStep(install_packages),
-                AwesomeStep(build_dir, full=args.full, is_default_wm=True),
+                AwesomeStep(),
                 ProgrammingPythonStep(),
                 GitStep(),
                 AudioStep(),
@@ -107,6 +109,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 CheckMateStep(build_dir),
                 ShellStep(root_dir),
                 QBitTorrentStep(),
+                GuiXorg(full=args.full),
                 IconFontStep(full=args.full),
                 AlacrittyStep(),
                 GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),

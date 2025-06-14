@@ -1,20 +1,19 @@
 from pathlib import Path
 
-from steps.linux.gui.gui import GuiStep
+from steps.step import Step
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, LinePlacement
 
 
-class QtileStep(GuiStep):
-    def __init__(self, full):
-        super().__init__("Qtile", full)
+class QtileStep(Step):
+    def __init__(self):
+        super().__init__("Qtile")
         self._current_step_dir = Path(__file__).parent
 
         self._qtile_config_script_path = self._current_step_dir / "config/config.py"
         self._app_keybindings_path = self._current_step_dir / "config/generated/app_keys.py"
         self._config_path = ".config/PaiSetup/qtile"
         self._xinitrc_path = f"{self._config_path}/xinitrc"
-        self._xresources_path = f"{self._config_path}/Xresources"
 
         self._keybindings = []
 
@@ -23,15 +22,12 @@ class QtileStep(GuiStep):
         self._keybindings += keybindings
 
     def push_dependencies(self, dependency_dispatcher):
-        super().push_dependencies(dependency_dispatcher)
         dependency_dispatcher.add_packages("qtile")
         dependency_dispatcher.add_xsession("Qtile", self._env.home() / self._xinitrc_path)
 
     def perform(self):
-        self._setup_picom_config()
         self._setup_xinitrc_qtile()
         self._setup_app_keybindings_code()
-        self._setup_xresources()
 
         # Qtile places this file during installation, but we don't need it,
         # we generate our own session files.
@@ -57,30 +53,6 @@ class QtileStep(GuiStep):
             "Run Qtile",
             [f"exec qtile start -c {self._qtile_config_script_path}"],
             line_placement=LinePlacement.End,
-        )
-
-    def _setup_xresources(self):
-        self._logger.log(f"Generating {self._xresources_path}")
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Theme colors",
-            [
-                f'#include "{self._env.home() / ".config/XresourcesTheme"}"',
-                "#define COL_THEME2 #878787",
-                "#define COL_THEME3 #555555",
-            ],
-            file_type=FileType.XResources,
-        )
-        self._file_writer.write_section(
-            self._xresources_path,
-            "Colors readable by Qtile",
-            [
-                "color1: COL_THEME1",
-                "color2: COL_THEME2",
-                "color3: COL_THEME3",
-                "color4: #ffffff",
-            ],
-            file_type=FileType.XResources,
         )
 
     def _setup_app_keybindings_code(self):

@@ -1,45 +1,34 @@
 from pathlib import Path
 
 import utils.external_project as ext
-from steps.linux.systemd import SystemdService
 from steps.step import Step
 from utils.command import *
+from utils.dependency_dispatcher import push_dependency_handler
 from utils.keybinding import KeyBinding
 from utils.os_function import LinuxDistro
-from utils.services.file_writer import FileType, LinePlacement
-
-perform_called = False
-push_dependencies_called = False
+from utils.services.file_writer import FileType
 
 
-class GuiStep(Step):
-    def __init__(self, name, full):
-        super().__init__(name)
+class GuiXorg(Step):
+    def __init__(self, full):
+        super().__init__("GuiXorg")
         self._full = full
+        self._window_managers = []
 
     def perform(self):
-        global perform_called
-        if perform_called:
-            return
-        perform_called = True
-
         self._compile_color_generator()
+        self._generate_xresources()
+        self._generate_xinitrc_base()
+        self._generate_picom_config()
 
-        self._setup_xinitrc_base()
-        self._setup_xresources_theme()
         self._file_writer.remove_file(".cache/PaiSetup/wallpapers/directories")
 
-    def push_dependencies(self, dependency_dispatcher):
-        # GuiStep is a base class for multiple steps like QtileStep or AwesomeStep. It has its
-        # dependencies, but they should be pushed only once. Otherwise we'll get duplicated
-        # periodic checks and keybindings. This is kind of a caveman solution to this problem,
-        # but I'm not sure how else to fix it at the moment.
-        if not dependency_dispatcher.is_fake:
-            global push_dependencies_called
-            if push_dependencies_called:
-                return
-            push_dependencies_called = True
+    @push_dependency_handler
+    def register_xorg_wm(self, wm):
+        self._window_managers.append(wm)
 
+    def push_dependencies(self, dependency_dispatcher):
+        # TODO move all non-x11 stuff to different steps
         dependency_dispatcher.add_packages(
             "xorg-xrandr",
             "xorg-xinit",
@@ -53,19 +42,18 @@ class GuiStep(Step):
             "yad",
             "udiskie",
             "flameshot",
-            "pacman-contrib",  # for checkupdates
+            "pacman-contrib",  # for checkupdates on arch
             "libnotify",
             "bc",  # for float calculations in set_brightness.sh
             "xdotool",  # for getting Thunar's cwd
             "cava",
         )
-        # if LinuxDistro.current().is_debian_like():
-        #    dependency_dispatcher.add_packages("libpng-dev")
+        if LinuxDistro.current().is_debian_like():
+            dependency_dispatcher.add_packages("libpng-dev")  # needed for compiling color generator on Debian
 
         dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
         dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
         dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
-        # dependency_dispatcher.add_systemd_service(SystemdService("udiskie"))
 
         # fmt: off
         dependency_dispatcher.add_keybindings(
@@ -90,6 +78,7 @@ class GuiStep(Step):
 
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):
+            self._logger.log('Compiling "colors" binary')
             colors_dir = self.root_build_dir / "colors"
             ext.download(
                 "git://git.2f30.org/colors",
@@ -101,16 +90,37 @@ class GuiStep(Step):
             )
             ext.make(colors_dir, logger=self._logger)
 
-    def _setup_xresources_theme(self):
-        self._file_writer.write_lines(
-            ".config/XresourcesTheme",
-            ["#define COL_THEME1 #008866"],
-            file_type=FileType.XResources,
-        )
+    def _generate_xresources(self):
+        for wm in self._window_managers:
+            self._logger.log(f"Generating Xresources file for {wm}")
+            wm_config_path = self._env.home() / f".config/PaiSetup/{wm}"
 
-    def _setup_xinitrc_base(
-        self,
-    ):
+            # This value is pulled to a different file, so that we can update it easily from a script.
+            # The color hardcoded here is a placeholder. It will be written by select_wallpaper.py.
+            self._file_writer.write_lines(
+                wm_config_path / "XresourcesTheme",
+                ["#define COL_THEME1 #008866"],
+                file_type=FileType.XResources,
+            )
+
+            # Main Xresources file that should be loaded using xrdb. It is done by select_wallpaper.py
+            self._file_writer.write_lines(
+                wm_config_path / "Xresources",
+                [
+                    f'#include "{wm_config_path / "XresourcesTheme"}"',
+                    "#define COL_THEME2 #878787",
+                    "#define COL_THEME3 #555555",
+                    "",
+                    "color1: COL_THEME1",
+                    "color2: COL_THEME2",
+                    "color3: COL_THEME3",
+                    "color4: #ffffff",
+                ],
+                file_type=FileType.XResources,
+            )
+
+    def _generate_xinitrc_base(self):
+        self._logger.log(f"Generating xinitrc_base")
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Start in home directory",
@@ -176,8 +186,7 @@ class GuiStep(Step):
             ["flameshot &"],
         )
 
-    def _setup_picom_config(self):
-        # TODO this gets called by awesome and qtile, so each line is written twice. Picom accepts it, but it should be fixed.
+    def _generate_picom_config(self):
         self._logger.log("Generating picom config")
         self._file_writer.write_lines(
             ".config/picom.conf",
