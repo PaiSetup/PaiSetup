@@ -56,7 +56,7 @@ perform_debian() {
         $TERMINAL_CMD sh -c "$command" >/dev/null 2>&1 &
     fi
 
-    echo -n " $packages_for_upgrade_count"
+    printf " $packages_for_upgrade_count"
 }
 
 case $($PAI_SETUP_ROOT/steps/linux/gui/scripts/get_distro.sh) in
