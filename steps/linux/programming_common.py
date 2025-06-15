@@ -12,7 +12,6 @@ class ProgrammingCommonStep(Step):
             "wget",
             "strace",
             "curl",
-            "graphui",  # graphviz
             "man-db",
             "ntfs-3g",
             "dos2unix",

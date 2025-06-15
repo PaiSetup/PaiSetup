@@ -115,7 +115,7 @@ class PackagesDebianStep(Step):
                 return DebianPackageApt("xserver-xorg-core")
             case "xorg-server-xephyr":
                 return DebianPackageApt("xserver-xephyr")
-            case "xorg-xwininfo":
+            case "xorg-xwininfo" | "xorg-xev":
                 return DebianPackageApt("x11-utils")
             case "libxft":
                 return DebianPackageApt("libxft2")
@@ -137,18 +137,38 @@ class PackagesDebianStep(Step):
                 return [DebianPackageApt(d, True) for d in dependencies] + [install_oomox]
             case "themix-theme-oomox-git":
                 return DebianPackageScript("install_oomox.sh")
-            case "ttf-joypixels":
-                return DebianPackageScript("install_joypixels.sh")
-            case "ttf-font-awesome":
-                return DebianPackageApt("fonts-font-awesome")
             case "firefox":
                 return DebianPackageApt("firefox-esr")
             case "ulauncher":
                 pass  # TODO(debian) there's a PPA for this. Figure out how to do this safely.
             case "flamegraph":
                 return DebianPackageScript("install_flamegraph.sh")
-            case "alsa-firmware" | "pulseaudio-alsa":
+            case "alsa-firmware" | "pulseaudio-alsa" | "gvfs" | "gvfs-mtp" | "gvfs-gphoto2":
                 pass  # Already installed
+            case "bcompare":
+                return DebianPackageScript("install_bcompare.sh")
+            case "megasync-bin":
+                return DebianPackageScript("install_megasync.sh")
+            case "consolas-font":
+                return DebianPackageScript("install_font_consolas.sh")
+            case "ttf-font-awesome":
+                return DebianPackageScript("install_font_awesome.sh")
+            case "ttf-joypixels":
+                return DebianPackageScript("install_font_joypixels.sh")
+            case "gst-plugins-bad":
+                return DebianPackageApt("gstreamer1.0-plugins-bad")
+            case "gst-plugins-ugly":
+                return DebianPackageApt("gstreamer1.0-plugins-ugly")
+            case "libreoffice-still":
+                return DebianPackageApt("libreoffice")
+            case "losslesscut-bin":
+                pass  # Ignored for now
+            case "nomacs" | "qt5-imageformats":
+                pass  # Ignored for now (no stable package, compiling is long and oudates easily)
+            case "discord":
+                pass  # Ignored for now
+            case "mtpfs":
+                return DebianPackageApt("go-mtpfs")
 
             case "python":
                 return DebianPackageApt("python3")

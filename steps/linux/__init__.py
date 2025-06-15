@@ -111,7 +111,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ShellStep(root_dir),
                 MultimediaSoftwareStep(),
                 QBitTorrentStep(),
-                GuiXorg(full=args.full),
+                GuiXorg(full=args.full, root_build_dir=build_dir),
                 IconFontStep(full=args.full),
                 AlacrittyStep(),
                 GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
