@@ -6,6 +6,7 @@ from steps.step import Step
 from utils.services.file_writer import FileType
 
 
+# TODO move to MultimediateSoftwareStep
 class PicardStep(Step):
     def __init__(self):
         super().__init__("Picard")

@@ -10,7 +10,10 @@ class ShellStep(Step):
         self._root_dir = root_dir
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("eza")
+        dependency_dispatcher.add_packages(
+            "eza",
+            "fzf",  # fuzzy search
+        )
         dependency_dispatcher.register_homedir_file(".profile")
         dependency_dispatcher.register_homedir_file(".bashrc")
         dependency_dispatcher.register_homedir_file(".bash_logout")

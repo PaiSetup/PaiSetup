@@ -16,7 +16,7 @@ connect_timeout = 1
 minimum_send_interval = 0.015
 # Using hostname would be better, but it doesn't work. We're currently setting hostname on RPI to "RpiLed",
 # but it's not visible from PC. See https://github.com/orgs/micropython/discussions/15562
-server_address = "192.168.100.36"
+server_address = "192.168.100.40"
 
 
 class Thread:

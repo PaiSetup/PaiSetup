@@ -46,6 +46,8 @@ class GuiXorg(Step):
             "xorg-server",
             "xorg-server-xephyr",
             "xorg-xwininfo",
+            "xorg-xev",
+            "xclip",
             "nitrogen",
             "picom",
             "libxft",

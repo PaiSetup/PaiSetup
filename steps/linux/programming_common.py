@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from steps.step import Step
-from utils.services.file_writer import FileType
 
 
 class ProgrammingCommonStep(Step):
@@ -16,8 +15,8 @@ class ProgrammingCommonStep(Step):
             "graphui",  # graphviz
             "man-db",
             "ntfs-3g",
-            "xorg-xev",
-            "xclip",
+            "dos2unix",
+            "nmap",
             # Text editing
             "tmux",
             "nano",

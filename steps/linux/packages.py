@@ -156,43 +156,7 @@ class PackagesStep(Step):
                 "os-prober",
                 # Linux kernels headers (needed for dkms modules)
                 "linux-lts-headers",
-                # General
-                "consolas-font",
+                # AUR helper (install manually in this step)
                 "yay-git",
-                "dash-static-musl",
-                "unzip",
-                "udisks2",
-                "qpdfview",
-                "pdfsam",
-                "zip",
-                "fzf",  # fuzzy search
-                "file-roller",
-                "imagemagick",  # file conversion
-                "losslesscut-bin",  # cutting video
-                "dos2unix",
-                "nmap",
-                "xxd-standalone",
-                # MTP (for Android phone mounting)
-                "gvfs-mtp",
-                "gvfs-gphoto2",
-                "mtpfs",
-                "jmtpfs",
-                # Cloud
-                "megasync-bin",
-                # Multimedia
-                "vlc",
-                "mpv",
-                "nomacs",
-                "qt5-imageformats",  # For webp support in nomacs
-                "libreoffice-still",
-                "feh",
-                "gimp",
-                "rhythmbox",
-                "playerctl",
-                "gst-plugins-bad",  # Audio plugins
-                "gst-plugins-ugly",  # Audio plugins
-                "obs-studio",  # Recording
-                # Communicators
-                "discord",
             ]
         )

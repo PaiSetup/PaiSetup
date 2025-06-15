@@ -44,6 +44,7 @@ class ThunarStep(Step):
             "thunar-media-tags-plugin",
             "tumbler",  # needed for thumbnails
             "ffmpegthumbnailer",  # needed for video thumbnails
+            "file-roller",
         )
 
     @push_dependency_handler

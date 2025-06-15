@@ -21,6 +21,7 @@ from .home_directory.home_directory import HomeDirectoryStep
 from .icon_font.icon_font import IconFontStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
+from .multimedia_software_step import MultimediaSoftwareStep
 from .neovim.neovim import NeovimStep
 from .notes import NotesStep
 from .nush import NushStep
@@ -71,6 +72,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 GuiXorg(full=args.full, root_build_dir=build_dir),
                 AwesomeStep(),
                 AlacrittyStep(),
+                MultimediaSoftwareStep(),
                 DushStep(fetch_git=args.full),
                 NushStep(fetch_git=args.full),
                 VscodeStep(build_dir),
@@ -100,12 +102,14 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
             steps = [
                 PackagesDebianStep(install_packages),
                 AwesomeStep(),
+                ProgrammingCommonStep(),
                 ProgrammingPythonStep(),
                 GitStep(),
                 AudioStep(),
                 ThunarStep(),
                 CheckMateStep(build_dir),
                 ShellStep(root_dir),
+                MultimediaSoftwareStep(),
                 QBitTorrentStep(),
                 GuiXorg(full=args.full),
                 IconFontStep(full=args.full),

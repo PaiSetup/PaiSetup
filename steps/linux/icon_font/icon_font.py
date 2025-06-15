@@ -6,6 +6,7 @@ from steps.step import Step
 from utils import external_project as ext
 
 
+# TODO rename to FontStep
 class IconFontStep(Step):
     def __init__(self, full):
         super().__init__("IconFont")
@@ -16,6 +17,7 @@ class IconFontStep(Step):
         dependency_dispatcher.add_packages(
             "ttf-joypixels",
             "ttf-font-awesome",
+            "consolas-font",
         )
 
     def perform(self):
