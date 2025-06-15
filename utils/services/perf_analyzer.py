@@ -12,7 +12,8 @@ class PerfAnalyzer:
             self.duration_ms = None
             self.suboperations = []
 
-    def __init__(self, enable):
+    def __init__(self, pai_setup_root, enable):
+        self._pai_setup_root = pai_setup_root
         self._enable = enable
         self._pending_operation = None
         self._root_operation = PerfAnalyzer.Operation("root", 0)
@@ -68,7 +69,7 @@ class PerfAnalyzer:
             process_operation([], op)
 
         lines = "\n".join(lines)
-        with open("flamegraph.svg", "w") as file:
+        with open(self._pai_setup_root / "flamegraph.svg", "w") as file:
             if OperatingSystem.current().is_windows():
                 flamegraph_command = "flamegraph.pl.exe"
             else:
