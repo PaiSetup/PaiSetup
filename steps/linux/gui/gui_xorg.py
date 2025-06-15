@@ -214,7 +214,13 @@ class GuiXorg(Step):
             # (namely LightDM) ignore .desktop files containing arguments to commands.
             script_name = self._file_writer.write_executable_script(
                 f"xsession_run_{wm.xsession_name}",
-                [f'exec "{xinitrc_path}"'],
+                [
+                    "export XDG_SESSION_TYPE=x11",
+                    f"export XDG_SESSION_DESKTOP={wm.xsession_name}",
+                    f"export XDG_CURRENT_DESKTOP={wm.name}",
+                    "",
+                    f'exec "{xinitrc_path}"',
+                ],
             )
 
             # Then create a .desktop file. DMs should scan /usr/share/xsession and allow selecting
