@@ -22,6 +22,7 @@ class ShellStep(Step):
     def perform(self):
         self._setup_profile()
         self._setup_bash()
+        self._remove_moved_files()
 
     def _setup_profile(self):
         self._file_writer.write_section(
@@ -104,3 +105,16 @@ class ShellStep(Step):
             "Enable DELETE key to work in terminals",
             ["set enable-keypad on"],
         )
+
+    def _remove_moved_files(self):
+        # We set a couple of environment variables to move some dotfiles from ~ to other directories.
+        # However, these files may still show up if PaiSetup crashes in the middle and leaves config
+        # without the variables. Just remove them.
+        files = [
+            ".bash_history",
+            ".bash_logout",
+            ".bash_login",
+            ".wget-hsts",
+        ]
+        for f in files:
+            self._file_writer.remove_file(f)
