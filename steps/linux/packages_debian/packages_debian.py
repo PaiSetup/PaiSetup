@@ -36,22 +36,19 @@ class DebianPackageApt(DebianPackage):
 
 
 class DebianPackageScript(DebianPackage):
-    def __init__(self, name, script_name, is_installed_command=None):
+    def __init__(self, script_name):
+        self._script_path = Path(__file__).parent / script_name
+
+        name = run_command(f"{self._script_path} get_name", stdout=Stdout.return_back()).stdout
         super().__init__(name)
-        self._script_name = script_name
-        self._is_installed_command = is_installed_command
 
     def install(self):
         with TmpDir():
-            script_path = Path(__file__).parent / self._script_name
-            run_command(str(script_path))
+            run_command(f"{self._script_path} install_package")
 
     def is_installed(self, apt_context):
-        if self._is_installed_command is None:
-            return super().is_installed(apt_context)
-
         try:
-            run_command(self._is_installed_command, shell=True)
+            run_command(f"{self._script_path} is_installed")
             return True
         except CommandError:
             return False
@@ -103,11 +100,7 @@ class PackagesDebianStep(Step):
         #   4. There's no apt package and we want it. We return shell commands to execute.
         match package_name:
             case "code":
-                install_ppa = DebianPackageScript(
-                    "code (setup PPA)",
-                    "install_code_ppa.sh",
-                    "test -f /etc/apt/sources.list.d/vscode.list",
-                )
+                install_ppa = DebianPackageScript("install_code_ppa.sh")
                 install_code = DebianPackageApt("code")
                 return [install_ppa, install_code]
             case "code-features":
@@ -140,24 +133,12 @@ class PackagesDebianStep(Step):
                     "sassc",
                     "inkscape",
                 ]
-                install_oomox = DebianPackageScript(
-                    "eza (from GitHub)",
-                    "install_eza.sh",
-                    "which eza",
-                )
+                install_oomox = DebianPackageScript("install_eza.sh")
                 return [DebianPackageApt(d, True) for d in dependencies] + [install_oomox]
             case "themix-theme-oomox-git":
-                return DebianPackageScript(
-                    "themix/oomox (from GitHub)",
-                    "install_oomox.sh",
-                    "which oomox-cli",
-                )
+                return DebianPackageScript("install_oomox.sh")
             case "ttf-joypixels":
-                return DebianPackageScript(
-                    "ttf-joypixels (from cdn.joypixels.com)",
-                    "install_joypixels.sh",
-                    "test -f ~/.local/share/fonts/joypixels.ttf",
-                )
+                return DebianPackageScript("install_joypixels.sh")
             case "ttf-font-awesome":
                 return DebianPackageApt("fonts-font-awesome")
             case "firefox":
@@ -165,11 +146,7 @@ class PackagesDebianStep(Step):
             case "ulauncher":
                 pass  # TODO(debian) there's a PPA for this. Figure out how to do this safely.
             case "flamegraph":
-                return DebianPackageScript(
-                    "flamegraph (from GitHub)",
-                    "install_flamegraph.sh",
-                    "which flamegraph.pl",
-                )
+                return DebianPackageScript("install_flamegraph.sh")
             case "alsa-firmware" | "pulseaudio-alsa":
                 pass  # Already installed
 
