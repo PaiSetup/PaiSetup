@@ -27,7 +27,6 @@ from .notes import NotesStep
 from .nush import NushStep
 from .packages import PackagesStep
 from .packages_debian.packages_debian import PackagesDebianStep
-from .picard import PicardStep
 from .plex.plex import PlexStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
@@ -91,7 +90,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 LightDmStep(),
                 EncryptionStep(),
                 CharonStep(build_dir, full=args.full),
-                PicardStep(),
                 QtileStep(),
                 NotesStep(fetch_git=args.full),
                 VirtualBoxStep(),
