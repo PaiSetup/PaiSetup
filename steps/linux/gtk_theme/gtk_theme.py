@@ -29,16 +29,22 @@ class GtkThemeStep(Step):
            of GTK. We have to generate all of them. There's no need to regenerate them after wallpaper change.
     """
 
-    def __init__(self, *, regenerate_widget_theme, regenerate_icon_theme):
+    def __init__(self, *, root_build_dir, regenerate_widget_theme, regenerate_icon_theme):
         super().__init__("GtkTheme")
-        self.widget_theme_name = "PaiSetupWidgetTheme"
-        self.icon_theme_name = "PaiSetupIconTheme"
-        self._regenerate_widget_theme = regenerate_widget_theme
-        self._regenerate_icon_theme = regenerate_icon_theme
-        self._widget_theme_path = self._env.home() / ".local/share/themes" / self.widget_theme_name
-        self._icon_theme_path = self._env.home() / ".local/share/icons" / self.icon_theme_name
         self._current_step_dir = Path(__file__).parent
-        self._emblems = {}
+
+        # Widget theme
+        self._widget_theme_name = "PaiSetupWidgetTheme"
+        self._regenerate_widget_theme = regenerate_widget_theme
+        self._dst_widget_theme_path = self._env.home() / ".local/share/themes" / self._widget_theme_name
+
+        # Icon theme
+        self._icon_theme_name = "PaiSetupIconTheme"
+        self._regenerate_icon_theme = regenerate_icon_theme
+        self._src_icon_theme_path = root_build_dir / "gtk_icon_theme"
+        self._dst_icon_theme_path = self._env.home() / ".local/share/icons" / self._icon_theme_name
+
+        self._emblems = {}  # TODO move emblems to separate repo and download to root_build_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -56,32 +62,12 @@ class GtkThemeStep(Step):
         self._emblems[path] = icon_name
 
     def perform(self):
-        self._generate_widget_theme()
-        self._download_icon_theme()
-        self._generate_icon_theme()
         self._generate_downsized_emblems([64])
+        self._generate_widget_theme()
+        self._generate_icon_theme()
         self._assign_emblems()
         self._generate_gtk2_config()
         self._generate_gtk3_config()
-
-    def _generate_widget_theme(self):
-        if self._widget_theme_path.exists() and not self._regenerate_widget_theme:
-            self._logger.log(f"Widget theme {self._widget_theme_path} already present")
-            return
-        self._logger.log(f"Widget theme {self._widget_theme_path} generation")
-        run_command(str(self._current_step_dir / "generate_widget_theme.sh"), shell=True)
-
-    def _download_icon_theme(self):
-        self._logger.log("Downloading icon theme")
-        dst_dir = self._current_step_dir / "icon_theme"
-        ext.download_github_zip("PaiSetup", "GtkIconTheme", dst_dir, False)
-
-    def _generate_icon_theme(self):
-        if self._icon_theme_path.exists() and not self._regenerate_icon_theme:
-            self._logger.log(f"Icon theme {self._icon_theme_path} already present")
-            return
-        self._logger.log(f"Icon theme {self._icon_theme_path} generation")
-        run_command(str(self._current_step_dir / "generate_icon_theme.sh"), shell=True)
 
     def _generate_downsized_emblems(self, sizes_to_generate):
         original_size = 512
@@ -111,6 +97,27 @@ class GtkThemeStep(Step):
                 downsized_file_path = downsized_emblems_dir / original_file_path.name
                 run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
 
+    def _generate_widget_theme(self):
+        if self._dst_widget_theme_path.exists() and not self._regenerate_widget_theme:
+            self._logger.log(f"Widget theme already generated")
+            return
+
+        self._logger.log(f"Generating widget theme ({self._dst_widget_theme_path})")
+        command = str(self._current_step_dir / "generate_widget_theme.sh")
+        run_command(command, shell=True)
+
+    def _generate_icon_theme(self):
+        if self._dst_icon_theme_path.exists() and not self._regenerate_icon_theme:
+            self._logger.log(f"Icon theme already generated")
+            return
+
+        self._logger.log(f"Downloading icon theme ({self._src_icon_theme_path})")
+        ext.download_github_zip("PaiSetup", "GtkIconTheme", self._src_icon_theme_path, re_download=self._regenerate_icon_theme)
+
+        self._logger.log(f"Generating icon theme ({self._dst_icon_theme_path})")
+        command = str(self._current_step_dir / "generate_icon_theme.sh")
+        run_command(command, shell=True)
+
     def _assign_emblems(self):
         self._logger.log("Setting emblems to directories")
         with self._logger.indent():
@@ -133,8 +140,8 @@ class GtkThemeStep(Step):
         self._file_writer.write_lines(
             ".config/gtk-2.0/gtkrc",
             [
-                f'gtk-theme-name="{self.widget_theme_name}"',
-                f'gtk-icon-theme-name="{self.icon_theme_name}"',
+                f'gtk-theme-name="{self._widget_theme_name}"',
+                f'gtk-icon-theme-name="{self._icon_theme_name}"',
             ],
             file_type=FileType.ConfigFile,
         )
@@ -145,8 +152,8 @@ class GtkThemeStep(Step):
             ".config/gtk-3.0/settings.ini",
             [
                 "[Settings]",
-                f"gtk-theme-name={self.widget_theme_name}",
-                f"gtk-icon-theme-name={self.icon_theme_name}",
+                f"gtk-theme-name={self._widget_theme_name}",
+                f"gtk-icon-theme-name={self._icon_theme_name}",
             ],
             file_type=FileType.ConfigFile,
         )

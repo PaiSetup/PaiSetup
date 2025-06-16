@@ -42,6 +42,7 @@ class CheckMateStep(Step):
     def __init__(self, root_build_dir):
         super().__init__("CheckMate")
 
+        self._root_build_dir = root_build_dir
         self._current_step_dir = Path(__file__).parent
         self._tcp_port = 50198
         self._profiles = {}  # key=Profile, value=list of PeriodicCheck
@@ -92,7 +93,7 @@ class CheckMateStep(Step):
         self._setup_launch_script()
 
     def _install(self):
-        dst_dir = self._current_step_dir / "bin"
+        dst_dir = self._root_build_dir / "check_mate"
         ext.download_github_release(
             "DziubanMaciej",
             "CheckMate",

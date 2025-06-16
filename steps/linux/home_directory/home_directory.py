@@ -12,7 +12,7 @@ class HomeDirectoryStep(Step):
     def __init__(self, root_dir, has_multimedia_dir):
         super().__init__("HomeDirectory")
         self._root_dir = root_dir
-        self._homedir_whitelist = Path(__file__).parent / "homedir_whitelist"
+        self._homedir_whitelist = self._env.home() / ".config/PaiSetup/homedir_whitelist"
         self._homedir_whitelisted_files = []
 
         self._xdg_defaults = {

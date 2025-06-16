@@ -6,7 +6,7 @@ COLOR_GRAY_LIGHT="$(xrdb -get color2)"
 COLOR_FONT="$(xrdb -get color4)"
 
 # Prepare theme directory
-src_theme_dir="$PAI_SETUP_ROOT/steps/linux/gtk_theme/icon_theme"
+src_theme_dir="$PAI_SETUP_ROOT/build/gtk_icon_theme"
 dst_theme_dir="$HOME/.local/share/icons/PaiSetupIconTheme"
 rm -rf "$dst_theme_dir"
 mkdir -p "$dst_theme_dir"
