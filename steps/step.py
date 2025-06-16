@@ -1,10 +1,5 @@
 import enum
 
-from utils.services.env import EnvManager
-from utils.services.file_writer import FileWriter
-from utils.services.logger import Logger
-from utils.services.perf_analyzer import PerfAnalyzer
-
 
 class Step:
     """
@@ -16,30 +11,6 @@ class Step:
     def __init__(self, name):
         self.name = name
         self._enabled = True
-
-    @classmethod
-    def setup_external_services(cls, root_dir, logs_dir, enable_perf_analyzer, enable_logger):
-        """
-        A service is an object shared between all steps which provides some utility functions
-        while storing its state internally.
-        """
-        if hasattr(cls, "_file_writer"):
-            raise ValueError("setup_external_services may be called only once")
-        cls._env = EnvManager(root_dir)
-        cls._file_writer = FileWriter(cls._env.home())
-        cls._perf_analyzer = PerfAnalyzer(cls._env.get("PAI_SETUP_ROOT"), enable_perf_analyzer)
-        cls._logger = Logger(logs_dir, cls._perf_analyzer, enable_logger)
-
-    @classmethod
-    def finalize_services(cls):
-        """
-        Service objects may require to be finalized to perform some cleanup operations or print
-        their results.
-        """
-        cls._env.finalize()
-        cls._file_writer.finalize()
-        cls._logger.finalize()
-        cls._perf_analyzer.finalize()  # Has to be last
 
     def register_env_variables(self):
         """

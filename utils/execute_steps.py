@@ -75,6 +75,3 @@ def execute_steps(
                 Step._logger.log(f"Performing step: {step.name}", short_message=f"{step.name}Step")
                 with Step._logger.indent():
                     step.perform()
-
-    # Finalize services
-    Step.finalize_services()

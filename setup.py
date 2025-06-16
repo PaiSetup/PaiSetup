@@ -9,6 +9,7 @@ from utils.argparser_utils import EnumAction, PathAction
 from utils.dependency_dispatcher import DependencyResolutionMode
 from utils.execute_steps import execute_steps
 from utils.os_function import OperatingSystem
+from utils.services.services import Services
 from utils.setup_mode import SetupMode
 
 # Prepare common paths
@@ -36,22 +37,21 @@ args = arg_parser.parse_args()
 args.mode.save_last_mode(root_dir)
 # fmt: on
 
-# Setup services.
 enable_perf_analyzer = True
 enable_logger = not (args.list_steps or args.list_packages)
-Step.setup_external_services(root_dir, logs_dir, enable_perf_analyzer, enable_logger)
+with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as services:
+    services.assign_to(Step)
 
-# Setup steps.
-Step._logger.log("Initializing steps")
-steps = get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
+    Step._logger.log("Initializing steps")
+    steps = get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
 
-execute_steps(
-    steps,
-    args.step_whitelist,
-    args.step_blacklist,
-    args.dependency_resolution_mode,
-    args.allow_unsatisfied_push_dependencies,
-    args.list_steps,
-    args.list_packages,
-    args.pause,
-)
+    execute_steps(
+        steps,
+        args.step_whitelist,
+        args.step_blacklist,
+        args.dependency_resolution_mode,
+        args.allow_unsatisfied_push_dependencies,
+        args.list_steps,
+        args.list_packages,
+        args.pause,
+    )
