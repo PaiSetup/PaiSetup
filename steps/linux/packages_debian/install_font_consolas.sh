@@ -11,7 +11,7 @@ install_package() {
     tar -xjf consolas-fonts-tts.tar.bz2
 
     sudo install -d -m755 $font_dir
-    sudo install -D -m644 *.ttf $font_dir
+    sudo install -D -m644 ./*.ttf $font_dir
 }
 
 is_installed() {
