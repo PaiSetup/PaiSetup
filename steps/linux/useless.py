@@ -27,8 +27,4 @@ class UselessStep(Step):
         ]
         commands = ") & (".join(commands)
         commands = "(" + commands + ") &"
-        self.c = commands
         dependency_dispatcher.add_keybindings(KeyBinding("u").mod().shift().executeShell(commands).desc("Spawn useless shit on the screen"))
-
-    def perform(self):
-        print(self.c)

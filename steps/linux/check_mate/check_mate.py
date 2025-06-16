@@ -146,5 +146,4 @@ class CheckMateStep(Step):
 
             # Call the launch script in current environment, if it's the default one
             if profile.is_default_profile:
-                print(profile.launch_script_path)
                 run_command(f"{profile.launch_script_path} >/dev/null 2>&1", shell=True)
