@@ -84,7 +84,7 @@ class PackagesDebianStep(Step):
             all_installed = True
             for package in packages:
                 if not package.is_installed(installed_package_names):
-                    self._logger.push_warning(f"package {package} was not installed correctly")
+                    self._logger.push_warning(f"package {package.name} was not installed correctly")
                     all_installed = False
             if all_installed:
                 self._logger.log("OK")
