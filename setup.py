@@ -37,8 +37,8 @@ args = arg_parser.parse_args()
 args.mode.save_last_mode(root_dir)
 # fmt: on
 
-enable_perf_analyzer = True
 enable_logger = not (args.list_steps or args.list_packages)
+enable_perf_analyzer = not (args.list_steps or args.list_packages)
 with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as services:
     services.assign_to(Step)
 
