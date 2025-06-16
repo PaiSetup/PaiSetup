@@ -33,3 +33,6 @@ class Services:
         target._file_writer = self._file_writer
         target._perf_analyzer = self._perf_analyzer
         target._logger = self._logger
+
+    def get_logger(self):
+        return self._logger

@@ -105,7 +105,8 @@ class FakeDependencyDispatcher:
 
 
 class DependencyGraph:
-    def __init__(self, allow_unsatisfied_push_dependencies):
+    def __init__(self, allow_unsatisfied_push_dependencies, logger):
+        self._logger = logger
         self._allow_unsatisfied_push_dependencies = allow_unsatisfied_push_dependencies
         self._step_to_methods_push_deps = {}
         self._step_to_methods_pull_deps = {}
@@ -140,8 +141,7 @@ class DependencyGraph:
         for method_name in calls:
             if method_name not in proxies:
                 if is_push and self._allow_unsatisfied_push_dependencies:
-                    # TODO pass logger here...
-                    print(f"WARNING: ignoring dependency {method_name}, because no matching handler was found.")
+                    self._logger.push_warning(f"ignoring dependency {method_name}, because no matching handler was found.")
                     continue
                 else:
                     raise ValueError(f'A dependency on method "{method_name}" was not satisfied')
@@ -176,8 +176,9 @@ class DependencyDispatcher:
     To achieve this the step has to implement push_dependencies().
     """
 
-    def __init__(self, resolution_mode, allow_unsatisfied_push_dependencies):
+    def __init__(self, resolution_mode, allow_unsatisfied_push_dependencies, logger):
         self.is_fake = False
+        self._logger = logger
         self._resolution_mode = resolution_mode
         self._allow_unsatisfied_push_dependencies = allow_unsatisfied_push_dependencies
         self._current_dependency_type = None
@@ -201,7 +202,7 @@ class DependencyDispatcher:
 
     def resolve_dependencies(self, steps):
         # Inspect dependencies between steps and build a graph.
-        graph = DependencyGraph(self._allow_unsatisfied_push_dependencies)
+        graph = DependencyGraph(self._allow_unsatisfied_push_dependencies, self._logger)
         graph.inspect_steps(steps, self._proxies, self._resolution_mode)
 
         # Implicitly enable steps that were disabled, but were required by the graph.
@@ -254,11 +255,10 @@ class DependencyDispatcher:
             result = method(*args, **kwargs)
 
             # Validate return value
-            step = method.__self__
             if dependency_type == DependencyType.Pull and result is None:
-                step._logger.push_warning(f"Pull dependency handler {method.__qualname__} returned None. This is unexpected.")
+                self._logger.push_warning(f"Pull dependency handler {method.__qualname__} returned None. This is unexpected.")
             if dependency_type == DependencyType.Push and result is not None:
-                step._logger.push_warning(f"Push dependency handler {method.__qualname__} returned results. This is unexpected.")
+                self._logger.push_warning(f"Push dependency handler {method.__qualname__} returned results. This is unexpected.")
 
             # Pulled dependencies have only one handler and it returns data
             if dependency_type == DependencyType.Pull:

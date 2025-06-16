@@ -14,6 +14,7 @@ def find_step_by_name(steps, name):
 
 
 def execute_steps(
+    services,
     steps,
     step_whitelist,
     step_blacklist,
@@ -46,7 +47,7 @@ def execute_steps(
 
     # Handle cross-step dependencies
     Step._logger.log("Handling steps dependencies")
-    dependencies = DependencyDispatcher(dependency_resolution_mode, allow_unsatisfied_push_dependencies)
+    dependencies = DependencyDispatcher(dependency_resolution_mode, allow_unsatisfied_push_dependencies, services.get_logger())
     for step in steps:
         dependencies.register_handlers(step)
     dependencies.resolve_dependencies(steps)
