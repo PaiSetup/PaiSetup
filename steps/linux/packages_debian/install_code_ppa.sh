@@ -11,7 +11,10 @@ install_package() {
 }
 
 is_installed() {
-    test -f /etc/apt/sources.list.d/vscode.list
+    # We create .list file, but after installing code, the .list file is removed and .sources file is created.
+    # If we then try to install again, we will have both .list and .sources, and apt doesn't like this. Hence,
+    # we check if either one of them is present. For the most part it should be .sources.
+    test -f /etc/apt/sources.list.d/vscode.list || test -f /etc/apt/sources.list.d/vscode.sources
 }
 
 . $PAI_SETUP_ROOT/steps/linux/packages_debian/script_main.sh
