@@ -44,7 +44,8 @@ class GtkThemeStep(Step):
         self._src_icon_theme_path = root_build_dir / "gtk_icon_theme"
         self._dst_icon_theme_path = self._env.home() / ".local/share/icons" / self._icon_theme_name
 
-        self._emblems = {}  # TODO move emblems to separate repo and download to root_build_dir
+        self._emblems_path = root_build_dir / "gtk_emblems"
+        self._emblems = {}
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -62,40 +63,42 @@ class GtkThemeStep(Step):
         self._emblems[path] = icon_name
 
     def perform(self):
-        self._generate_downsized_emblems([64])
+        self._generate_emblems([64])
         self._generate_widget_theme()
         self._generate_icon_theme()
         self._assign_emblems()
         self._generate_gtk2_config()
         self._generate_gtk3_config()
 
-    def _generate_downsized_emblems(self, sizes_to_generate):
-        original_size = 512
-        original_emblems_dir = Path(__file__).parent / "emblems_512"
+    def _generate_emblems(self, sizes_to_generate):
+        if not self._emblems_path.exists() or self._regenerate_icon_theme:
+            self._logger.log(f"Downloading emblems ({self._emblems_path})")
+            ext.download_github_zip("PaiSetup", "LinuxEmblems", self._emblems_path, re_download=True)
 
-        for size_to_generate in sizes_to_generate:
-            scaling_factor = size_to_generate / original_size
-            downsized_emblems_dir = Path(__file__).parent / f"emblems_{size_to_generate}"
+        src_size = 512
+        src_dir = self._emblems_path / "512"
+
+        for dst_size in sizes_to_generate:
+            scaling_factor = dst_size / src_size
+            dst_dir = self._emblems_path / f"{dst_size}"
 
             # Skip if any problems encountered or files are already generated
             if scaling_factor >= 1:
-                self._logger.push_warning(f"could not generate emblems for size {size_to_generate} (bigger than original)")
+                self._logger.push_warning(f"could not generate emblems for size {dst_size} (bigger than original)")
                 continue
-            if scaling_factor * original_size != size_to_generate:
-                self._logger.push_warning(f"could not generate emblems for size {size_to_generate} (division not even)")
+            if scaling_factor * src_size != dst_size:
+                self._logger.push_warning(f"could not generate emblems for size {dst_size} (division not even)")
                 continue
-            if downsized_emblems_dir.exists():
-                if self._regenerate_icon_theme:
-                    shutil.rmtree(downsized_emblems_dir)
-                else:
-                    return
+            if dst_dir.exists() and self._regenerate_icon_theme:
+                shutil.rmtree(dst_dir)
 
-            # Perform downsizing
-            self._logger.log(f"Generating {size_to_generate}x{size_to_generate} emblems")
-            downsized_emblems_dir.mkdir()
-            for original_file_path in original_emblems_dir.glob("*"):
-                downsized_file_path = downsized_emblems_dir / original_file_path.name
-                run_command(f"convert -resize {scaling_factor*100}% {original_file_path} {downsized_file_path}")
+            # Perform downsizing if needed
+            if not dst_dir.exists():
+                self._logger.log(f"Generating {dst_size}x{dst_size} emblems")
+                dst_dir.mkdir()
+                for src_file_path in src_dir.glob("*"):
+                    dst_file_path = dst_dir / src_file_path.name
+                    run_command(f"convert -resize {scaling_factor*100}% {src_file_path} {dst_file_path}")
 
     def _generate_widget_theme(self):
         if self._dst_widget_theme_path.exists() and not self._regenerate_widget_theme:

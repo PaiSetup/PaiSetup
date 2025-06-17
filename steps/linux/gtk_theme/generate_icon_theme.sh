@@ -44,8 +44,8 @@ small_pattern="s/#F5A97F/$COLOR_THEME/g"
 
 # Simply symlink some directories or colorize icons in them (more expensive)
 mkdir -p "$dst_theme_dir/emblems"
-ln -s              "$PAI_SETUP_ROOT/steps/linux/gtk_theme/emblems_64" "$dst_theme_dir/emblems/64"
-ln -s              "$PAI_SETUP_ROOT/steps/linux/gtk_theme/emblems_512" "$dst_theme_dir/emblems/512"
+ln -s              "$PAI_SETUP_ROOT/build/gtk_emblems/64" "$dst_theme_dir/emblems/64"
+ln -s              "$PAI_SETUP_ROOT/build/gtk_emblems/512" "$dst_theme_dir/emblems/512"
 symlink_directory  "emblems/48"
 symlink_directory  "index.theme"
 symlink_directory  "emotes"
