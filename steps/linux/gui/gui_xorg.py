@@ -39,7 +39,6 @@ class GuiXorg(Step):
         self._window_managers.append(wm)
 
     def push_dependencies(self, dependency_dispatcher):
-        # TODO move all non-x11 stuff to different steps
         dependency_dispatcher.add_packages(
             "xorg-xrandr",
             "xorg-xinit",
@@ -47,26 +46,27 @@ class GuiXorg(Step):
             "xorg-server-xephyr",
             "xorg-xwininfo",
             "xorg-xev",
+            "xorg-setxkbmap",
             "xclip",
             "nitrogen",
             "picom",
             "libxft",
-            "xorg-setxkbmap",
             "yad",
-            "udiskie",
             "flameshot",
             "pacman-contrib",  # for checkupdates on arch
             "libnotify",
-            "bc",  # for float calculations in set_brightness.sh
             "xdotool",  # for getting Thunar's cwd
             "cava",
+            "autorandr",
         )
         if LinuxDistro.current().is_debian_like():
             dependency_dispatcher.add_packages("libpng-dev")  # needed for compiling color generator on Debian
 
         dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
         dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
+        dependency_dispatcher.register_periodic_check(
+            "autorandr -s latest --force >/dev/null", 120, delay_in_seconds=120, shell=True, client_name="Autorandr"
+        )
 
         # fmt: off
         dependency_dispatcher.add_keybindings(
@@ -127,11 +127,6 @@ class GuiXorg(Step):
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
-            "Automounting daemon",
-            ["udiskie &"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
             "Source xinitrc.d scripts",
             [
                 "if [ -d /etc/X11/xinit/xinitrc.d ] ; then",
@@ -152,6 +147,11 @@ class GuiXorg(Step):
                 "    sleep 0.1",
                 "done",
             ],
+        )
+        self._file_writer.write_section(
+            ".config/PaiSetup/xinitrc_base",
+            "Reload screen config",
+            ["(sleep 0.1 ; autorandr -l latest) &"],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",

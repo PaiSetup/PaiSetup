@@ -16,6 +16,7 @@ class ProgrammingCommonStep(Step):
             "ntfs-3g",
             "dos2unix",
             "nmap",
+            "bc",
             # Text editing
             "tmux",
             "nano",

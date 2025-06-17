@@ -36,10 +36,10 @@ from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
 from .raspberry_pi import RaspberryPiStep
 from .rpi_led.rpi_led import RpiLedStep
-from .screen_config_persistance import ScreenConfigPersistanceStep
 from .shell.shell import ShellStep
 from .systemd import SystemdStep
 from .thunar import ThunarStep
+from .udiskie_step import UdiskieStep
 from .ulauncher import UlauncherStep
 from .useless import UselessStep
 from .vagrant import VagrantStep
@@ -57,7 +57,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 FileAssociationsStep(),
                 AudioStep(),
                 ClionStep(),
-                ScreenConfigPersistanceStep(),
+                UdiskieStep(),
                 GpuStep(),
                 FirefoxStep(is_default_browser=True),
                 SystemdStep(),
@@ -103,6 +103,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ProgrammingCommonStep(),
                 ProgrammingPythonStep(),
                 GitStep(),
+                UdiskieStep(),
                 AudioStep(),
                 ThunarStep(),
                 CheckMateStep(build_dir),
