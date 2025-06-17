@@ -6,8 +6,7 @@ from steps.step import Step
 from utils import external_project as ext
 
 
-# TODO rename to FontStep
-class IconFontStep(Step):
+class FontStep(Step):
     def __init__(self, root_build_dir, full):
         super().__init__("IconFont")
         self._download_path = root_build_dir / "icon_font"

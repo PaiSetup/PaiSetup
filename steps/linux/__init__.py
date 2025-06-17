@@ -18,7 +18,7 @@ from .gui.awesome.awesome import AwesomeStep
 from .gui.gui_xorg import GuiXorg
 from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
-from .icon_font.icon_font import IconFontStep
+from .icon_font.icon_font import FontStep
 from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
 from .multimedia_software_step import MultimediaSoftwareStep
@@ -78,7 +78,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 NeovimStep(),
                 RpiLedStep(),
                 UselessStep(),
-                IconFontStep(root_build_dir=build_dir, full=args.full),
+                FontStep(root_build_dir=build_dir, full=args.full),
                 PlexStep(),
                 ProgrammingCppStep(graphics=True, systemc=True),
                 ProgrammingPythonStep(),
@@ -110,7 +110,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 MultimediaSoftwareStep(),
                 QBitTorrentStep(),
                 GuiXorg(full=args.full, root_build_dir=build_dir),
-                IconFontStep(root_build_dir=build_dir, full=args.full),
+                FontStep(root_build_dir=build_dir, full=args.full),
                 AlacrittyStep(),
                 GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
                 FirefoxStep(is_default_browser=True),
