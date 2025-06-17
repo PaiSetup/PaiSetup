@@ -75,8 +75,11 @@ class AwesomeStep(Step):
                     if keybinding.command == "$TERMINAL":
                         spawn_function = "utils.spawn_terminal_from_thunar"
                     else:
+                        precommand = ""
+                        if "useless shit" in keybinding.description:
+                            precommand = "utils.switch_to_empty_tag() utils.switch_to_fairv() "
                         spawn_function = "awful.spawn.with_shell" if keybinding.command_shell else "awful.spawn"
-                        spawn_function = f'function() {spawn_function}("{keybinding.command}") end'
+                        spawn_function = f'function() {precommand}{spawn_function}("{keybinding.command}") end'
 
                     modifiers = f"{{{', '.join(modifiers)}}}"
                     lines.append(

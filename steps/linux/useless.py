@@ -17,7 +17,6 @@ class UselessStep(Step):
         ]
         dependency_dispatcher.add_packages(packages)
 
-        # TODO detect this string in awesome config and add extra functionality. Switch to an empty tab and set layout to grid.
         commands = [
             "notify-send 'Displaying useless shit on screen'",
             "$TERMINAL_CMD cmatrix",

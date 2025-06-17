@@ -129,6 +129,23 @@ function spawn_terminal_from_thunar()
     end)
 end
 
+function switch_to_empty_tag()
+    local screen = awful.screen.focused()
+    for _, t in ipairs(screen.tags) do
+        if #t:clients() == 0 then
+            t:view_only()
+            return
+        end
+    end
+end
+
+function switch_to_fairv()
+    local tag = awful.screen.focused().selected_tag
+    if tag then
+        tag.layout = awful.layout.suit.fair
+    end
+end
+
 return {
     set_wallpaper = set_wallpaper,
     enable_viewed_tag_preserving = enable_viewed_tag_preserving,
@@ -136,4 +153,6 @@ return {
     get_per_tag_keys = get_per_tag_keys,
     set_layout_key = set_layout_key,
     spawn_terminal_from_thunar = spawn_terminal_from_thunar,
+    switch_to_empty_tag = switch_to_empty_tag,
+    switch_to_fairv = switch_to_fairv,
 }
