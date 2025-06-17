@@ -260,4 +260,9 @@ class HomeDirectoryStep(Step):
         # Generate a file with all whitelisted files (including those registered by other steps)
         self._logger.log("Generating homedir whitelist file")
         self._homedir_whitelisted_files = sorted(set(self._homedir_whitelisted_files))
-        self._file_writer.write_lines(self._homedir_whitelist, self._homedir_whitelisted_files, file_type=FileType.ConfigFileNoComments)
+        self._file_writer.write_lines(
+            self._homedir_whitelist,
+            self._homedir_whitelisted_files,
+            file_type=FileType.ConfigFileNoComments,
+            skip_recreate=True,  # If Checkmate checks the file while it's being recreate we might get a warning
+        )
