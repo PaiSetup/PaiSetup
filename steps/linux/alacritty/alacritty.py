@@ -26,7 +26,7 @@ class AlacrittyStep(Step):
             ],
         )
         self._file_writer.write_section(
-            ".profile",
+            ".config/PaiSetup/env.sh",
             "Command for calling default terminal",
             [
                 "export TERMINAL=alacritty",

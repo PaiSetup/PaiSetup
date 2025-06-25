@@ -1,5 +1,7 @@
 import enum
 
+from utils.services.file_writer import FileType, LinePlacement
+
 
 class Step:
     """
@@ -75,8 +77,46 @@ class Step:
 
 # This is a fake step only needed to add packages required by the PaiSetup framework itself.
 class FrameworkStep(Step):
-    def __init__(self):
+    def __init__(self, root_dir):
         super().__init__("Framework")
+        self._root_dir = root_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("flamegraph")
+
+    def register_env_variables(self):
+        self._env.set("PAI_SETUP_ROOT", self._root_dir, is_path=True)
+
+    def perform(self):
+        self._logger.get_log_dir().mkdir(parents=True, exist_ok=True)
+        self._setup_constant_envs()
+
+    def _setup_constant_envs(self):
+        self._file_writer.write_section(
+            ".config/PaiSetup/env.sh",
+            "Envs needed for PaiSetup framework",
+            [
+                f"export PAI_SETUP_ROOT={self._root_dir}",
+                f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
+            ],
+        )
+
+        self._file_writer.write_section(
+            ".profile",
+            "Load environment variables",
+            [". ~/.config/PaiSetup/env.sh"],
+            line_placement=LinePlacement.Env,
+        )
+        self._file_writer.write_section(
+            ".config/PaiSetup/xinitrc_base",
+            "Load environment variables",
+            [". ~/.config/PaiSetup/env.sh"],
+            line_placement=LinePlacement.Env,
+        )
+        self._file_writer.write_section(
+            ".bashrc",
+            "Load environment variables",
+            [". ~/.config/PaiSetup/env.sh"],
+            line_placement=LinePlacement.Env,
+            file_type=FileType.Bash,
+        )

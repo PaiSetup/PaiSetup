@@ -10,7 +10,7 @@ class EnvConflict(Exception):
 
 
 class EnvManager:
-    def __init__(self, root_dir):
+    def __init__(self):
         self._map = {}
 
         system = OperatingSystem.current()
@@ -23,7 +23,6 @@ class EnvManager:
 
         self.set("HOME", home, setenv=False, is_path=True)
         self.set("USER", user, setenv=False, is_path=False)
-        self.set("PAI_SETUP_ROOT", root_dir, is_path=True)
 
     def set(self, name, value, setenv=True, is_path=False, force=False):
         if not force and name in self._map:

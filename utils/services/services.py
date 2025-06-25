@@ -12,9 +12,9 @@ class Services:
         self._enable_logger = enable_logger
 
     def __enter__(self, *args, **kwargs):
-        self._env = EnvManager(self._root_dir)
+        self._env = EnvManager()
         self._file_writer = FileWriter(self._env.home())
-        self._perf_analyzer = PerfAnalyzer(self._env.get("PAI_SETUP_ROOT"), self._enable_perf_analyzer)
+        self._perf_analyzer = PerfAnalyzer(self._root_dir, self._enable_perf_analyzer)
         self._logger = Logger(self._logs_dir, self._perf_analyzer, self._enable_logger)
         return self
 

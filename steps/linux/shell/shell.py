@@ -29,7 +29,6 @@ class ShellStep(Step):
             ".profile",
             "Some constants",
             [
-                f"export PAI_SETUP_ROOT={self._root_dir}",
                 "export EDITOR=nvim",
                 "export FILE_MANAGER=thunar",
             ],
@@ -45,8 +44,8 @@ class ShellStep(Step):
             ],
         )
         self._file_writer.write_section(
-            ".profile",
-            "Move some dotfiles out of home dir",
+            ".config/PaiSetup/env.sh",
+            "less/wget/yarn paths",
             [
                 'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
                 'export WGETRC="$XDG_CONFIG_HOME/wgetrc"',
@@ -94,7 +93,7 @@ class ShellStep(Step):
             line_placement=LinePlacement.End,
         )
         self._file_writer.write_section(
-            ".profile",
+            ".config/PaiSetup/env.sh",
             "Path to inputrc file",
             [
                 "export INPUTRC=~/.config/inputrc",

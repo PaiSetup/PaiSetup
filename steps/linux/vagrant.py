@@ -10,8 +10,8 @@ class VagrantStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Override locations of vagrant home",
+            ".config/PaiSetup/env.sh",
+            "Vagrant paths",
             [
                 'export VAGRANT_HOME="$XDG_DATA_HOME"/vagrant',
                 'export VAGRANT_ALIAS_FILE="$XDG_DATA_HOME"/vagrant/aliases',

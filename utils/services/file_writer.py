@@ -133,6 +133,7 @@ class FileWriter:
             with open(file_desc.path, mode) as file:
                 file.writelines(lines)
         except PermissionError:
+            # TODO: This fails for bash scripts containing quotes or "$1". Write to a temp file and use 'install' instead.
             append_arg = "" if truncate else "--append"
             run_command(f'echo "{lines}" | sudo tee {append_arg} {file_desc.path} >/dev/null', shell=True)
 

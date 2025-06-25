@@ -136,8 +136,8 @@ class GtkThemeStep(Step):
     def _generate_gtk2_config(self):
         self._logger.log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
         self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Ensure gkt2 configs are in ~/.config",
+            ".config/PaiSetup/env.sh",
+            "GTK2 paths",
             ['export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc"'],
         )
         self._file_writer.write_lines(

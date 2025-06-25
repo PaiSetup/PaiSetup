@@ -27,7 +27,8 @@ class GuiXorg(Step):
     def perform(self):
         self._compile_color_generator()
         self._generate_picom_config()
-        self._generate_xinitrc_base()
+        self._generate_env_script()
+        self._generate_xinitrc_base_script()
         self._generate_xinitrc_per_wm()
         self._generate_xsession_per_wm()
         self._generate_xresources_per_wm()
@@ -118,7 +119,25 @@ class GuiXorg(Step):
             skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
         )
 
-    def _generate_xinitrc_base(self):
+    def _generate_env_script(self):
+        self._file_writer.write_section(
+            ".config/PaiSetup/env.sh",
+            "Button names for statusbar scripts",
+            [
+                "export BUTTON_ACTION=1",
+                "export BUTTON_TERMINATE=2",
+                "export BUTTON_INFO=3",
+                "export BUTTON_SCROLL_UP=4",
+                "export BUTTON_SCROLL_DOWN=5",
+            ],
+        )
+        self._file_writer.write_section(
+            ".config/PaiSetup/env.sh",
+            "X11 paths",
+            ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
+        )
+
+    def _generate_xinitrc_base_script(self):
         log_dir = self._logger.get_log_dir()
 
         self._logger.log(f"Generating xinitrc_base")
@@ -154,22 +173,6 @@ class GuiXorg(Step):
             ".config/PaiSetup/xinitrc_base",
             "Reload screen config",
             ["(sleep 0.1 ; autorandr -l latest) &"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Button names for statusbar scripts",
-            [
-                "export BUTTON_ACTION=1",
-                "export BUTTON_TERMINATE=2",
-                "export BUTTON_INFO=3",
-                "export BUTTON_SCROLL_UP=4",
-                "export BUTTON_SCROLL_DOWN=5",
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Override locations of X11 logs",
-            ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
         )
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
@@ -214,15 +217,15 @@ class GuiXorg(Step):
             # First create a script that simply calls our xinitrc. Unfortunately we cannot create
             # a reusable script and simply pass an argument in .desktop file, because some DMs
             # (namely LightDM) ignore .desktop files containing arguments to commands.
+            xdg_envs = [
+                "export XDG_SESSION_TYPE=x11",
+                f"export XDG_SESSION_DESKTOP={wm.xsession_name}",
+                f"export XDG_CURRENT_DESKTOP={wm.name}",
+                "",
+            ]
             script_name = self._file_writer.write_executable_script(
                 f"xsession_run_{wm.xsession_name}",
-                [
-                    "export XDG_SESSION_TYPE=x11",
-                    f"export XDG_SESSION_DESKTOP={wm.xsession_name}",
-                    f"export XDG_CURRENT_DESKTOP={wm.name}",
-                    "",
-                    f'exec "{xinitrc_path}"',
-                ],
+                xdg_envs + [f'exec "{xinitrc_path}"'],
             )
 
             # Then create a .desktop file. DMs should scan /usr/share/xsession and allow selecting
@@ -238,6 +241,12 @@ class GuiXorg(Step):
                     "Type=Application",
                 ],
                 file_type=FileType.ConfigFile,
+            )
+
+            # Lastly, create a convenience script to launch WM with startx from tty.
+            self._file_writer.write_executable_script(
+                f"startx_run_{wm.xsession_name}",
+                xdg_envs + [f'startx "{xinitrc_path}"'],
             )
 
     def _generate_xresources_per_wm(self):

@@ -56,11 +56,18 @@ class ProgrammingCppStep(Step):
         (self._env.home() / ".cache/gdb").mkdir(exist_ok=True, parents=True)
 
         self._file_writer.write_section(
-            ".profile",
-            "Debugger",
+            ".config/PaiSetup/env.sh",
+            "GDB paths",
             [
-                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null #Allow attaching debugger to a running process",
                 'export GDBHISTFILE="$HOME/.cache/gdb/history"',
                 "export CGDB_DIR=$HOME/.config/cgdb",
+            ],
+        )
+
+        self._file_writer.write_section(
+            ".profile",
+            "Allow attaching debugger to a running process",
+            [
+                "echo 0 | sudo tee '/proc/sys/kernel/yama/ptrace_scope' > /dev/null",
             ],
         )

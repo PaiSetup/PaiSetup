@@ -211,27 +211,12 @@ class HomeDirectoryStep(Step):
             ],
         )
 
-        # Source the script in xinitrc. Very early.
+        # Source the script in env.sh. It's called by .profile, .bashrc and xinitrc, so very early.
         self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
+            ".config/PaiSetup/env.sh",
             "Load XDG variables",
             [". ~/.config/user-dirs.dirs"],
             line_placement=LinePlacement.Env,
-        )
-
-        # Non-graphics sessions or wayland won't use xinitrc. Do it in .profile and .bashrc too.
-        self._file_writer.write_section(
-            ".profile",
-            "Load XDG variables",
-            [". ~/.config/user-dirs.dirs"],
-            line_placement=LinePlacement.Env,
-        )
-        self._file_writer.write_section(
-            ".bashrc",
-            "Load XDG variables",
-            [". ~/.config/user-dirs.dirs"],
-            line_placement=LinePlacement.Env,
-            file_type=FileType.Bash,
         )
 
         # Prevent resetting user-dirs.dirs file on startup.

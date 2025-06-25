@@ -28,16 +28,8 @@ class ProgrammingPythonStep(Step):
 
     def perform(self):
         self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Python path env needed for running PaiSetup scripts",
-            [
-                f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
-            ],
-            line_placement=LinePlacement.Env,
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Python config",
+            ".config/PaiSetup/env.sh",
+            "Python paths",
             [
                 "export PYTHON_HISTORY=$XDG_DATA_HOME/python_history",
                 'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',

@@ -34,7 +34,7 @@ class GpuStep(Step):
             self._file_writer.write_section(
                 ".config/PaiSetup/xinitrc_base",
                 "Enabling vsync on Nvidia",
-                ["PYTHONPATH=$PAI_SETUP_ROOT $PAI_SETUP_ROOT/steps/linux/gpu/nvidia_enable_vsync.py"],
+                ["$PAI_SETUP_ROOT/steps/linux/gpu/nvidia_enable_vsync.py"],
             )
 
     def push_dependencies(self, dependency_dispatcher):

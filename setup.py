@@ -46,6 +46,7 @@ with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as servic
     steps = get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
 
     execute_steps(
+        root_dir,
         services,
         steps,
         args.step_whitelist,
