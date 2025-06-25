@@ -119,6 +119,8 @@ class GuiXorg(Step):
         )
 
     def _generate_xinitrc_base(self):
+        log_dir = self._logger.get_log_dir()
+
         self._logger.log(f"Generating xinitrc_base")
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
@@ -142,7 +144,7 @@ class GuiXorg(Step):
             "Set wallpaper",
             [
                 "rm ~/.config/PaiSetup/wallpaper",
-                'PYTHONPATH="$PAI_SETUP_ROOT" $PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py & >/dev/null',
+                'PYTHONPATH="$PAI_SETUP_ROOT" $PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py & >{log_dir}/select_wallpaper.log 2>&1',
                 "until [ -f ~/.config/PaiSetup/wallpaper ]; do",
                 "    sleep 0.1",
                 "done",

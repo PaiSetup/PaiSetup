@@ -97,6 +97,9 @@ class Logger:
         with open(log_file_path, "w") as log_file:
             log_file.write(report_content)
 
+    def get_log_dir(self):
+        return self._log_dir
+
     def finalize(self):
         self.log("END")
         print()
