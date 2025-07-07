@@ -18,6 +18,8 @@ class NushStep(Step):
         )
 
     def push_dependencies(self, dependency_dispatcher):
+        terminal_cmd = self._env.get("TERMINAL_CMD")
+
         dependency_dispatcher.add_packages(
             "python-music-tag",  # Needed by music_tagger.py
             "python-pytz",  # Needed by size_fixer.py
@@ -30,7 +32,7 @@ class NushStep(Step):
         dependency_dispatcher.add_thunar_custom_action(
             {
                 "name": "ftag: tag a file",
-                "command": f'st -e sh -c "{ftag_path} --file %F"',
+                "command": f'{terminal_cmd} sh -c "{ftag_path} --file %F"',
                 "image-files": None,
                 "video-files": None,
             }
@@ -38,21 +40,21 @@ class NushStep(Step):
         dependency_dispatcher.add_thunar_custom_action(
             {
                 "name": "ftag: generate symlinks",
-                "command": f'st -e sh -c "{ftag_path} --generate"',
+                "command": f'{terminal_cmd} sh -c "{ftag_path} --generate"',
                 "directories": None,
             }
         )
         dependency_dispatcher.add_thunar_custom_action(
             {
                 "name": "ftag: tag all",
-                "command": f'st -e sh -c "{ftag_path} --tag_all"',
+                "command": f'{terminal_cmd} sh -c "{ftag_path} --tag_all"',
                 "directories": None,
             }
         )
         dependency_dispatcher.add_thunar_custom_action(
             {
                 "name": "ftag: create query",
-                "command": f'st -e sh -c "{ftag_path} --create_query"',
+                "command": f'{terminal_cmd} sh -c "{ftag_path} --create_query"',
                 "directories": None,
             }
         )
