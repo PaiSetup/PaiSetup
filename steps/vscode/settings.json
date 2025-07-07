@@ -27,5 +27,6 @@
     "editor.minimap.renderCharacters": false,
     "window.zoomLevel": 0.6,
     "git.openRepositoryInParentFolders": "never",
-    "security.workspace.trust.untrustedFiles": "open"
+    "security.workspace.trust.untrustedFiles": "open",
+    "go.formatTool": "goimports"
 }
