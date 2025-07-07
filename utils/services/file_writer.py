@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 from enum import Enum
 from pathlib import Path
@@ -128,14 +129,30 @@ class FileWriter:
         file_desc.lines = {placement: [] for placement in LinePlacement}
 
         # Write lines with syscalls if we have permissions. Otherwise, use sudo subprocess.
+        mode = "w" if truncate else "a"
         try:
-            mode = "w" if truncate else "a"
             with open(file_desc.path, mode) as file:
                 file.writelines(lines)
         except PermissionError:
-            # TODO: This fails for bash scripts containing quotes or "$1". Write to a temp file and use 'install' instead.
-            append_arg = "" if truncate else "--append"
-            run_command(f'echo "{lines}" | sudo tee {append_arg} {file_desc.path} >/dev/null', shell=True)
+            if not OperatingSystem.current().is_linux():
+                # Below algorithm contains "sudo cp", which is specific to Linux
+                raise NotImplementedError("No eleveation routing for non-Linux system")
+
+            with tempfile.NamedTemporaryFile(delete=True, delete_on_close=False) as tmp:
+                tmp.close()
+
+                # If we're appending, we have to copy the dst file to our tmp location
+                # This copies only the contents of the file, not the permissions.
+                if not truncate:
+                    shutil.copyfile(file_desc.path, tmp.name)
+
+                # Write lins to the tmp file
+                with open(tmp.name, mode) as file:
+                    file.writelines(lines)
+
+                # Copy tmp file back to dst file. Normally we could use shutil.copyfile, but
+                # we have to elevate to root, hence the sudo subprocess.
+                run_command(f"sudo cp --no-preserve=mode {tmp.name} {file_desc.path}")
 
     def finalize(self):
         for file_desc in self._files.values():
