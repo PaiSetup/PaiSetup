@@ -31,6 +31,7 @@ from .plex.plex import PlexStep
 from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .programming_gamedev import ProgrammingGamedevStep
+from .programming_go import ProgrammingGoStep
 from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
@@ -85,6 +86,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ProgrammingRustStep(),
                 ProgrammingCommonStep(),
                 ProgrammingGamedevStep(),
+                ProgrammingGoStep(),
                 SshStep(secret_dir, full=args.full),
                 CheckMateStep(build_dir),
                 LightDmStep(),
