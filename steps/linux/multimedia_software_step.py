@@ -12,6 +12,7 @@ class MultimediaSoftwareStep(Step):
         dependency_dispatcher.add_packages(
             # Video
             "vlc",
+            "vlc-plugin-ffmpeg",
             "mpv",
             "obs-studio",  # Recording
             "losslesscut-bin",  # cutting video

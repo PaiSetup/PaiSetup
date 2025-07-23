@@ -57,5 +57,9 @@
     {
         "key": "ctrl+v",
         "command": "-editor.action.clipboardPasteAction"
+    },
+    {
+        "key": "alt+f5",
+        "command": "go.test.package"
     }
 ]

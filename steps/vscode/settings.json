@@ -28,5 +28,6 @@
     "window.zoomLevel": 0.6,
     "git.openRepositoryInParentFolders": "never",
     "security.workspace.trust.untrustedFiles": "open",
-    "go.formatTool": "goimports"
+    "go.formatTool": "goimports",
+    "go.coverOnTestPackage": false
 }
