@@ -16,6 +16,8 @@ class PackagesStep(Step):
         self._assumed_packages = []
 
     def perform(self):
+        if not self._enable_installation:
+            return
         self._install_yay()
         self._set_yay_permissions()
         self._install_packages()
@@ -46,9 +48,6 @@ class PackagesStep(Step):
         run_command("sh -c 'sudo chgrp $USER /tmp/yay'")
 
     def _install_packages(self):
-        if not self._enable_installation:
-            return
-
         with self._logger.indent(f"Installing packages: {self._packages}"):
             missing_packages = self._get_missing_packages(self._packages)
             if not missing_packages:
