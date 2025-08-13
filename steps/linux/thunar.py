@@ -10,32 +10,7 @@ class ThunarStep(Step):
         super().__init__("Thunar")
         self.disable_suspending_command = ""
         self.actions = []
-        self._bookmarks = [
-            (self._env.home() / "downloads", "Downloads"),
-            (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
-        ]
-
-        self.add_thunar_custom_action(
-            {
-                "name": "Open terminal here",
-                "command": "st",
-                "directories": None,
-            }
-        )
-        self.add_thunar_custom_action(
-            {
-                "name": "Set wallpaper and generate colors",
-                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
-                "image-files": None,
-            }
-        )
-        self.add_thunar_custom_action(
-            {
-                "name": "Copy contents to clipboard",
-                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
-                "text-files": None,
-            }
-        )
+        self._bookmarks = []
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -56,10 +31,39 @@ class ThunarStep(Step):
         self._bookmarks += directories
 
     def perform(self):
+        self._add_default_custom_actions()
         self._setup_bookmarks()
         self._generate_uca_xml()
 
+    def _add_default_custom_actions(self):
+        self.add_thunar_custom_action(
+            {
+                "name": "Open terminal here",
+                "command": f"{self._env.get("TERMINAL")}",
+                "directories": None,
+            }
+        )
+        self.add_thunar_custom_action(
+            {
+                "name": "Set wallpaper and generate colors",
+                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
+                "image-files": None,
+            }
+        )
+        self.add_thunar_custom_action(
+            {
+                "name": "Copy contents to clipboard",
+                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
+                "text-files": None,
+            }
+        )
+
     def _setup_bookmarks(self):
+        self._bookmarks += [
+            (self._env.home() / "downloads", "Downloads"),
+            (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
+        ]
+
         file_path = self._env.home() / ".config/gtk-3.0/bookmarks"
         self._logger.log(f"Generating bookmarks config - {file_path}")
 

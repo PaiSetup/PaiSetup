@@ -8,6 +8,10 @@ class AlacrittyStep(Step):
     def __init__(self):
         super().__init__("Alacritty")
 
+    def register_env_variables(self):
+        self._env.set("TERMINAL", "alacritty")
+        self._env.set("TERMINAL_CMD", "alacritty -e")
+
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("alacritty")
 
