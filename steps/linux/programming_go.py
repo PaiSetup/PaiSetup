@@ -7,7 +7,10 @@ class ProgrammingGoStep(Step):
         super().__init__("ProgrammingGo")
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("go")
+        dependency_dispatcher.add_packages(
+            "go",
+            "delve",
+        )
 
     def perform(self):
         self._file_writer.write_section(

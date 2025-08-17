@@ -15,7 +15,7 @@ class FontStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "ttf-joypixels",
-            "ttf-font-awesome",
+            "otf-font-awesome",
             "consolas-font",
         )
 

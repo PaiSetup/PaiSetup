@@ -151,7 +151,7 @@ class PackagesDebianStep(Step):
                 return DebianPackageScript("install_megasync.sh")
             case "consolas-font":
                 return DebianPackageScript("install_font_consolas.sh")
-            case "ttf-font-awesome":
+            case "otf-font-awesome":
                 return DebianPackageScript("install_font_awesome.sh")
             case "ttf-joypixels":
                 return DebianPackageScript("install_font_joypixels.sh")

@@ -18,7 +18,6 @@ from .gui.gui_xorg import GuiXorg
 from .gui.qtile.qtile import QtileStep
 from .home_directory.home_directory import HomeDirectoryStep
 from .icon_font.icon_font import FontStep
-from .java import JavaStep
 from .lightdm.lightdm import LightDmStep
 from .multimedia_software_step import MultimediaSoftwareStep
 from .neovim.neovim import NeovimStep
@@ -31,6 +30,7 @@ from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .programming_gamedev import ProgrammingGamedevStep
 from .programming_go import ProgrammingGoStep
+from .programming_java import ProgrammingJavaStep
 from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
@@ -65,7 +65,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ThunarStep(),
                 HomeDirectoryStep(root_dir, True),
                 BluetoothStep(),
-                JavaStep(),
+                ProgrammingJavaStep(include_android=True),
                 QBitTorrentStep(),
                 GitStep(),
                 UlauncherStep(),
