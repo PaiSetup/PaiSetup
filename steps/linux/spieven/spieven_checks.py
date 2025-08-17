@@ -19,8 +19,11 @@ class SpievenMessage:
 
     @staticmethod
     def gui_log_summary(messages):
-        lines = "\n".join((msg.short_description or msg.title for msg in messages))
-        run_command(f'notify-send "⚠️ Spieven warnings" "{lines}"')
+        if messages:
+            lines = "\n".join((msg.short_description or msg.title for msg in messages))
+            run_command(f'notify-send "⚠️ Spieven warnings" "{lines}"')
+        else:
+            run_command(f'notify-send "✅ No warnings"')
 
     @staticmethod
     def gui_log_detailed(messages):
@@ -158,8 +161,6 @@ if not errors:
     errors = validate_tasks(spieven_state, task_names)
 if not errors:
     icon = ""
-    errors.append(SpievenMessage("✅ No warnings"))
-
 
 script_mode = ScriptMode.get()
 match script_mode:
