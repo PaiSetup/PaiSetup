@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.command import run_command
 from utils.services.file_writer import FileType
@@ -13,7 +14,6 @@ class UlauncherStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("ulauncher")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/]+ulauncher", "ulauncher")
 
     def perform(self):
         self._logger.log("Configuring ulauncher")

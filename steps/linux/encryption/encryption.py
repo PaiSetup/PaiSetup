@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType
@@ -21,4 +22,4 @@ class EncryptionStep(Step):
         )
 
         check_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 5, client_name="Veracrypt", multi_line=True)
+        dependency_dispatcher.schedule_spieven_periodic_check("Veracrypt", check_script, display_type=SpievenDisplayType.Headless, delay_ms=5_000)

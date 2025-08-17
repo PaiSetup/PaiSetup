@@ -2,6 +2,7 @@ import itertools
 import os
 from pathlib import Path
 
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
@@ -50,10 +51,17 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.set_folder_icon(self._root_dir, "pai_setup")
 
         check_script = Path(__file__).parent / "setup_mount_dir.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 3, client_name="SetupMountDir")
+        dependency_dispatcher.schedule_spieven_periodic_action(
+            "SetupMountDir", check_script, display_type=SpievenDisplayType.Headless, delay_ms=3_000
+        )
 
         check_script = Path(__file__).parent / "verify_homedir.sh"
-        dependency_dispatcher.register_periodic_check(check_script, 45, multi_line=True, client_name="VerifyHomedir")
+        dependency_dispatcher.schedule_spieven_periodic_check(
+            "VerifyHomedir",
+            check_script,
+            display_type=SpievenDisplayType.Headless,
+            delay_ms=45_000,
+        )
 
         multimedia_dir = self._get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
         if multimedia_dir is not None:
@@ -249,5 +257,5 @@ class HomeDirectoryStep(Step):
             self._homedir_whitelist,
             self._homedir_whitelisted_files,
             file_type=FileType.ConfigFileNoComments,
-            skip_recreate=True,  # If Checkmate checks the file while it's being recreate we might get a warning
+            skip_recreate=True,  # If our periodic checks look at this file while it's being recreate we might get a warning
         )

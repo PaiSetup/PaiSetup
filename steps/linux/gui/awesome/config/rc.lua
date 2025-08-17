@@ -149,7 +149,7 @@ local plex_widget = create_script_widget(pai_setup_steps .. "plex/status_bar_scr
 local audio_switch_widget = create_script_widget("audio_switch.sh", {button_info, button_action, button_scroll_up, button_scroll_down}, 10)
 local trash_widget = create_script_widget("trash.sh", {button_info, button_terminate, button_action}, 60)
 local tray_widget = create_tray_widget()
-local warnings_widget = create_script_widget("checks.py", {button_action, button_terminate, button_info}, 4, nil, "refresh:warnings")
+local warnings_widget = create_script_widget(pai_setup_steps .. "spieven/spieven_checks.py", {button_action, button_terminate, button_info}, 4, "XDD", "refresh:warnings")
 local shutdown_popup_widget = create_callback_widget(function () toggle_shutdown_popup(pai_setup, terminal) end, "")
 audio_switch_widget:add_widget_to_update(volume_widget)
 

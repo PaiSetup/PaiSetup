@@ -8,3 +8,4 @@ for mapped_drive in $(find /dev/mapper/ -mindepth 1 -not -path /dev/mapper/contr
     fi
     echo "$mapped_drive"
 done
+exit $header_printed

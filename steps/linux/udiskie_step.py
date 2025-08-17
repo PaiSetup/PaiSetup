@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.command import *
 from utils.services.file_writer import FileType
@@ -12,11 +13,4 @@ class UdiskieStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("udiskie")
-        dependency_dispatcher.register_periodic_daemon_check("[a-zA-Z/]+python[23]? [a-zA-Z/_]+udiskie", "udiskie")
-
-    def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Automounting daemon",
-            ["udiskie &"],
-        )
+        dependency_dispatcher.schedule_spieven_daemon("Udiskie", "udiskie", display_type=SpievenDisplayType.Headless)

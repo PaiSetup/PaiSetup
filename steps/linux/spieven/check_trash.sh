@@ -8,4 +8,5 @@ threshold=$((5*1024*1024*1024))
 
 if [ "$size" -ge "$threshold" ]; then
     echo "$trash_dir contains $(numfmt --to=iec-i --suffix=B "$size")"
+    exit 1
 fi

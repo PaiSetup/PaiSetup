@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import utils.external_project as ext
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
@@ -63,11 +64,11 @@ class GuiXorg(Step):
         if LinuxDistro.current().is_debian_like():
             dependency_dispatcher.add_packages("libpng-dev")  # needed for compiling color generator on Debian
 
-        dependency_dispatcher.register_periodic_daemon_check("flameshot", "flameshot")
-        dependency_dispatcher.register_periodic_daemon_check("picom", "picom")
-        dependency_dispatcher.register_periodic_check(
-            "autorandr -s latest --force >/dev/null", 120, delay_in_seconds=120, shell=True, client_name="Autorandr"
-        )
+        # fmt: off
+        dependency_dispatcher.schedule_spieven_daemon("flameshot", "flameshot", display_type=SpievenDisplayType.Xorg)
+        dependency_dispatcher.schedule_spieven_daemon("picom", "picom", display_type=SpievenDisplayType.Xorg)
+        dependency_dispatcher.schedule_spieven_periodic_action("Autorandr", "autorandr -s latest --force", display_type=SpievenDisplayType.Xorg, delay_ms=60_000)
+        # fmt: on
 
         # fmt: off
         dependency_dispatcher.add_keybindings(
@@ -183,16 +184,6 @@ class GuiXorg(Step):
             ".config/PaiSetup/xinitrc_base",
             "Set screen save timeout duration to 2 hours",
             ["xset s 7200 &"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Screenshot daemon",
-            ["flameshot &"],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Run picom",
-            ["picom -b &"],
         )
 
     def _generate_xinitrc_per_wm(self):

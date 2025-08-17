@@ -5,7 +5,6 @@ from .alacritty.alacritty import AlacrittyStep
 from .audio import AudioStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
-from .check_mate.check_mate import CheckMateStep
 from .clion.clion import ClionStep
 from .dush import DushStep
 from .encryption.encryption import EncryptionStep
@@ -38,6 +37,7 @@ from .qbittorrent import QBitTorrentStep
 from .raspberry_pi import RaspberryPiStep
 from .rpi_led.rpi_led import RpiLedStep
 from .shell.shell import ShellStep
+from .spieven.spieven import SpievenStep
 from .systemd import SystemdStep
 from .thunar import ThunarStep
 from .udiskie_step import UdiskieStep
@@ -88,7 +88,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ProgrammingGamedevStep(),
                 ProgrammingGoStep(),
                 SshStep(secret_dir, full=args.full),
-                CheckMateStep(build_dir),
+                SpievenStep(build_dir),
                 LightDmStep(),
                 EncryptionStep(),
                 CharonStep(build_dir, full=args.full),
@@ -108,7 +108,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 UdiskieStep(),
                 AudioStep(),
                 ThunarStep(),
-                CheckMateStep(build_dir),
+                SpievenStep(build_dir),
                 ShellStep(root_dir),
                 MultimediaSoftwareStep(),
                 QBitTorrentStep(),

@@ -159,11 +159,14 @@ def download_github_release(user, repo, dst_dir, release_version, file_name, re_
             return
     elif dst_dir.exists():
         raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
+    dst_dir.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.NamedTemporaryFile(suffix=".zip") as zipfile:
-        zipfile.close()  # This prevents "File is already used by another process" error
+    address = f"https://github.com/{user}/{repo}/releases/download/{release_version}/{file_name}"
+    if Path(file_name).suffix == ".zip":
+        with tempfile.NamedTemporaryFile(suffix=".zip") as zipfile:
+            zipfile.close()  # This prevents "File is already used by another process" error
 
-        address = f"https://github.com/{user}/{repo}/releases/download/{release_version}/{file_name}"
-        wget(address, zipfile.name)
-
-        unzip(zipfile.name, dst_dir)
+            wget(address, zipfile.name)
+            unzip(zipfile.name, dst_dir)
+    else:
+        wget(address, dst_dir / file_name)

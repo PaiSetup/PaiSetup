@@ -29,9 +29,11 @@ perform_arch() {
         if [ -n "$packages" ]; then
             echo "$(echo "$packages" | wc -l) packages do not match with PaiSetup"
             echo "$packages"
+            return 1
         fi
     else
         echo "Could not gather PaiSetup packages"
+        return 1
     fi
 }
 
@@ -39,7 +41,8 @@ perform_arch() {
 
 case $($PAI_SETUP_ROOT/steps/linux/gui/scripts/get_distro.sh) in
     arch)
-        perform_arch ;;
+        perform_arch
+        exit $?;;
     debian)
         ;; # This cannot be easily done in Debian... Best bet would be to dump installed packages right in presetup script and diff against that.
     *)
