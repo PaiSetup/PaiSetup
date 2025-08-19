@@ -1,39 +1,12 @@
 #!/bin/bash
 
-get_monitors() (
-    # Blindly copy pasted from https://stackoverflow.com/questions/10500521/linux-retrieve-monitor-names
-    while read -r output hex conn; do
-        [[ -z "$conn" ]] && conn=${output%%-*}
-        echo "$output $conn   $(xxd -r -p <<< "$hex")"
-    done < <(xrandr --prop | awk '
-        !/^[ \t]/ {
-            if (output && hex) print output, hex, conn
-            output=$1
-            hex=""
-        }
-        /ConnectorType:/ {conn=$2}
-        /[:.]/ && h {
-            sub(/.*000000fc00/, "", hex)
-            hex = substr(hex, 0, 26) "0a"
-            sub(/0a.*/, "", hex)
-            h=0
-        }
-        h {sub(/[ \t]+/, ""); hex = hex $0}
-        /EDID.*:/ {h=1}
-        END {if (output && hex) print output, hex, conn}
-        ' | sort
-    )
-)
-
 cycle_sinks() {
     cycle_forwards="$1"
 
     # My LG 27gn800 doesn't have a speaker, but is still reported as a sink, so we should skip it. The problem is pamixer
-    # reports the GPU as the sink and not the monitor, so we cannot easily check it on a per-monitor basis. Hence, we
-    # check if LG monitor is connected at all and then skip all HDMI sinks. This will cause problems with multimonitor setup,
-    # but I have only one monitor, so I don't care.
-    get_monitors | grep -qv "LG ULTRAGEAR"
-    skip_hdmi=$?
+    # reports the GPU as the sink and not the monitor, so we cannot easily check it on a per-sink basis. Hence, we just
+    # ignore all HDMI sinks.
+    skip_hdmi=1
 
     # Pulseaudio assigns IDs to sinks. They may be uncontiguous. Find which one of them is currently in use and get its index.
     # For example if we have sinks 13,19,100,200 and sink 100 is in use, then sink_index=2.
@@ -96,19 +69,19 @@ if [ "$BUTTON" = "$BUTTON_SCROLL_DOWN" ]; then
 fi
 
 # Print icon
-glyph_icon_headphones_wire=""      # U+F8E2 - PaiIconGlyps
+# glyph_icon_headphones_wire=""    # U+F8E2 - PaiIconGlyps
 glyph_icon_headphones_bluetooth="" # U+F8E0 - PaiIconGlyphs
-glyph_icon_headphones_wireless=""  # U+F8E3 - PaiIconGlyps
+glyph_icon_headphones_wireless=""  # U+F8E3 - PaiIconGlyphs
 glyph_icon_headset=""              # U+F590 - FontAwesome
 glyph_icon_monitor_speakers=""     # U+F108 - FontAwesome
 glyph_icon_speakers=""             # U+F8DE - PaiIconGlyphs
 icon=""
-(pamixer --get-default-sink | grep -q   "USB")                                 && icon="$glyph_icon_headphones_wire"
+(pamixer --get-default-sink | grep -q   "USB")                                 && icon="$glyph_icon_speakers"
 (pamixer --get-default-sink | grep -qE  "bluez")                               && icon="$glyph_icon_headphones_bluetooth"
 (pamixer --get-default-sink | grep -qiE "wireless")                            && icon="$glyph_icon_headphones_wireless"
 (pamixer --get-default-sink | grep -qiE "headset")                             && icon="$glyph_icon_headset"
 (pamixer --get-default-sink | grep -qE "HDMI|VGA")                             && icon=" $glyph_icon_monitor_speakers "
 (pamixer --get-default-sink | grep -qE "Sound Blaster Play! 3 Analog Stereo")  && icon="$glyph_icon_speakers"
-#icon="$glyph_icon_speakers"
+(pamixer --get-default-sink | grep -qE "Razer BlackShark")                     && icon="$glyph_icon_headset"
 #icon="$glyph_icon_headphones_wire $glyph_icon_headphones_bluetooth $glyph_icon_headphones_wireless $glyph_icon_headset $glyph_icon_monitor_speakers $glyph_icon_speakers"
 printf "$icon"
