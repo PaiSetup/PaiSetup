@@ -26,7 +26,7 @@ class DushStep(DushStepBase):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
-            "shellcheck",  # needed for sc/scc scripts
+            "shellcheck-bin",  # needed for sc/scc scripts
         )
         dependency_dispatcher.set_folder_icon(self._dush_root_dir, "scripts")
         dependency_dispatcher.register_homedir_file(self._dush_root_dir)
