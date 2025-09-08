@@ -88,6 +88,8 @@ def query_task_names():
 
 def query_spieven_state(task_names):
     task_names_str = ",".join(task_names)
+    # TODO sometimes Spieven hangs with multi-xorg VT switching. Install a debug version in the system and debug why
+    # TODO add --no-auto-run parameter and pass it here
     command = f"{spieven_bin} list --tags PaiSetup --names {task_names_str} --unique-names --include-deactivated --json"
     output = None
     errors = []
