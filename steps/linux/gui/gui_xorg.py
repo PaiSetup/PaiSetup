@@ -29,6 +29,7 @@ class GuiXorg(Step):
         self._compile_color_generator()
         self._generate_picom_config()
         self._generate_env_script()
+        self._generate_xserverrc_script()
         self._generate_xinitrc_base_script()
         self._generate_xinitrc_per_wm()
         self._generate_xsession_per_wm()
@@ -90,6 +91,7 @@ class GuiXorg(Step):
         dependency_dispatcher.register_homedir_file(".Xauthority")
         dependency_dispatcher.register_homedir_file(".xsession-errors")
         dependency_dispatcher.register_homedir_file(".xsession-errors.old")
+        dependency_dispatcher.register_homedir_file(".xserverrc")
 
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):
@@ -136,6 +138,19 @@ class GuiXorg(Step):
             ".config/PaiSetup/env.sh",
             "X11 paths",
             ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
+        )
+
+    def _generate_xserverrc_script(self):
+        """
+        This file is called by startx. It is not used by display managers like LightDM.
+        We need to add -seat seat0 argument which is missing in default form of this file
+        in /etc/X11/xinit/xserverrc. This argument is needed for VT switching on NVIDIA.
+        Without it we get a blank screen whenever we switch to a different VT and want to
+        go back to the one running Xorg.
+        """
+        self._file_writer.write_lines(
+            ".xserverrc",
+            ['exec /usr/bin/X -nolisten tcp -seat seat0 "$@"'],
         )
 
     def _generate_xinitrc_base_script(self):
