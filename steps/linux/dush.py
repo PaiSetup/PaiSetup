@@ -15,6 +15,7 @@ class DushStep(DushStepBase):
                 f'export DUSH_PATH="{self._dush_root_dir}"',
                 f'export DUSH_WORKSPACE="$HOME/work"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
+                ". $DUSH_PATH/framework/frontend.bash",
                 ". $DUSH_PATH/projects/bashies/main.sh",
                 ". $DUSH_PATH/projects/yuview/main.sh",
             ],
