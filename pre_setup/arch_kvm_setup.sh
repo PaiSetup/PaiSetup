@@ -44,7 +44,7 @@ if ! [ -d "edid-generator" ]; then
     git clone https://github.com/akatrevorjay/edid-generator.git >$logfile 2>&1 || failure "Cannot download edid-generator"
 fi
 cd edid-generator    || failure "cd edid-generator"
-echo "Modeline "2K_60Hz"  312.25  2560 2752 3024 3488  1440 1443 1448 1493 -hsync +vsync" | ./modeline2edid >$logfile 2>&1 - || failure "edid-generator modeline2edid failed"
+echo "Modeline \"2K_60Hz\"  312.25  2560 2752 3024 3488  1440 1443 1448 1493 -hsync +vsync" | ./modeline2edid >$logfile 2>&1 - || failure "edid-generator modeline2edid failed"
 [ -f "2K_60Hz.S" ]   || failure "generated EDID .S file was not found"
 make >$logfile 2>&1  || failure "edid-generator make failed"
 [ -f "2K_60Hz.bin" ] || failure "generated EDID .bin file was not found"
