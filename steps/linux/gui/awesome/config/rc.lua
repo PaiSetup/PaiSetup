@@ -218,8 +218,6 @@ beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width
 
 ----------------------------------------------------------------------------------- Key/button bindings and rules
 
-
-
 -- Global keys - they work everywhere
 globalkeys = gears.table.join(
     --------------------------- Tag switching

@@ -535,7 +535,7 @@ return function(visible_tag, pai_setup_root, user, screen)
 
     -- Setup visibility of the panel. It should only show itself on one selected tag
     widget.refresh_visibility = function(self)
-        local current_tag = awful.tag.selected(1)
+        local current_tag = screen.selected_tag
         self.visible = current_tag ~= nil and visible_tag == current_tag.name
     end
     widget:refresh_visibility()

@@ -51,6 +51,7 @@ class GuiXorg(Step):
             "xorg-xev",
             "xorg-setxkbmap",
             "xclip",
+            "xtruss-git",  # tracing X11 packets
             "nitrogen",
             "picom",
             "libxft",
