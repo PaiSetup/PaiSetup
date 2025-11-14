@@ -156,7 +156,7 @@ def download_github_release(user, repo, dst_dir, release_version, file_name, re_
         if re_download:
             shutil.rmtree(dst_dir)
         else:
-            return
+            return False
     elif dst_dir.exists():
         raise FileExistsError(f"{dst_dir} already exists, but it's not a directory")
     dst_dir.mkdir(parents=True, exist_ok=True)
@@ -170,3 +170,5 @@ def download_github_release(user, repo, dst_dir, release_version, file_name, re_
             unzip(zipfile.name, dst_dir)
     else:
         wget(address, dst_dir / file_name)
+
+    return True

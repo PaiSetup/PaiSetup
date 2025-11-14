@@ -16,6 +16,7 @@ from .gtk_theme.gtk_theme import GtkThemeStep
 from .gui.awesome.awesome import AwesomeStep
 from .gui.gui_xorg import GuiXorg
 from .gui.qtile.qtile import QtileStep
+from .guild_wars2 import GuildWars2Step
 from .home_directory.home_directory import HomeDirectoryStep
 from .icon_font.icon_font import FontStep
 from .lightdm.lightdm import LightDmStep
@@ -79,6 +80,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 NeovimStep(),
                 RpiLedStep(),
                 UselessStep(),
+                GuildWars2Step(root_build_dir=build_dir),
                 FontStep(root_build_dir=build_dir, full=args.full),
                 PlexStep(),
                 ProgrammingCppStep(graphics=True, systemc=True),
