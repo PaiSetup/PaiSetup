@@ -344,6 +344,15 @@ client.connect_signal("manage", function (client)
         client:move_to_tag(default_tag)
     end
     client.managed = true -- custom field, not a part of AwesomeWM
+
+    -- Make burrito on top, because Guild Wars 2 sometimes marks itself as fullscreen
+    -- naughty.notify({ title = "Client manage", text = client.name })
+    if client.name == "Godot Engine" then
+        client:connect_signal("property::shape_client_input", function()
+            -- naughty.notify({ text = "Make burrito ontop" })
+            client.ontop = true
+        end)
+    end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
