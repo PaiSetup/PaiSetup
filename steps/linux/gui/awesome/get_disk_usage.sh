@@ -1,3 +1,3 @@
 #!/bin/sh
 
-df "$1" --output=used,size,pcent -h | tail +2 | awk "{printf(\"%s %s %s %s\n\", \$3, \$2, \$1, \"$1\")}" | tr '%' ' '
+df --output=target,source,avail,size | grep -vE "^(Mounted|/dev|/tmp|/efi|/sys|/run |/run/credentials|/run/user)"

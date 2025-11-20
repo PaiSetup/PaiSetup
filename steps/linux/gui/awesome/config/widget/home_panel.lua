@@ -25,8 +25,9 @@ local function wrap_caption(caption, bg)
     return caption
 end
 
------------------------------------------------------------------------------------ Generic widgets
 
+
+----------------------------------------------------------------------------------- Generic helper widgets
 local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, center_vertically, scroll_vertically)
     -- This function wraps a bash script that is periodically called and its results
     -- are used to populate rows of a vertical layout. It does not know how to create
@@ -107,101 +108,161 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
     return widget
 end
 
-local function create_arcchart_widget(set_captions_callback, extra_caption_vertical, command, interval)
-    -- This function wraps a bash script that is periodically called and its results
-    -- are used to populate an arc chart along with text inside it. There is also
-    -- additional text box called "extra_caption" which can located either below or
-    -- next to the graph, depending on parameters.
-    --
-    -- The script should output one line containing  a value between 0 and 100, which
-    -- will be used as the value for arc chart. Subsequent contents of the line are
-    -- passed to the callback and can be used by caller.
-    --
-    -- Parameters:
-    --  set_captions_callback - function receiving both textbox widgets and the value returned by script
-    --  extra_caption_vertical (boolean) - whether the extra_caption should be below the chart
-    --  command (string) - path to script to call periodically
-    --  interval (number) - interval of calling the script in seconds
-
-    -- Text inside the chart
-    local middle_caption = wibox.widget.textbox()
-    middle_caption.text = ''
-    middle_caption.align = 'center'
-    middle_caption.font = "sans " .. tostring(tile_size * 0.08)
-
-    -- Main chart
-    local chart = wibox.container.arcchart(middle_caption)
-    chart.thickness = tile_size * 0.1
-    chart.bg = beautiful.color_gray_dark
-    chart.colors = { beautiful.color_theme }
-    chart.min_value = 0
-    chart.max_value = 100
-    chart.forced_width = tile_size * 0.5
-    chart.forced_height = tile_size * 0.5
-
-    -- Additional text and a linear layout wrapping it with the chart
-    local extra_caption = wibox.widget.textbox()
-    extra_caption.text = ""
-    extra_caption.font = "sans " .. tostring(tile_size * 0.07)
-    local content = nil
-    if extra_caption_vertical then
-        extra_caption.align = 'center'
-        content = wibox.layout.fixed.vertical (chart, extra_caption)
-    else
-        content = wibox.layout.fixed.horizontal (chart, extra_caption)
-        extra_caption.valign = 'center'
+local function create_horizontal_progress_bar_widget()
+    local chart_widget = wibox.widget {
+        widget = wibox.widget.progressbar,
+        max_value     = 1,
+        value         = 0.5,
+        forced_height = tile_size * 0.1,
+        background_color = beautiful.color_gray_dark,
+        color = beautiful.color_theme,
+    }
+    local text_widget = wibox.widget {
+        widget = wibox.widget.textbox,
+        text   = '?%',
+        align = 'center',
+        font = "sans " .. tostring(tile_size * 0.08)
+    }
+    local widget = wibox.widget {
+        chart_widget,
+        text_widget,
+        layout = wibox.layout.stack
+    }
+    widget.update = function(_, value)
+        chart_widget:set_value(value)
+        text_widget.text = tostring(value * 100) .. "%"
     end
-    content.spacing = tile_size * 0.1
+    return widget
+end
 
-    -- Watch widget will call our callback passing it the results of the command
-    -- Based on the output we will update the GUI
+local function create_arcchart_widget()
+    local text_widget = wibox.widget {
+        widget = wibox.widget.textbox,
+        text   = '?%',
+        align = 'center',
+        font = "sans " .. tostring(tile_size * 0.08)
+    }
+    local chart_widget = wibox.container.arcchart(text_widget)
+    chart_widget.thickness = tile_size * 0.1
+    chart_widget.bg = beautiful.color_gray_dark
+    chart_widget.colors = { beautiful.color_theme }
+    chart_widget.min_value = 0
+    chart_widget.max_value = 1
+    chart_widget.value = 0.5
+    chart_widget.forced_width = tile_size * 0.5
+    chart_widget.forced_height = tile_size * 0.5
+    chart_widget.update = function(_, value)
+        chart_widget.value = value
+        text_widget.text = string.format("%.1f%%", value * 100)
+    end
+    return chart_widget
+end
+
+----------------------------------------------------------------------------------- Tile widgets
+local function create_greeting_tile(user)
+    local icon = wibox.widget.imagebox(beautiful.arch_logo, true, gears.shape.rect)
+    icon.forced_height = tile_size * 0.9
+    icon.forced_width = tile_size * 0.9
+    icon = widget_wrappers.horizontal_margin(icon, tile_size * 0.08)
+    icon = wibox.widget(icon)
+
+    local greeting = wibox.widget.textbox('Hello, ' .. user .. '!')
+    greeting.align = 'center'
+    greeting.font = "sans " .. tostring(tile_size * 0.12)
+
+    local shutdown_button = wibox.widget.textbox()
+    shutdown_button.align = 'center'
+    shutdown_button.font = "sans " .. tostring(tile_size * 0.15)
+    shutdown_button.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
+    shutdown_button:connect_signal("button::press", function (self, lx, ly, button, mods, metadata)
+        if button == 1 then
+            shutdown_popup()
+        end
+    end)
+
+    local widget = wibox.layout.fixed.vertical(icon, greeting, shutdown_button)
+    widget.spacing = tile_size * 0.2
+    return widget
+end
+
+local function create_disk_usage_tile(pai_setup_root)
+    local interval = 1
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_disk_usage.sh"
+
+    local function format_kb_to_gb(caption, kilobytes)
+        return string.format("%s%.1fGiB", caption, kilobytes / 1024 / 1024)
+    end
+
+    local root_grid = wibox.layout.grid()
+    root_grid.expand = true
+    root_grid.vertical_homogeneous = false
+    root_grid.horizontal_homogeneous = true
+    root_grid.charts_count = 0 -- Not an AwesomeWM property
+
     local widget = awful.widget.watch(command, interval, function (_, stdout)
-            -- Get individual components of the output
-            matcher = stdout:gmatch("%S+")
-            value = matcher()
-            value = tonumber(value)
+        -- Iterate over output lines. Allocate chart widget as needed and update them.
+        local disks_count = 0
+        for line in stdout:gmatch("([^\n]*)\n?") do
+            disks_count = disks_count + 1
 
-            -- Update GUI
-            if value ~= nil and value >= 0 and value <= 100 then
-                chart.value = value
-                set_captions_callback(middle_caption, extra_caption, value, matcher)
-            else
-                chart.value = 0
-                middle_caption.text = "ERR"
-                extra_caption.text = "ERR"
+            local mount_path, device_path, avail_kb, total_kb = line:match("^(%S+)%s+(%S+)%s+(%S+)%s+(%S+)$")
+
+            -- Create the per-disk child if it doesn't exist
+            if disks_count > root_grid.charts_count then
+                root_grid.charts_count = root_grid.charts_count + 1
+
+                local chart_widget = create_arcchart_widget()
+                local mount_path_widget = wibox.widget {
+                    widget = wibox.widget.textbox,
+                    text   = mount_path,
+                    align = 'center',
+                    font = "sans " .. tostring(tile_size * 0.06),
+                }
+                local total_bytes_widget = wibox.widget {
+                    widget = wibox.widget.textbox,
+                    text   = "?",
+                    align = 'center',
+                    font = "sans " .. tostring(tile_size * 0.06),
+                }
+                local avail_bytes_widget = wibox.widget {
+                    widget = wibox.widget.textbox,
+                    text   = "?",
+                    align = 'center',
+                    font = "sans " .. tostring(tile_size * 0.06),
+                }
+
+                root_grid:add_widget_at(chart_widget, 1, root_grid.charts_count)
+                root_grid:add_widget_at(mount_path_widget, 2, root_grid.charts_count)
+                root_grid:add_widget_at(total_bytes_widget, 3, root_grid.charts_count)
+                root_grid:add_widget_at(avail_bytes_widget, 4, root_grid.charts_count)
             end
+
+            avail_kb = tonumber(avail_kb)
+            total_kb = tonumber(total_kb)
+            local usage = (total_kb - avail_kb) / total_kb
+
+            -- Update the child
+            local chart_widget = root_grid:get_widgets_at(1, disks_count)[1]
+            chart_widget:update(usage)
+            local total_bytes_widget = root_grid:get_widgets_at(3, disks_count)[1]
+            total_bytes_widget.text = format_kb_to_gb("Total: ", total_kb)
+            local avail_bytes_widget = root_grid:get_widgets_at(4, disks_count)[1]
+            avail_bytes_widget.text = format_kb_to_gb("Free: ", avail_kb)
+        end
+
+        -- Iterate over chart widgets that started to be unused and remove them.
+        for i = root_grid.charts_count, disks_count + 1, -1 do
+            root_grid:remove_widgets_at(1, i, 4, 1)
+            root_grid.charts_count = root_grid.charts_count - 1
+        end
+
         end,
-        content
+        root_grid
     )
     return widget
 end
 
------------------------------------------------------------------------------------ Concrete widgets
-
-local function create_disk_usage_widget(pai_setup_root)
-    local set_captions_callback = function(middle_caption, extra_caption, value, matcher)
-        size = matcher()
-        used = matcher()
-        mount_point = matcher()
-
-        middle_caption.markup = markup_utils.wrap_span(mount_point, beautiful.color_theme, nil)
-        extra_caption.text = used .. " / " .. size .. " (" .. value .. "%)"
-    end
-    local interval = 5
-    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_disk_usage.sh "
-
-    -- Widget for mountpoints
-    local widget1 = create_arcchart_widget(set_captions_callback, true, command .. "/",         interval)
-    local widget2 = create_arcchart_widget(set_captions_callback, true, command .. "/dev/sdb1", interval)
-
-    -- Combine them
-    local widget = wibox.layout.fixed.horizontal(widget1, widget2)
-    widget.spacing = tile_size * 0.3
-    widget = wibox.container.place(widget) -- center horizontally
-    return widget
-end
-
-local function create_repo_widget(pai_setup_root)
+local function create_repo_tile(pai_setup_root)
     -- This widget can display git repositories present in the system and some info about
     -- them. It relies upon get_repos.sh script written in bash. The script produces output
     -- like following: <repo_path> <master_branch> <current_branch> <flag1> <flag2> <flag3>, where
@@ -209,6 +270,7 @@ local function create_repo_widget(pai_setup_root)
     --    master_branch - main branch used by repository ("master" or "main")
     --    flag1, flag2, flag3 - zero or more warnings about the state of repository
 
+    local naughty = require("naughty")
     local function create_row()
         local flag_color = "#c94c4c"
         -- Prepare textboxes. We have to store both raw textboxes and their wrapped versions,
@@ -287,195 +349,50 @@ local function create_repo_widget(pai_setup_root)
     local command = pai_setup_root .. "/steps/linux/gui/awesome/get_repos.sh"
     local interval = 10
     local center_vertically = false
-    local scroll_vertically = true
+    local scroll_vertically = false
     return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically, scroll_vertically)
 end
 
-local function create_calendar_widget()
-    local bold = function(t) return '<b>' .. t .. '</b>' end
-    local styles = {
-        month = {
-            bg_color     = beautiful.color_gray_light,
-        },
-        weeknumber = {
-            fg_color = beautiful.color_gray_light,
-            bg_color = beautiful.color_theme,
-            markup = bold,
-        },
-        focus = {
-            fg_color = beautiful.color_gray_light,
-            bg_color = beautiful.color_theme,
-            shape = gears.shape.rounded_rect,
-            markup = bold,
-        },
-        header = {
-            fg_color = beautiful.color_theme,
-            bg_color = beautiful.color_gray_light,
-            markup = bold,
-        },
-        weekday = {
-            fg_color = beautiful.color_gray_light,
-            bg_color = beautiful.color_theme,
-            markup = bold,
-        },
-        default = {
-            fg_color = beautiful.color_theme,
-            bg_color = beautiful.color_gray_light,
-            shape = gears.shape.rect,
-        }
-    }
-    local function decorate_cell(widget, flag, date)
-        if flag=='monthheader' and not styles.monthheader then
-            flag = 'header'
-        end
-        local props = styles[flag] or styles.default
-        if props.markup and widget.get_text and widget.set_markup then
-            widget:set_markup(props.markup(widget:get_text()))
-        end
-        widget.align = 'center'
-        widget.valign = 'center'
-
-        local ret = wibox.widget {
-            widget,
-            shape              = props.shape    or styles.default.shape,
-            fg                 = props.fg_color or styles.default.fg_color,
-            bg                 = props.bg_color or styles.default.bg_color,
-            widget             = wibox.container.background,
-        }
-        return ret
-    end
-
-    local widget = wibox.widget.calendar.month(os.date('*t')) -- This will not work after midnight...
-    widget.spacing = 0
-    widget.week_numbers = true
-    widget.fn_embed = decorate_cell
-    return widget
-end
-
-local function create_currency_widget(pai_setup_root)
-    local create_row = function()
-        local left_currency = wibox.widget.textbox()
-        local middle_arrow = wibox.widget.textbox()
-        middle_arrow.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
-        middle_arrow.align = 'center'
-        local right_currency = wibox.widget.textbox()
-        local row = wibox.layout.fixed.horizontal(
-            wrap_caption(left_currency, beautiful.color_theme),
-            middle_arrow,
-            wrap_caption(right_currency, beautiful.color_theme)
-        )
-        row.spacing = tile_size * 0.035
-        row = wibox.container.place(row) -- center horizontally
-        row.left_currency = left_currency
-        row.right_currency = right_currency
-        return row
-    end
-    local update_row = function(row, line)
-        matcher = line:gmatch("%S+")
-        row.left_currency.text = matcher()
-        row.right_currency.text = matcher()
-    end
-    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_currency_exchange.sh"
-    local interval = 3600
-    local center_vertically = true
-    local scroll_vertically = true
-    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically, scroll_vertically)
-end
-
-local function create_system_usage_widget(pai_setup_root)
+local function create_system_usage_tile(pai_setup_root)
     local interval = 2
+    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_cpu_idle.sh"
 
-    -- CPU widget
-    local set_middle_caption_callback = function(middle_caption, extra_caption, value)
-        middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
-        extra_caption.text = value .. "%"
-    end
-    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_cpu_usage.sh"
-    local cpu_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
+    local root_grid = wibox.layout.grid()
+    root_grid.horizontal_spacing = tile_size * 0.1
+    root_grid.vertical_spacing = tile_size * 0.03
+    root_grid.vertical_homogeneous = true
+    root_grid.horizontal_homogeneous = false
+    root_grid.rows_count = 0 -- Not an AwesomeWM property
 
-    -- Memory widget
-    local set_middle_caption_callback = function(middle_caption, extra_caption, value)
-        middle_caption.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
-        extra_caption.text = value .. "%"
-    end
-    local command = pai_setup_root .. "/steps/linux/gui/awesome/get_mem_usage.sh"
-    local mem_widget = create_arcchart_widget(set_middle_caption_callback, true, command, interval)
+    local widget = awful.widget.watch(command, interval, function (_, stdout)
+        if root_grid.rows_count == 0 then
+            for line in stdout:gmatch("([^\n]*)\n?") do
+                local bar_widget = create_horizontal_progress_bar_widget()
 
-    -- Combine them
-    local widget = wibox.layout.fixed.horizontal(cpu_widget, mem_widget)
-    widget.spacing = tile_size * 0.3
-    widget = wibox.container.place(widget) -- center horizontally
-    return widget
-end
+                local caption_widget = wibox.widget.textbox()
+                caption_widget.text = line:match("(%S+)")
+                caption_widget.font = "sans " .. tostring(tile_size * 0.07)
 
-local function create_layout_list_widget()
-    local widget = awful.widget.layoutlist {
-        base_layout = wibox.widget {
-            spacing = tile_size * 0.03,
-            layout = wibox.layout.fixed.vertical,
-        },
-        widget_template = {
-            widget = wibox.container.background,
-            id = 'background_role',
-            shape = gears.shape.rounded_rect,
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = tile_size * 0.04,
-                {
-                    widget = wibox.widget.imagebox,
-                    id = 'icon_role',
-                    forced_height = tile_size * 0.185,
-                    forced_width = tile_size * 0.185,
-                },
-                {
-                    widget = wibox.widget.textbox,
-                    id = 'text_role',
-                },
-            },
-        }
-    }
-    widget:buttons(gears.table.join(
-        awful.button({ }, 4, function () awful.layout.inc(-1) end),
-        awful.button({ }, 5, function () awful.layout.inc( 1) end)
-    ))
-    local layout_popup = awful.popup {
-        widget = wibox.widget {ll, margins = 4, widget = wibox.container.margin},
-        border_color = beautiful.border_color,
-        border_width = beautiful.border_width,
-        placement = awful.placement.centered,
-        ontop = true,
-        visible = false,
-        shape = gears.shape.rounded_rect
-    }
-
-    return widget
-end
-
-local function create_greeting_widget(user)
-    local icon = wibox.widget.imagebox(beautiful.arch_logo, true, gears.shape.rect)
-    icon.forced_height = tile_size * 0.9
-    icon.forced_width = tile_size * 0.9
-    icon = widget_wrappers.horizontal_margin(icon, tile_size * 0.08)
-    icon = wibox.widget(icon)
-
-    local greeting = wibox.widget.textbox('Hello, ' .. user .. '!')
-    greeting.align = 'center'
-    greeting.font = "sans " .. tostring(tile_size * 0.12)
-
-    local shutdown_button = wibox.widget.textbox()
-    shutdown_button.align = 'center'
-    shutdown_button.font = "sans " .. tostring(tile_size * 0.15)
-    shutdown_button.markup = markup_utils.wrap_span('', beautiful.color_theme, nil)
-    shutdown_button:connect_signal("button::press", function (self, lx, ly, button, mods, metadata)
-        if button == 1 then
-            shutdown_popup()
+                root_grid.rows_count = root_grid.rows_count + 1
+                root_grid:add_widget_at(caption_widget, root_grid.rows_count, 1)
+                root_grid:add_widget_at(bar_widget, root_grid.rows_count, 2)
+            end
         end
-    end)
 
-    local widget = wibox.layout.fixed.vertical(icon, greeting, shutdown_button)
-    widget.spacing = tile_size * 0.2
-    widget = wibox.container.place(widget)
+        local child_idx = 1
+        for line in stdout:gmatch("([^\n]*)\n?") do
+            local _, value = line:match("(%S+)%s+(%S+)")
+            value = 1 - tonumber(value) / 100
 
+            local bar_widget = root_grid:get_widgets_at(child_idx, 2)[1]
+            bar_widget:update(value)
+
+            child_idx = child_idx + 1
+        end
+        end,
+        root_grid
+    )
+    widget = wibox.container.place(widget) -- center the widget
     return widget
 end
 
@@ -489,40 +406,30 @@ return function(visible_tag, pai_setup_root, user, screen)
     -- Some size constants
     local vertical_placement_percent = 0.2 -- value between 0 (snap to top) and 1 (snap to bottom)
     local horizontal_placement_percent = 0.5 -- value between 0 (snap to left) and 1 (snap to right)
-    local rows = 3
-    local columns = 5
     local spacing = tile_size * 0.1
-    local grid_width = columns * tile_size + (columns - 1) * spacing
-    local grid_height = rows * tile_size + (rows - 1) * spacing
-    local window_width = grid_width + 2 * spacing -- There are margins
-    local window_height = grid_height + 2 * spacing -- There are margins
 
     -- Setup the grid layout with widgets
     local root_layout = wibox.layout.grid()
-    root_layout.forced_num_rows = rows
-    root_layout.forced_num_cols = columns
-    root_layout.min_cols_size = tile_size
-    root_layout.min_rows_size = tile_size
     root_layout.spacing = spacing
     root_layout.expand = false
     root_layout.homogeneous = true
-    root_layout.forced_height = grid_height
-    root_layout.forced_width = grid_width
-    local function add_widget_to_grid(widget, row, col, rowspan, colspan)
+    local function add_widget_to_grid(widget, col, row, colspan, rowspan)
         local widget = widget_wrappers.margin(widget, tile_size * 0.04)
         widget = widget_wrappers.sized_bg(widget, beautiful.color_gray_light, colspan * tile_size, rowspan * tile_size)
         widget = wibox.widget(widget)
         root_layout:add_widget_at(widget, row, col, rowspan, colspan)
     end
-    add_widget_to_grid(create_greeting_widget(user),                 1, 1,   2, 1)
-    add_widget_to_grid(create_layout_list_widget(pai_setup_root),    3, 1,   1, 1)
-    add_widget_to_grid(create_repo_widget(pai_setup_root),           1, 3,   2, 3)
-    add_widget_to_grid(create_currency_widget(pai_setup_root),       1, 2,   1, 1)
-    add_widget_to_grid(create_calendar_widget(),                     2, 2,   1, 1)
-    add_widget_to_grid(create_system_usage_widget(pai_setup_root),   3, 2,   1, 2)
-    add_widget_to_grid(create_disk_usage_widget(pai_setup_root),     3, 4,   1, 2)
+    add_widget_to_grid(create_greeting_tile(user),                 1, 1,   1, 2)
+    add_widget_to_grid(create_repo_tile(pai_setup_root),           2, 1,   5, 3)
+    add_widget_to_grid(create_system_usage_tile(pai_setup_root),   7, 1,   3, 3)
+    add_widget_to_grid(create_disk_usage_tile(pai_setup_root),     6, 4,   4, 1)
 
-    -- Setup window and embed the grid layout in it
+    -- Setup a wibox (a window) and embed the grid layout in it
+    local rows, columns = root_layout:get_dimension()
+    local grid_width = columns * tile_size + (columns - 1) * spacing
+    local grid_height = rows * tile_size + (rows - 1) * spacing
+    local window_width = grid_width + 2 * spacing -- There are margins
+    local window_height = grid_height + 2 * spacing -- There are margins
     local widget = wibox {
         width = window_width,
         height = window_height,
