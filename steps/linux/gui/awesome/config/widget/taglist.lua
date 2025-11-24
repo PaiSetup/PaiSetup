@@ -19,20 +19,29 @@ return function(screen, modkey)
         buttons = taglist_buttons,
         widget_template =
         {
+            widget          = wibox.container.margin,
+            create_callback =
+                function(self, c3, index, objects)
+                    if index == 5 then
+                        self.left = dpi(20)
+                    end
+                end,
             {
+                widget = wibox.container.background,
+                id     = 'background_role',
                 {
+                    widget = wibox.container.margin,
+                    left  = dpi(13),
+                    right = dpi(13),
                     {
-                        id     = 'text_role',
-                        widget = wibox.widget.textbox,
+                        layout = wibox.layout.fixed.horizontal,
+                        {
+                            id     = 'text_role',
+                            widget = wibox.widget.textbox,
+                        },
                     },
-                    layout = wibox.layout.fixed.horizontal,
                 },
-                left  = dpi(13),
-                right = dpi(13),
-                widget = wibox.container.margin
             },
-            id     = 'background_role',
-            widget = wibox.container.background,
         },
     }
 end

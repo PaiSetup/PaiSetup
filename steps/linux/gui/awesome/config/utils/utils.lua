@@ -59,56 +59,51 @@ local function enable_viewed_tag_preserving()
 end
 
 local function get_per_tag_keys(modkey, group)
-    -- Bind all key numbers to tags.
-    -- Be careful: we use keycodes to make it work on any keyboard layout.
-    -- This should map on the top row of your keyboard, usually 1 to 9.
-    local keys = {}
-    for i = 1, 9 do
+    local function select_only_tag(i)
+        local screen = awful.screen.focused()
+        local tag = screen.tags[i]
+        if tag then
+            tag:view_only()
+        end
+    end
+    local function toggle_select_tag(i)
+        local screen = awful.screen.focused()
+        local tag = screen.tags[i]
+        if tag then
+            awful.tag.viewtoggle(tag)
+        end
+    end
+    local function move_client_to_tag(i)
+        if client.focus then
+            local tag = client.focus.screen.tags[i]
+            if tag then
+                client.focus:move_to_tag(tag)
+            end
+        end
+    end
+
+    keys = {}
+    local function add_binds(key, i)
         keys = gears.table.join(keys,
-            -- View tag only.
-            awful.key({ modkey }, "#" .. i + 9,
-                    function ()
-                            local screen = awful.screen.focused()
-                            local tag = screen.tags[i]
-                            if tag then
-                                tag:view_only()
-                            end
-                    end,
-                    {description = "View tag", group = group}),
-            -- Toggle tag display.
-            awful.key({ modkey, "Control" }, "#" .. i + 9,
-                    function ()
-                        local screen = awful.screen.focused()
-                        local tag = screen.tags[i]
-                        if tag then
-                            awful.tag.viewtoggle(tag)
-                        end
-                    end,
-                    {description = "Toggle tag", group = group}),
-            -- Move client to tag.
-            awful.key({ modkey, "Shift" }, "#" .. i + 9,
-                    function ()
-                        if client.focus then
-                            local tag = client.focus.screen.tags[i]
-                            if tag then
-                                client.focus:move_to_tag(tag)
-                            end
-                        end
-                    end,
-                    {description = "Move focused client to tag", group = group}),
-            -- Toggle tag on focused client.
-            awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
-                    function ()
-                        if client.focus then
-                            local tag = client.focus.screen.tags[i]
-                            if tag then
-                                client.focus:toggle_tag(tag)
-                            end
-                        end
-                    end,
-                    {description = "Toggle focused client on tag", group = group})
+            awful.key({ modkey }, key, function() select_only_tag(i) end,              {description = "View tag", group = group}),
+            awful.key({ modkey, "Control" }, key, function() toggle_select_tag(i) end, {description = "Toggle tag", group = group}),
+            awful.key({ modkey, "Shift" }, key, function() move_client_to_tag(i) end,  {description = "Move focused client to tag", group = group})
         )
     end
+
+    add_binds("#10", 1)
+    add_binds("#11", 2)
+    add_binds("#12", 3)
+    add_binds("#13", 4)
+    add_binds("#14", 5)
+    add_binds("#15", 6)
+    add_binds("#16", 7)
+    add_binds("#17", 8)
+    add_binds("q", 5)
+    add_binds("w", 6)
+    add_binds("e", 7)
+    add_binds("r", 8)
+
     return keys
 end
 

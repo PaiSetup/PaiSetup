@@ -243,11 +243,10 @@ globalkeys = gears.table.join(
     gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag")),
 
     --------------------------- Client switching
-    awful.key({ modkey,         }, "j", function () awful.client.focus.byidx( 1) end, {description = "focus next by index",                group = "Client switching"}),
-    awful.key({ modkey,         }, "k", function () awful.client.focus.byidx(-1) end, {description = "focus previous by index",            group = "Client switching"}),
+    awful.key({ modkey,         }, "a", function () awful.client.focus.byidx( 1) end, {description = "focus next by index",                group = "Client switching"}),
+    awful.key({ modkey,         }, "s", function () awful.client.focus.byidx(-1) end, {description = "focus previous by index",            group = "Client switching"}),
     awful.key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(  1) end, {description = "swap with next client by index",     group = "Client switching"}),
     awful.key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx( -1) end, {description = "swap with previous client by index", group = "Client switching"}),
-    awful.key({ modkey,         }, "u", awful.client.urgent.jumpto,                   {description = "jump to urgent client",              group = "Client switching"}),
 
     --------------------------- Screen switching
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end,  {description = "focus the next screen",     group = "Screen switching"}),
@@ -255,8 +254,8 @@ globalkeys = gears.table.join(
 
     --------------------------- Awesome WM control`
     awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                    {description = "show help",           group = "AwesomeWM"}),
-    awful.key({ modkey, "Shift" }, "BackSpace", function () toggle_shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
-    awful.key({ modkey          }, "r",         function () menubar.show()                             end, {description = "show the menubar",    group = "launcher"}),
+    awful.key({ "Shift" },         "BackSpace", function () toggle_shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    awful.key({ modkey          }, "z",         function () menubar.show()                             end, {description = "show the menubar",    group = "launcher"}),
 
     --------------------------- Layout control
     awful.key(           { modkey }, "l", function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),
@@ -283,7 +282,8 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "c",        function (c) c:kill()                                   end, {description = "close", group = "client"}),
     awful.key({ altkey          }, "F4",       function (c) c:kill()                                   end, {description = "close", group = "client"}),
     awful.key({ modkey          }, "Return",   function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"}),
-    awful.key({ modkey          }, "KP_Enter", function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"})
+    awful.key({ modkey          }, "KP_Enter", function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"}),
+    awful.key({ modkey, "Shift" }, "a",        function (c) c:swap(awful.client.getmaster())           end, {description = "move to master", group = "client"})
 )
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)
