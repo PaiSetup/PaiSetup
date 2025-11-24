@@ -218,15 +218,26 @@ beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width
 
 ----------------------------------------------------------------------------------- Key/button bindings and rules
 
+function toggle_home_tag()
+    screen = awful.screen.focused()
+    home_tag = get_home_tag(screen)
+    current_tag = screen.selected_tag
+
+    if current_tag == home_tag then
+        awful.tag.history.restore()
+    else
+        home_tag:view_only()
+    end
+end
+
 -- Global keys - they work everywhere
 globalkeys = gears.table.join(
     --------------------------- Tag switching
     awful.key({ modkey          }, "Left",  awful.tag.viewprev,                          {description = "view previous", group = "Tag switching"}),
     awful.key({ modkey          }, "Right", awful.tag.viewnext,                          {description = "view next",     group = "Tag switching"}),
-    awful.key({ altkey, "Shift" }, "Tab",   awful.tag.viewprev,                          {description = "view next",     group = "Tag switching"}),
-    awful.key({ altkey          }, "Tab",   awful.tag.viewnext,                          {description = "view next",     group = "Tag switching"}),
+    awful.key({ altkey          }, "Tab",   awful.tag.history.restore,                   {description = "go back",       group = "Tag switching"}),
     awful.key({ modkey          }, "Tab",   awful.tag.history.restore,                   {description = "go back",       group = "Tag switching"}),
-    awful.key({ modkey          }, "d",     function () get_home_tag():view_only() end,  {description = "view desktop",  group = "Tag switching"}),
+    awful.key({ modkey          }, "d",     toggle_home_tag,                             {description = "view home tag", group = "Tag switching"}),
 
     ---------------------------- Per-tag
     gears.table.join(globalkeys, utils.get_per_tag_keys(modkey, "Per-tag")),
