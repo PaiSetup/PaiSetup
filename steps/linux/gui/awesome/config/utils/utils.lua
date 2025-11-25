@@ -141,6 +141,21 @@ function switch_to_fairv()
     end
 end
 
+function unfloat_all_clients(tag)
+    if tag == nil then
+        local screen = awful.screen.focused()
+        tags = screen.selected_tags
+    else
+        tags = { tag }
+    end
+
+    for _, tag in pairs(tags) do
+        for _, client in pairs(tag:clients()) do
+            client.floating = false
+        end
+    end
+end
+
 return {
     set_wallpaper = set_wallpaper,
     enable_viewed_tag_preserving = enable_viewed_tag_preserving,
@@ -150,4 +165,5 @@ return {
     spawn_terminal_from_thunar = spawn_terminal_from_thunar,
     switch_to_empty_tag = switch_to_empty_tag,
     switch_to_fairv = switch_to_fairv,
+    unfloat_all_clients = unfloat_all_clients,
 }
