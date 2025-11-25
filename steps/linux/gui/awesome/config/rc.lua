@@ -253,9 +253,10 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,  {description = "focus the previous screen", group = "Screen switching"}),
 
     --------------------------- Awesome WM control`
-    awful.key({ modkey, "Shift" }, "h",         hotkeys_popup.show_help,                                    {description = "show help",           group = "AwesomeWM"}),
-    awful.key({ "Shift" },         "BackSpace", function () toggle_shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
-    awful.key({ modkey          }, "z",         function () menubar.show()                             end, {description = "show the menubar",    group = "launcher"}),
+    awful.key({ modkey,    "Shift" }, "h",         hotkeys_popup.show_help,                                    {description = "show help",           group = "AwesomeWM"}),
+    awful.key({ modkey,    "Shift" }, "BackSpace", function () toggle_shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    awful.key({ "Control", "Shift" }, "BackSpace", function () toggle_shutdown_popup(pai_setup, terminal) end, {description = "show shutdown popup", group = "AwesomeWM"}),
+    awful.key({ modkey             }, "z",         function () menubar.show()                             end, {description = "show the menubar",    group = "launcher"}),
 
     --------------------------- Layout control
     awful.key(           { modkey }, "l", function () awful.tag.incmwfact( 0.05)          end, {description = "increase master width factor", group = "layout"}),

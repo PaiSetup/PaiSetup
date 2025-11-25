@@ -82,11 +82,9 @@ end
 local function get_tag_mappings_rules(tags)
     return {
         {
-            rule_any = {
-                class = {
-                    "firefox",
-                    "chromium",
-                }
+            rule = {
+                instance = "Navigator",
+                class = "firefox",
             },
             properties = { tag = tags.web }
         },
