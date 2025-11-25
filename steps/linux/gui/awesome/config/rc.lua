@@ -166,6 +166,9 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, tags.general, tags.general, tags.general, tags.general, tags.draw, tags.video, tags.home }, s, awful.layout.layouts[1])
+    for _, tag in pairs(s.tags) do
+        tag.gap_single_client = false
+    end
 
     -- Setup home tag and panel
     get_home_tag(s).is_home = true
