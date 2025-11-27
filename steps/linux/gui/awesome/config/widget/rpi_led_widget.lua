@@ -7,49 +7,59 @@ local widget_wrappers = require("widget.wrappers")
 local create_toggle_button = require("widget.toggle_button")
 local dpi = require("beautiful.xresources").apply_dpi
 
-local pai_setup = nil
-local rpi_led_state = {}
-rpi_led_state.enabled_sections = 0
-rpi_led_state.brightness = 0
-rpi_led_state.query_rpi_led = function(self)
-    command = pai_setup .. "/steps/linux/rpi_led/client/query_rpi_led.py --brightness --sections"
-    awful.spawn.easy_async_with_shell(command, function(stdout)
-        matcher = stdout:gmatch("[^\r\n]+")
-        rpi_led_state.brightness = matcher()
-        rpi_led_state.enabled_sections = tonumber(matcher())
 
-        awesome.emit_signal("rpi_led::queried_state")
-    end)
+
+----------------------------------------------------------------------------------- Rpiled class
+local RpiLedState = {}
+RpiLedState.__index = RpiLedState
+
+function RpiLedState:new(pai_setup)
+    return setmetatable({
+        enabled_sections = 0,
+        brightness       = 0,
+        pai_setup        = pai_setup
+    }, self)
 end
-rpi_led_state.update_rpi_led = function(self)
-    executable = pai_setup .. "/steps/linux/rpi_led/client/update_rpi_led.py"
-    arg_section = " -s " .. tostring(self.enabled_sections)
-    arg_brightness = " -b " .. tostring(self.brightness)
-    command =  executable .. arg_section .. arg_brightness
+
+function RpiLedState:update_rpi_led()
+    local executable     = self.pai_setup .. "/steps/linux/rpi_led/client/update_rpi_led.py"
+    local arg_section    = " -s " .. tostring(self.enabled_sections)
+    local arg_brightness = " -b " .. tostring(self.brightness)
+    local command        = executable .. arg_section .. arg_brightness
+
     awful.spawn.easy_async_with_shell(command, function() end)
 end
-rpi_led_state.set_section = function(self, value, index)
+
+function RpiLedState:set_section(value, index)
     local mask = 1 << (index - 1)
+
     if value then
         self.enabled_sections = self.enabled_sections | mask
     else
         self.enabled_sections = self.enabled_sections & (~mask)
     end
+
     self:update_rpi_led()
 end
-rpi_led_state.is_section_enabled = function(self, index)
+
+function RpiLedState:is_section_enabled(index)
     local mask = 1 << (index - 1)
     return (self.enabled_sections & mask) ~= 0
 end
-rpi_led_state.set_brightness = function(self, value)
+
+function RpiLedState:set_brightness(value)
     self.brightness = value / 100
     self:update_rpi_led()
 end
-rpi_led_state.get_brightness = function(self)
+
+function RpiLedState:get_brightness()
     return self.brightness * 100
 end
 
-local function create_section_button(icon, index)
+
+
+----------------------------------------------------------------------------------- Popup widget
+local function create_section_button(rpi_led_state, icon, index)
     local function callback(widget, value, index)
         if widget.send_to_rpi then
             rpi_led_state:set_section(value, index)
@@ -75,7 +85,7 @@ local function create_section_button(icon, index)
     return widget
 end
 
-local function create_brightness_slider()
+local function create_brightness_slider(rpi_led_state)
     local widget = wibox.widget.slider()
     widget.bar_shape = gears.shape.rounded_rect
     widget.bar_height = dpi(10)
@@ -101,7 +111,9 @@ local function create_brightness_slider()
     return widget
 end
 
-local function create_popup(screen)
+local function create_popup(screen, pai_setup_root)
+    local rpi_led_state = RpiLedState:new(pai_setup_root)
+
     -- Some size constants
     local window_width = dpi(200)
     local window_height = dpi(110)
@@ -111,12 +123,12 @@ local function create_popup(screen)
     layout_line0.spacing = button_spacing
     icon_speakers=""    -- U+F8DE - PaiIconGlyphs
     icon_monitor=""     -- U+F108 - FontAwesome
-    layout_line0:add(create_section_button(icon_speakers, 1))
-    layout_line0:add(create_section_button(icon_monitor, 2))
-    layout_line0:add(create_section_button(icon_speakers, 3))
+    layout_line0:add(create_section_button(rpi_led_state, icon_speakers, 1))
+    layout_line0:add(create_section_button(rpi_led_state, icon_monitor, 2))
+    layout_line0:add(create_section_button(rpi_led_state, icon_speakers, 3))
 
     local layout_line1 = wibox.layout.fixed.horizontal()
-    layout_line1:add(create_brightness_slider())
+    layout_line1:add(create_brightness_slider(rpi_led_state))
 
     local root_layout = wibox.layout.fixed.vertical()
     root_layout:add(layout_line0)
@@ -131,9 +143,22 @@ local function create_popup(screen)
         ontop = true
     }
     widget:setup(widget_wrappers.bg(widget_wrappers.margin(root_layout, root_layout.spacing), beautiful.color_gray_light))
+
+    local query_command = pai_setup_root .. "/steps/linux/rpi_led/client/query_rpi_led.py --brightness --sections"
+    local query_interval_s = 3
+    widget = awful.widget.watch(query_command, query_interval_s, function (_, stdout)
+        matcher = stdout:gmatch("[^\r\n]+")
+        rpi_led_state.brightness = matcher()
+        rpi_led_state.enabled_sections = tonumber(matcher())
+        awesome.emit_signal("rpi_led::queried_state")
+    end, widget)
+
     return widget
 end
 
+
+
+----------------------------------------------------------------------------------- Button widget (to be put on the top bar)
 local function create_button(widget_to_show)
     local widget = wibox.widget.textbox()
     widget.is_clicked = false
@@ -162,12 +187,11 @@ local function create_button(widget_to_show)
     return widget
 end
 
+
+
+----------------------------------------------------------------------------------- Main function
 return function(screen, pai_setup_root)
-    pai_setup = pai_setup_root
-
-    popup = create_popup(screen)
-    button = create_button(popup)
-
-    rpi_led_state:query_rpi_led()
+    local popup = create_popup(screen, pai_setup_root)
+    local button = create_button(popup)
     return button
 end

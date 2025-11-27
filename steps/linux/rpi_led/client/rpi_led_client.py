@@ -10,13 +10,11 @@ import threading
 import time
 
 from steps.linux.rpi_led.client.led_state import LedState, fifo_file_path
+from utils.command import Stdout, run_command
 
 server_port = 30123
 connect_timeout = 1
 minimum_send_interval = 0.015
-# Using hostname would be better, but it doesn't work. We're currently setting hostname on RPI to "RpiLed",
-# but it's not visible from PC. See https://github.com/orgs/micropython/discussions/15562
-server_address = "192.168.100.40"
 
 
 class Thread:
@@ -47,11 +45,13 @@ class LedThread(Thread):
         Error = enum.auto()
         Killed = enum.auto()
         Timeout = enum.auto()
+        CannotFindAddress = enum.auto()
 
     def __init__(self, initial_led_state):
         super().__init__(self._main)
         self.led_state = initial_led_state
         self.update_event = threading.Event()
+        self._server_address = None
         self._last_send_time = None
 
     def _main(self):
@@ -84,6 +84,15 @@ class LedThread(Thread):
                             not self.condition.wait(timeout)
 
                         continue
+                    case LedThread.ConnectResult.CannotFindAddress:
+                        print("LED: Cannot find server address. Try running nmap -sP 192.168.100.0/24 to fill ARP caches")
+
+                        # To avoid busy looping, ensure we waited for at least connect_timeout
+                        with self.condition:
+                            timeout = connection_start_time - time.time() + connect_timeout
+                            not self.condition.wait(timeout)
+
+                        continue
 
                 try:
                     self._communicate_with_server(sock)
@@ -93,8 +102,24 @@ class LedThread(Thread):
         print("LED: Finishing...")
 
     def _connect_to_server(self, sock_fd):
+        if self._server_address is None:
+            output = run_command("ip neighbour", stdout=Stdout.return_back(), stderr=Stdout.ignore()).stdout
+
+            for line in output.splitlines():
+                parts = line.split()
+                if len(parts) >= 5:
+                    ip = parts[0]
+                    mac = parts[4].lower()
+                    if mac == "28:cd:c1:03:6a:11":
+                        self._server_address = ip
+
+            if self._server_address is None:
+                return (LedThread.ConnectResult.CannotFindAddress, "")
+            else:
+                print(f"LED: found server address {self._server_address}")
+
         sock_fd.setblocking(False)
-        connect_result = sock_fd.connect_ex((server_address, server_port))
+        connect_result = sock_fd.connect_ex((self._server_address, server_port))
         if connect_result == 0:
             return (LedThread.ConnectResult.Success, "")
         if connect_result != errno.EINPROGRESS:
@@ -111,7 +136,7 @@ class LedThread(Thread):
 
         # If socket fd is ready, we need to check the result
         if sock_fd in writable:
-            connect_result = sock_fd.connect_ex((server_address, server_port))
+            connect_result = sock_fd.connect_ex((self._server_address, server_port))
             if connect_result in [0, errno.EISCONN]:
                 return (LedThread.ConnectResult.Success, "")
             else:
