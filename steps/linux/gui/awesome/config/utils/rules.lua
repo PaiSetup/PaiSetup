@@ -103,6 +103,26 @@ local function get_tag_mappings_rules(tags)
     }
 end
 
+local function get_window_params_rules(tag)
+    return {
+        {
+            rule = {
+                instance = "yad",
+                class = "Yad",
+            },
+            properties = {
+                ontop = true,
+                sticky = true,
+                focusable = false,
+            },
+            callback = function(client)
+                kill_func = function() client:kill() end
+                client:connect_signal("button::press", kill_func)
+            end,
+        },
+    }
+end
+
 local function get_home_panel_cava_rule(tag, client_class, screen_width, screen_height, screen_height_percentage)
     local client_height = math.floor(screen_height * screen_height_percentage)
 
@@ -133,5 +153,6 @@ return {
     get_floating_clients_rule = get_floating_clients_rule,
     get_non_floating_clients_rule = get_non_floating_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
+    get_window_params_rules = get_window_params_rules,
     get_home_panel_cava_rule = get_home_panel_cava_rule,
 }

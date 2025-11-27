@@ -329,6 +329,7 @@ awful.rules.rules = gears.table.join(
     },
     rules_utils.get_no_border_rules(),
     rules_utils.get_tag_mappings_rules(tags),
+    rules_utils.get_window_params_rules(),
     awful.rules.rules
 )
 
