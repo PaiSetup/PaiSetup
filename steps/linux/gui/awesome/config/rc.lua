@@ -36,6 +36,8 @@ local create_rpi_led_widget = require("widget.rpi_led_widget")
 local create_taglist = require("widget.taglist")
 local create_tasklist = require("widget.tasklist")
 local create_layout_box = require("widget.layout_box")
+local create_volume_popup = require("widget.volume_popup")
+
 
 
 ----------------------------------------------------------------------------------- Error handling
@@ -173,6 +175,9 @@ awful.screen.connect_for_each_screen(function(s)
     -- Setup home tag and panel
     get_home_tag(s).is_home = true
     create_home_panel(tags.home, pai_setup, user, s)
+
+    -- Setup a popup for volume change
+    create_volume_popup(s)
 
     -- Create the bar
     s.mywibox = awful.wibar({ position = "top", screen = s, })
