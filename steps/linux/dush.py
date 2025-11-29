@@ -18,6 +18,7 @@ class DushStep(DushStepBase):
                 ". $DUSH_PATH/framework/frontend.bash",
                 ". $DUSH_PATH/projects/bashies/main.sh",
                 ". $DUSH_PATH/projects/awsm/main.sh",
+                ". $DUSH_PATH/projects/burrito/main.sh",
             ],
         )
 

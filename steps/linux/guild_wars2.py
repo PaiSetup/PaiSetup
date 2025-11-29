@@ -28,7 +28,7 @@ class GuildWars2Step(Step):
             re_download=False,
         )
         if downloaded:
-            self._file_writer.write_symlink_executable(dst_dir / "burrito.x86_64", "burrito")
+            self._file_writer.write_symlink_executable(dst_dir / "burrito.x86_64", "burrito.x86_64")
 
     def _write_desktop_file(self):
         path = self._env.home() / ".local/share/applications/gw2.desktop"
