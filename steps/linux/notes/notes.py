@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import utils.external_project as ext
+from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.keybinding import KeyBinding
 
@@ -11,6 +12,7 @@ class NotesStep(Step):
         super().__init__("notes")
         self.fetch_git = fetch_git
         self._notes_dir = scripts_dir = self._env.home() / "notes"
+        self._current_step_dir = Path(__file__).parent
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
@@ -21,6 +23,13 @@ class NotesStep(Step):
         # Obsidian is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
         dependency_dispatcher.register_homedir_file(".pki")
+
+        dependency_dispatcher.schedule_spieven_periodic_check(
+            "NotesSubvaultCoherency",
+            self._current_step_dir / "verify_subvaults_coherency.sh",
+            display_type=SpievenDisplayType.Headless,
+            delay_ms=45_000,
+        )
 
     def register_env_variables(self):
         self._env.set("NOTES_PATH", self._notes_dir)

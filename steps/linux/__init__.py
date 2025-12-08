@@ -22,7 +22,7 @@ from .icon_font.icon_font import FontStep
 from .lightdm.lightdm import LightDmStep
 from .multimedia_software_step import MultimediaSoftwareStep
 from .neovim.neovim import NeovimStep
-from .notes import NotesStep
+from .notes.notes import NotesStep
 from .nush import NushStep
 from .packages import PackagesStep
 from .packages_debian.packages_debian import PackagesDebianStep
