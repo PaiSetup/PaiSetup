@@ -19,6 +19,7 @@ class EncryptionStep(Step):
         dependency_dispatcher.add_keybindings(
             KeyBinding("x").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/linux/encryption/mount_nice.sh").desc("Mount nice"),
             KeyBinding("z").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/linux/encryption/mount_receipts.sh").desc("Mount receipts"),
+            KeyBinding("b").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/linux/encryption/mount_blz.sh").desc("Mount blz"),
         )
 
         check_script = Path(__file__).parent / "check_unlocked_veracrypt.sh"

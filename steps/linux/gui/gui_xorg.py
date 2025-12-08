@@ -76,7 +76,6 @@ class GuiXorg(Step):
         dependency_dispatcher.add_keybindings(
             KeyBinding("s").mod().shift().desc("Screenshot").execute("flameshot gui"),
             KeyBinding("<").mod().desc("Browser").executeShell("$BROWSER"),
-            KeyBinding("b").mod().shift().ctrl().desc("Browser (incognito)").executeShell("$BROWSER_PRIVATE"),
             KeyBinding("x").mod().desc("Files").executeShell("$FILE_MANAGER"),
             KeyBinding("F1").mod().desc("Change wallpaper").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py --restart_wm"),
             KeyBinding("Escape").mod().desc("Restart GUI").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/restart_wm.sh"),
