@@ -16,16 +16,20 @@ class RpiLedStep(Step):
         dependency_dispatcher.schedule_spieven_daemon("rpiled", self._daemon_path, display_type=SpievenDisplayType.Headless)
 
     def perform(self):
-        # This must be done with LinePlacement.Begin, because env variables may
-        # be used in select_wallpaper.py. The daemon could be started any time
-        # and it would work.
-        # TODO what if there are multiple displays? It will destroy the fifo file...
+        self._file_writer.write_section(
+            ".config/PaiSetup/env.sh",
+            "RpiLed paths",
+            [
+                f'export RPI_LED_CACHE="{self._cache_file_path}"',
+                f'export RPI_LED_FIFO="{self._fifo_file_path}"',
+            ],
+        )
+        # Do this earlier then the rest of setup (LinePlacement.Begin) as these files
+        # are used in select_wallpaper.py.
         self._file_writer.write_section(
             ".config/PaiSetup/xinitrc_base",
             "Setup and run rpi_Led daemon",
             [
-                f'export RPI_LED_CACHE="{self._cache_file_path}"',
-                f'export RPI_LED_FIFO="{self._fifo_file_path}"',
                 f'if ! [ -p "$RPI_LED_FIFO" ]; then',
                 f'    rm -f "$RPI_LED_FIFO"',
                 f'    mkfifo "$RPI_LED_FIFO"',
