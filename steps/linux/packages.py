@@ -157,5 +157,7 @@ class PackagesStep(Step):
                 "linux-lts-headers",
                 # AUR helper (install manually in this step)
                 "yay-git",
+                # Filesystem utils
+                "exfatprogfs",
             ]
         )

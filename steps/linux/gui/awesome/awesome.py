@@ -23,7 +23,7 @@ class AwesomeStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "awesome",
-            "jq",  # needed for parsing json when getting currency exchange
+            "lua-lgi",
         )
         dependency_dispatcher.register_xorg_wm(
             WindowManagerXorg(
