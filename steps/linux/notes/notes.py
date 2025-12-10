@@ -36,9 +36,16 @@ class NotesStep(Step):
 
     def perform(self):
         ext.download(
-            "https://github.com/DziubanMaciej/Notes.git",
+            "git@github.com:DziubanMaciej/Notes.git",
             "master",
             self._notes_dir,
+            logger=self._logger,
+            fetch=self.fetch_git,
+        )
+        ext.download(
+            "git@github.com:DziubanMaciej/NotesPrivate.git",
+            "master",
+            self._notes_dir / "_prv",
             logger=self._logger,
             fetch=self.fetch_git,
         )

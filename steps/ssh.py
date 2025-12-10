@@ -46,6 +46,7 @@ class SshStep(Step):
                 "    User DziubanMaciej",
             ],
             file_type=FileType.ConfigFile,
+            flush=True,
         )
 
         self._logger.log(f"Copying ssh key {src_ssh_key_path} -> {ssh_key_path}")
