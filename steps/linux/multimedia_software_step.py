@@ -14,7 +14,7 @@ class MultimediaSoftwareStep(Step):
             "vlc",
             "vlc-plugin-ffmpeg",
             "vlc-plugin-archive",
-            "vlc-plugin-freetype ",
+            "vlc-plugin-freetype",
             "mpv",
             "obs-studio",  # Recording
             "losslesscut-bin",  # cutting video

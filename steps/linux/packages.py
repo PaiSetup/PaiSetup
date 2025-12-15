@@ -158,6 +158,6 @@ class PackagesStep(Step):
                 # AUR helper (install manually in this step)
                 "yay-git",
                 # Filesystem utils
-                "exfatprogfs",
+                "exfatprogs",
             ]
         )

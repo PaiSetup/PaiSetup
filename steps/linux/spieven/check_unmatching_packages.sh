@@ -16,11 +16,14 @@ perform_arch() {
         yay -Qeq | sort | tee "$file_actual" | wc -l
 
         echo "diff \"$file_expected\" \"$file_actual\""
-        diff "$file_expected" "$file_actual" --side-by-side --color=auto --suppress-common-lines
+        diff "$file_expected" "$file_actual" --color=auto --suppress-common-lines
+        echo "diff returned $?"
 
         echo "Removing tmp files"
         rm "$file_actual"
         rm "$file_expected"
+
+        return 0
     }
 
     packages="$(get_unmatching_packages)"
