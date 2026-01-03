@@ -39,6 +39,14 @@
   <action id="Jdbc.OpenEditor.Data" />
   <action id="MethodHierarchy" />
   <action id="MethodHierarchy.BaseOnThisMethod" />
+  <action id="MoveLineDown">
+    <keyboard-shortcut first-keystroke="shift ctrl down" />
+  </action>
+  <action id="MoveLineUp">
+    <keyboard-shortcut first-keystroke="shift ctrl up" />
+  </action>
+  <action id="MoveStatementDown" />
+  <action id="MoveStatementUp" />
   <action id="NavBar-navigate" />
   <action id="OpenBookmarkGroup" />
   <action id="ProjectViewEditSource" />
@@ -82,6 +90,9 @@
   <action id="TableResult.GrowSelection" />
   <action id="TableResult.SelectColumn" />
   <action id="ToggleBookmark" />
+  <action id="ToggleInlayHintsGloballyAction">
+    <keyboard-shortcut first-keystroke="alt p" />
+  </action>
   <action id="ToggleLineBreakpoint">
     <keyboard-shortcut first-keystroke="ctrl f8" />
     <keyboard-shortcut first-keystroke="f9" />

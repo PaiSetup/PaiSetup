@@ -1,6 +1,69 @@
 <application>
+  <component name="BackendCodeEditorApplicationSettings">
+    <option name="/Default/Environment/InlayHints/GeneralInlayHintsOptions/EnableInlayHints/@EntryValue" value="false" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Applicability/=Live/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Applicability/=Surround/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Description/@EntryValue" value="Iterate range (C++11)" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=AUTO_TYPE/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=AUTO_TYPE/Expression/@EntryValue" value="suggestVariableType()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=AUTO_TYPE/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=CONTAINER/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=CONTAINER/Expression/@EntryValue" value="enumerableVariable()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=CONTAINER/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=VAR/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=VAR/Expression/@EntryValue" value="suggestVariableName()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Field/=VAR/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Metadata/=MigratedFromClassic/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Reformat/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Scope/=394618B7059649A2AB1B853AC7CF67FC/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Scope/=394618B7059649A2AB1B853AC7CF67FC/Type/@EntryValue" value="InCppCompoundStatement" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Shortcut/@EntryValue" value="iter" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/ShortenQualifiedReferences/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=3366535FD47D4FB3BB3DDC98EC1BCC25/Text/@EntryValue" value="for ($AUTO_TYPE$ $VAR$ : $CONTAINER$) {&#10;  $END$&#10;}" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Applicability/=Live/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Applicability/=Surround/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Description/@EntryValue" value="Indexed for(;;) loop" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=INDEX/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=INDEX/Expression/@EntryValue" value="suggestIndexVariable()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=INDEX/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=UPPER_BOUND/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=UPPER_BOUND/Expression/@EntryValue" value="" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Field/=UPPER_BOUND/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Metadata/=MigratedFromClassic/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Reformat/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Scope/=8FCA580964A74C26B58DFD51F5F02510/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Scope/=8FCA580964A74C26B58DFD51F5F02510/Type/@EntryValue" value="InCppCompoundStatement" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Shortcut/@EntryValue" value="for" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/ShortenQualifiedReferences/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=395C0A7DE89241E289C678D38B29A0DD/Text/@EntryValue" value="for (int $INDEX$ = 0; $INDEX$ &lt; $UPPER_BOUND$; ++$INDEX$) {&#10;  $END$&#10;}" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Applicability/=Live/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Applicability/=Surround/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Description/@EntryValue" value="Iterate using begin/end member functions" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=CONTAINER/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=CONTAINER/Expression/@EntryValue" value="enumerableVariable()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=CONTAINER/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER/Expression/@EntryValue" value="suggestVariableName()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER/InitialRange/@EntryValue" value="0" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER_TYPE/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER_TYPE/Expression/@EntryValue" value="guessType()" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Field/=ITER_TYPE/InitialRange/@EntryValue" value="-1" type="int" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Metadata/=MigratedFromClassic/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Reformat/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Scope/=99F1576793AF480995408AC26FF7E45A/@KeyIndexDefined" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Scope/=99F1576793AF480995408AC26FF7E45A/Type/@EntryValue" value="InCppCompoundStatement" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Shortcut/@EntryValue" value="itit" type="string" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/ShortenQualifiedReferences/@EntryValue" value="true" type="bool" />
+    <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Text/@EntryValue" value="for ($ITER_TYPE$ $ITER$ = $CONTAINER$.begin(); $ITER$ != $CONTAINER$.end(); ++$ITER$) {&#10;  $END$&#10;}" type="string" />
+  </component>
   <component name="CodeInsightSettings">
     <option name="AUTO_POPUP_JAVADOC_INFO" value="true" />
+  </component>
+  <component name="CodeVisionSettings">
+    <option name="enabled" value="false" />
   </component>
   <component name="EditorSettings">
     <option name="IS_WHITESPACES_SHOWN" value="true" />
@@ -12,5 +75,9 @@
         <option value="ObjectiveC" />
       </set>
     </option>
+    <option name="enabled" value="false" />
+  </component>
+  <component name="InlineCompletionOnboarding">
+    <option name="onboardingFinished" value="true" />
   </component>
 </application>
