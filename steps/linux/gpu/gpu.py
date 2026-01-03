@@ -49,7 +49,7 @@ class GpuStep(Step):
                 "vulkan-amdgpu-pro",
             ],
             GpuVendor.Nvidia: [
-                "nvidia-dkms",
+                "nvidia-open-dkms",
                 "nvidia-utils",
                 "lib32-nvidia-utils",
                 "nvidia-settings",

@@ -13,6 +13,7 @@ class VscodeStep(VscodeStepBase):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "code",
+            "cursor-bin",
             "code-features",  # Fixes some issues with loading ms-python.python extension
             "autopep8",
             "python-black",
