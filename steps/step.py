@@ -100,6 +100,25 @@ class FrameworkStep(Step):
                 f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
             ],
         )
+        self._file_writer.write_section(
+            ".config/PaiSetup/env.sh",
+            "Source all environment.d files",
+            [
+                'for dir in /etc/environment.d "$HOME/.config/environment.d"; do',
+                '    if [ ! -d "$dir" ]; then',
+                "        continue",
+                "    fi",
+                "",
+                '    for file in "$dir"/*.conf; do',
+                '        if [ ! -f "$file" ]; then',
+                "            continue",
+                "        fi",
+                "",
+                '        . "$file"',
+                "    done",
+                "done",
+            ],
+        )
 
         self._file_writer.write_section(
             ".profile",

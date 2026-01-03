@@ -13,11 +13,13 @@ class ProgrammingGoStep(Step):
         )
 
     def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Go paths",
+        home = self._env.home()
+        self._file_writer.write_lines(
+            ".config/environment.d/20-go.conf",
             [
-                'export GOPATH="$XDG_DATA_HOME/go"',
-                'export GOMODCACHE="$XDG_CACHE_HOME/go/mod"',
+                f"GOPATH={home}/.local/share/go",
+                f"GOMODCACHE={home}/.cache/go/mod",
+                f"GOCACHE={home}/.cache/go-build",
+                f"GOBIN={home}/.local/share/go/bin",
             ],
         )
