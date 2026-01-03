@@ -19,6 +19,7 @@ class VscodeStep(VscodeStepBase):
             "python-black",
         )
         dependency_dispatcher.register_homedir_file(".vscode")
+        dependency_dispatcher.register_homedir_file(".cursor")
 
         # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
