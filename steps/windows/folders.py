@@ -16,7 +16,6 @@ class KnownFolder(Enum):
     Programs = auto()
     Projects = auto()
     Dush = auto()
-    Toolbar = auto()
     VirtualMachines = auto()
     PublicDesktop = auto()
 
@@ -66,7 +65,6 @@ class FoldersStep(Step):
                 self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
             self._folders[KnownFolder.HwTools] = root_folder / "HwTools" if separate_hw_tools else self._folders[KnownFolder.Programs]
             self._folders[KnownFolder.Dush] = root_folder / "Dush"
-            self._folders[KnownFolder.Toolbar] = root_folder / "Toolbar"
         else:
             if include_games or include_multimedia or include_projects or include_vms or separate_hw_tools:
                 raise ValueError("Illegal folders included for rootless structure")

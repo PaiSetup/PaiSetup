@@ -1,12 +1,12 @@
 # Windows installation
 - Before formatting old Windows:
   - Backup files onto external drive.
-  - Download [media creation tool](https://www.microsoft.com/pl-pl/software-download/windows10) and create a pendrive with installation image. WARNING: it is incredibly difficult to do this from Linux. I tried multiple times and failed. Do **not** try, unless you have too much free time.
+  - Download [media creation tool](https://www.microsoft.com/pl-pl/software-download/windows11) and create a pendrive with installation image. WARNING: it is incredibly difficult to do this from Linux. I tried multiple times and failed. Do **not** try, unless you have too much free time.
   - Clone *PaiSetup* and copy it to the pendrive.
-- Install Windows 10.
+- Install Windows 11.
 - On new Windows:
   - Copy *PaiSetup* to desired directory (usually `D:\PaiSetup`).
-  - Start and shutdown IE. This is ridiculous, but some Powershell commands, which download stuff from internet depend on IE. They need it to be started at least once. Fun.
+  - Start and shutdown Edge. This is ridiculous, but some Powershell commands, which download stuff from internet depend on Edge. They need it to be started at least once. Fun.
   - Run `powershell.exe` as admin:
     ```
     Set-ExecutionPolicy Bypass
@@ -14,7 +14,6 @@
     python D:\PaiSetup\setup.py
     ```
   - Manual setup
-    - Toolbar. The folder with shortcuts should be created, but we have to manually add it to the taskbar.
     - MegaSync - exclude files for sync: Movies, TvSeries, Music, MusicToRate
     - ImageGlass - change what mouse wheel does, set as default image viewer
     - Notepad++ - Settings->Preferences->Language->Replace by Space

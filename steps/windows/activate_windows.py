@@ -19,7 +19,7 @@ class ActivateWindowsStep(Step):
         return output.strip() == "True"
 
     def get_key(self):
-        file_path = self._secret_dir / "windows10"
+        file_path = self._secret_dir / "windows11"
         try:
             with open(file_path) as file:
                 key = file.readline()
@@ -29,9 +29,9 @@ class ActivateWindowsStep(Step):
                     self._logger.log(f"Found a key in {file_path}")
                     return key
                 else:
-                    self._logger.log(f"Key found in {file_path} is invalid")
+                    self._logger.push_warning(f"Windows 11 key found in {file_path} is invalid")
         except FileNotFoundError:
-            self._logger.log(f"Key not found in {file_path}")
+            self._logger.push_warning(f"Windows 11 key not found in {file_path}")
 
     def perform(self):
         if self.is_windows_activated():

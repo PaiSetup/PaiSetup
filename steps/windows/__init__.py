@@ -18,7 +18,6 @@ from .programming_common import ProgrammingCommonStep
 from .programming_cpp import ProgrammingCppStep
 from .startup import StartupStep
 from .time.time import TimeStep
-from .toolbar import ToolbarStep
 from .uninstall_bloat import UninstallBloatStep
 from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
@@ -71,7 +70,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),
-            ToolbarStep(root_dir),
             VirtualBoxStep(),
             MultimediaToolsStep(),
             ProgrammingCommonStep(),
