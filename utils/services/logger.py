@@ -88,7 +88,7 @@ class Logger:
             return
 
         log_file_path = (self._log_dir / report_name).with_suffix(".log")
-        self.push_warning(f"{text} See logs at {log_file_path}", print=print)
+        self.push_warning(f"{text} See logs at {log_file_path}", print_to_console=print)
 
         if log_file_path.exists():
             # Generate a self-warning and ignore. We will overwrite the old log.

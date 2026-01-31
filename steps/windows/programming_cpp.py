@@ -10,9 +10,11 @@ class ProgrammingCppStep(Step):
         dependency_dispatcher.add_packages(
             "cmake",
             "doxygen.install",
-            "visualstudio2019community",
-            "visualstudio2019-workload-nativedesktop",
-            "visualstudio2019-workload-nativegame",
+            "qt5-default",
+            "jom",
+            "visualstudio2022community",
+            "visualstudio2022-workload-nativedesktop",
+            "visualstudio2022-workload-nativegame",
         )
         if self._graphics:
             dependency_dispatcher.add_packages("pix")

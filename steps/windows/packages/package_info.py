@@ -261,6 +261,15 @@ class PackageInfo:
             self.install_dir = programs_dir / "VisualStudio/2019"
             shared_dir = programs_dir / "VisualStudio/Shared"
             self._append_package_arg(f"--passive --installPath {self.install_dir} --path shared={shared_dir}")
+        elif re.match("visualstudio2022.*", package_name):
+            self.install_dir = programs_dir / "VisualStudio/2022"
+            shared_dir = programs_dir / "VisualStudio/Shared"
+            self._append_package_arg(f"--passive --installPath {self.install_dir} --path shared={shared_dir}")
+        elif package_name == "qt5-default":
+            self.install_dir = programs_dir / "QT5"
+            self._append_package_arg("/Path")
+        elif package_name == "jom":
+            pass
         elif package_name == "vivaldi":
             self.install_dir = programs_dir / "Vivaldi"
             self._append_install_arg(f"--vivaldi-install-dir={self.install_dir}")
