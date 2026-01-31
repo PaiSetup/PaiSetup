@@ -54,8 +54,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
     if is_normie:
         steps.append(
             FoldersStep(
-                None,
-                override_system_locations=False,
                 separate_hw_tools=False,
                 include_games=False,
                 include_multimedia=False,
@@ -65,7 +63,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         )
     else:
         steps += [
-            FoldersStep(args.root_dir, include_multimedia=False),
+            FoldersStep(include_multimedia=False),
             DushStep(fetch_git=True),
             GamesStep(),
             GitStep(),

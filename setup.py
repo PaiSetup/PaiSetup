@@ -31,8 +31,6 @@ arg_parser.add_argument("-k", "--skip_packages", action="store_true", help="Skip
 arg_parser.add_argument("-a", "--pause", action="store_true", help="Enable pause mode. Execution will stop and wait for user input before every Step.perform(). Press Enter to proceed.")
 arg_parser.add_argument("-d", "--dependency_resolution_mode", type=DependencyResolutionMode, default=DependencyResolutionMode.pull_and_push, action=EnumAction, help="Decide which dependency types are used for implicit dependency resolution.")
 arg_parser.add_argument("-u", "--allow_unsatisfied_push_dependencies", action="store_true", help="Only print warnings when there are not matching handlers for a push dependency. This should be used only for debug purposes")
-if OperatingSystem.current().is_windows():
-    arg_parser.add_argument("-r", "--root_dir", action=PathAction, default="D:\\", help="Main directory for user workspace.")
 args = arg_parser.parse_args()
 args.mode.save_last_mode(root_dir)
 # fmt: on

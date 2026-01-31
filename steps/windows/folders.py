@@ -23,8 +23,6 @@ class KnownFolder(Enum):
 class FoldersStep(Step):
     def __init__(
         self,
-        root_folder,
-        override_system_locations=True,
         separate_hw_tools=True,
         include_multimedia=True,
         include_games=True,
@@ -34,41 +32,27 @@ class FoldersStep(Step):
         super().__init__("Folders")
         self._folders = {}
 
-        # Add root folder if it's present
-        if root_folder is not None:
-            root_folder = Path(root_folder)
-            self._folders[KnownFolder.Root] = root_folder
+        # Setup root folder
+        root_folder = Path(r"C:\develop")
+        self._folders[KnownFolder.Root] = root_folder
 
         # Add system locations
-        if override_system_locations:
-            if root_folder is None:
-                raise ValueError("Cannot override system locations without specified root folder.")
-
-            self._folders[KnownFolder.Desktop] = root_folder / "Desktop"
-            self._folders[KnownFolder.Documents] = root_folder / "Documents"
-            self._folders[KnownFolder.Programs] = root_folder / "Programs"
-        else:
-            self._folders[KnownFolder.Desktop] = self._env.home() / "Desktop"
-            self._folders[KnownFolder.Documents] = self._env.home() / "Documents"
-            self._folders[KnownFolder.Programs] = Path(self._env.get("programfiles"))
+        self._folders[KnownFolder.Desktop] = self._env.home() / "Desktop"
+        self._folders[KnownFolder.Documents] = self._env.home() / "Documents"
+        self._folders[KnownFolder.Programs] = Path(self._env.get("programfiles"))
         self._folders[KnownFolder.PublicDesktop] = Path(self._env.get("PUBLIC")) / "Desktop"
 
         # Add custom locations
-        if root_folder is not None:
-            if include_games:
-                self._folders[KnownFolder.Games] = root_folder / "Games"
-            if include_multimedia:
-                self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
-            if include_projects:
-                self._folders[KnownFolder.Projects] = root_folder / "Projects"
-            if include_vms:
-                self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
-            self._folders[KnownFolder.HwTools] = root_folder / "HwTools" if separate_hw_tools else self._folders[KnownFolder.Programs]
-            self._folders[KnownFolder.Dush] = root_folder / "Dush"
-        else:
-            if include_games or include_multimedia or include_projects or include_vms or separate_hw_tools:
-                raise ValueError("Illegal folders included for rootless structure")
-            self._folders[KnownFolder.HwTools] = self._folders[KnownFolder.Programs]
+        if include_games:
+            self._folders[KnownFolder.Games] = root_folder / "Games"
+        if include_multimedia:
+            self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
+        if include_projects:
+            self._folders[KnownFolder.Projects] = root_folder / "Projects"
+        if include_vms:
+            self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
+        self._folders[KnownFolder.HwTools] = root_folder / "HwTools" if separate_hw_tools else self._folders[KnownFolder.Programs]
+        self._folders[KnownFolder.Dush] = root_folder / "Dush"
 
     @pull_dependency_handler
     def get_known_folders(self):
@@ -97,14 +81,5 @@ class FoldersStep(Step):
         dependency_dispatcher.add_folder_to_quick_access(home)
 
     def perform(self):
-        self._setup_known_folders()
-        self._create_folders()
-
-    def _setup_known_folders(self):
-        run_command(f"KnownFolders.exe -f Desktop -p {self._folders[KnownFolder.Desktop]} -m -r")
-        # TODO it is difficult to move Documents. Investigate it.
-        # run_command(f"KnownFolders.exe -f Documents -p {self._folders[KnownFolder.Documents]} -m -r")
-
-    def _create_folders(self):
         for _, path in self._folders.items():
             path.mkdir(parents=True, exist_ok=True)
