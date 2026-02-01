@@ -59,6 +59,9 @@
     <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/ShortenQualifiedReferences/@EntryValue" value="true" type="bool" />
     <option name="/Default/PatternsAndTemplates/LiveTemplates/Template/=705554FCC8A74797B34A848874FA0BD7/Text/@EntryValue" value="for ($ITER_TYPE$ $ITER$ = $CONTAINER$.begin(); $ITER$ != $CONTAINER$.end(); ++$ITER$) {&#10;  $END$&#10;}" type="string" />
   </component>
+  <component name="CodeFoldingSettings">
+    <option name="COLLAPSE_IMPORTS" value="false" />
+  </component>
   <component name="CodeInsightSettings">
     <option name="AUTO_POPUP_JAVADOC_INFO" value="true" />
   </component>
