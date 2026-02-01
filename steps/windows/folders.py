@@ -7,60 +7,69 @@ from utils.dependency_dispatcher import pull_dependency_handler
 
 
 class KnownFolder(Enum):
-    Root = auto()
+    Root = auto()  # Optional
+
     Desktop = auto()
     Documents = auto()
-    Games = auto()
-    HwTools = auto()
-    Multimedia = auto()
-    Programs = auto()
-    Projects = auto()
-    Dush = auto()
-    VirtualMachines = auto()
     PublicDesktop = auto()
 
+    Programs = auto()
+    HwTools = auto()
+    Games = auto()
+    Projects = auto()
+    Multimedia = auto()
+    VirtualMachines = auto()
+    Dush = auto()
 
+
+# This step serves as a source of knowledge for other steps about various paths used in our setup. Some of them are
+# default Windows system paths, like desktop or documents and some are just defined for the sake of this setup. Other
+# steps should query the paths in their pull_dependencies() phase, store them and use in perform() phase.
 class FoldersStep(Step):
-    def __init__(
-        self,
-        separate_hw_tools=True,
-        include_multimedia=True,
-        include_games=True,
-        include_projects=True,
-        include_vms=True,
-    ):
+    def __init__(self, root_folder):
         super().__init__("Folders")
         self._folders = {}
 
-        # Setup root folder
-        root_folder = Path(r"C:\develop")
-        self._folders[KnownFolder.Root] = root_folder
+        # Query some default Windows paths
+        my_home_dir = self._env.get("HOME")
+        public_home_dir = self._env.get("HOME")
+        program_files_dir = Path(self._env.get("programfiles"))
 
-        # Add system locations
-        self._folders[KnownFolder.Desktop] = self._env.home() / "Desktop"
-        self._folders[KnownFolder.Documents] = self._env.home() / "Documents"
-        self._folders[KnownFolder.Programs] = Path(self._env.get("programfiles"))
-        self._folders[KnownFolder.PublicDesktop] = Path(self._env.get("PUBLIC")) / "Desktop"
+        # Add root folder if it's present
+        if root_folder is not None:
+            root_folder = Path(root_folder)
+            self._folders[KnownFolder.Root] = root_folder
 
-        # Add custom locations
-        if include_games:
+        # Desktop, documents and public desktop directories will stay in default locations. We used to override them
+        # with KnownFolders.exe from WindowsHandies, but it's not really worth it and it may complicate some things.
+        self._folders[KnownFolder.Desktop] = my_home_dir / "Desktop"
+        self._folders[KnownFolder.Documents] = my_home_dir / "Documents"
+        self._folders[KnownFolder.PublicDesktop] = public_home_dir / "Desktop"
+
+        # Assign other folders. They will be under root_folder if specified. Otherwise, we'll have to put them in
+        # various roughly acceptable places. It's not great.
+        if root_folder is not None:
+            self._folders[KnownFolder.Programs] = root_folder / "Programs"
+            self._folders[KnownFolder.HwTools] = root_folder / "HwTools"
             self._folders[KnownFolder.Games] = root_folder / "Games"
-        if include_multimedia:
-            self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
-        if include_projects:
             self._folders[KnownFolder.Projects] = root_folder / "Projects"
-        if include_vms:
+            self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
             self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
-        self._folders[KnownFolder.HwTools] = root_folder / "HwTools" if separate_hw_tools else self._folders[KnownFolder.Programs]
-        self._folders[KnownFolder.Dush] = root_folder / "Dush"
+            self._folders[KnownFolder.Dush] = root_folder / "Dush"
+        else:
+            self._folders[KnownFolder.Programs] = default_program_files_dir
+            self._folders[KnownFolder.HwTools] = default_program_files_dir
+            self._folders[KnownFolder.Games] = default_program_files_dir
+            self._folders[KnownFolder.Projects] = my_home_dir / "Projects"
+            self._folders[KnownFolder.Multimedia] = my_home_dir / "Multimedia"
+            self._folders[KnownFolder.VirtualMachines] = my_home_dir / "VMs"
+            self._folders[KnownFolder.Dush] = my_home_dir / "Dush"
 
     @pull_dependency_handler
     def get_known_folders(self):
         return self._folders
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("windows-handies")
-
         home = self._env.home()
         dependency_dispatcher.remove_folder_from_quick_access(home / "Desktop")
         dependency_dispatcher.remove_folder_from_quick_access(home / "Downloads")
@@ -73,7 +82,6 @@ class FoldersStep(Step):
             KnownFolder.Desktop,
             KnownFolder.Programs,
             KnownFolder.Projects,
-            KnownFolder.Multimedia,
         ]
         for folder in folders_to_add:
             if folder in self._folders:

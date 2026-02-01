@@ -52,18 +52,12 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
 
     # Add steps specific to my machine or normie machine
     if is_normie:
-        steps.append(
-            FoldersStep(
-                separate_hw_tools=False,
-                include_games=False,
-                include_multimedia=False,
-                include_projects=False,
-                include_vms=False,
-            )
-        )
+        steps += [
+            FoldersStep(root_folder=None),
+        ]
     else:
         steps += [
-            FoldersStep(include_multimedia=False),
+            FoldersStep(root_folder="D:\\"),
             DushStep(fetch_git=True),
             GamesStep(),
             GitStep(),

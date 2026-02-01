@@ -3,6 +3,9 @@
   - Backup files onto external drive.
   - Download [media creation tool](https://www.microsoft.com/pl-pl/software-download/windows11) and create a pendrive with installation image. WARNING: it is incredibly difficult to do this from Linux. I tried multiple times and failed. Do **not** try, unless you have too much free time.
   - Clone *PaiSetup* and copy it to the pendrive.
+  - Put keys in the *PaiSetup/secret* directory
+    - `any_name_you_like.ssh` - a private SSH key file
+    - `windows11` - a file with Windows 11 activation key
 - Install Windows 11.
 - On new Windows:
   - Copy *PaiSetup* to desired directory (usually `D:\PaiSetup`).

@@ -13,7 +13,7 @@ class IconsStep(Step):
         self._merge_commands = False
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.add_packages("windows-handies")
+        dependency_dispatcher.add_packages("windows-handies")  # For Iconfigure
 
     def pull_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
@@ -35,15 +35,8 @@ class IconsStep(Step):
         icon_commands = []
         if self._root_folder:
             icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._root_folder}"')
-        if self._multimedia_folder:
-            icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._multimedia_folder}"')
-        if self._programs_folder or self._hw_tools_folder:
-            icon_command = f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r'
-            if self._programs_folder:
-                icon_command += f' -d "{self._programs_folder}"'
-            if self._hw_tools_folder:
-                icon_command += f' -d "{self._hw_tools_folder}"'
-            icon_commands.append(icon_command)
+        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._multimedia_folder}"')
+        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._programs_folder} -d "{self._hw_tools_folder}')
 
         # Execute commands
         self._logger.log("Setting up icons")
