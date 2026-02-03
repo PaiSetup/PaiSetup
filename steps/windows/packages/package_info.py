@@ -83,6 +83,7 @@ class PackageInfo:
             self.install_dir = programs_dir / "BeyondCompare"
             self._set_installer(Installer.Inno)
             self.desktop_files_to_delete.append("Beyond Compare 4.lnk")
+            self.desktop_files_to_delete.append("Beyond Compare 5.lnk")
             self._append_startup_entry("BCClipboard")
         elif package_name == "dependencies":
             self.install_dir = programs_dir / "Dependencies"
@@ -111,6 +112,7 @@ class PackageInfo:
             self.install_dir = hw_tools_dir / "CrystalDiskMark"
             self._set_installer(Installer.Inno)
             self.desktop_files_to_delete.append("CrystalDiskMark 8.lnk")
+            self.desktop_files_to_delete.append("CrystalDiskMark 9.lnk")
         elif package_name == "crystaldiskinfo.install":
             self.install_dir = hw_tools_dir / "CrystalDiskInfo"
             self._set_installer(Installer.Inno)
@@ -141,6 +143,7 @@ class PackageInfo:
         elif package_name == "gimp":
             self.install_dir = programs_dir / "Gimp"
             self._set_installer(Installer.Inno)
+            self.desktop_files_to_delete.append("GIMP 3.0.8-1.lnk")
         elif package_name == "git":
             self.install_dir = programs_dir / "Git"
             self._set_installer(Installer.Inno)
@@ -221,10 +224,6 @@ class PackageInfo:
         elif package_name == "pix":
             # Pix doesn't let us configure anything...
             pass
-        elif package_name == "python3":
-            # Technically python3 has an MSI installer, but the package already passes installation dir so we have to use the package parameter
-            self.install_dir = programs_dir / "Python3"
-            self._append_package_arg(f"/InstallDir:{self.install_dir}")
         elif package_name == "pycharm-community":
             self.install_dir = programs_dir / "Pycharm"
             self._set_installer(Installer.Nsis)

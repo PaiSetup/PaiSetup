@@ -19,11 +19,11 @@ choco feature enable -n=useRememberedArgumentsForUpgrades
 # Install Python
 $python_install_args = ''
 if ($programs_dir -ne '') {
-    $python_install_args = "--packageparameters=`"/InstallDir:$programs_dir\Python3`""
+    $python_install_args = "--packageparameters=`"/InstallDir:$programs_dir\Python`""
 } else {
-    $python_install_args = "--packageparameters=`"/InstallDir:$env:ProgramFiles\Python3`""
+    $python_install_args = ""
 }
-choco install python311 $python_install_args --yes
+choco install python314 $python_install_args --yes # Note, do not install virtual packages like "python" or "python3" because they ignore package params.
 Update-SessionEnvironment
 
 # Install python libraries needed by PaiSetup

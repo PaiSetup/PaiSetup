@@ -31,8 +31,8 @@ class FoldersStep(Step):
         self._folders = {}
 
         # Query some default Windows paths
-        my_home_dir = self._env.get("HOME")
-        public_home_dir = self._env.get("HOME")
+        my_home_dir = self._env.home()
+        public_home_dir = Path(self._env.get("PUBLIC"))
         program_files_dir = Path(self._env.get("programfiles"))
 
         # Add root folder if it's present
@@ -67,6 +67,7 @@ class FoldersStep(Step):
 
     @pull_dependency_handler
     def get_known_folders(self):
+        # TODO change to get_known_folder(self, folder). Call mkdir there. Remove perform. Now we're dependent on order of steps.
         return self._folders
 
     def push_dependencies(self, dependency_dispatcher):

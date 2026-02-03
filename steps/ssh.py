@@ -5,7 +5,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.command import *
-from utils.os_function import linux_only, windows_only
+from utils.os_function import OperatingSystem, linux_only, windows_only
 from utils.services.file_writer import FileType
 
 
@@ -60,13 +60,20 @@ class SshStep(Step):
         if self._full or not ssh_known_hosts_path.exists():
             self._logger.log("Setting up known_hosts for typical sites")
             known_hosts_command = "ssh-keyscan github.com"
-            known_hosts = run_command(known_hosts_command, stdout=Stdout.return_back()).stdout.splitlines()
-            self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
+            try:
+                known_hosts = run_command(known_hosts_command, stdout=Stdout.return_back()).stdout.splitlines()
+                self._file_writer.write_lines(ssh_known_hosts_path, known_hosts, file_type=FileType.ConfigFileNoComments)
+            except:
+                # Windows ssh client has some issues with ssh-keyscan command. Just ignore this, it's not very important.
+                # See https://github.com/actions/runner-images/issues/13072#issuecomment-3376895859
+                if not OperatingSystem.current().is_windows():
+                    raise
 
         self._logger.log(f"Setting permissions for ssh files (read-write only for the user {self._env.get('USER')})")
         os.chmod(ssh_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
         os.chmod(ssh_config_path, stat.S_IRUSR | stat.S_IWUSR)
-        os.chmod(ssh_known_hosts_path, stat.S_IRUSR | stat.S_IWUSR)
+        if ssh_known_hosts_path.exists():
+            os.chmod(ssh_known_hosts_path, stat.S_IRUSR | stat.S_IWUSR)
         os.chmod(ssh_key_path, stat.S_IRUSR | stat.S_IWUSR)
         os.chmod(ssh_public_key_path, stat.S_IRUSR | stat.S_IWUSR)
 

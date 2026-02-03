@@ -37,7 +37,16 @@ def download(
     git_dir = Path(directory) / ".git"
     clone_needed = not git_dir.is_dir()
     if clone_needed:
-        run_command(f"git clone {url} {directory}")
+        try:
+            run_command(f"git clone {url} {directory}")
+        except:
+            # Windows create a desktop.ini file when an icon is set. This can make git clone fail due to non-empty
+            # directory. Try to remove it and retry.
+            if OperatingSystem.current().is_windows():
+                (Path(directory) / "desktop.ini").unlink(missing_ok=True)
+                run_command(f"git clone {url} {directory}")
+            else:
+                raise
 
     # Go to directory and configure project
     with Pushd(directory):

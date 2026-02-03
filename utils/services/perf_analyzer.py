@@ -71,7 +71,8 @@ class PerfAnalyzer:
         lines = "\n".join(lines)
         with open(self._pai_setup_root / "flamegraph.svg", "w") as file:
             if OperatingSystem.current().is_windows():
-                flamegraph_command = "flamegraph.pl.exe"
+                return  # TODO it started crashing with some perl errors
+                # flamegraph_command = "flamegraph.pl.exe"
             else:
                 flamegraph_command = "flamegraph.pl"
             run_command(flamegraph_command, shell=True, stdin=Stdin.string(lines), stdout=Stdout.print_to_file(file))

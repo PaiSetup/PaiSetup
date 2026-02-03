@@ -36,7 +36,8 @@ class IconsStep(Step):
         if self._root_folder:
             icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._root_folder}"')
         icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._multimedia_folder}"')
-        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._programs_folder} -d "{self._hw_tools_folder}')
+        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._programs_folder}"')
+        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._hw_tools_folder}"')
 
         # Execute commands
         self._logger.log("Setting up icons")

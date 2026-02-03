@@ -36,8 +36,9 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
 
     # Add default steps
     steps = [
-        PackagesStep(build_dir, skip_already_installed=True, is_main_machine=not is_normie),
+        PackagesStep(build_dir, enable_installation=install_packages, skip_already_installed=True, is_main_machine=not is_normie),
         ActivateWindowsStep(secret_dir),
+        VscodeStep(build_dir),
         ExplorerStep(),
         ExtensionsStep(),
         HwToolsStep(gaming=True),
@@ -47,7 +48,6 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         TimeStep(),
         StartupStep(),
         UninstallBloatStep(),
-        VscodeStep(build_dir),
     ]
 
     # Add steps specific to my machine or normie machine

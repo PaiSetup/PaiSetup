@@ -12,8 +12,9 @@ from .package_info import PackageInfo, custom_packages_dir
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir, skip_already_installed, is_main_machine):
+    def __init__(self, root_build_dir, enable_installation, skip_already_installed, is_main_machine):
         super().__init__("Packages")
+        self._enable_installation = enable_installation
         self._skip_already_installed = skip_already_installed
         self._is_main_machine = is_main_machine
         self._packages = []
@@ -31,7 +32,6 @@ class PackagesStep(Step):
             "vlc",
             "dependencies",
             "microsoft-windows-terminal",
-            "python3",
         )
         if self._is_main_machine:
             dependency_dispatcher.add_packages(
@@ -49,18 +49,22 @@ class PackagesStep(Step):
         self._games_dir = known_folders.get(KnownFolder.Games)
 
     def perform(self):
-        self._logger.log(f"Required packages: {self._packages}")
-        if self._skip_already_installed:
-            packages_to_install = self._get_missing_packages(self._packages)
-        else:
-            packages_to_install = self._packages
+        if self._enable_installation:
+            self._logger.log(f"Required packages: {self._packages}")
+            if self._skip_already_installed:
+                packages_to_install = self._get_missing_packages(self._packages)
+                self._logger.log(f"Packages to install: {packages_to_install}")
+            else:
+                packages_to_install = self._packages
 
-        if not packages_to_install:
-            self._logger.log("All packages already installed")
-        else:
-            for package in packages_to_install:
-                self.install_package(package)
-        self._refresh_path()
+            if packages_to_install:
+                for package in packages_to_install:
+                    self.install_package(package)
+                self._refresh_path()
+
+        for package in self._packages:
+            package_info = self.get_package_info(package)
+            self._delete_desktop_files(package_info)
 
     def install_package(self, package):
         # Gather required info for this package
@@ -103,13 +107,6 @@ class PackagesStep(Step):
                     f"Package {package} was meant to be installed in {package_info.install_dir}, but the directory does not exist"
                 )
 
-        # Remove any automatically created desktop icons
-        for file_name in package_info.desktop_files_to_delete:
-            file = self._desktop_dir / file_name
-            file.unlink(missing_ok=True)
-            file = self._public_desktop_dir / file_name
-            file.unlink(missing_ok=True)
-
     def _pack_custom_package(self, package_name):
         package_dir = custom_packages_dir / package_name
 
@@ -121,6 +118,13 @@ class PackagesStep(Step):
         # Process the package
         with Pushd(package_dir):
             run_command("choco pack")
+
+    def _delete_desktop_files(self, package_info):
+        for file_name in package_info.desktop_files_to_delete:
+            file = self._desktop_dir / file_name
+            file.unlink(missing_ok=True)
+            file = self._public_desktop_dir / file_name
+            file.unlink(missing_ok=True)
 
     @push_dependency_handler
     def add_packages(self, *args):
@@ -186,7 +190,7 @@ class PackagesStep(Step):
     def _refresh_path(self):
         self._logger.log("Refreshing PATH variable")
         powershell_command = [
-            "Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1",
+            r"Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1",
             "refreshenv | out-null",
             "echo $env:PATH",
         ]

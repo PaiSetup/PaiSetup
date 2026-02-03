@@ -18,6 +18,7 @@ class ExplorerStep(Step):
         self._quick_access_folder_for_addition.append(folder)
 
     def perform(self):
+        self._setup_sticky_keys()
         self._setup_system_icons_on_desktop()
         self._setup_shown_files()
         self._setup_taskbar()
@@ -25,7 +26,11 @@ class ExplorerStep(Step):
         self._set_dark_theme()
         self._setup_quick_access()
         self._remove_bloat_folders()
-        # self._reset_explorer()
+        self._reset_explorer()
+
+    def _setup_sticky_keys(self):
+        self._logger.log("Disabling sticky keys shortcut (5x shift)")
+        set_registry_value_string(HKCU, r"Control Panel\Accessibility\StickyKeys", "Flags", "474")
 
     def _setup_system_icons_on_desktop(self):
         self._logger.log("Setting up system icons on desktop")
@@ -53,6 +58,8 @@ class ExplorerStep(Step):
         # set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", 2)
         set_registry_value_dword(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\PenWorkspace", "PenWorkspaceButtonDesiredVisibility", 0)
         set_registry_value_dword(HKLM, r"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "NoTaskGrouping", 1)
+        set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarAl", 0)
+        set_registry_value_dword(HKCU, r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarGlomLevel", 2)
 
     def _setup_context_menus(self):
         self._logger.log("Cleaning context menus")
@@ -77,6 +84,13 @@ class ExplorerStep(Step):
             r"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked",
             "{9F156763-7844-4DC4-B2B1-901F640F5155}",
             "",
+            create_keys=True,
+        )
+        set_registry_value_string(
+            HKCU,
+            r"SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32",
+            None,
+            None,
             create_keys=True,
         )
 
