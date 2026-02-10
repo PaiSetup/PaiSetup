@@ -8,6 +8,7 @@ class VirtualBoxStep(Step):
         self._vm_dir = self._env.home() / "vm"
 
     def push_dependencies(self, dependency_dispatcher):
+        raise NotImplementedError("Virtual box is a broken package")
         dependency_dispatcher.add_packages(
             "virtualbox",
             "virtualbox-guest-iso",

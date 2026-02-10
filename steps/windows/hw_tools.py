@@ -11,11 +11,11 @@ class HwToolsStep(Step):
             "hwmonitor",
             "crystaldiskmark",
             "crystaldiskinfo.install",
-            # "xtreme-tuner",
+            # "xtreme-tuner", # TODO-WINDOWS broken package
             "killdisk-freeware",
         )
         if self._gaming:
             dependency_dispatcher.add_packages(
-                "msiafterburner",
+                # "msiafterburner", # TODO-WINDOWS broken package
                 "furmark",
             )

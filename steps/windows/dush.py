@@ -1,5 +1,6 @@
 from steps.dush_base import DushStepBase
 from steps.windows.folders import KnownFolder
+from utils.services.file_writer import FileType
 
 
 class DushStep(DushStepBase):
@@ -18,17 +19,19 @@ class DushStep(DushStepBase):
     def perform(self):
         super().perform()
         self._file_writer.write_section(
-            ".profile",
+            ".bashrc",
             "Developer scripts",
             [
                 f'export DUSH_PATH="{self._dush_root_dir}"',
                 f'export DUSH_WORKSPACE="{self._projects_dir}"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
-                ". $DUSH_PATH/framework/frontend.bash",
-                ". $DUSH_PATH/projects/bashies/main.sh",
+                ". $DUSH_PATH/dush/framework/frontend.bash",
+                ". $DUSH_PATH/dush/projects/bashies/main.sh",
             ],
+            file_type=FileType.Bash,
         )
 
+        # TODO-WINDOWS: we cannot do this, because there are conflicts in PYTHONPATH between PaiSetup and Dush. We need to namespace it somehow.
         powershell_profile = self._documents_dir / "WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
         self._file_writer.write_section(
             powershell_profile,
@@ -38,6 +41,6 @@ class DushStep(DushStepBase):
                 f'$env:DUSH_WORKSPACE = "{self._projects_dir}"',
                 f'$env:DUSH_PATH = "{self._dush_dir}"',
                 "$env:DUSH_ENABLE_AUTOLOAD = $true",
-                "Import-Module $env:DUSH_PATH/projects/bashies/main.ps1",
+                "Import-Module $env:DUSH_PATH/dush/projects/bashies/main.ps1",
             ],
         )

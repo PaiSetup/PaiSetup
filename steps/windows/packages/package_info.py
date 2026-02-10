@@ -211,8 +211,10 @@ class PackageInfo:
             self._append_choco_arg("--ignore-checksums")
             self.desktop_files_to_delete.append("MSI Afterburner.lnk")
         elif package_name == "notepadplusplus":
-            self.install_dir = programs_dir / "Notepad++"
-            self._set_installer(Installer.Nsis)
+            self.install_dir = Path(r"C:\Program Files\Notepad++")
+            # TODO-WINDOWS it stopped working
+            # self.install_dir = programs_dir / "Notepad++"
+            # self._set_installer(Installer.Nsis)
         elif package_name == "obsidian":
             # Technically it's an NSIS installer, but it doesn't allow setting installation dir
             # https://forum.obsidian.md/t/how-to-change-the-default-installation-path/3492
@@ -250,7 +252,7 @@ class PackageInfo:
             self._set_installer(Installer.Msi)
         elif package_name == "veracrypt":
             # Package is implemented as autohotkey script and does not offer a way to select install dir.
-            # TODO: implement selecting installation dir and create a pull request
+            # TODO-WINDOWS: implement selecting installation dir and create a pull request
             self.desktop_files_to_delete.append("VeraCrypt.lnk")
         elif package_name == "virtualbox":
             self.install_dir = programs_dir / "VirtualBox"

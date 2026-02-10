@@ -63,6 +63,7 @@ class ExplorerStep(Step):
 
     def _setup_context_menus(self):
         self._logger.log("Cleaning context menus")
+        delete_registry_sub_key_tree(HKCR, r"Directory\Background\shell", "git_shell")
         delete_registry_sub_key_tree(HKCR, r"Directory\Background\shell", "AnyCode")
         delete_registry_sub_key_tree(HKCR, r"Directory\Background\shellex\ContextMenuHandlers", "NvCplDesktopContext")
         delete_registry_sub_key_tree(HKCR, r"Directory\shell", "AddToPlaylistVLC")
@@ -93,6 +94,9 @@ class ExplorerStep(Step):
             None,
             create_keys=True,
         )
+
+        set_registry_value_string(HKCR, r"Directory\Background\shell\WindowsTerminal", None, "Open Terminal here", create_keys=True)
+        set_registry_value_string(HKCR, r"Directory\Background\shell\WindowsTerminal\command", None, "wt.exe", create_keys=True)
 
     def _set_dark_theme(self):
         self._logger.log("Enabling dark theme")

@@ -15,10 +15,10 @@ class DushStep(DushStepBase):
                 f'export DUSH_PATH="{self._dush_root_dir}"',
                 f'export DUSH_WORKSPACE="$HOME/work"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
-                ". $DUSH_PATH/framework/frontend.bash",
-                ". $DUSH_PATH/projects/bashies/main.sh",
-                ". $DUSH_PATH/projects/awsm/main.sh",
-                ". $DUSH_PATH/projects/burrito/main.sh",
+                ". $DUSH_PATH/dush/framework/frontend.bash",
+                ". $DUSH_PATH/dush/projects/bashies/main.sh",
+                ". $DUSH_PATH/dush/projects/awsm/main.sh",
+                ". $DUSH_PATH/dush/projects/burrito/main.sh",
             ],
         )
 

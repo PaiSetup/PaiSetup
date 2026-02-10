@@ -12,7 +12,7 @@ class DushStepBase(Step):
 
     def perform(self):
         ext.download(
-            "https://github.com/PaiSetup/Dush.git",
+            "git@github.com:PaiSetup/Dush.git",
             "master",
             self._dush_root_dir,
             logger=self._logger,

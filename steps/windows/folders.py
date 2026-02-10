@@ -67,7 +67,7 @@ class FoldersStep(Step):
 
     @pull_dependency_handler
     def get_known_folders(self):
-        # TODO change to get_known_folder(self, folder). Call mkdir there. Remove perform. Now we're dependent on order of steps.
+        # TODO-WINDOWS change to get_known_folder(self, folder). Call mkdir there. Remove perform. Now we're dependent on order of steps.
         return self._folders
 
     def push_dependencies(self, dependency_dispatcher):

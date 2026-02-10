@@ -32,7 +32,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
         case _:
             raise ValueError("Selected SetupMode is unsupported for Windows")
 
-    # TODO check for admin
+    # TODO-WINDOWS check for admin
 
     # Add default steps
     steps = [
@@ -62,7 +62,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),
-            VirtualBoxStep(),
+            # VirtualBoxStep(), # TODO-WINDOWS broken package
             MultimediaToolsStep(),
             ProgrammingCommonStep(),
             ProgrammingCppStep(False),

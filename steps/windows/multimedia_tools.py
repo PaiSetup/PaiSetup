@@ -8,8 +8,8 @@ class MultimediaToolsStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "audacity",
-            # "formatfactory", # broken package
+            # "formatfactory", # TODO-WINDOWS broken package
             "gimp",
-            "irfanview",
+            # "irfanview", # TODO-WINDOWS broken package
             "pdfsam.install",
         )

@@ -3,7 +3,7 @@ from utils.windows.windows_registry import *
 
 
 class ExtensionsStep(Step):
-    """
+    r"""
     Association of extensions with applications and other shell features are all stored in registry.
     There seems to be no easy way to alter them via API calls, so the registry has to be manually
     fiddled with. Below are some notes about how it all works.
@@ -46,7 +46,8 @@ class ExtensionsStep(Step):
         self._setup_extension_powershell(".ps1", "Powershell script", True)
 
         # fmt: off
-        self._logger.log("Associating extensions with Notepad++")
+        npp_path = self._npp_install_dir / "notepad++.exe"
+        self._logger.log(f"Associating extensions with Notepad++ ({npp_path})")
         extensions_for_npp = [
             (".txt",           "Text file (.txt)",     True),
             (".cmake",         None,                   False),
@@ -69,7 +70,7 @@ class ExtensionsStep(Step):
         ]
         # fmt: on
         for extension, description, new_file_entry in extensions_for_npp:
-            self._setup_extension_npp(extension, description, new_file_entry)
+            self._setup_extension_npp(npp_path, extension, description, new_file_entry)
 
         self._logger.log("Removing unneeded context menu entries")
         new_file_entries_to_remove = [".rtf", ".docx", ".pptx", ".xlsx", ".rar", ".zip", ".bmp", ".rtf"]
@@ -109,8 +110,8 @@ class ExtensionsStep(Step):
         delete_registry_user_choice(HKLM, extension)
 
         # Now we can remove the rest of the keys, which are not protected
-        delete_registry_sub_key_tree(HKCU, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
-        delete_registry_sub_key_tree(HKLM, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
+        delete_registry_sub_key_tree(HKCU, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
+        delete_registry_sub_key_tree(HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts", extension)
 
     def _create_new_file_entry(self, extension):
         set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{extension}\ShellNew", "NullFile", "", create_keys=True)
@@ -164,10 +165,9 @@ class ExtensionsStep(Step):
         if new_file_entry:
             self._create_new_file_entry(extension)
 
-    def _setup_extension_npp(self, extension, description, new_file_entry):
+    def _setup_extension_npp(self, npp_path, extension, description, new_file_entry):
         # Create application key for Notepad++ for this extension
-        app_path = self._npp_install_dir / "notepad++.exe"
-        open_command = f'"{app_path}" "%1"'
+        open_command = f'"{npp_path}" "%1"'
         application_key_name = f"PaiSetup{extension}"
         self._create_application_key(application_key_name, open_command, description, new_file_entry)
 
