@@ -19,6 +19,7 @@ class DushStep(DushStepBase):
                 ". $DUSH_PATH/dush/projects/bashies/main.sh",
                 ". $DUSH_PATH/dush/projects/awsm/main.sh",
                 ". $DUSH_PATH/dush/projects/burrito/main.sh",
+                ". $DUSH_PATH/dush/projects/pnt/main.sh",
             ],
         )
 
