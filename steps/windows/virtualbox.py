@@ -5,6 +5,7 @@ from utils.command import *
 
 class VirtualBoxStep(Step):
     def __init__(self):
+        raise NotImplementedError("Virtual box is a broken package")
         super().__init__("VirtualBox")
 
     def push_dependencies(self, dependency_dispatcher):
