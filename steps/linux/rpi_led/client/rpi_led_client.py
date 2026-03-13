@@ -103,20 +103,27 @@ class LedThread(Thread):
 
     def _connect_to_server(self, sock_fd):
         if self._server_address is None:
-            output = run_command("ip neighbour", stdout=Stdout.return_back(), stderr=Stdout.ignore()).stdout
 
-            for line in output.splitlines():
-                parts = line.split()
-                if len(parts) >= 5:
-                    ip = parts[0]
-                    mac = parts[4].lower()
-                    if mac == "28:cd:c1:03:6a:11":
-                        self._server_address = ip
+            def read_address():
+                output = run_command("ip neighbour", stdout=Stdout.return_back(), stderr=Stdout.ignore()).stdout
+                for line in output.splitlines():
+                    parts = line.split()
+                    if len(parts) >= 5:
+                        ip = parts[0]
+                        mac = parts[4].lower()
+                        if mac == "28:cd:c1:03:6a:11":
+                            return ip
 
-            if self._server_address is None:
+            ip = read_address()
+            if ip is None:
+                run_command("arp-scan --localnet", stdout=Stdout.ignore(), stderr=Stdout.ignore())
+                ip = read_address()
+
+            if ip is None:
                 return (LedThread.ConnectResult.CannotFindAddress, "")
-            else:
-                print(f"LED: found server address {self._server_address}")
+
+            self._server_address = ip
+            print(f"LED: found server address {self._server_address}")
 
         sock_fd.setblocking(False)
         connect_result = sock_fd.connect_ex((self._server_address, server_port))
