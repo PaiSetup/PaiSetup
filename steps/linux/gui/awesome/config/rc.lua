@@ -352,27 +352,76 @@ client.connect_signal("tagged", function (client, tag)
     end
 end)
 
-client.connect_signal("manage", function (client)
+
+client.connect_signal("manage", function (c)
     -- Prevent clients from being unreachable after screen count changes.
     if awesome.startup
-      and not client.size_hints.user_position
-      and not client.size_hints.program_position then
-        awful.placement.no_offscreen(client)
+      and not c.size_hints.user_position
+      and not c.size_hints.program_position then
+        awful.placement.no_offscreen(c)
     end
 
     -- Do not let creating new clients on home panel tag
-    if client.first_tag.is_home and not client.is_home_panel then
-        local default_tag = client.screen.tags[default_tag_index]
-        client:move_to_tag(default_tag)
+    if c.first_tag.is_home and not c.is_home_panel then
+        local default_tag = c.screen.tags[default_tag_index]
+        c:move_to_tag(default_tag)
     end
-    client.managed = true -- custom field, not a part of AwesomeWM
+    c.managed = true -- custom field, not a part of AwesomeWM
 
     -- Make burrito on top, because Guild Wars 2 sometimes marks itself as fullscreen
-    -- naughty.notify({ title = "Client manage", text = client.name })
-    if client.name == "Godot Engine" then
-        client:connect_signal("property::shape_client_input", function()
-            -- naughty.notify({ text = "Make burrito ontop" })
-            client.ontop = true
+    --if c.name == "Godot Engine" or c.name == "Burrito (DEBUG)" then
+    if false then
+
+
+        mousegrabber.run(function(mouse)
+            -- mouse = { x, y, buttons = { [1] = true/false, ... } }
+
+            -- Stop grabbing when the left button is released
+            ---if not mouse.buttons[1] then
+            --    return false
+            --end
+
+            -- Continue grabbing
+            return true
+        end, "crosshair")
+
+        naughty.notify({text="BURRITO connect timer"})
+        local timer = gears.timer {
+            timeout   = 1,
+            autostart = true,
+            callback  = function()
+                local gw2_client = nil
+                for _, curr_c in ipairs(client.get()) do
+                    if curr_c.name == "Guild Wars 2" then
+                        gw2_client = curr_c
+                        break
+                    end
+                end
+
+                if gw2_client ~= nil then
+                    naughty.notify({ text = "BURRITO FIX"})
+
+                    -- Move Burrito to the same tag as GW2
+                    c:move_to_tag(gw2_client.first_tag)
+
+                    -- Bring to ontop layer, to make burrito visible
+                    c.ontop = true
+
+                    -- Manually focus, because GW2 sometimes steals focus from Burrito
+                    -- local t = awful.screen.focused().selected_tag
+                    -- if t == gw2_client.first_tag then
+                    --     client.focus = c
+                    --     c:raise()
+                    --     awful.ewmh.activate(c, mouse.screen)
+                    -- end
+                end
+            end
+        }
+
+        c:connect_signal("unmanage", function()
+            naughty.notify({text="BURRITO disconnect timer"})
+            timer:stop()
+            timer = nil
         end)
     end
 end)
