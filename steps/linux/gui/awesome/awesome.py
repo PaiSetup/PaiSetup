@@ -29,7 +29,8 @@ class AwesomeStep(Step):
             WindowManagerXorg(
                 name="awesome",
                 xsession_name="AwesomeWM",
-                launch_command="awesome",
+                # launch_command="awesome",
+                launch_command="/home/maciej/work/awesome/build.Release/install/bin/awesome",
             )
         )
 

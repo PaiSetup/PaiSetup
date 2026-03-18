@@ -117,7 +117,6 @@ class GuiXorg(Step):
                 "fade-in-step = 1;",
                 "fade-out-step = 1;",
                 "frame-opacity = 0;",
-                "corner-radius = 10;",
             ],
             skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
         )
