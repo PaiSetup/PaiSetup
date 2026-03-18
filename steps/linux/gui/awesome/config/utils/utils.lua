@@ -49,9 +49,11 @@ local function enable_viewed_tag_preserving()
        end
 
        for s in screen do
-          local i = selected_tags[s.index]
-          local t = s.tags[i]
-          t:view_only()
+            local i = selected_tags[s.index]
+            local t = s.tags[i]
+            if t ~= nil then
+                t:view_only()
+            end
        end
 
        file:close()
