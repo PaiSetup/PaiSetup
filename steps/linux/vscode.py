@@ -13,13 +13,11 @@ class VscodeStep(VscodeStepBase):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "code",
-            "cursor-bin",
             "code-features",  # Fixes some issues with loading ms-python.python extension
             "autopep8",
             "python-black",
         )
         dependency_dispatcher.register_homedir_file(".vscode")
-        dependency_dispatcher.register_homedir_file(".cursor")
 
         # VsCode is an electron app, meaning it uses chromium engine. Chromium engine doesn't properly
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587

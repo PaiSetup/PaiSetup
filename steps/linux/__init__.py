@@ -5,6 +5,7 @@ from .alacritty.alacritty import AlacrittyStep
 from .audio import AudioStep
 from .bluetooth.bluetooth import BluetoothStep
 from .charon import CharonStep
+from .claude import ClaudeStep
 from .clion.clion import ClionStep
 from .dush import DushStep
 from .encryption.encryption import EncryptionStep
@@ -89,6 +90,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 ProgrammingCommonStep(),
                 ProgrammingGamedevStep(),
                 ProgrammingGoStep(),
+                ClaudeStep(),
                 SshStep(secret_dir, full=args.full),
                 SpievenStep(build_dir),
                 LightDmStep(),

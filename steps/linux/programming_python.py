@@ -21,6 +21,7 @@ class ProgrammingPythonStep(Step):
         dependency_dispatcher.add_packages(
             "python",
             "python-pip",
+            "python-matplotlib",
             "bpython",
             "tk",
         )

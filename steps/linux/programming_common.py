@@ -16,7 +16,9 @@ class ProgrammingCommonStep(Step):
             "ntfs-3g",
             "dos2unix",
             "nmap",
+            "arp-scan",
             "bc",
+            "icoutils",
             # Text editing
             "tmux",
             "nano",
