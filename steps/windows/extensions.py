@@ -193,6 +193,14 @@ class ExtensionsStep(Step):
 
         self._setup_extension(extension, application_key_name, new_file_entry)
 
+        set_registry_value_string(
+            HKCR,
+            r"Applications\powershell.exe\shell\open\command",
+            None,
+            f'"{app_path}" -noLogo -ExecutionPolicy unrestricted -file "%1"',
+            create_keys=True,
+        )
+
 
 #    def extension_setup_imageglass:
 #        param ($extension)
