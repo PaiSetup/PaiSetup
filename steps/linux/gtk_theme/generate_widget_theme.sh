@@ -35,5 +35,6 @@ WM_BORDER_FOCUS=$COLOR_WTF
 WM_BORDER_UNFOCUS=$COLOR_WTF
 HEREDOC
 
+export no_jokes=1
 oomox-cli -o PaiSetupWidgetTheme "$oomox_config" --target-dir "$dst_themes_dir"
 rm "$oomox_config"
