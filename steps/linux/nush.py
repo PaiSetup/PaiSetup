@@ -24,6 +24,7 @@ class NushStep(Step):
             "python-music-tag",  # Needed by music_tagger.py
             "python-pytz",  # Needed by size_fixer.py
             "exiv2",  # Needed by size_fixer.py
+            "hugo",  # Needed for yellatcomputers
         )
         dependency_dispatcher.set_folder_icon(self._nush_root_dir, "scripts")
         dependency_dispatcher.register_homedir_file(self._nush_root_dir)
