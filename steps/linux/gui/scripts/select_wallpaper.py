@@ -37,7 +37,8 @@ def get_random_wallpaper_file(home, cache_dir):
     # Get a list of potential wallpapers
     wallpapers = []
     for wallpaper_dir in wallpaper_dirs:
-        wallpapers += [x for x in wallpaper_dir.iterdir() if x.suffix in [".png", ".jpg"]]
+        if wallpaper_dir.is_dir():
+            wallpapers += [x for x in wallpaper_dir.iterdir() if x.suffix in [".png", ".jpg"]]
 
     # Randomize a wallpaper
     return random.choice(wallpapers)
