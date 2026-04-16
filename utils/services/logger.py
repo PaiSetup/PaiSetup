@@ -28,7 +28,7 @@ class Logger:
         self._perf_analyzer = perf_analyzer
         self._enabled = enabled
 
-        if self._log_dir is not None:
+        if enabled and self._log_dir is not None:
             for file in self._log_dir.iterdir():
                 if file.suffix == ".log":
                     file.unlink()
