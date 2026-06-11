@@ -24,13 +24,6 @@ class NotesStep(Step):
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
         dependency_dispatcher.register_homedir_file(".pki")
 
-        dependency_dispatcher.schedule_spieven_periodic_check(
-            "NotesSubvaultCoherency",
-            self._current_step_dir / "verify_subvaults_coherency.sh",
-            display_type=SpievenDisplayType.Headless,
-            delay_ms=45_000,
-        )
-
     def register_env_variables(self):
         self._env.set("NOTES_PATH", self._notes_dir)
 
