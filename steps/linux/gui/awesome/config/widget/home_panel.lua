@@ -454,8 +454,8 @@ return function(visible_tag, pai_setup_root, user, screen)
     -- will have to be different for each screen. Hence, we generate a separate client class for each screen, so they are distinguishable.
     --
     -- Another nitpick is killing the old client before AwesomeWM restarts. Fortunately there is an 'exit' signal that we can use.
-    local client_class = "ST_CAVA" .. screen.index
-    local cava_pid = awful.spawn('st -A 0 -B "#000000" -c ' .. client_class .. ' -e cava')
+    local client_class = "HOME_CAVA" .. screen.index
+    local cava_pid = awful.spawn('alacritty --class ' .. client_class .. ' --option window.opacity=0 --command cava')
     awesome.connect_signal('exit', function(reason_restart)
         awful.spawn("kill -9 " .. cava_pid) -- kill the client before restarting
     end)

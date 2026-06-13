@@ -116,6 +116,10 @@ def setup_cava_theme(cava_config_path, main_color):
         lines = [
             "[color]\n",
             f'foreground = "{main_color}"\n',
+            f"",
+            f"[input]",
+            f"method = pulse",
+            f"source = auto",
         ]
         f.writelines(lines)
 
