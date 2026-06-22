@@ -15,6 +15,7 @@ from utils.command import Stdout, run_command
 server_port = 30123
 connect_timeout = 1
 minimum_send_interval = 0.015
+minimum_arp_scan_interval = 60
 
 
 class Thread:
@@ -53,6 +54,7 @@ class LedThread(Thread):
         self.update_event = threading.Event()
         self._server_address = None
         self._last_send_time = None
+        self._last_arp_scan_time = None
 
     def _main(self):
         while not self.kill_event.is_set():
@@ -85,7 +87,7 @@ class LedThread(Thread):
 
                         continue
                     case LedThread.ConnectResult.CannotFindAddress:
-                        print("LED: Cannot find server address. Try running nmap -sP 192.168.100.0/24 to fill ARP caches")
+                        print("LED: Cannot find server address.")
 
                         # To avoid busy looping, ensure we waited for at least connect_timeout
                         with self.condition:
@@ -116,8 +118,13 @@ class LedThread(Thread):
 
             ip = read_address()
             if ip is None:
-                run_command("arp-scan --localnet", stdout=Stdout.ignore(), stderr=Stdout.ignore())
-                ip = read_address()
+                arp_scan_time = time.time()
+                if self._last_arp_scan_time is None or (arp_scan_time - self._last_arp_scan_time > minimum_arp_scan_interval):
+                    run_command("arp-scan --localnet", stdout=Stdout.ignore(), stderr=Stdout.ignore())
+                    run_command("nmap -sP 192.168.100.0/24", stdout=Stdout.ignore(), stderr=Stdout.ignore())
+                    ip = read_address()
+
+                    self._last_arp_scan_time = arp_scan_time
 
             if ip is None:
                 return (LedThread.ConnectResult.CannotFindAddress, "")
