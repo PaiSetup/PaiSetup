@@ -11,6 +11,7 @@ from .dush import DushStep
 from .encryption.encryption import EncryptionStep
 from .file_associations import FileAssociationsStep
 from .firefox import FirefoxStep
+from .flameshot import FlameshotStep
 from .git import GitStep
 from .gpu.gpu import GpuStep
 from .gtk_theme.gtk_theme import GtkThemeStep
@@ -63,6 +64,7 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
                 UdiskieStep(),
                 GpuStep(),
                 FirefoxStep(is_default_browser=True),
+                FlameshotStep(),
                 SystemdStep(),
                 ThunarStep(),
                 HomeDirectoryStep(root_dir, True),

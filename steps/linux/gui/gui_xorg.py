@@ -56,7 +56,6 @@ class GuiXorg(Step):
             "picom",
             "libxft",
             "yad",
-            "flameshot",
             "pacman-contrib",  # for checkupdates on arch
             "libnotify",
             "xdotool",  # for getting Thunar's cwd
@@ -67,14 +66,12 @@ class GuiXorg(Step):
             dependency_dispatcher.add_packages("libpng-dev")  # needed for compiling color generator on Debian
 
         # fmt: off
-        dependency_dispatcher.schedule_spieven_daemon("flameshot", "flameshot", display_type=SpievenDisplayType.Xorg)
         dependency_dispatcher.schedule_spieven_daemon("picom", "picom", display_type=SpievenDisplayType.Xorg)
         dependency_dispatcher.schedule_spieven_periodic_action("Autorandr", "autorandr -s latest --force", display_type=SpievenDisplayType.Xorg, delay_ms=60_000)
         # fmt: on
 
         # fmt: off
         dependency_dispatcher.add_keybindings(
-            KeyBinding("s").mod().shift().desc("Screenshot").execute("flameshot gui"),
             KeyBinding("<").mod().desc("Browser").executeShell("$BROWSER"),
             KeyBinding("x").mod().desc("Files").executeShell("$FILE_MANAGER"),
             KeyBinding("F1").mod().desc("Change wallpaper").executeShell("$PAI_SETUP_ROOT/steps/linux/gui/scripts/select_wallpaper.py --restart_wm"),
