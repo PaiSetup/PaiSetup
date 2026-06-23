@@ -79,6 +79,22 @@ local function get_no_border_rules(tags)
     }
 end
 
+local function get_non_fullscreen_clients_rule()
+    -- Firefox remembers its last maximized/fullscreen state and reloads it during startup. This is annoying and breaks
+    -- tiling unexpectedly. We can force it off. Firefox can still be made fullscreen, but it just won't start as
+    -- fullscreen.
+    return {
+        rule = {
+            instance = "Navigator",
+            class = "firefox",
+        },
+        properties = {
+            maximized = false,
+            fullscreen = false,
+        }
+    }
+end
+
 local function get_tag_mappings_rules(tags)
     return {
         {
@@ -152,6 +168,7 @@ return {
     get_no_border_rules = get_no_border_rules,
     get_floating_clients_rule = get_floating_clients_rule,
     get_non_floating_clients_rule = get_non_floating_clients_rule,
+    get_non_fullscreen_clients_rule = get_non_fullscreen_clients_rule,
     get_tag_mappings_rules = get_tag_mappings_rules,
     get_window_params_rules = get_window_params_rules,
     get_home_panel_cava_rule = get_home_panel_cava_rule,

@@ -328,6 +328,7 @@ clientbuttons = gears.table.join(
 root.keys(globalkeys)
 awful.rules.rules = gears.table.join(
     {
+        rules_utils.get_non_fullscreen_clients_rule(),
         rules_utils.get_default_rule(clientkeys, clientbuttons),
         rules_utils.get_floating_clients_rule(),
         rules_utils.get_non_floating_clients_rule(),
