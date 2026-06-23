@@ -72,8 +72,8 @@ window, #nav-bar{
 }
 
 /* Tabs */
-.tab-background[selected="true"] {
-    background: rgba(82, 82, 88, 0.5) !important;
+.tab-background[selected] {
+    background: rgba(220, 220, 220, 0.5) !important;
     -moz-appearance: none !important;
     background-image: none !important;
     border-radius: 30px !important;
