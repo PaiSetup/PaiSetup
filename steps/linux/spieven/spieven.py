@@ -76,7 +76,7 @@ class SpievenStep(Step):
         self._setup_launch_script()
 
     def _install(self):
-        spieven_version = "1.0.1"
+        spieven_version = "2.0.0"
         dst_dir = self._root_build_dir / f"spieven-{spieven_version}"
         ext.download_github_release(
             "DziubanMaciej",
@@ -125,7 +125,7 @@ class SpievenStep(Step):
                 case _:
                     raise ValueError("Invalid DisplayType")
 
-            command = f"spieven schedule {name_arg} {display_arg} {max_failures_arg} {delay_arg} {tags_arg} {capture_stdout_arg} -- {task.cmdline}"
+            command = f"spieven run {name_arg} {display_arg} {max_failures_arg} {delay_arg} {tags_arg} {capture_stdout_arg} -- {task.cmdline}"
             commands.append(command)
             task_names.append(task.name)
 
