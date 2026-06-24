@@ -28,6 +28,7 @@ class SpievenTask:
     task_type: SpievenTaskType
     display_type: SpievenDisplayType
     delay: int
+    capture_stdout: bool
 
 
 class SpievenStep(Step):
@@ -49,27 +50,28 @@ class SpievenStep(Step):
         # fmt: on
 
     @push_dependency_handler
-    def schedule_spieven_task(self, task_type, name, cmdline, display_type, delay_ms):
+    def schedule_spieven_task(self, task_type, name, cmdline, display_type, delay_ms, capture_stdout):
         task = SpievenTask(
             name=name,
             cmdline=cmdline,
             task_type=task_type,
             display_type=display_type,
             delay=delay_ms,
+            capture_stdout=capture_stdout,
         )
         self._tasks.append(task)
 
     @push_dependency_handler
-    def schedule_spieven_daemon(self, name, cmdline, display_type):
-        self.schedule_spieven_task(SpievenTaskType.Daemon, name, cmdline, display_type, 1_000)
+    def schedule_spieven_daemon(self, name, cmdline, display_type, capture_stdout=False):
+        self.schedule_spieven_task(SpievenTaskType.Daemon, name, cmdline, display_type, 1_000, capture_stdout)
 
     @push_dependency_handler
     def schedule_spieven_periodic_check(self, name, cmdline, display_type, delay_ms):
-        self.schedule_spieven_task(SpievenTaskType.PeriodicCheck, name, cmdline, display_type, delay_ms)
+        self.schedule_spieven_task(SpievenTaskType.PeriodicCheck, name, cmdline, display_type, delay_ms, True)
 
     @push_dependency_handler
     def schedule_spieven_periodic_action(self, name, cmdline, display_type, delay_ms):
-        self.schedule_spieven_task(SpievenTaskType.PeriodicAction, name, cmdline, display_type, delay_ms)
+        self.schedule_spieven_task(SpievenTaskType.PeriodicAction, name, cmdline, display_type, delay_ms, False)
 
     def perform(self):
         self._install()
@@ -95,6 +97,7 @@ class SpievenStep(Step):
         for task in self._tasks:
             task_delay_str = str(task.delay).rjust(5)
             name_arg = f"-n {task.name.ljust(18)}"
+            capture_stdout_arg = " -c" if task.capture_stdout else "   "
 
             match task.display_type:
                 case SpievenDisplayType.Headless:
@@ -110,18 +113,16 @@ class SpievenStep(Step):
                 case SpievenTaskType.Daemon:
                     max_failures_arg = "-m  3"
                     delay_arg = f"-s     0 -f {task_delay_str}"
-                    tags_arg = "-t PaiSetup,PaiSetupDaemon       "
-                    capture_stdout_arg = "  "
+                    tags_arg = "-t PaiSetup,PaiSetupDaemon        "
+
                 case SpievenTaskType.PeriodicCheck:
                     max_failures_arg = "-m -1"
                     delay_arg = f"-s {task_delay_str} -f {task_delay_str}"
-                    tags_arg = "-t PaiSetup,PaiSetupPeriodicCheck"
-                    capture_stdout_arg = "-c"
+                    tags_arg = "-t PaiSetup,PaiSetupPeriodicCheck "
                 case SpievenTaskType.PeriodicAction:
                     max_failures_arg = "-m -1"
                     delay_arg = f"-s {task_delay_str} -f {task_delay_str}"
                     tags_arg = "-t PaiSetup,PaiSetupPeriodicAction"
-                    capture_stdout_arg = "  "
                 case _:
                     raise ValueError("Invalid DisplayType")
 

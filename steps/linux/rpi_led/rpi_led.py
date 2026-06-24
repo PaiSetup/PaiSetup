@@ -13,7 +13,8 @@ class RpiLedStep(Step):
         self._fifo_file_path = self._env.home() / ".config/PaiSetup/rpi_led_fifo"
 
     def push_dependencies(self, dependency_dispatcher):
-        dependency_dispatcher.schedule_spieven_daemon("rpiled", self._daemon_path, display_type=SpievenDisplayType.Headless)
+        command = f"python -u {self._daemon_path}"  # -u is for unbuffered mode, so that we can inspect stdout immediately
+        dependency_dispatcher.schedule_spieven_daemon("rpiled", command, display_type=SpievenDisplayType.Headless, capture_stdout=True)
 
     def perform(self):
         self._file_writer.write_section(
