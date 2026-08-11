@@ -18,6 +18,7 @@ class ProgrammingCommonStep(Step):
             "nmap",
             "arp-scan",
             "bc",
+            "jq",
             "icoutils",
             # Text editing
             "tmux",
