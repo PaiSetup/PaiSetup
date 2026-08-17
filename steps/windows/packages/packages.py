@@ -24,12 +24,9 @@ class PackagesStep(Step):
             "7zip",
             "adobereader",
             "firefox",
-            "imageglass",
             "notepadplusplus",
             # "recuva", # broken package
-            "qbittorrent",
             "beyondcompare",
-            "vlc",
             "dependencies",
             "microsoft-windows-terminal",
         )

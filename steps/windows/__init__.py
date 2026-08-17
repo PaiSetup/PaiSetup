@@ -33,7 +33,7 @@ class WindowsSetupMode(SetupMode):
         return [
             PackagesStep(build_dir, enable_installation=install_packages, skip_already_installed=True, is_main_machine=True),
             ActivateWindowsStep(secret_dir),
-            VscodeStep(build_dir),
+            VscodeStep(build_dir, use_vscodium=True),
             ExplorerStep(),
             ExtensionsStep(),
             HwToolsStep(gaming=True),

@@ -281,6 +281,10 @@ class PackageInfo:
 
             # Vlc installer ignores the directory selection argument and goes straight to the registry
             set_registry_value_string(HKLM, r"SOFTWARE\VideoLAN\VLC", "InstallDir", str(self.install_dir), create_keys=True)
+        elif package_name == "vscode":
+            self.install_dir = programs_dir / "VScode"
+            self._set_installer(Installer.Inno)
+            self._append_package_arg("/NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /NoAddContextMenuFolders")
         elif package_name == "vscodium":
             self.install_dir = programs_dir / "Vscodium"
             self._set_installer(Installer.Inno)

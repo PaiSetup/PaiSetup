@@ -12,4 +12,7 @@ class MultimediaToolsStep(Step):
             "gimp",
             # "irfanview", # TODO-WINDOWS broken package
             "pdfsam.install",
+            "imageglass",
+            "qbittorrent",
+            "vlc",
         )
