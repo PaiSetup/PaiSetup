@@ -136,7 +136,7 @@ class PackagesStep(Step):
             else:
                 self._packages.append(str(arg))
 
-    @push_dependency_handler
+    @pull_dependency_handler
     def query_installed_packages(self):
         return self._packages
 
