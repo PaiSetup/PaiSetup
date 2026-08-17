@@ -27,6 +27,28 @@ class EnumAction(argparse.Action):
         setattr(namespace, self.dest, value)
 
 
+class SetupModeAction(argparse.Action):
+    def __init__(self, **kwargs):
+        # Pop off the dict of available setup modes
+        setup_modes = kwargs.pop("setup_modes", None)
+        if setup_modes is None:
+            raise ValueError("setup_modes must be assigned a dict of setup modes when using SetupModeAction")
+
+        # Generate choices from the mode names
+        kwargs.setdefault("choices", tuple(setup_modes.keys()))
+
+        # If no default mode could be selected, the user has to select one explicitly
+        kwargs.setdefault("required", kwargs.get("default") is None)
+
+        super(SetupModeAction, self).__init__(**kwargs)
+
+        self._setup_modes = setup_modes
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        # Convert value back into a SetupMode
+        setattr(namespace, self.dest, self._setup_modes[values])
+
+
 class PathAction(argparse.Action):
     def __init__(self, **kwargs):
         self._require_kwarg(kwargs, "nargs", "?")

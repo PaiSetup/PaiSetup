@@ -23,40 +23,26 @@ from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
 
 
-def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
-    match args.mode:
-        case SetupMode.windows:
-            is_normie = False
-        case SetupMode.windows_normie:
-            is_normie = True
-        case _:
-            raise ValueError("Selected SetupMode is unsupported for Windows")
+class WindowsSetupMode(SetupMode):
+    def get_name(self):
+        return "windows"
 
-    # TODO-WINDOWS check for admin
+    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+        # TODO-WINDOWS check for admin
 
-    # Add default steps
-    steps = [
-        PackagesStep(build_dir, enable_installation=install_packages, skip_already_installed=True, is_main_machine=not is_normie),
-        ActivateWindowsStep(secret_dir),
-        VscodeStep(build_dir),
-        ExplorerStep(),
-        ExtensionsStep(),
-        HwToolsStep(gaming=True),
-        IconsStep(),
-        PowerStep(),
-        PrivacyStep(),
-        TimeStep(),
-        StartupStep(),
-        UninstallBloatStep(),
-    ]
-
-    # Add steps specific to my machine or normie machine
-    if is_normie:
-        steps += [
-            FoldersStep(root_folder=None),
-        ]
-    else:
-        steps += [
+        return [
+            PackagesStep(build_dir, enable_installation=install_packages, skip_already_installed=True, is_main_machine=True),
+            ActivateWindowsStep(secret_dir),
+            VscodeStep(build_dir),
+            ExplorerStep(),
+            ExtensionsStep(),
+            HwToolsStep(gaming=True),
+            IconsStep(),
+            PowerStep(),
+            PrivacyStep(),
+            TimeStep(),
+            StartupStep(),
+            UninstallBloatStep(),
             FoldersStep(root_folder="D:\\"),
             DushStep(fetch_git=True),
             GamesStep(),
@@ -68,4 +54,5 @@ def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
             ProgrammingCppStep(False),
         ]
 
-    return steps
+
+SETUP_MODES = [WindowsSetupMode]

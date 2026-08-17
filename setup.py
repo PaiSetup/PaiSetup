@@ -3,9 +3,8 @@
 import argparse
 from pathlib import Path
 
-from steps import get_steps
 from steps.step import Step
-from utils.argparser_utils import EnumAction, PathAction
+from utils.argparser_utils import EnumAction, PathAction, SetupModeAction
 from utils.dependency_dispatcher import DependencyResolutionMode
 from utils.execute_steps import execute_steps
 from utils.os_function import OperatingSystem
@@ -18,12 +17,15 @@ build_dir = root_dir / "build"
 secret_dir = root_dir / "secret"
 logs_dir = root_dir / "logs"
 
+# Gather all available setup modes
+setup_modes = SetupMode.find_setup_modes()
+
 # Parse command-line arguments
 # fmt: off
 arg_parser = argparse.ArgumentParser(description="Setup Arch Linux environment.", allow_abbrev=False)
 arg_parser.add_argument("-l", "--list_steps", action="store_true", help="show setup steps to be run and exit")
 arg_parser.add_argument("-p", "--list_packages", action="store_true", help="show packages to be installed and exit")
-arg_parser.add_argument("-m", "--mode", type=SetupMode, default=SetupMode.retrieve_last_mode(root_dir), action=EnumAction, help="Setup mode - chooses packages to install")
+arg_parser.add_argument("-m", "--mode", default=SetupMode.retrieve_last_mode(root_dir, setup_modes), action=SetupModeAction, setup_modes=setup_modes, help="Setup mode - chooses packages to install")
 arg_parser.add_argument("-s", "--step_whitelist", nargs="+", metavar="STEP", help="Limit executed steps by names. Note that other steps may be implicitly enabled due to dependencies. Mutually exclusive with --step-blacklist.")
 arg_parser.add_argument("-e", "--step_blacklist", nargs="+", metavar="STEP", help="Exclude steps from execution. Note that other steps may be implicitly enabled due to dependencies. Mutually exclusive with --step-whitelist.")
 arg_parser.add_argument("-f", "--full", action="store_true", help="Do not skip any operation for performance. Generate everything from scratch.")
@@ -41,7 +43,7 @@ with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as servic
     services.assign_to(Step)
 
     Step._logger.log("Initializing steps")
-    steps = get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
+    steps = args.mode.get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
 
     execute_steps(
         root_dir,

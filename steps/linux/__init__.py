@@ -1,4 +1,5 @@
 from steps.ssh import SshStep
+from utils.os_function import LinuxDistro
 from utils.setup_mode import SetupMode
 
 from .alacritty.alacritty import AlacrittyStep
@@ -51,89 +52,100 @@ from .virtualbox import VirtualBoxStep
 from .vscode import VscodeStep
 
 
-def get_steps(args, root_dir, build_dir, secret_dir, install_packages):
-    match args.mode:
-        case SetupMode.arch:
-            steps = [
-                PackagesStep(build_dir, True, install_packages),
-                ShellStep(root_dir),
-                GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
-                FileAssociationsStep(),
-                AudioStep(),
-                ClionStep(),
-                UdiskieStep(),
-                GpuStep(),
-                FirefoxStep(is_default_browser=True),
-                FlameshotStep(),
-                SystemdStep(),
-                ThunarStep(),
-                HomeDirectoryStep(root_dir, True),
-                BluetoothStep(),
-                ProgrammingJavaStep(include_android=True),
-                QBitTorrentStep(),
-                GitStep(),
-                UlauncherStep(),
-                GuiXorg(full=args.full, root_build_dir=build_dir),
-                AwesomeStep(),
-                AlacrittyStep(),
-                MultimediaSoftwareStep(),
-                DushStep(fetch_git=args.full),
-                NushStep(fetch_git=args.full),
-                VscodeStep(build_dir),
-                NeovimStep(),
-                RpiLedStep(),
-                UselessStep(),
-                GuildWars2Step(root_build_dir=build_dir),
-                FontStep(root_build_dir=build_dir, full=args.full),
-                PlexStep(),
-                ProgrammingCppStep(graphics=True, systemc=True),
-                ProgrammingPythonStep(),
-                ProgrammingRustStep(),
-                ProgrammingCommonStep(),
-                ProgrammingGamedevStep(),
-                ProgrammingGoStep(),
-                ClaudeStep(),
-                SshStep(secret_dir, full=args.full),
-                SpievenStep(build_dir),
-                LightDmStep(),
-                EncryptionStep(),
-                CharonStep(build_dir, full=args.full),
-                QtileStep(),
-                NotesStep(fetch_git=args.full),
-                VirtualBoxStep(),
-                VagrantStep(),
-                RaspberryPiStep(),
-            ]
-        case SetupMode.debian_casual:
-            steps = [
-                PackagesDebianStep(install_packages),
-                AwesomeStep(),
-                ProgrammingCommonStep(),
-                ProgrammingPythonStep(),
-                GitStep(),
-                UdiskieStep(),
-                AudioStep(),
-                ThunarStep(),
-                SpievenStep(build_dir),
-                ShellStep(root_dir),
-                MultimediaSoftwareStep(),
-                QBitTorrentStep(),
-                GuiXorg(full=args.full, root_build_dir=build_dir),
-                FontStep(root_build_dir=build_dir, full=args.full),
-                AlacrittyStep(),
-                GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
-                FirefoxStep(is_default_browser=True),
-                FileAssociationsStep(),
-                HomeDirectoryStep(root_dir, has_multimedia_dir=False),
-                UlauncherStep(),
-                DushStep(fetch_git=args.full),
-                NushStep(fetch_git=args.full),
-                SshStep(secret_dir, full=args.full),
-                VscodeStep(build_dir),
-            ]
-        case SetupMode.debian_work:
-            pass
-        case _:
-            raise ValueError("Selected SetupMode is unsupported for Linux")
+class ArchSetupMode(SetupMode):
+    def get_name(self):
+        return "arch"
 
-    return steps
+    def is_compatible(self):
+        return LinuxDistro.current().is_arch_like()
+
+    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+        return [
+            PackagesStep(build_dir, True, install_packages),
+            ShellStep(root_dir),
+            GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            FileAssociationsStep(),
+            AudioStep(),
+            ClionStep(),
+            UdiskieStep(),
+            GpuStep(),
+            FirefoxStep(is_default_browser=True),
+            FlameshotStep(),
+            SystemdStep(),
+            ThunarStep(),
+            HomeDirectoryStep(root_dir, True),
+            BluetoothStep(),
+            ProgrammingJavaStep(include_android=True),
+            QBitTorrentStep(),
+            GitStep(),
+            UlauncherStep(),
+            GuiXorg(full=args.full, root_build_dir=build_dir),
+            AwesomeStep(),
+            AlacrittyStep(),
+            MultimediaSoftwareStep(),
+            DushStep(fetch_git=args.full),
+            NushStep(fetch_git=args.full),
+            VscodeStep(build_dir),
+            NeovimStep(),
+            RpiLedStep(),
+            UselessStep(),
+            GuildWars2Step(root_build_dir=build_dir),
+            FontStep(root_build_dir=build_dir, full=args.full),
+            PlexStep(),
+            ProgrammingCppStep(graphics=True, systemc=True),
+            ProgrammingPythonStep(),
+            ProgrammingRustStep(),
+            ProgrammingCommonStep(),
+            ProgrammingGamedevStep(),
+            ProgrammingGoStep(),
+            ClaudeStep(),
+            SshStep(secret_dir, full=args.full),
+            SpievenStep(build_dir),
+            LightDmStep(),
+            EncryptionStep(),
+            CharonStep(build_dir, full=args.full),
+            QtileStep(),
+            NotesStep(fetch_git=args.full),
+            VirtualBoxStep(),
+            VagrantStep(),
+            RaspberryPiStep(),
+        ]
+
+
+class DebianCasualSetupMode(SetupMode):
+    def get_name(self):
+        return "debian_casual"
+
+    def is_compatible(self):
+        return LinuxDistro.current().is_debian_like()
+
+    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+        return [
+            PackagesDebianStep(install_packages),
+            AwesomeStep(),
+            ProgrammingCommonStep(),
+            ProgrammingPythonStep(),
+            GitStep(),
+            UdiskieStep(),
+            AudioStep(),
+            ThunarStep(),
+            SpievenStep(build_dir),
+            ShellStep(root_dir),
+            MultimediaSoftwareStep(),
+            QBitTorrentStep(),
+            GuiXorg(full=args.full, root_build_dir=build_dir),
+            FontStep(root_build_dir=build_dir, full=args.full),
+            AlacrittyStep(),
+            GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            FirefoxStep(is_default_browser=True),
+            FileAssociationsStep(),
+            HomeDirectoryStep(root_dir, has_multimedia_dir=False),
+            UlauncherStep(),
+            DushStep(fetch_git=args.full),
+            NushStep(fetch_git=args.full),
+            SshStep(secret_dir, full=args.full),
+            VscodeStep(build_dir),
+        ]
+
+
+SETUP_MODES = [ArchSetupMode, DebianCasualSetupMode]
