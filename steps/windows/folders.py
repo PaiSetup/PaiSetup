@@ -57,9 +57,9 @@ class FoldersStep(Step):
             self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
             self._folders[KnownFolder.Dush] = root_folder / "Dush"
         else:
-            self._folders[KnownFolder.Programs] = default_program_files_dir
-            self._folders[KnownFolder.HwTools] = default_program_files_dir
-            self._folders[KnownFolder.Games] = default_program_files_dir
+            self._folders[KnownFolder.Programs] = program_files_dir
+            self._folders[KnownFolder.HwTools] = program_files_dir
+            self._folders[KnownFolder.Games] = program_files_dir
             self._folders[KnownFolder.Projects] = my_home_dir / "Projects"
             self._folders[KnownFolder.Multimedia] = my_home_dir / "Multimedia"
             self._folders[KnownFolder.VirtualMachines] = my_home_dir / "VMs"
