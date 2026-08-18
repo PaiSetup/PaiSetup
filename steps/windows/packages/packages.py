@@ -22,13 +22,11 @@ class PackagesStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "7zip",
-            "adobereader",
             "firefox",
             "notepadplusplus",
             # "recuva", # broken package
             "beyondcompare",
             "dependencies",
-            "microsoft-windows-terminal",
         )
         if self._is_main_machine:
             dependency_dispatcher.add_packages(
