@@ -262,6 +262,9 @@ class PackageInfo:
             self.install_dir = programs_dir / "VisualStudio/2019"
             shared_dir = programs_dir / "VisualStudio/Shared"
             self._append_package_arg(f"--passive --installPath {self.install_dir} --path shared={shared_dir}")
+        elif package_name == "visualstudio2022-remotetools":
+            # Doesn't let us configure anything.
+            pass
         elif re.match("visualstudio2022.*", package_name):
             self.install_dir = programs_dir / "VisualStudio/2022"
             shared_dir = programs_dir / "VisualStudio/Shared"
