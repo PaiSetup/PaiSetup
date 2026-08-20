@@ -12,6 +12,7 @@ from .hw_tools import HwToolsStep
 from .icons.icons import IconsStep
 from .multimedia_tools import MultimediaToolsStep
 from .packages.packages import PackagesStep
+from .pai_setup_cmd import PaiSetupCmdStep
 from .power import PowerStep
 from .privacy import PrivacyStep
 from .programming_common import ProgrammingCommonStep
@@ -44,6 +45,7 @@ class WindowsSetupMode(SetupMode):
             StartupStep(),
             UninstallBloatStep(),
             FoldersStep(root_folder="D:\\"),
+            PaiSetupCmdStep(root_dir),
             DushStep(fetch_git=True),
             GamesStep(),
             GitStep(),
