@@ -1,18 +1,11 @@
-import os
-from pathlib import Path
-
-import utils.external_project as ext
-from steps.linux.spieven.spieven import SpievenDisplayType
-from steps.step import Step
+from steps.notes_base import NotesStepBase
 from utils.keybinding import KeyBinding
 
 
-class NotesStep(Step):
+class NotesStep(NotesStepBase):
     def __init__(self, fetch_git):
-        super().__init__("notes")
-        self.fetch_git = fetch_git
-        self._notes_dir = scripts_dir = self._env.home() / "notes"
-        self._current_step_dir = Path(__file__).parent
+        super().__init__("Notes", fetch_git, use_private_notes=True)
+        self.set_notes_root_dir(self._env.home() / "notes")
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
@@ -28,23 +21,10 @@ class NotesStep(Step):
         self._env.set("NOTES_PATH", self._notes_dir)
 
     def perform(self):
-        ext.download(
-            "git@github.com:DziubanMaciej/Notes.git",
-            "master",
-            self._notes_dir,
-            logger=self._logger,
-            fetch=self.fetch_git,
-        )
-        ext.download(
-            "git@github.com:DziubanMaciej/NotesPrivate.git",
-            "master",
-            self._notes_dir / "_prv",
-            logger=self._logger,
-            fetch=self.fetch_git,
-        )
+        super().perform()
 
         self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
+            ".config/PaiSetup/env.sh",
             "My personal notes",
             [f'export NOTES_PATH="{self._notes_dir}"'],
         )

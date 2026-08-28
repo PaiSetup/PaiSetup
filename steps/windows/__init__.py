@@ -11,6 +11,7 @@ from .git import GitStep
 from .hw_tools import HwToolsStep
 from .icons.icons import IconsStep
 from .multimedia_tools import MultimediaToolsStep
+from .notes import NotesStep
 from .packages.packages import PackagesStep
 from .pai_setup_cmd import PaiSetupCmdStep
 from .power import PowerStep
@@ -47,6 +48,7 @@ class WindowsSetupMode(SetupMode):
             FoldersStep(root_folder="D:\\"),
             PaiSetupCmdStep(root_dir),
             DushStep(fetch_git=True),
+            NotesStep(fetch_git=True, use_private_notes=True),
             GamesStep(),
             GitStep(),
             SshStep(secret_dir, args.full),

@@ -20,6 +20,7 @@ class KnownFolder(Enum):
     Multimedia = auto()
     VirtualMachines = auto()
     Dush = auto()
+    Notes = auto()
 
 
 # This step serves as a source of knowledge for other steps about various paths used in our setup. Some of them are
@@ -56,6 +57,7 @@ class FoldersStep(Step):
             self._folders[KnownFolder.Multimedia] = root_folder / "Multimedia"
             self._folders[KnownFolder.VirtualMachines] = root_folder / "VMs"
             self._folders[KnownFolder.Dush] = root_folder / "Dush"
+            self._folders[KnownFolder.Notes] = root_folder / "Notes"
         else:
             self._folders[KnownFolder.Programs] = program_files_dir
             self._folders[KnownFolder.HwTools] = program_files_dir
@@ -64,6 +66,7 @@ class FoldersStep(Step):
             self._folders[KnownFolder.Multimedia] = my_home_dir / "Multimedia"
             self._folders[KnownFolder.VirtualMachines] = my_home_dir / "VMs"
             self._folders[KnownFolder.Dush] = my_home_dir / "Dush"
+            self._folders[KnownFolder.Notes] = my_home_dir / "Notes"
 
     @pull_dependency_handler
     def get_known_folders(self):
