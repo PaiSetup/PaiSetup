@@ -182,6 +182,9 @@ class PackageInfo:
         elif package_name == "irfanview":
             self.install_dir = programs_dir / "IrfanView"
             self._append_package_arg(f"/folder={self.install_dir}")
+        elif package_name == "jq":
+            # No installer, just unpacks the binary. Nothing to configure.
+            pass
         elif package_name == "jre8":
             self.install_dir = programs_dir / "Java/jre8"
             self._append_package_arg(f"/exclude:32 /64dir:{self.install_dir}")
