@@ -4,8 +4,9 @@ from utils.windows.windows_registry import *
 
 
 class ExplorerStep(Step):
-    def __init__(self):
+    def __init__(self, full=False):
         super().__init__("Explorer")
+        self._full = full
         self._quick_access_folder_for_removal = []
         self._quick_access_folder_for_addition = []
 
@@ -26,7 +27,8 @@ class ExplorerStep(Step):
         self._set_dark_theme()
         self._setup_quick_access()
         self._remove_bloat_folders()
-        self._reset_explorer()
+        if self._full:
+            self._reset_explorer()
 
     def _setup_sticky_keys(self):
         self._logger.log("Disabling sticky keys shortcut (5x shift)")
