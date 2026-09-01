@@ -140,6 +140,9 @@ class PackageInfo:
         elif package_name == "furmark":
             self.install_dir = hw_tools_dir / "Furmark"
             self._set_installer(Installer.Inno)
+        elif package_name == "gh":
+            self.install_dir = programs_dir / "GitHubCli"
+            self._set_installer(Installer.Msi)
         elif package_name == "gimp":
             self.install_dir = programs_dir / "Gimp"
             self._set_installer(Installer.Inno)
