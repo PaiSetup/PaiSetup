@@ -17,7 +17,7 @@ class IconsStep(Step):
 
     def pull_dependencies(self, dependency_dispatcher):
         known_folders = dependency_dispatcher.get_known_folders()
-        self._root_folder = known_folders.get(KnownFolder.Root)
+        self._root_folder = str(known_folders.get(KnownFolder.Root)).rstrip("\\")  # trailing backslashes in root cause some problems in Iconfigure
         self._multimedia_folder = known_folders.get(KnownFolder.Multimedia)
         self._programs_folder = known_folders.get(KnownFolder.Programs)
         self._hw_tools_folder = known_folders.get(KnownFolder.HwTools)
