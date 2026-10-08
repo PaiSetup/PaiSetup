@@ -102,7 +102,7 @@ class ArchSetupMode(SetupMode):
             SshStep(secret_dir, full=args.full),
             SpievenStep(build_dir),
             LightDmStep(),
-            EncryptionStep(),
+            EncryptionStep(build_dir),
             CharonStep(build_dir, full=args.full),
             QtileStep(),
             NotesStep(fetch_git=args.full),

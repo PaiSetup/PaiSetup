@@ -56,11 +56,11 @@ class GtkThemeStep(Step):
         )
 
     @push_dependency_handler
-    def set_folder_icon(self, path, icon_name):
+    def set_folder_icon(self, path, icon_name, is_symlink=False):
         path = Path(path)
         if path in self._emblems:
             raise ValueError(f"There already exists an icon for {path}")
-        self._emblems[path] = icon_name
+        self._emblems[path] = (icon_name, is_symlink)
 
     def perform(self):
         self._generate_emblems([64])
@@ -124,14 +124,17 @@ class GtkThemeStep(Step):
     def _assign_emblems(self):
         self._logger.log("Setting emblems to directories")
         with self._logger.indent():
-            for path, emblem in self._emblems.items():
+            for path, (emblem, is_symlink) in self._emblems.items():
                 resolved_path = self._file_writer.resolve_path(path)
                 log_line = f"{resolved_path}: {emblem}"
                 if not os.path.isdir(resolved_path):
                     self._logger.log(f"{log_line} (warning: directory does not exist - skipping)")
                     continue
                 self._logger.log(log_line, short_message=emblem)
-                run_command(f'gio set -t stringv {resolved_path} metadata::emblems "{emblem}"')
+
+                # Symlinks use 0th emblem for a symlink arrow icon, so we insert a dummy emblem for non-symlinks to keep them aligned
+                pre_emblem = "" if is_symlink else "dummy"
+                run_command(f'gio set --nofollow-symlinks --type=stringv {resolved_path} metadata::emblems "{pre_emblem}" "{emblem}"')
 
     def _generate_gtk2_config(self):
         self._logger.log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
