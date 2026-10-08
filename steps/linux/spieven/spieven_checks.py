@@ -32,8 +32,8 @@ class SpievenMessage:
 
     @staticmethod
     def console_log(messages):
-        for msg in messages:
-            print(f"{msg.title} {msg.description}")
+        lines = "\n".join((msg.short_description or msg.title for msg in messages))
+        print(lines)
 
 
 class ScriptMode(Enum):
@@ -46,6 +46,7 @@ class ScriptMode(Enum):
     @staticmethod
     def get():
         try:
+            button_console = "0"
             button_info = os.environ["BUTTON_INFO"]
             button_action = os.environ["BUTTON_ACTION"]
             button_terminate = os.environ["BUTTON_TERMINATE"]
@@ -60,7 +61,7 @@ class ScriptMode(Enum):
             except IndexError:
                 current_button = ""
 
-        if current_button == 0:
+        if current_button == button_console:
             return ScriptMode.Console
         elif current_button == button_info:
             return ScriptMode.GuiInfo

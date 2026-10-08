@@ -60,6 +60,7 @@ class GuiXorg(Step):
             "libnotify",
             "xdotool",  # for getting Thunar's cwd
             "cava",
+            "sysstat",
             "autorandr",
         )
         if LinuxDistro.current().is_debian_like():

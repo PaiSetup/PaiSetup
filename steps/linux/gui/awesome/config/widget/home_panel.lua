@@ -28,27 +28,37 @@ end
 
 
 ----------------------------------------------------------------------------------- Generic helper widgets
-local function create_line_oriented_script_widget(create_row_callback, update_row_callback, command, interval, center_vertically, scroll_vertically)
+local function create_line_oriented_script_widget(create_row_callback, update_row_callback, empty_results_widget, command, interval, center_vertically, scroll_vertically)
     -- This function wraps a bash script that is periodically called and its results
     -- are used to populate rows of a vertical layout. It does not know how to create
     -- the rows, but uses callbacks specified by the caller. Parameters:
+    --  create_row_callback (func) - function without parameter returning a widget
+    --  update_row_callback (func) - function taking a widget (result of create_row_callback) and a string (line of script output)
+    --  empty_results_widget (widget) - a widget used whenever there are no rows returned by the command. Optional
     --  command (string) - path to script to call periodically
     --  interval (number) - interval of calling the script in seconds
-    --  create_row_callback - function without parameter returning a widget
-    --  update_row_callback - function taking a widget (result of create_row_callback) and a string (line of script output)
+    --  center_vertically (bool) - whether the rows should be centered vertically
+    --  scroll_vertically (bool) - whether the rows should be scrollable if there are too many to fit
 
     -- Root layout. We'll be adding rows to it
     local vertical = wibox.layout.fixed.vertical()
     vertical.spacing = tile_size * 0.03
     vertical.mychild_count = 0 -- my custom field, not a part of AweosomeWM
     vertical.myrows = {} -- my custom field, not a part of AweosomeWM
+    vertical.using_empty_widget = false
 
-    -- Watch widget will call our callback function and pass the results of get_repos.sh script
-    -- We will update GUI based on those results
+    -- Watch widget will call our command and execute a function, which will update GUI.
     local widget = awful.widget.watch(command, interval, function (_, stdout)
-            local line_index = 1
+            local needs_empty_widget = empty_results_widget ~= nil and not stdout:find("[^\r\n]")
+
+            -- Remove empty widget if needed
+            if not needs_empty_widget and vertical.using_empty_widget then
+                vertical:remove(1)
+                vertical.using_empty_widget = false
+            end
 
             -- Iterate over lines of output
+            local line_index = 1
             for line in stdout:gmatch("[^\r\n]+") do
                 -- Get row to set
                 local row = nil
@@ -81,6 +91,12 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
 
                 -- Remove the row from view
                 vertical:remove(i)
+            end
+
+            -- Add empty widget if needed
+            if needs_empty_widget and not vertical.using_empty_widget then
+                vertical:add(empty_results_widget)
+                vertical.using_empty_widget = true
             end
         end,
         vertical
@@ -346,11 +362,12 @@ local function create_repo_tile(pai_setup_root)
         row.wrapped_caption_flag3.visible = flag3 ~= ''
     end
 
+    local empty_results_widget = nil
     local command = pai_setup_root .. "/steps/linux/gui/awesome/get_repos.sh"
     local interval = 10
     local center_vertically = false
     local scroll_vertically = false
-    return create_line_oriented_script_widget(create_row, update_row, command, interval, center_vertically, scroll_vertically)
+    return create_line_oriented_script_widget(create_row, update_row, empty_results_widget, command, interval, center_vertically, scroll_vertically)
 end
 
 local function create_system_usage_tile(pai_setup_root)
@@ -396,6 +413,31 @@ local function create_system_usage_tile(pai_setup_root)
     return widget
 end
 
+local function create_warnings_tile(pai_setup_root)
+    -- This widget queries current warnings from Spieven and displays them in a tile.
+    local naughty = require("naughty")
+    local function create_textbox(color, initial_text)
+        local text = wibox.widget.textbox()
+        text.text = initial_text
+        local row = wrap_caption(text, color)
+        row.text = text
+        return row
+    end
+    local function create_row()
+        return create_textbox("#8B8000", "")
+    end
+    local function update_row(row, line)
+        row.text.text = "⚠️ " .. line
+    end
+
+    local empty_results_widget = create_textbox("#008800", "✅ No warnings")
+    empty_results_widget.text.font = "sans " .. tostring(tile_size * 0.1)
+    local command = pai_setup_root .. "/steps/linux/spieven/spieven_checks.py 0"
+    local interval = 30
+    local center_vertically = true
+    local scroll_vertically = true
+    return create_line_oriented_script_widget(create_row, update_row, empty_results_widget, command, interval, center_vertically, scroll_vertically)
+end
 
 
 ----------------------------------------------------------------------------------- Main
@@ -423,6 +465,7 @@ return function(visible_tag, pai_setup_root, user, screen)
     add_widget_to_grid(create_repo_tile(pai_setup_root),           2, 1,   5, 3)
     add_widget_to_grid(create_system_usage_tile(pai_setup_root),   7, 1,   3, 3)
     add_widget_to_grid(create_disk_usage_tile(pai_setup_root),     6, 4,   4, 1)
+    add_widget_to_grid(create_warnings_tile(pai_setup_root),       4, 4,   2, 1)
 
     -- Setup a wibox (a window) and embed the grid layout in it
     local rows, columns = root_layout:get_dimension()

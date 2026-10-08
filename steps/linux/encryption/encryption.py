@@ -18,6 +18,7 @@ class EncryptionStep(Step):
             "cryptsetup",
             "cryptomator-bin",
             "veracrypt",
+            "rclone",
         )
         dependency_dispatcher.add_keybindings(
             KeyBinding("x").mod().shift().ctrl().executeShell("$PAI_SETUP_ROOT/steps/linux/encryption/mount_nice.sh").desc("Mount nice"),
