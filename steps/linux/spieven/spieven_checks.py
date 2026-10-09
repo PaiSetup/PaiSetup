@@ -35,6 +35,11 @@ class SpievenMessage:
         lines = "\n".join((msg.short_description or msg.title for msg in messages))
         print(lines)
 
+    @staticmethod
+    def console_log_json(messages):
+        array = [msg.short_description or msg.title for msg in messages]
+        print(json.dumps(array, indent=4))
+
 
 class ScriptMode(Enum):
     Console = auto()
@@ -42,11 +47,13 @@ class ScriptMode(Enum):
     GuiInfo = auto()
     GuiAction = auto()
     GuiTerminate = auto()
+    ConsoleJson = auto()
 
     @staticmethod
     def get():
         try:
             button_console = "0"
+            button_console_json = "json"
             button_info = os.environ["BUTTON_INFO"]
             button_action = os.environ["BUTTON_ACTION"]
             button_terminate = os.environ["BUTTON_TERMINATE"]
@@ -63,6 +70,8 @@ class ScriptMode(Enum):
 
         if current_button == button_console:
             return ScriptMode.Console
+        if current_button == button_console_json:
+            return ScriptMode.ConsoleJson
         elif current_button == button_info:
             return ScriptMode.GuiInfo
         elif current_button == button_action:
@@ -180,6 +189,8 @@ match script_mode:
         SpievenMessage.gui_log_detailed(errors)
     case ScriptMode.Console:
         SpievenMessage.console_log(errors)
+    case ScriptMode.ConsoleJson:
+        SpievenMessage.console_log_json(errors)
 
 
 if script_mode.is_gui():
