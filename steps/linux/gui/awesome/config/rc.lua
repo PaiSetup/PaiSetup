@@ -130,10 +130,11 @@ local tags = {
 }
 local default_tag_index = 3
 function get_home_tag(screen)
-    if screen == nil then
-        screen = awful.screen.focused()
+    local home_tag_screen = screen
+    if home_tag_screen == nil then
+        home_tag_screen = awful.screen.focused()
     end
-    return awful.tag.find_by_name(screen, tags.home)
+    return awful.tag.find_by_name(home_tag_screen, tags.home)
 end
 
 -- Preserve tags after restart
@@ -227,9 +228,9 @@ beautiful.menubar_border_width = awful.screen.focused().mywibox.border_width
 ----------------------------------------------------------------------------------- Key/button bindings and rules
 
 function toggle_home_tag()
-    screen = awful.screen.focused()
-    home_tag = get_home_tag(screen)
-    current_tag = screen.selected_tag
+    local home_tag_screen = awful.screen.focused()
+    local home_tag = get_home_tag(home_tag_screen)
+    local current_tag = home_tag_screen.selected_tag
 
     if current_tag == home_tag then
         awful.tag.history.restore()

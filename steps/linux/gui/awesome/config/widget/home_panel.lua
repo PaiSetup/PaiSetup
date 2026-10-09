@@ -1,13 +1,15 @@
 local wibox = require("wibox")
 local awful = require("awful")
 local gears = require("gears")
+local lgi = require("lgi")
 local beautiful = require("beautiful")
 local markup_utils = require("utils.markup")
 local widget_wrappers = require("widget.wrappers")
 local shutdown_popup = require("widget.shutdown_popup")
 local rules_utils = require("utils.rules")
-local keygrabber = require("awful.keygrabber")
 local dpi = require("beautiful.xresources").apply_dpi
+local json = require("utils.json")
+local naughty = require("naughty")
 
 ----------------------------------------------------------------------------------- Global utils
 
@@ -122,6 +124,167 @@ local function create_line_oriented_script_widget(create_row_callback, update_ro
     end
 
     return widget
+end
+
+local function make_spinner(size)
+    local angle = 0
+    local running = false
+    local w = wibox.widget.base.make_widget()
+
+    function w:fit(_, _, _) return size, size end
+
+    function w:draw(_, cr, width, height)
+        if not running then return end
+        local r = size / 2 - 2            -- fixed radius, not width/height
+        cr:translate(width / 2, height / 2)  -- center in whatever area we got
+        cr:rotate(angle)
+        cr:set_line_width(2)
+        cr:set_line_cap(lgi.cairo.LineCap.ROUND)
+        cr:set_source(gears.color(beautiful.color_theme))
+        cr:arc(0, 0, r, 0, math.pi * 1.5)
+        cr:stroke()
+    end
+
+    local timer = gears.timer {
+        timeout = 1 / 30,
+        callback = function()
+            angle = (angle + 0.25) % (2 * math.pi)
+            w:emit_signal("widget::redraw_needed")
+        end,
+    }
+
+    function w:start() running = true;  timer:start() end
+    function w:stop()
+        running = false
+        timer:stop()
+        w:emit_signal("widget::redraw_needed")  -- clear the last frame
+    end
+
+    return w
+end
+
+local function create_json_oriented_script_widget(create_row_callback, update_row_callback, empty_results_widget, command, interval, center_vertically, scroll_vertically)
+    -- This function wraps a script that is periodically called and its results are used to populate rows of a vertical
+    -- layout. It does not know how to create and populate the rows, but uses callbacks specified by the caller.
+    -- Parameters:
+    --  create_row_callback (func) - function without parameter returning a widget
+    --  update_row_callback (func) - function taking a widget (result of create_row_callback) and a decoded JSON value (element of the array)
+    --  empty_results_widget (widget) - used whenever the array is empty. Optional
+    --  command (string) - command to call periodically; must print a JSON array
+    --  interval (number) - interval of calling the command in seconds
+    --  center_vertically (bool) - whether the rows should be centered vertically
+    --  scroll_vertically (bool) - whether the rows should be scrollable if there are too many to fit
+
+    -- Prepare content widget: a vertical list of rows, one row per json object. Optionally also special widget for empty results.
+    local rows_widget = wibox.layout.fixed.vertical()
+    rows_widget.spacing = tile_size * 0.03
+    rows_widget.myrows = {} -- my custom field, not a part of AwesomeWM
+
+    local content_widget = rows_widget
+    if empty_results_widget ~= nil then
+        empty_results_widget.visible = false
+        content_widget = wibox.widget {
+            layout = wibox.layout.fixed.vertical,
+            content_widget,
+            empty_results_widget
+        }
+    end
+    if scroll_vertically then
+        local scroll = wibox.widget {
+            layout = wibox.container.scroll.vertical,
+            step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+            speed = 100,
+            content_widget
+        }
+        scroll:connect_signal("mouse::enter", function() scroll:pause() end)
+        scroll:connect_signal("mouse::leave", function() scroll:continue() end)
+        content_widget = scroll
+    end
+    if center_vertically then
+        content_widget = wibox.container.place(content_widget)
+    end
+
+    -- Prepare bottom widget: a spinner showed when the command is running
+    local spinner_widget = make_spinner(20)
+    local bottom_widget = wibox.widget {
+        spinner_widget,
+        halign = "right",
+        widget = wibox.container.place,
+    }
+
+    -- Prepare the final widget. Content widget takes majority of vertical space, and bottom widget is fitted at the bottom.
+    local out_widget = wibox.widget {
+        nil,
+        content_widget,
+        bottom_widget,
+        layout = wibox.layout.align.vertical,
+    }
+
+    local function process_json(stdout)
+        -- Try to parse the json
+        local ok, items = pcall(json.decode, stdout)
+        if not ok or type(items) ~= "table" then
+            naughty.notify({
+                preset  = naughty.config.presets.warn,
+                text   = "Invalid JSON from " .. command,
+                timeout = 10,
+            })
+            return
+        end
+
+        if empty_results_widget ~= nil then
+            empty_results_widget.visible = #items == 0
+        end
+
+        -- Iterate over objects of the array, creating rows as needed
+        for item_index, item in ipairs(items) do
+            local row = rows_widget.myrows[item_index]
+            if row == nil then
+                row = create_row_callback()
+                rows_widget:add(row)
+                table.insert(rows_widget.myrows, row)
+            end
+            update_row_callback(row, item)
+        end
+
+        -- Delete rows that are no longer needed
+        for i = #rows_widget.myrows, #items + 1, -1 do
+            table.remove(rows_widget.myrows, i)
+            rows_widget:remove(i)
+        end
+    end
+
+    local is_update_running = false
+    local function update()
+        if is_update_running then return end
+
+        is_update_running = true
+        spinner_widget:start()
+        awful.spawn.easy_async_with_shell(command, function(stdout)
+            process_json(stdout)
+            spinner_widget:stop()
+            is_update_running = false
+        end)
+    end
+
+    local timer = gears.timer {
+        timeout   = interval,
+        call_now  = true,
+        autostart = true,
+        callback  = update,
+    }
+
+    local function refresh_timer()
+        timer:again()
+        update()
+    end
+
+    out_widget:buttons(gears.table.join(
+        awful.button({}, 1, refresh_timer),
+        awful.button({}, 3, refresh_timer)
+    ))
+
+    return out_widget
 end
 
 local function create_horizontal_progress_bar_widget()
@@ -286,7 +449,6 @@ local function create_repo_tile(pai_setup_root)
     --    master_branch - main branch used by repository ("master" or "main")
     --    flag1, flag2, flag3 - zero or more warnings about the state of repository
 
-    local naughty = require("naughty")
     local function create_row()
         local flag_color = "#c94c4c"
         -- Prepare textboxes. We have to store both raw textboxes and their wrapped versions,
@@ -415,7 +577,6 @@ end
 
 local function create_warnings_tile(pai_setup_root)
     -- This widget queries current warnings from Spieven and displays them in a tile.
-    local naughty = require("naughty")
     local function create_textbox(color, initial_text)
         local text = wibox.widget.textbox()
         text.text = initial_text
@@ -439,6 +600,35 @@ local function create_warnings_tile(pai_setup_root)
     return create_line_oriented_script_widget(create_row, update_row, empty_results_widget, command, interval, center_vertically, scroll_vertically)
 end
 
+local function create_multimedia_sync_tile(pai_setup_root)
+    -- Shows pending multimedia sync operations (copies/moves/deletes) in a tile.
+    local function create_textbox(color, initial_text)
+        local text = wibox.widget.textbox()
+        text.text = initial_text
+        local row = wrap_caption(text, color)
+        row.text = text
+        return row
+    end
+
+    local function create_row()
+        return create_textbox(beautiful.color_gray_dark, "")
+    end
+
+    local function update_row(row, item)
+        local text = string.format("%s: %d (%.2fMiB)", gears.string.xml_escape(item.caption), item.count, item.sizeMb)
+        local color = (item.count == 0) and beautiful.color_gray_light or beautiful.color_font
+        row.text.markup = markup_utils.wrap_span(text, color, nil)
+    end
+
+    local empty_results_widget = create_textbox("#008800", "✅ Nothing to sync")
+    empty_results_widget.text.font = "sans " .. tostring(tile_size * 0.1)
+
+    local command = pai_setup_root .. "/steps/linux/encryption/sync_multimedia.sh --query"
+    local interval = 30
+    local center_vertically = true
+    local scroll_vertically = true
+    return create_json_oriented_script_widget(create_row, update_row, empty_results_widget, command, interval, center_vertically, scroll_vertically)
+end
 
 ----------------------------------------------------------------------------------- Main
 
@@ -461,11 +651,12 @@ return function(visible_tag, pai_setup_root, user, screen)
         widget = wibox.widget(widget)
         root_layout:add_widget_at(widget, row, col, rowspan, colspan)
     end
-    add_widget_to_grid(create_greeting_tile(user),                 1, 1,   1, 2)
-    add_widget_to_grid(create_repo_tile(pai_setup_root),           2, 1,   5, 3)
-    add_widget_to_grid(create_system_usage_tile(pai_setup_root),   7, 1,   3, 3)
-    add_widget_to_grid(create_disk_usage_tile(pai_setup_root),     6, 4,   4, 1)
-    add_widget_to_grid(create_warnings_tile(pai_setup_root),       4, 4,   2, 1)
+    add_widget_to_grid(create_greeting_tile(user),                  1, 1,   1, 2)
+    add_widget_to_grid(create_repo_tile(pai_setup_root),            2, 1,   5, 3)
+    add_widget_to_grid(create_system_usage_tile(pai_setup_root),    7, 1,   3, 3)
+    add_widget_to_grid(create_disk_usage_tile(pai_setup_root),      6, 4,   4, 1)
+    add_widget_to_grid(create_warnings_tile(pai_setup_root),        4, 4,   2, 1)
+    add_widget_to_grid(create_multimedia_sync_tile(pai_setup_root), 2, 4,   2, 1)
 
     -- Setup a wibox (a window) and embed the grid layout in it
     local rows, columns = root_layout:get_dimension()
