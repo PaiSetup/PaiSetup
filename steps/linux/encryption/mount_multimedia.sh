@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cleanup() {
+    kill -9 "$cryptomator_pid" 2>/dev/null
+    wait "$cryptomator_pid" 2>/dev/null
+}
+trap cleanup EXIT INT TERM
+
 multimedia_dir="$HOME/multimedia"
 encrypted_dirs=(climbing freestyle_football funny) # keep this in snc with sync_multimedia.sh
 enc_vault_path="$HOME/multimedia/encrypted"
@@ -19,4 +25,6 @@ for dir in "${encrypted_dirs[@]}"; do
 done
 
 # Execute
-secret-tool lookup PaiSetup multimedia_password | cryptomator-cli unlock --mountPoint $dec_vault_path --mounter=$mounter --password:stdin $enc_vault_path
+secret-tool lookup PaiSetup multimedia_password | cryptomator-cli unlock --mountPoint $dec_vault_path --mounter=$mounter --password:stdin $enc_vault_path &
+cryptomator_pid=$!
+wait "$cryptomator_pid"
