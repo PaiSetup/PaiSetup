@@ -10,6 +10,7 @@ local rules_utils = require("utils.rules")
 local dpi = require("beautiful.xresources").apply_dpi
 local json = require("utils.json")
 local naughty = require("naughty")
+local create_rpi_led_tile = require("widget.rpi_led_widget")
 
 ----------------------------------------------------------------------------------- Global utils
 
@@ -491,7 +492,7 @@ end
 
 ----------------------------------------------------------------------------------- Main
 
-return function(visible_tag, pai_setup_root, user, screen)
+return function(visible_tag, pai_setup_root, user, screen, rpi_led_enabled)
     -- Main function composing the panel from above widgets
 
     -- Some size constants
@@ -511,11 +512,14 @@ return function(visible_tag, pai_setup_root, user, screen)
         root_layout:add_widget_at(widget, row, col, rowspan, colspan)
     end
     add_widget_to_grid(create_greeting_tile(user),                  1, 1,   1, 2)
-    add_widget_to_grid(create_repo_tile(pai_setup_root),            2, 1,   5, 3)
-    add_widget_to_grid(create_system_usage_tile(pai_setup_root),    7, 1,   3, 3)
-    add_widget_to_grid(create_disk_usage_tile(pai_setup_root),      6, 4,   4, 1)
-    add_widget_to_grid(create_warnings_tile(pai_setup_root),        4, 4,   2, 1)
-    add_widget_to_grid(create_multimedia_sync_tile(pai_setup_root), 2, 4,   2, 1)
+    if rpi_led_enabled then
+        add_widget_to_grid(create_rpi_led_tile(pai_setup_root),     1, 3,   1, 1)
+    end
+    add_widget_to_grid(create_repo_tile(pai_setup_root),            2, 1,   4, 3)
+    add_widget_to_grid(create_system_usage_tile(pai_setup_root),    6, 1,   3, 3)
+    add_widget_to_grid(create_multimedia_sync_tile(pai_setup_root), 1, 4,   2, 1)
+    add_widget_to_grid(create_warnings_tile(pai_setup_root),        3, 4,   2, 1)
+    add_widget_to_grid(create_disk_usage_tile(pai_setup_root),      5, 4,   4, 1)
 
     -- Setup a wibox (a window) and embed the grid layout in it
     local rows, columns = root_layout:get_dimension()

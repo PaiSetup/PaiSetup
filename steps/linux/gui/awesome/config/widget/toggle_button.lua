@@ -3,6 +3,7 @@ local markup_utils = require("utils.markup")
 
 return function(text, on_color, off_color, initial_value, callback, callback_data)
     local widget = wibox.widget.textbox()
+    widget.align = 'center'
     widget.is_clicked = false
     widget.font = "sans 40"
     widget.refresh = function (self)

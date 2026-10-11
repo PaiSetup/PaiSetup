@@ -32,7 +32,6 @@ local create_script_widget = require("widget.script_widget")
 local create_callback_widget = require("widget.callback_widget")
 local create_tray_widget = require("widget.tray_widget")
 local create_home_panel = require("widget.home_panel")
-local create_rpi_led_widget = require("widget.rpi_led_widget")
 local create_taglist = require("widget.taglist")
 local create_tasklist = require("widget.tasklist")
 local create_layout_box = require("widget.layout_box")
@@ -161,12 +160,6 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     utils.set_wallpaper(s)
 
-    -- Leaf widgets (screen-specific)
-    local rpi_led_widget = nil
-    if rpi_led_enabled then
-        rpi_led_widget = create_rpi_led_widget(s, pai_setup)
-    end
-
     -- Each screen has its own tag table.
     awful.tag({tags.web, tags.code, tags.general, tags.general, tags.general, tags.general, tags.draw, tags.video, tags.home }, s, awful.layout.layouts[1])
     for _, tag in pairs(s.tags) do
@@ -175,7 +168,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Setup home tag and panel
     get_home_tag(s).is_home = true
-    create_home_panel(tags.home, pai_setup, user, s)
+    create_home_panel(tags.home, pai_setup, user, s, rpi_led_enabled)
 
     -- Setup a popup for volume change
     create_volume_popup(s)
@@ -207,7 +200,6 @@ awful.screen.connect_for_each_screen(function(s)
                 plex_widget,
                 trash_widget,
                 tray_widget,
-                rpi_led_widget,
                 warnings_widget,
                 shutdown_popup_widget,
             }),
