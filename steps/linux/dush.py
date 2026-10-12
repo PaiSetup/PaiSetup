@@ -1,4 +1,5 @@
 from steps.dush_base import DushStepBase
+from utils.services.file_writer import FileType
 
 
 class DushStep(DushStepBase):
@@ -9,7 +10,7 @@ class DushStep(DushStepBase):
     def perform(self):
         super().perform()
         self._file_writer.write_section(
-            ".profile",
+            ".bashrc",
             "Developer scripts",
             [
                 f'export DUSH_PATH="{self._dush_root_dir}"',
@@ -21,6 +22,7 @@ class DushStep(DushStepBase):
                 ". $DUSH_PATH/dush/projects/burrito/main.sh",
                 ". $DUSH_PATH/dush/projects/pnt/main.sh",
             ],
+            file_type=FileType.Bash,
         )
 
     def register_env_variables(self):
