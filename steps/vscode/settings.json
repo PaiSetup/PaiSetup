@@ -29,5 +29,7 @@
     "git.openRepositoryInParentFolders": "never",
     "security.workspace.trust.untrustedFiles": "open",
     "go.formatTool": "goimports",
-    "go.coverOnTestPackage": false
+    "go.coverOnTestPackage": false,
+    "search.experimental.useIgnoreFilesInFindFiles": true,
+    "search.useIgnoreFiles": false
 }
