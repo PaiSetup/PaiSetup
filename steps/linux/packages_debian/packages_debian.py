@@ -169,6 +169,8 @@ class PackagesDebianStep(Step):
                 pass  # Ignored for now
             case "mtpfs":
                 return DebianPackageApt("go-mtpfs")
+            case "shellcheck-bin":
+                return DebianPackageApt("shellcheck")
 
             case "python":
                 return DebianPackageApt("python3")
