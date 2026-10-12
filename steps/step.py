@@ -1,5 +1,6 @@
 import enum
 
+from utils.os_function import OperatingSystem
 from utils.services.file_writer import FileType, LinePlacement
 
 
@@ -89,7 +90,9 @@ class FrameworkStep(Step):
 
     def perform(self):
         self._logger.get_log_dir().mkdir(parents=True, exist_ok=True)
-        self._setup_constant_envs()
+
+        if OperatingSystem.current().is_linux():
+            self._setup_constant_envs()
 
     def _setup_constant_envs(self):
         self._file_writer.write_section(
