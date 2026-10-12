@@ -2,6 +2,7 @@ from steps.ssh import SshStep
 from utils.setup_mode import SetupMode
 
 from .activate_windows import ActivateWindowsStep
+from .bash import BashStep
 from .dush import DushStep
 from .explorer import ExplorerStep
 from .extensions import ExtensionsStep
@@ -47,6 +48,7 @@ class WindowsSetupMode(SetupMode):
             UninstallBloatStep(),
             FoldersStep(root_folder="D:\\"),
             PaiSetupCmdStep(root_dir),
+            BashStep(),
             DushStep(fetch_git=True),
             NotesStep(fetch_git=True, use_private_notes=True),
             GamesStep(),
