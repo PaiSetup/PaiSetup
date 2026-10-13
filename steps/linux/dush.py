@@ -6,6 +6,7 @@ class DushStep(DushStepBase):
     def __init__(self, fetch_git):
         super().__init__("Dush", fetch_git)
         self.setup_dush_root_dir(self._env.home() / "dush")
+        self._dush_workspace_dir = self._env.home() / "work"
 
     def perform(self):
         super().perform()
@@ -14,7 +15,7 @@ class DushStep(DushStepBase):
             "Developer scripts",
             [
                 f'export DUSH_PATH="{self._dush_root_dir}"',
-                f'export DUSH_WORKSPACE="$HOME/work"',
+                f'export DUSH_WORKSPACE="{self._dush_workspace_dir}"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
                 ". $DUSH_PATH/dush/framework/frontend.bash",
                 ". $DUSH_PATH/dush/projects/bashies/main.sh",
@@ -27,7 +28,7 @@ class DushStep(DushStepBase):
 
     def register_env_variables(self):
         self._env.set("DUSH_PATH", self._dush_root_dir)
-        self._env.set("DUSH_WORKSPACE", self._env.home() / "work")
+        self._env.set("DUSH_WORKSPACE", self._dush_workspace_dir)
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
