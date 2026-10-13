@@ -68,10 +68,8 @@ class PackagesDebianStep(Step):
 
         installed_package_names = PackagesDebianStep._get_installed_packages()
 
-        packages = [PackagesDebianStep._translate_package(p) for p in self._package_names]
-        packages = [i for x in packages for i in (x if isinstance(x, list) else [x])]  # Flatten nested lists
-        packages += [DebianPackageApt(p) for p in self._debian_package_names]
-        packages = [p for p in packages if p is not None and not p.is_installed(installed_package_names)]
+        packages = self._get_packages()
+        packages = [p for p in packages if not p.is_installed(installed_package_names)]
 
         if packages:
             with self._logger.indent("Installing packages:"):
@@ -90,6 +88,12 @@ class PackagesDebianStep(Step):
                     all_installed = False
             if all_installed:
                 self._logger.log("OK")
+
+    def _get_packages(self):
+        packages = [PackagesDebianStep._translate_package(p) for p in self._package_names]
+        packages = [i for x in packages for i in (x if isinstance(x, list) else [x])]  # Flatten nested lists
+        packages += [DebianPackageApt(p) for p in self._debian_package_names]
+        return [p for p in packages if p is not None]
 
     @staticmethod
     def _translate_package(package_name):
@@ -270,5 +274,5 @@ class PackagesDebianStep(Step):
 
     @pull_dependency_handler
     def query_installed_packages(self):
-        # TODO(debian) not sure what to return here yet.
-        raise NotImplementedError()
+        # Note script packages are ignored here.
+        return [p.get_name() for p in self._get_packages() if isinstance(p, DebianPackageApt)]
