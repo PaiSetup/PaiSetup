@@ -66,7 +66,11 @@ class GraphicsSessionType(enum.Enum):
         if OperatingSystem.current().is_windows():
             return GraphicsSessionType.Windows
         else:
-            match os.environ["XDG_SESSION_TYPE"].lower():
+            session_type = os.environ.get("XDG_SESSION_TYPE")
+            if session_type is None:
+                return GraphicsSessionType.Tty
+
+            match session_type.lower():
                 case "tty":
                     return GraphicsSessionType.Tty
                 case "x11":
