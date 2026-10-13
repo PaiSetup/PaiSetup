@@ -60,6 +60,7 @@ class PackagesDebianStep(Step):
         self._enable_installation = enable_installation
         self._separate_apt_commands = separate_apt_commands
         self._package_names = []
+        self._debian_package_names = []
 
     def perform(self):
         if not self._enable_installation:
@@ -69,6 +70,7 @@ class PackagesDebianStep(Step):
 
         packages = [PackagesDebianStep._translate_package(p) for p in self._package_names]
         packages = [i for x in packages for i in (x if isinstance(x, list) else [x])]  # Flatten nested lists
+        packages += [DebianPackageApt(p) for p in self._debian_package_names]
         packages = [p for p in packages if p is not None and not p.is_installed(installed_package_names)]
 
         if packages:
@@ -172,6 +174,22 @@ class PackagesDebianStep(Step):
             case "shellcheck-bin":
                 return DebianPackageApt("shellcheck")
 
+            case "base-devel":
+                return DebianPackageApt("build-essential")
+            case "ninja":
+                return DebianPackageApt("ninja-build")
+            case "pkgconf":
+                return DebianPackageApt("pkg-config")
+            case "openssl":
+                # Arch ships the tool and the headers together, Debian splits them.
+                return [DebianPackageApt("openssl"), DebianPackageApt("libssl-dev")]
+            case "wayland":
+                return DebianPackageApt("libwayland-dev")
+            case "libxshmfence":
+                return DebianPackageApt("libxshmfence-dev")
+            case "libxrandr":
+                return DebianPackageApt("libxrandr-dev")
+
             case "python":
                 return DebianPackageApt("python3")
             case "python-black":
@@ -232,6 +250,16 @@ class PackagesDebianStep(Step):
                 self._package_names += arg
             else:
                 self._package_names.append(str(arg))
+
+    @push_dependency_handler
+    def add_debian_packages(self, *args):
+        for arg in args:
+            if arg is None:
+                pass
+            elif isinstance(arg, list):
+                self._debian_package_names += arg
+            else:
+                self._debian_package_names.append(str(arg))
 
     @staticmethod
     def _get_installed_packages():
