@@ -207,6 +207,9 @@ class PackageInfo:
             self.install_dir = games_dir / "Minecraft"
             self._set_installer(Installer.Msi)
             self.desktop_files_to_delete.append("Minecraft Launcher.lnk")
+        elif package_name == "mobaxterm":
+            self.install_dir = programs_dir / "MobaXterm"
+            self._set_installer(Installer.Msi)
         elif package_name == "mp3tag":
             self.install_dir = programs_dir / "Mp3Tag"
             self._set_installer(Installer.Nsis)
