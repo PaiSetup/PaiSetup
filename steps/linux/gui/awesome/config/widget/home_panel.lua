@@ -120,11 +120,37 @@ local function create_json_oriented_script_widget(create_row_callback, update_ro
     end
 
     -- Prepare bottom widget: a spinner showed when the command is running
+    local spinner_duration_widget = wibox.widget {
+        widget = wibox.widget.textbox,
+        text = " ",
+    }
+    spinner_duration_widget.my_update_timer = gears.timer {
+        timeout   = 0.2,
+        callback  = function() spinner_duration_widget:inc_duration() end,
+    }
+    function spinner_duration_widget:start()
+        self.text = "0s"
+        self.my_start_time = lgi.GLib.get_monotonic_time()
+        self.my_update_timer:start()
+    end
+    function spinner_duration_widget:inc_duration()
+        local seconds = (lgi.GLib.get_monotonic_time() - self.my_start_time) / 1e6
+        self.text = string.format("%.1fs", seconds)
+    end
+    function spinner_duration_widget:stop()
+        self.my_update_timer:stop()
+        self.text = " "
+    end
     local spinner_widget = create_spinner(20)
     local bottom_widget = wibox.widget {
-        spinner_widget,
-        halign = "right",
         widget = wibox.container.place,
+        halign = "right",
+        {
+            spinner_duration_widget,
+            spinner_widget,
+            layout = wibox.layout.fixed.horizontal,
+            spacing = tile_size * 0.04,
+        },
     }
 
     -- Prepare the final widget. Content widget takes majority of vertical space, and bottom widget is fitted at the bottom.
@@ -173,12 +199,17 @@ local function create_json_oriented_script_widget(create_row_callback, update_ro
     local is_update_running = false
     local function update()
         if is_update_running then return end
-
         is_update_running = true
+
         spinner_widget:start()
+        spinner_duration_widget:start()
+
         awful.spawn.easy_async_with_shell(command, function(stdout)
             process_json(stdout)
+
+            spinner_duration_widget:stop()
             spinner_widget:stop()
+
             is_update_running = false
         end)
     end
@@ -482,7 +513,7 @@ local function create_multimedia_sync_tile(pai_setup_root)
     empty_results_widget.text.font = "sans " .. tostring(tile_size * 0.1)
 
     local command = pai_setup_root .. "/steps/linux/encryption/sync_multimedia.sh --query"
-    local interval = 30
+    local interval = 90
     local horizontal_layout = false
     local center_vertically = true
     local center_horizontally = true
