@@ -512,7 +512,7 @@ local function create_multimedia_sync_tile(pai_setup_root)
     local empty_results_widget = create_textbox("#008800", "✅ Nothing to sync")
     empty_results_widget.text.font = "sans " .. tostring(tile_size * 0.1)
 
-    local command = pai_setup_root .. "/steps/linux/encryption/sync_multimedia.sh --query"
+    local command = pai_setup_root .. "/steps/linux/encryption/sync_multimedia.sh query"
     local interval = 90
     local horizontal_layout = false
     local center_vertically = true
