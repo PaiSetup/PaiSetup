@@ -41,8 +41,12 @@ echo '[
 ]'
       ;;
 
+    "query_raw")
+        rclone sync "$local_path" "$remote_path" --exclude="$exclude" --fast-list --track-renames --dry-run --use-json-log 2>&1
+        ;;
+
     "query")
-        rclone sync "$local_path" "$remote_path" --exclude="$exclude" --track-renames --dry-run --use-json-log 2>&1 | jq -s '
+        rclone sync "$local_path" "$remote_path" --exclude="$exclude" --fast-list --track-renames --dry-run --use-json-log 2>&1 | jq -s '
             def mb: . / 1048576 * 100 | round / 100;
             def summarize($caption; f):
               [.[] | select(.skipped != null and f)]
@@ -57,16 +61,16 @@ echo '[
       ;;
 
     "download")
-        rclone sync "$remote_path" "$local_path" --exclude="$exclude" --track-renames --immutable --verbose
+        rclone sync "$remote_path" "$local_path" --exclude="$exclude" --fast-list --track-renames --immutable --verbose
         ;;
 
     "upload")
-        rclone sync "$local_path" "$remote_path" --exclude="$exclude" --track-renames --immutable --verbose
+        rclone sync "$local_path" "$remote_path" --exclude="$exclude" --fast-list --track-renames --immutable --verbose
         ;;
 
     *)
         echo "Unknown command: '$command'" >&2
-        echo "Usage: $0 {query_debug|query|download|upload}" >&2
+        echo "Usage: $0 {download|upload|query|query_raw|query_debug}" >&2
         exit 1
         ;;
 esac
