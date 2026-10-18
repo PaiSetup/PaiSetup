@@ -68,6 +68,8 @@ class HomeDirectoryStep(Step):
             dependency_dispatcher.set_folder_icon(multimedia_dir, "multimedia")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "avatars", "avatars")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "freestyle_football", "football", True)
+            dependency_dispatcher.set_folder_icon(multimedia_dir / "holidays", "holidays", True)
+            dependency_dispatcher.set_folder_icon(multimedia_dir / "presentations", "presentations", True)
             dependency_dispatcher.set_folder_icon(multimedia_dir / "skydive", "skydive")
             dependency_dispatcher.set_folder_icon(multimedia_dir / "receipts", "receipts", True)
             dependency_dispatcher.set_folder_icon(multimedia_dir / "encrypted", "encrypted")

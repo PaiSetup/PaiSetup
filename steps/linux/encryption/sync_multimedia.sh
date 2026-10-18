@@ -8,7 +8,7 @@ local_path="$HOME/multimedia"
 remote_path="pc:multimedia"
 
 # Prepare exclude string
-encrypted_dirs=(climbing freestyle_football funny) # keep this in sync with mount_multimedia.sh
+encrypted_dirs=(climbing freestyle_football funny holidays presentations receipts) # keep this in sync with mount_multimedia.sh
 not_synced_dirs=(music_to_rate movies tv_series .debris)
 not_synced_files=(.megaignore)
 exclude=""
