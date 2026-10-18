@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# Parse options
-command="$1"
-
 # Prepare basic values
+command="$1"
 local_path="$HOME/multimedia"
-remote_path="pc:multimedia"
+remote_path="${2:-pc:multimedia}"
 
 # Prepare exclude string
 encrypted_dirs=(climbing freestyle_football funny holidays presentations receipts) # keep this in sync with mount_multimedia.sh
