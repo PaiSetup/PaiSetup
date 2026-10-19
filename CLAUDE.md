@@ -14,7 +14,7 @@ Setting up a machine happens in two phases:
   Running them again can leave the system in an inconsistent state.
 - **`setup.py`** is the main entry point and is **idempotent** - it is safe, and expected, to run
   repeatedly as the configuration evolves. Each run re-applies the current configuration; steps
-  that detect nothing has changed do little or no work.
+  that detect nothing has changed do little to no work.
 
 `setup.py` needs elevated privileges to do its job: administrator on Windows, and passwordless (or
 interactive) `sudo` on Linux, since many steps write to system locations or install packages.
@@ -84,9 +84,21 @@ silent no-op.
 Each OS has its own package-installing step (Arch/`yay`+pacman, Debian/`apt`, Windows/`choco`), and
 the specifics of any one of them matter less than the role they play: almost every other step
 depends on the package step by pushing package names to it rather than installing anything
-themselves. This keeps installation centralized (dedupe, single upgrade pass, consistent logging)
-and means a step generally doesn't need to know or care which OS's package manager is behind it - it
-just declares what it needs and the platform-appropriate package step takes care of the rest.
+themselves. This keeps installation centralized (dedupe, single upgrade pass, consistent logging).
+
+The project grew up around Arch, so Linux steps express their dependencies in Arch package names no
+matter which distro is being configured, and the Debian step translates them into what `apt`
+understands: same name (the default), a hardcoded rename (sometimes one Arch package becoming
+several apt ones), dropped entirely when it's Arch-specific, or delegated to a small install script
+next to the step when there's no apt package but we still want the software.
+
+Windows is outside this scheme - its steps are disjoint from the Linux ones and push Chocolatey
+names in the first place, so there is nothing to translate. Instead, the Windows step keeps
+per-package *installation* knowledge, since Chocolatey packages wrap wildly different installers:
+installer flavor, the arguments needed to pick an install directory, desktop shortcuts to clean up,
+and startup entries the package creates. Always verify `PackageInfo` knows how to handle a package
+whenever you add a new one. If it doesn't, ask the user about the installer type and other
+parameters.
 
 ## Notable utilities
 
@@ -101,11 +113,12 @@ just declares what it needs and the platform-appropriate package step takes care
   with `;`. Used whenever a step needs Windows-specific behavior with no direct shell equivalent
   (registry edits, shell verbs, `Invoke-WebRequest`, etc.), while still going through the same
   error-checked execution path as `run_command`.
-- **External projects** (`utils/external_project.py`) - helpers for steps that need to build
-  something from source rather than install a prebuilt package: cloning/updating a git repo to a
-  given revision, running CMake/Make with patches applied first, and downloading/unzipping a project
-  straight from a GitHub zip or release asset. These are composed together by steps that manage
-  their own build-from-source tools rather than reimplementing "clone, checkout, build" each time.
+- **External projects** (`utils/external_project.py`) - helpers for steps that pull content from
+  outside the package manager: cloning/updating a git repo to a given revision, running CMake/Make
+  with patches applied first, and downloading/unzipping a project straight from a GitHub zip or
+  release asset. Building from source is one common use, but these are just as often used to fetch
+  things that are never compiled - notes and dotfile repos, icon themes, fonts, prebuilt binaries -
+  so steps don't reimplement "clone, checkout, update" or "download and unpack" each time.
 - **FileWriter** (`utils/services/file_writer.py`, see also Services above) - worth calling out again
   as a utility in its own right: it's the shared abstraction for "many independent steps need to
   append configuration into the same handful of dotfiles/scripts" without stepping on each other or
