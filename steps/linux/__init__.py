@@ -36,6 +36,7 @@ from .programming_cpp import ProgrammingCppStep
 from .programming_gamedev import ProgrammingGamedevStep
 from .programming_go import ProgrammingGoStep
 from .programming_java import ProgrammingJavaStep
+from .programming_node import ProgrammingNodeStep
 from .programming_python import ProgrammingPythonStep
 from .programming_rust import ProgrammingRustStep
 from .qbittorrent import QBitTorrentStep
@@ -100,6 +101,7 @@ class ArchSetupMode(SetupMode):
             ProgrammingCommonStep(),
             ProgrammingGamedevStep(),
             ProgrammingGoStep(),
+            ProgrammingNodeStep(),
             ClaudeStep(),
             SshStep(secret_dir, full=args.full),
             SpievenStep(build_dir),
