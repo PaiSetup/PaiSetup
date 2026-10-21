@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 import utils.external_project as ext
+from steps.linux.thunar import ThunarCustomAction
 from steps.step import Step
 from utils.services.file_writer import FileType
 
@@ -64,14 +65,12 @@ class CharonStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         for call in self._immediate_charon_calls:
-            action = {
-                "name": call.name,
-                "command": f"Charon --config {self._file_writer.resolve_path(call.config_path)} --log {self._log_file_path} --immediate --immediate-files %F",
-            }
-            if call.use_for_images:
-                action["image-files"] = None
-            if call.use_for_videos:
-                action["video-files"] = None
+            action = ThunarCustomAction(
+                name=call.name,
+                command=f"Charon --config {self._file_writer.resolve_path(call.config_path)} --log {self._log_file_path} --immediate --immediate-files %F",
+                image_files=call.use_for_images,
+                video_files=call.use_for_videos,
+            )
             dependency_dispatcher.add_thunar_custom_action(action)
 
     def perform(self):

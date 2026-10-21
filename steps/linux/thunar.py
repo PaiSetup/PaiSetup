@@ -5,6 +5,32 @@ from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
 
 
+class ThunarCustomAction:
+    def __init__(
+        self,
+        name,
+        command,
+        spawn_terminal=False,
+        directories=False,
+        audio_files=False,
+        image_files=False,
+        text_files=False,
+        video_files=False,
+        other_files=False,
+    ):
+        self.name = name
+        self.command = command
+        self.spawn_terminal = spawn_terminal
+        self.file_types = {
+            "directories": directories,
+            "audio-files": audio_files,
+            "image-files": image_files,
+            "text-files": text_files,
+            "video-files": video_files,
+            "other-files": other_files,
+        }
+
+
 class ThunarStep(Step):
     def __init__(self):
         super().__init__("Thunar")
@@ -37,25 +63,25 @@ class ThunarStep(Step):
 
     def _add_default_custom_actions(self):
         self.add_thunar_custom_action(
-            {
-                "name": "Open terminal here",
-                "command": f"{self._env.get("TERMINAL")}",
-                "directories": None,
-            }
+            ThunarCustomAction(
+                name="Open terminal here",
+                command=f"{self._env.get("TERMINAL")}",
+                directories=True,
+            )
         )
         self.add_thunar_custom_action(
-            {
-                "name": "Set wallpaper and generate colors",
-                "command": f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
-                "image-files": None,
-            }
+            ThunarCustomAction(
+                name="Set wallpaper and generate colors",
+                command=f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
+                image_files=True,
+            )
         )
         self.add_thunar_custom_action(
-            {
-                "name": "Copy contents to clipboard",
-                "command": "cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
-                "text-files": None,
-            }
+            ThunarCustomAction(
+                name="Copy contents to clipboard",
+                command="cat %f | tr -d '\n' | xclip -selection CLIPBOARD",
+                text_files=True,
+            )
         )
 
     def _setup_bookmarks(self):
@@ -82,22 +108,27 @@ class ThunarStep(Step):
         root = document.createElement("actions")
         document.appendChild(root)
         for action in self.actions:
-            action = dict(action)
-            if action.pop("spawn_terminal", False):
-                action["command"] = f'{self._env.get("TERMINAL_CMD")} sh -c "{action["command"]}"'
+            command = action.command
+            if action.spawn_terminal:
+                command = f'{self._env.get("TERMINAL_CMD")} sh -c "{command}"'
 
-            action_node = document.createElement("action")
-            root.appendChild(action_node)
-            for property_name, property_value in action.items():
-                property_node = document.createElement(property_name)
-                action_node.appendChild(property_node)
-
-                if property_value is not None:
-                    property_value_node = document.createTextNode(property_value)
-                    property_node.appendChild(property_value_node)
+            action_node = self._append_xml_node(document, root, "action", None)
+            self._append_xml_node(document, action_node, "name", action.name)
+            self._append_xml_node(document, action_node, "command", command)
+            for file_type, enabled in action.file_types.items():
+                if enabled:
+                    self._append_xml_node(document, action_node, file_type, None)
 
         self._file_writer.write_lines(
             file_path,
             [document.toprettyxml(indent="    ")],
             file_type=FileType.Xml,
         )
+
+    @staticmethod
+    def _append_xml_node(document, parent, name, text):
+        node = document.createElement(name)
+        if text is not None:
+            node.appendChild(document.createTextNode(text))
+        parent.appendChild(node)
+        return node

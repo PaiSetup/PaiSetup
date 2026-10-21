@@ -1,4 +1,5 @@
 import utils.external_project as ext
+from steps.linux.thunar import ThunarCustomAction
 from steps.step import Step
 
 
@@ -29,35 +30,35 @@ class NushStep(Step):
 
         ftag_path = f"{self._nush_root_dir}/ftag/ftag"
         dependency_dispatcher.add_thunar_custom_action(
-            {
-                "name": "ftag: tag a file",
-                "command": f"{ftag_path} --file %F",
-                "image-files": None,
-                "video-files": None,
-                "spawn_terminal": True,
-            }
+            ThunarCustomAction(
+                name="ftag: tag a file",
+                command=f"{ftag_path} --file %F",
+                spawn_terminal=True,
+                image_files=True,
+                video_files=True,
+            )
         )
         dependency_dispatcher.add_thunar_custom_action(
-            {
-                "name": "ftag: generate symlinks",
-                "command": f"{ftag_path} --generate",
-                "directories": None,
-                "spawn_terminal": True,
-            }
+            ThunarCustomAction(
+                name="ftag: generate symlinks",
+                command=f"{ftag_path} --generate",
+                spawn_terminal=True,
+                directories=True,
+            )
         )
         dependency_dispatcher.add_thunar_custom_action(
-            {
-                "name": "ftag: tag all",
-                "command": f"{ftag_path} --tag_all",
-                "directories": None,
-                "spawn_terminal": True,
-            }
+            ThunarCustomAction(
+                name="ftag: tag all",
+                command=f"{ftag_path} --tag_all",
+                spawn_terminal=True,
+                directories=True,
+            )
         )
         dependency_dispatcher.add_thunar_custom_action(
-            {
-                "name": "ftag: create query",
-                "command": f"{ftag_path} --create_query",
-                "directories": None,
-                "spawn_terminal": True,
-            }
+            ThunarCustomAction(
+                name="ftag: create query",
+                command=f"{ftag_path} --create_query",
+                spawn_terminal=True,
+                directories=True,
+            )
         )
