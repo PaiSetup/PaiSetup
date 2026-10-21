@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 from steps.step import Step
 from utils.services.file_writer import FileType
@@ -47,7 +46,7 @@ class FirefoxStep(Step):
             )
 
     def _get_profile_directories(self):
-        root = Path("/home/maciej/.mozilla/firefox/")
+        root = self._env.home() / ".mozilla/firefox"
         result = []
         if root.is_dir():
             for child in root.iterdir():

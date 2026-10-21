@@ -125,7 +125,7 @@ class HomeDirectoryStep(Step):
         filename = Path(file)
         if filename.is_absolute():
             try:
-                filename = filename.relative_to("/home/maciej")
+                filename = filename.relative_to(self._env.home())
             except ValueError:
                 self._logger.log(f"ERROR: incorrect path passed: {file}")
                 raise
