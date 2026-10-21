@@ -26,10 +26,6 @@ class DushStep(DushStepBase):
             file_type=FileType.Bash,
         )
 
-    def register_env_variables(self):
-        self._env.set("DUSH_PATH", self._dush_root_dir)
-        self._env.set("DUSH_WORKSPACE", self._dush_workspace_dir)
-
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
             "shellcheck-bin",  # needed for sc/scc scripts
