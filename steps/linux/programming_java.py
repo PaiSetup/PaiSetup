@@ -24,12 +24,12 @@ class ProgrammingJavaStep(Step):
             dependency_dispatcher.register_homedir_file(".android")
             dependency_dispatcher.register_homedir_file("Android")
 
-    def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
+        config_home = self._env.get("XDG_CONFIG_HOME")
+        cache_home = self._env.get("XDG_CACHE_HOME")
+        data_home = self._env.get("XDG_DATA_HOME")
+        dependency_dispatcher.set_env(
             "Override locations of java cache",
-            [
-                'export _JAVA_OPTIONS=-"Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java -Djavafx.cachedir=$XDG_CACHE_HOME/openjfx"',
-                'export GRADLE_USER_HOME="$XDG_DATA_HOME"/gradle',
-            ],
+            "_JAVA_OPTIONS",
+            f"-Djava.util.prefs.userRoot={config_home}/java -Djavafx.cachedir={cache_home}/openjfx",
         )
+        dependency_dispatcher.set_env("Override locations of java cache", "GRADLE_USER_HOME", f"{data_home}/gradle")

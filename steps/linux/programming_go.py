@@ -12,14 +12,8 @@ class ProgrammingGoStep(Step):
             "delve",
         )
 
-    def perform(self):
         home = self._env.home()
-        self._file_writer.write_lines(
-            ".config/environment.d/20-go.conf",
-            [
-                f"GOPATH={home}/.local/share/go",
-                f"GOMODCACHE={home}/.cache/go/mod",
-                f"GOCACHE={home}/.cache/go-build",
-                f"GOBIN={home}/.local/share/go/bin",
-            ],
-        )
+        dependency_dispatcher.set_env("Go paths", "GOPATH", f"{home}/.local/share/go")
+        dependency_dispatcher.set_env("Go paths", "GOMODCACHE", f"{home}/.cache/go/mod")
+        dependency_dispatcher.set_env("Go paths", "GOCACHE", f"{home}/.cache/go-build")
+        dependency_dispatcher.set_env("Go paths", "GOBIN", f"{home}/.local/share/go/bin")

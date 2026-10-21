@@ -8,12 +8,6 @@ class VagrantStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("vagrant")
 
-    def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Vagrant paths",
-            [
-                'export VAGRANT_HOME="$XDG_DATA_HOME"/vagrant',
-                'export VAGRANT_ALIAS_FILE="$XDG_DATA_HOME"/vagrant/aliases',
-            ],
-        )
+        data_home = self._env.get("XDG_DATA_HOME")
+        dependency_dispatcher.set_env("Vagrant paths", "VAGRANT_HOME", f"{data_home}/vagrant")
+        dependency_dispatcher.set_env("Vagrant paths", "VAGRANT_ALIAS_FILE", f"{data_home}/vagrant/aliases")

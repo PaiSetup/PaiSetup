@@ -54,6 +54,7 @@ class GtkThemeStep(Step):
             "themix-theme-oomox-git",
             "imagemagick",
         )
+        dependency_dispatcher.set_env("GTK2 paths", "GTK2_RC_FILES", f"{self._env.home()}/.config/gtk-2.0/gtkrc")
 
     @push_dependency_handler
     def set_folder_icon(self, path, icon_name, is_symlink=False):
@@ -138,11 +139,6 @@ class GtkThemeStep(Step):
 
     def _generate_gtk2_config(self):
         self._logger.log("Generating gtk 2.0 config")  # Example application using gtk 2.0 - lxappearance
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "GTK2 paths",
-            ['export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc"'],
-        )
         self._file_writer.write_lines(
             ".config/gtk-2.0/gtkrc",
             [

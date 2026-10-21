@@ -10,6 +10,7 @@ from .claude import ClaudeStep
 from .clion.clion import ClionStep
 from .dush import DushStep
 from .encryption.encryption import EncryptionStep
+from .env import EnvStep
 from .file_associations import FileAssociationsStep
 from .firefox import FirefoxStep
 from .flameshot import FlameshotStep
@@ -62,6 +63,7 @@ class ArchSetupMode(SetupMode):
     def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
         return [
             PackagesStep(build_dir, True, install_packages),
+            EnvStep(),
             ShellStep(root_dir),
             GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
             FileAssociationsStep(),
@@ -122,6 +124,7 @@ class DebianCasualSetupMode(SetupMode):
     def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
         return [
             PackagesDebianStep(install_packages),
+            EnvStep(),
             AwesomeStep(),
             ProgrammingCommonStep(),
             ProgrammingPythonStep(),

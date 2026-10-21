@@ -6,7 +6,7 @@ from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
-from utils.services.file_writer import FileType, LinePlacement
+from utils.services.file_writer import FileType
 
 
 class HomeDirectoryStep(Step):
@@ -43,7 +43,20 @@ class HomeDirectoryStep(Step):
         if not has_multimedia_dir:
             self._xdg_custom.pop("XDG_MULTIMEDIA_DIR")
 
+    def register_env_variables(self):
+        # Other steps use these to resolve their paths
+        # TODO implement proper pull dependency like FoldersStep on Windows
+        for name, path in self._xdg_defaults.items():
+            self._env.set(name, self._env.home() / path, is_path=True)
+
     def push_dependencies(self, dependency_dispatcher):
+        for name, path in self._xdg_defaults.items():
+            dependency_dispatcher.set_env("XDG variables", name, self._env.home() / path)
+        for name, (_, path) in self._xdg_renamed.items():
+            dependency_dispatcher.set_env("XDG variables", name, self._env.home() / path)
+        for name in self._xdg_removed:
+            dependency_dispatcher.set_env("XDG variables", name, self._env.home())
+
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DESKTOP_DIR"), "desktop")
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DOWNLOAD_DIR"), "downloads")
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_MOUNTS_DIR"), "mounts")
@@ -221,14 +234,6 @@ class HomeDirectoryStep(Step):
                 'export XDG_STATE_HOME="$HOME/.local/state"',
                 'export XDG_CACHE_HOME="$HOME/.cache"',
             ],
-        )
-
-        # Source the script in env.sh. It's called by .profile, .bashrc and xinitrc, so very early.
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Load XDG variables",
-            [". ~/.config/user-dirs.dirs"],
-            line_placement=LinePlacement.Env,
         )
 
         # Prevent resetting user-dirs.dirs file on startup.

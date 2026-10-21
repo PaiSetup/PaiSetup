@@ -1,7 +1,6 @@
 import enum
 
 from utils.os_function import OperatingSystem
-from utils.services.file_writer import FileType, LinePlacement
 
 
 class Step:
@@ -85,60 +84,12 @@ class FrameworkStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("flamegraph")
 
+        if OperatingSystem.current().is_linux():
+            dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PAI_SETUP_ROOT", self._root_dir)
+            dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PYTHONPATH", f"${{PYTHONPATH}}${{PYTHONPATH:+:}}{self._root_dir}")
+
     def register_env_variables(self):
         self._env.set("PAI_SETUP_ROOT", self._root_dir, is_path=True)
 
     def perform(self):
         self._logger.get_log_dir().mkdir(parents=True, exist_ok=True)
-
-        if OperatingSystem.current().is_linux():
-            self._setup_constant_envs()
-
-    def _setup_constant_envs(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Envs needed for PaiSetup framework",
-            [
-                f"export PAI_SETUP_ROOT={self._root_dir}",
-                f'export PYTHONPATH="$PYTHONPATH:$PAI_SETUP_ROOT"',
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Source all environment.d files",
-            [
-                'for dir in /etc/environment.d "$HOME/.config/environment.d"; do',
-                '    if [ ! -d "$dir" ]; then',
-                "        continue",
-                "    fi",
-                "",
-                '    for file in "$dir"/*.conf; do',
-                '        if [ ! -f "$file" ]; then',
-                "            continue",
-                "        fi",
-                "",
-                '        . "$file"',
-                "    done",
-                "done",
-            ],
-        )
-
-        self._file_writer.write_section(
-            ".profile",
-            "Load environment variables",
-            [". ~/.config/PaiSetup/env.sh"],
-            line_placement=LinePlacement.Env,
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/xinitrc_base",
-            "Load environment variables",
-            [". ~/.config/PaiSetup/env.sh"],
-            line_placement=LinePlacement.Env,
-        )
-        self._file_writer.write_section(
-            ".bashrc",
-            "Load environment variables",
-            [". ~/.config/PaiSetup/env.sh"],
-            line_placement=LinePlacement.Env,
-            file_type=FileType.Bash,
-        )

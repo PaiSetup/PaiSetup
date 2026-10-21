@@ -15,16 +15,10 @@ class RpiLedStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         command = f"python -u {self._daemon_path}"  # -u is for unbuffered mode, so that we can inspect stdout immediately
         dependency_dispatcher.schedule_spieven_daemon("rpiled", command, display_type=SpievenDisplayType.Headless, capture_stdout=True)
+        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_CACHE", self._cache_file_path)
+        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_FIFO", self._fifo_file_path)
 
     def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "RpiLed paths",
-            [
-                f'export RPI_LED_CACHE="{self._cache_file_path}"',
-                f'export RPI_LED_FIFO="{self._fifo_file_path}"',
-            ],
-        )
         # Do this earlier then the rest of setup (LinePlacement.Begin) as these files
         # are used in select_wallpaper.py.
         self._file_writer.write_section(

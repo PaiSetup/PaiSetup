@@ -27,16 +27,10 @@ class ProgrammingPythonStep(Step):
         )
         dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL_CMD python").desc("Python"))
 
-    def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Python paths",
-            [
-                "export PYTHON_HISTORY=$XDG_DATA_HOME/python_history",
-                'export PYTHONSTARTUP="$HOME/.config/python/pythonrc"',
-            ],
-        )
+        dependency_dispatcher.set_env("Python paths", "PYTHON_HISTORY", f"{self._env.get('XDG_DATA_HOME')}/python_history")
+        dependency_dispatcher.set_env("Python paths", "PYTHONSTARTUP", f"{self._env.home()}/.config/python/pythonrc")
 
+    def perform(self):
         self._file_writer.write_lines(
             ".config/python/pythonrc",
             [

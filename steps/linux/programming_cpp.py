@@ -38,6 +38,9 @@ class ProgrammingCppStep(Step):
         # Maybe I could do my own AUR with this PR cherry-pick on top?
         dependency_dispatcher.register_homedir_file(".renderdoc")
 
+        dependency_dispatcher.set_env("GDB paths", "GDBHISTFILE", f"{self._env.home()}/.cache/gdb/history")
+        dependency_dispatcher.set_env("GDB paths", "CGDB_DIR", f"{self._env.home()}/.config/cgdb")
+
     def perform(self):
         self._file_writer.write_lines(
             ".config/gdb/gdbinit",
@@ -54,15 +57,6 @@ class ProgrammingCppStep(Step):
             file_type=FileType.ConfigFileNoComments,
         )
         (self._env.home() / ".cache/gdb").mkdir(exist_ok=True, parents=True)
-
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "GDB paths",
-            [
-                'export GDBHISTFILE="$HOME/.cache/gdb/history"',
-                "export CGDB_DIR=$HOME/.config/cgdb",
-            ],
-        )
 
         self._file_writer.write_section(
             ".profile",

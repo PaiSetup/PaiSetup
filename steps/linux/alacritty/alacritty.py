@@ -14,6 +14,8 @@ class AlacrittyStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("alacritty")
+        dependency_dispatcher.set_env("Command for calling default terminal", "TERMINAL", "alacritty")
+        dependency_dispatcher.set_env("Command for calling default terminal", "TERMINAL_CMD", "alacritty -e")
 
     def perform(self):
         current_step_dir = Path(__file__).parent
@@ -27,13 +29,5 @@ class AlacrittyStep(Step):
             "Alacritty alias",
             [
                 "alias al=alacritty",
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Command for calling default terminal",
-            [
-                "export TERMINAL=alacritty",
-                "export TERMINAL_CMD='alacritty -e'",
             ],
         )

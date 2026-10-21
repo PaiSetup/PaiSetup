@@ -7,12 +7,4 @@ class ClaudeStep(Step):
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("claude-code")
-
-    def perform(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Claude",
-            [
-                "export CLAUDE_CONFIG_DIR=$HOME/.config/claude",
-            ],
-        )
+        dependency_dispatcher.set_env("Claude", "CLAUDE_CONFIG_DIR", f"{self._env.home()}/.config/claude")

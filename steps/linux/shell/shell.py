@@ -19,6 +19,11 @@ class ShellStep(Step):
         dependency_dispatcher.register_homedir_file(".bash_logout")
         dependency_dispatcher.register_homedir_file(".bash_profile")
 
+        config_home = self._env.get("XDG_CONFIG_HOME")
+        dependency_dispatcher.set_env("less/wget paths", "LESSHISTFILE", f"{config_home}/lesshst")
+        dependency_dispatcher.set_env("less/wget paths", "WGETRC", f"{config_home}/wgetrc")
+        dependency_dispatcher.set_env("Path to inputrc file", "INPUTRC", f"{config_home}/inputrc")
+
     def perform(self):
         self._setup_profile()
         self._setup_bash()
@@ -41,14 +46,6 @@ class ShellStep(Step):
                 "alias ll='eza -la'",
                 "alias xo='xdg-open'",
                 "alias less='less -N'",
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "less/wget/yarn paths",
-            [
-                'export LESSHISTFILE="$XDG_CONFIG_HOME/lesshst"',
-                'export WGETRC="$XDG_CONFIG_HOME/wgetrc"',
                 "alias yarn='yarn --use-yarnrc \"$XDG_CONFIG_HOME/yarn/config\"'",
             ],
         )
@@ -91,13 +88,6 @@ class ShellStep(Step):
             ],
             file_type=FileType.Bash,
             line_placement=LinePlacement.End,
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Path to inputrc file",
-            [
-                "export INPUTRC=~/.config/inputrc",
-            ],
         )
         self._file_writer.write_section(
             ".config/inputrc",

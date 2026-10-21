@@ -28,7 +28,6 @@ class GuiXorg(Step):
     def perform(self):
         self._compile_color_generator()
         self._generate_picom_config()
-        self._generate_env_script()
         self._generate_xserverrc_script()
         self._generate_xinitrc_base_script()
         self._generate_xinitrc_per_wm()
@@ -91,6 +90,13 @@ class GuiXorg(Step):
         dependency_dispatcher.register_homedir_file(".xsession-errors.old")
         dependency_dispatcher.register_homedir_file(".xserverrc")
 
+        dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_ACTION", 1)
+        dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_TERMINATE", 2)
+        dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_INFO", 3)
+        dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_SCROLL_UP", 4)
+        dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_SCROLL_DOWN", 5)
+        dependency_dispatcher.set_env("X11 paths", "ERRFILE", f"{self._env.get('XDG_CACHE_HOME')}/X11/xsession-errors")
+
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):
             self._logger.log('Compiling "colors" binary')
@@ -118,24 +124,6 @@ class GuiXorg(Step):
                 "corner-radius = 10;",
             ],
             skip_recreate=True,  # picom watches for config file changes and crashes when we recreate it
-        )
-
-    def _generate_env_script(self):
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "Button names for statusbar scripts",
-            [
-                "export BUTTON_ACTION=1",
-                "export BUTTON_TERMINATE=2",
-                "export BUTTON_INFO=3",
-                "export BUTTON_SCROLL_UP=4",
-                "export BUTTON_SCROLL_DOWN=5",
-            ],
-        )
-        self._file_writer.write_section(
-            ".config/PaiSetup/env.sh",
-            "X11 paths",
-            ['export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"'],
         )
 
     def _generate_xserverrc_script(self):

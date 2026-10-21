@@ -24,6 +24,8 @@ class VscodeStep(VscodeStepBase):
         # follow XDG home. See bug: https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
         dependency_dispatcher.register_homedir_file(".pki")
 
+        dependency_dispatcher.set_env("Copilot", "COPILOT_HOME", f"{self._env.home()}/.config/copilot")
+
     def perform(self):
         self._install_extensions()
         self._symlink_settings()
