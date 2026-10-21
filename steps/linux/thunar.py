@@ -82,6 +82,10 @@ class ThunarStep(Step):
         root = document.createElement("actions")
         document.appendChild(root)
         for action in self.actions:
+            action = dict(action)
+            if action.pop("spawn_terminal", False):
+                action["command"] = f'{self._env.get("TERMINAL_CMD")} sh -c "{action["command"]}"'
+
             action_node = document.createElement("action")
             root.appendChild(action_node)
             for property_name, property_value in action.items():
