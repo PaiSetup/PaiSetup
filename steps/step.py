@@ -86,7 +86,7 @@ class FrameworkStep(Step):
 
         if OperatingSystem.current().is_linux():
             dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PAI_SETUP_ROOT", self._root_dir)
-            dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PYTHONPATH", f"${{PYTHONPATH}}${{PYTHONPATH:+:}}{self._root_dir}")
+            dependency_dispatcher.append_env("Envs needed for PaiSetup framework", "PYTHONPATH", self._root_dir)
 
     def register_env_variables(self):
         self._env.set("PAI_SETUP_ROOT", self._root_dir, is_path=True)

@@ -12,7 +12,7 @@ class ProgrammingRustStep(Step):
         dependency_dispatcher.add_packages("rustup")
         dependency_dispatcher.set_env("Rust paths", "CARGO_HOME", self._cargo_home)
         dependency_dispatcher.set_env("Rust paths", "RUSTUP_HOME", self._rustup_home)
-        dependency_dispatcher.set_env("Rust paths", "PATH", f"${{PATH}}${{PATH:+:}}{self._cargo_home}/bin")
+        dependency_dispatcher.append_env("Rust paths", "PATH", f"{self._cargo_home}/bin")
 
     def register_env_variables(self):
         self._env.set("CARGO_HOME", self._cargo_home)

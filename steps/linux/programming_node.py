@@ -16,7 +16,7 @@ class ProgrammingNodeStep(Step):
         home = self._env.home()
         dependency_dispatcher.set_env("Node paths", "NPM_CONFIG_USERCONFIG", f"{home}/{self._npmrc_path}")
         dependency_dispatcher.set_env("Node paths", "NODE_REPL_HISTORY", f"{home}/.local/state/node_repl_history")
-        dependency_dispatcher.set_env("Node paths", "PATH", f"${{PATH}}${{PATH:+:}}{home}/.local/share/npm/bin")
+        dependency_dispatcher.append_env("Node paths", "PATH", f"{home}/.local/share/npm/bin")
 
     def perform(self):
         # npm expands ${VAR} references in npmrc by itself

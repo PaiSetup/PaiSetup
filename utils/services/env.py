@@ -33,6 +33,15 @@ class EnvManager:
         if setenv:
             os.environ[name] = str(value)
 
+    def append(self, name, value):
+        try:
+            current = str(self.get(name))
+        except KeyError:
+            current = ""
+        if current and value in current.split(os.pathsep):
+            return
+        self.set(name, f"{current}{os.pathsep}{value}" if current else value, force=True)
+
     def get(self, name):
         if name in self._map:
             return self._map[name]
