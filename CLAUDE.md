@@ -159,4 +159,7 @@ machine that doesn't have that plugin directory checked out.
 
 Since plugins aren't part of this repo's history, each one may keep its own `CLAUDE.md` describing
 what it's for - check inside a plugin's directory for one before assuming this file is the full
-picture.
+picture. A plugin may also ship Claude Code skills under `steps/plugins/<name>/.claude/skills/`.
+Those are nested below the repo root, so they only register once a file inside the plugin directory
+has been read - reading the plugin's `CLAUDE.md` is enough, and worth doing early when a task
+touches a plugin, so its skills are available for the rest of the session.
