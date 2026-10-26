@@ -14,7 +14,6 @@ def find_step_by_name(steps, name):
 
 
 def execute_steps(
-    root_dir,
     services,
     steps,
     step_whitelist,
@@ -39,7 +38,7 @@ def execute_steps(
             find_step_by_name(steps, step_name).set_enabled(False)
 
     # Add framework step
-    steps.insert(0, FrameworkStep(root_dir))
+    steps.insert(0, FrameworkStep())
 
     # Setup env
     Step._logger.log("Setting up environment variables")

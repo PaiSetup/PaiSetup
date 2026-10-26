@@ -1,6 +1,7 @@
 import enum
 
 from utils.os_function import OperatingSystem
+from utils.services.paths import KnownPath
 
 
 class Step:
@@ -77,19 +78,18 @@ class Step:
 
 # This is a fake step only needed to add packages required by the PaiSetup framework itself.
 class FrameworkStep(Step):
-    def __init__(self, root_dir):
+    def __init__(self):
         super().__init__("Framework")
-        self._root_dir = root_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("flamegraph")
 
         if OperatingSystem.current().is_linux():
-            dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PAI_SETUP_ROOT", self._root_dir)
-            dependency_dispatcher.append_env("Envs needed for PaiSetup framework", "PYTHONPATH", self._root_dir)
+            dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PAI_SETUP_ROOT", self._paths.get(KnownPath.PaiSetup))
+            dependency_dispatcher.append_env("Envs needed for PaiSetup framework", "PYTHONPATH", self._paths.get(KnownPath.PaiSetup))
 
     def register_env_variables(self):
-        self._env.set("PAI_SETUP_ROOT", self._root_dir, is_path=True)
+        self._env.set("PAI_SETUP_ROOT", self._paths.get(KnownPath.PaiSetup), is_path=True)
 
     def perform(self):
         self._logger.get_log_dir().mkdir(parents=True, exist_ok=True)

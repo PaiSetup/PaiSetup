@@ -43,10 +43,9 @@ with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as servic
     services.assign_to(Step)
 
     Step._logger.log("Initializing steps")
-    steps = args.mode.get_steps(args, root_dir, build_dir, secret_dir, not args.skip_packages)
+    steps = args.mode.get_steps(args, build_dir, secret_dir, not args.skip_packages)
 
     execute_steps(
-        root_dir,
         services,
         steps,
         args.step_whitelist,

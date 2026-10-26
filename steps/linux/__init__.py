@@ -61,11 +61,11 @@ class ArchSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_arch_like()
 
-    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, build_dir, secret_dir, install_packages):
         return [
             PackagesStep(build_dir, True, install_packages),
             EnvStep(),
-            ShellStep(root_dir),
+            ShellStep(),
             GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
             FileAssociationsStep(),
             AudioStep(),
@@ -76,7 +76,7 @@ class ArchSetupMode(SetupMode):
             FlameshotStep(),
             SystemdStep(),
             ThunarStep(),
-            HomeDirectoryStep(root_dir, True),
+            HomeDirectoryStep(True),
             BluetoothStep(),
             ProgrammingJavaStep(include_android=True),
             QBitTorrentStep(),
@@ -123,7 +123,7 @@ class DebianCasualSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_debian_like()
 
-    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, build_dir, secret_dir, install_packages):
         return [
             PackagesDebianStep(install_packages),
             EnvStep(),
@@ -135,7 +135,7 @@ class DebianCasualSetupMode(SetupMode):
             AudioStep(),
             ThunarStep(),
             SpievenStep(build_dir),
-            ShellStep(root_dir),
+            ShellStep(),
             MultimediaSoftwareStep(),
             QBitTorrentStep(),
             GuiXorg(full=args.full, root_build_dir=build_dir),
@@ -144,7 +144,7 @@ class DebianCasualSetupMode(SetupMode):
             GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
             FirefoxStep(is_default_browser=True),
             FileAssociationsStep(),
-            HomeDirectoryStep(root_dir, has_multimedia_dir=False),
+            HomeDirectoryStep(has_multimedia_dir=False),
             UlauncherStep(),
             DushStep(fetch_git=args.full),
             NushStep(fetch_git=args.full),

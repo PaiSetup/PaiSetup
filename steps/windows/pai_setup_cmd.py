@@ -3,16 +3,15 @@ from utils.services.paths import KnownPath
 
 
 class PaiSetupCmdStep(Step):
-    def __init__(self, root_dir):
+    def __init__(self):
         super().__init__("PaiSetupCmd")
-        self._root_dir = root_dir
 
     def pull_dependencies(self, dependency_dispatcher):
         self._desktop_dir = self._paths.get(KnownPath.Desktop)
 
     def perform(self):
         lines = [
-            f'$pai_setup_path = "{self._root_dir}"',
+            f'$pai_setup_path = "{self._paths.get(KnownPath.PaiSetup)}"',
             'Start-Process "powershell" -ArgumentList "-NoExit","-Command","Set-Location \'$pai_setup_path\'; Write-Host \'HINT: run python ./setup.py\'" -Verb RunAs',
         ]
         ps1_path = self._desktop_dir / "PaiSetupCmd.ps1"

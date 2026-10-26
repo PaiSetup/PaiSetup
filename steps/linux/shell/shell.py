@@ -6,9 +6,8 @@ from utils.services.paths import KnownPath
 
 
 class ShellStep(Step):
-    def __init__(self, root_dir):
+    def __init__(self):
         super().__init__("Shell")
-        self._root_dir = root_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

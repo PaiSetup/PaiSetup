@@ -11,9 +11,8 @@ from utils.services.paths import KnownPath
 
 
 class HomeDirectoryStep(Step):
-    def __init__(self, root_dir, has_multimedia_dir):
+    def __init__(self, has_multimedia_dir):
         super().__init__("HomeDirectory")
-        self._root_dir = root_dir
         self._homedir_whitelisted_files = []
 
         # Prepare all XDG dirs. Some of them we leave at default, some we remove, rename or add.
@@ -74,7 +73,7 @@ class HomeDirectoryStep(Step):
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DOWNLOAD_DIR"), "downloads")
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_MOUNTS_DIR"), "mounts")
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_WORK_DIR"), "work")
-        dependency_dispatcher.set_folder_icon(self._root_dir, "pai_setup")
+        dependency_dispatcher.set_folder_icon(self._paths.get(KnownPath.PaiSetup), "pai_setup")
 
         check_script = Path(__file__).parent / "setup_mount_dir.sh"
         dependency_dispatcher.schedule_spieven_periodic_action(
@@ -259,7 +258,7 @@ class HomeDirectoryStep(Step):
         """
 
         # Add PaiSetup itself
-        self.register_homedir_file(self._root_dir)
+        self.register_homedir_file(self._paths.get(KnownPath.PaiSetup))
 
         # Add folders managed by this step
         for homedir_file in itertools.chain(

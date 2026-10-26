@@ -30,7 +30,7 @@ class WindowsSetupMode(SetupMode):
     def get_name(self):
         return "windows"
 
-    def get_steps(self, args, root_dir, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, build_dir, secret_dir, install_packages):
         # TODO-WINDOWS check for admin
 
         return [
@@ -47,7 +47,7 @@ class WindowsSetupMode(SetupMode):
             StartupStep(),
             UninstallBloatStep(),
             FoldersStep(root_folder="D:\\"),
-            PaiSetupCmdStep(root_dir),
+            PaiSetupCmdStep(),
             BashStep(),
             DushStep(fetch_git=True),
             NotesStep(fetch_git=True, use_private_notes=True),
