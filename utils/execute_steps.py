@@ -46,6 +46,9 @@ def execute_steps(
     for step in steps:
         step.register_env_variables()
 
+    # Allow the steps to query paths
+    Step._paths.mark_steps_initialized()
+
     # Handle cross-step dependencies
     Step._logger.log("Handling steps dependencies")
     dependencies = DependencyDispatcher(dependency_resolution_mode, allow_unsatisfied_push_dependencies, services.get_logger())
