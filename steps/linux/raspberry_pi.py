@@ -1,5 +1,6 @@
 from steps.step import Step
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class RaspberryPiStep(Step):
@@ -16,7 +17,7 @@ class RaspberryPiStep(Step):
         )
 
     def perform(self):
-        (self._env.home() / ".config/putty").mkdir(exist_ok=True)
+        (self._paths.get(KnownPath.ConfigHome) / "putty").mkdir(exist_ok=True)
         self._setup_permissions()
 
     def _setup_permissions(self):

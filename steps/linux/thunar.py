@@ -91,7 +91,7 @@ class ThunarStep(Step):
             (self._paths.get(KnownPath.PaiSetup), "PaiSetup"),
         ]
 
-        file_path = self._env.home() / ".config/gtk-3.0/bookmarks"
+        file_path = self._paths.get(KnownPath.ConfigHome) / "gtk-3.0/bookmarks"
         self._logger.log(f"Generating bookmarks config - {file_path}")
 
         line = [f"file://{path} {name}" for path, name in self._bookmarks]
@@ -102,7 +102,7 @@ class ThunarStep(Step):
         )
 
     def _generate_uca_xml(self):
-        file_path = self._env.home() / ".config/Thunar/uca.xml"
+        file_path = self._paths.get(KnownPath.ConfigHome) / "Thunar/uca.xml"
         self._logger.log(f"Generating custom actions config - {file_path}")
 
         document = minidom.Document()

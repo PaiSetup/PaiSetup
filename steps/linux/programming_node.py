@@ -6,7 +6,6 @@ from utils.services.paths import KnownPath
 class ProgrammingNodeStep(Step):
     def __init__(self):
         super().__init__("ProgrammingNode")
-        self._npmrc_path = ".config/npm/npmrc"
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(
@@ -14,15 +13,14 @@ class ProgrammingNodeStep(Step):
             "npm",
         )
 
-        home = self._env.home()
-        dependency_dispatcher.set_env("Node paths", "NPM_CONFIG_USERCONFIG", f"{home}/{self._npmrc_path}")
+        dependency_dispatcher.set_env("Node paths", "NPM_CONFIG_USERCONFIG", self._get_npmrc_path())
         dependency_dispatcher.set_env("Node paths", "NODE_REPL_HISTORY", self._paths.get(KnownPath.StateHome) / "node_repl_history")
-        dependency_dispatcher.append_env("Node paths", "PATH", f"{home}/.local/share/npm/bin")
+        dependency_dispatcher.append_env("Node paths", "PATH", self._paths.get(KnownPath.DataHome) / "npm/bin")
 
     def perform(self):
         # npm expands ${VAR} references in npmrc by itself
         self._file_writer.write_lines(
-            self._npmrc_path,
+            self._get_npmrc_path(),
             [
                 "prefix=${XDG_DATA_HOME}/npm",
                 "cache=${XDG_CACHE_HOME}/npm",
@@ -31,3 +29,6 @@ class ProgrammingNodeStep(Step):
             ],
             file_type=FileType.ConfigFile,
         )
+
+    def _get_npmrc_path(self):
+        return self._paths.get(KnownPath.ConfigHome) / "npm/npmrc"

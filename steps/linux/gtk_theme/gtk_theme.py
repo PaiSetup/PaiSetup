@@ -7,6 +7,7 @@ from utils import external_project as ext
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType, FileWriter
+from utils.services.paths import KnownPath
 
 
 class GtkThemeStep(Step):
@@ -36,13 +37,11 @@ class GtkThemeStep(Step):
         # Widget theme
         self._widget_theme_name = "PaiSetupWidgetTheme"
         self._regenerate_widget_theme = regenerate_widget_theme
-        self._dst_widget_theme_path = self._env.home() / ".local/share/themes" / self._widget_theme_name
 
         # Icon theme
         self._icon_theme_name = "PaiSetupIconTheme"
         self._regenerate_icon_theme = regenerate_icon_theme
         self._src_icon_theme_path = root_build_dir / "gtk_icon_theme"
-        self._dst_icon_theme_path = self._env.home() / ".local/share/icons" / self._icon_theme_name
 
         self._emblems_path = root_build_dir / "gtk_emblems"
         self._emblems = {}
@@ -54,7 +53,7 @@ class GtkThemeStep(Step):
             "themix-theme-oomox-git",
             "imagemagick",
         )
-        dependency_dispatcher.set_env("GTK2 paths", "GTK2_RC_FILES", f"{self._env.home()}/.config/gtk-2.0/gtkrc")
+        dependency_dispatcher.set_env("GTK2 paths", "GTK2_RC_FILES", self._paths.get(KnownPath.ConfigHome) / "gtk-2.0/gtkrc")
 
     @push_dependency_handler
     def set_folder_icon(self, path, icon_name, is_symlink=False):
@@ -102,23 +101,25 @@ class GtkThemeStep(Step):
                     run_command(f"convert -resize {scaling_factor*100}% {src_file_path} {dst_file_path}")
 
     def _generate_widget_theme(self):
-        if self._dst_widget_theme_path.exists() and not self._regenerate_widget_theme:
+        dst_widget_theme_path = self._paths.get(KnownPath.DataHome) / "themes" / self._widget_theme_name
+        if dst_widget_theme_path.exists() and not self._regenerate_widget_theme:
             self._logger.log(f"Widget theme already generated")
             return
 
-        self._logger.log(f"Generating widget theme ({self._dst_widget_theme_path})")
+        self._logger.log(f"Generating widget theme ({dst_widget_theme_path})")
         command = str(self._current_step_dir / "generate_widget_theme.sh")
         run_command(command, shell=True)
 
     def _generate_icon_theme(self):
-        if self._dst_icon_theme_path.exists() and not self._regenerate_icon_theme:
+        dst_icon_theme_path = self._paths.get(KnownPath.DataHome) / "icons" / self._icon_theme_name
+        if dst_icon_theme_path.exists() and not self._regenerate_icon_theme:
             self._logger.log(f"Icon theme already generated")
             return
 
         self._logger.log(f"Downloading icon theme ({self._src_icon_theme_path})")
         ext.download_github_zip("PaiSetup", "GtkIconTheme", self._src_icon_theme_path, re_download=self._regenerate_icon_theme)
 
-        self._logger.log(f"Generating icon theme ({self._dst_icon_theme_path})")
+        self._logger.log(f"Generating icon theme ({dst_icon_theme_path})")
         command = str(self._current_step_dir / "generate_icon_theme.sh")
         run_command(command, shell=True)
 

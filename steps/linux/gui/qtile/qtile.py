@@ -14,7 +14,6 @@ class QtileStep(Step):
         self._qtile_config_script_path = self._current_step_dir / "config/config.py"
         self._app_keybindings_path = self._current_step_dir / "config/generated/app_keys.py"
         self._config_path = ""
-        self._xinitrc_path = self._env.home() / f".config/PaiSetup/qtile/xinitrc"
 
         self._keybindings = []
 

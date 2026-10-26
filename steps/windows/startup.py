@@ -79,5 +79,5 @@ class StartupStep(Step):
         # Although, they still show it when run manually.
         for name, script, as_admin in self._entries_to_add:
             shortcut_name = f"PaiSetup.{name}"
-            shortcut_path = self._env.home() / rf"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\{shortcut_name}"
+            shortcut_path = self._paths.home() / rf"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\{shortcut_name}"
             create_shortcut(shortcut_path, script, as_admin=as_admin)

@@ -30,7 +30,7 @@ class SshStep(Step):
             self._logger.push_warning("Could not find ssh key")
             return
 
-        ssh_dir = self._env.home() / ".ssh"
+        ssh_dir = self._paths.home() / ".ssh"
         ssh_config_path = ssh_dir / "config"
         ssh_known_hosts_path = ssh_dir / "known_hosts"
         ssh_key_path = ssh_dir / src_ssh_key_path.stem

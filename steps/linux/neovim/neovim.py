@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from steps.step import Step
+from utils.services.paths import KnownPath
 
 """
 Neovim configuration
@@ -23,11 +24,10 @@ Reloading configuration in neovim after change:
 class NeovimStep(Step):
     def __init__(self):
         super().__init__("neovim")
-        self._vim_dir_path = self._env.home() / ".vim"
+        self._vim_dir_path = self._paths.home() / ".vim"
         self._vimrc_path = self._vim_dir_path / "vimrc"
 
         self._nvim_dir_physical_path = Path(__file__).parent / "config"
-        self._nvim_dir_path = self._env.home() / ".config/nvim"
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("neovim")
@@ -39,10 +39,10 @@ class NeovimStep(Step):
         self._create_terminal_nvim_desktop_file()
 
     def _symlink_config_files(self):
-        self._file_writer.write_symlink(self._nvim_dir_physical_path, self._nvim_dir_path)
+        self._file_writer.write_symlink(self._nvim_dir_physical_path, self._paths.get(KnownPath.ConfigHome) / "nvim")
 
     def _remove_legacy_config_files(self):
-        legacy_vimrc = self._env.home() / ".vimrc"
+        legacy_vimrc = self._paths.home() / ".vimrc"
         legacy_vimrc.unlink(missing_ok=True)
 
     def _create_terminal_nvim_desktop_file(self):

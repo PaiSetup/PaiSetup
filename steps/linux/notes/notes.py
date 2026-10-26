@@ -4,7 +4,7 @@ from utils.keybinding import KeyBinding
 
 class NotesStep(NotesStepBase):
     def __init__(self, fetch_git, use_private_notes):
-        notes_dir = self._env.home() / "notes"
+        notes_dir = self._paths.home() / "notes"
         super().__init__("Notes", fetch_git, use_private_notes, notes_dir)
 
     def push_dependencies(self, dependency_dispatcher):

@@ -3,6 +3,7 @@ import os
 from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.keybinding import KeyBinding
+from utils.services.paths import KnownPath
 
 
 class FlameshotStep(Step):
@@ -25,7 +26,7 @@ class FlameshotStep(Step):
                 "drawFontSize=7",
                 "drawThickness=2",
                 "fontFamily=C059",
-                f"savePath={self._env.home() / "downloads"}",
+                f"savePath={self._paths.get(KnownPath.Downloads)}",
                 "useX11LegacyScreenshot=true",  # Workaround for https://github.com/flameshot-org/flameshot/issues/4639
             ],
         )

@@ -13,7 +13,7 @@ class FoldersStep(Step):
         self._folders = {}
 
         # Query some default Windows paths
-        my_home_dir = self._env.home()
+        my_home_dir = self._paths.home()
         public_home_dir = Path(self._env.get("PUBLIC"))
         program_files_dir = Path(self._env.get("programfiles"))
 
@@ -50,7 +50,7 @@ class FoldersStep(Step):
             path.mkdir(parents=True, exist_ok=True)
 
     def push_dependencies(self, dependency_dispatcher):
-        home = self._env.home()
+        home = self._paths.home()
         dependency_dispatcher.remove_folder_from_quick_access(home / "Desktop")
         dependency_dispatcher.remove_folder_from_quick_access(home / "Downloads")
         dependency_dispatcher.remove_folder_from_quick_access(home / "Documents")

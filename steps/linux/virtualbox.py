@@ -5,7 +5,7 @@ from utils.command import *
 class VirtualBoxStep(Step):
     def __init__(self):
         super().__init__("VirtualBox")
-        self._vm_dir = self._env.home() / "vm"
+        self._vm_dir = self._paths.home() / "vm"
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

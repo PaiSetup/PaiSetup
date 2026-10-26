@@ -14,7 +14,6 @@ class HomeDirectoryStep(Step):
     def __init__(self, root_dir, has_multimedia_dir):
         super().__init__("HomeDirectory")
         self._root_dir = root_dir
-        self._homedir_whitelist = self._env.home() / ".config/PaiSetup/homedir_whitelist"
         self._homedir_whitelisted_files = []
 
         # Prepare all XDG dirs. Some of them we leave at default, some we remove, rename or add.
@@ -52,6 +51,7 @@ class HomeDirectoryStep(Step):
         self._paths.set(KnownPath.Downloads, self._get_xdg_dir("XDG_DOWNLOAD_DIR"))
         self._paths.set(KnownPath.Work, self._get_xdg_dir("XDG_WORK_DIR"))
         self._paths.set(KnownPath.Log, self._get_xdg_dir("XDG_LOG_DIR"))
+        self._homedir_whitelist = self._get_xdg_dir("XDG_CONFIG_HOME") / "PaiSetup/homedir_whitelist"
 
         # Multimedia directory is optional.
         if has_multimedia_dir:
@@ -60,15 +60,15 @@ class HomeDirectoryStep(Step):
 
     def register_env_variables(self):
         for name, path in self._xdg_defaults.items():
-            self._env.set(name, self._env.home() / path, is_path=True)
+            self._env.set(name, self._paths.home() / path, is_path=True)
 
     def push_dependencies(self, dependency_dispatcher):
         for name, path in self._xdg_defaults.items():
-            dependency_dispatcher.set_env("XDG variables", name, self._env.home() / path)
+            dependency_dispatcher.set_env("XDG variables", name, self._paths.home() / path)
         for name, (_, path) in self._xdg_renamed.items():
-            dependency_dispatcher.set_env("XDG variables", name, self._env.home() / path)
+            dependency_dispatcher.set_env("XDG variables", name, self._paths.home() / path)
         for name in self._xdg_removed:
-            dependency_dispatcher.set_env("XDG variables", name, self._env.home())
+            dependency_dispatcher.set_env("XDG variables", name, self._paths.home())
 
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DESKTOP_DIR"), "desktop")
         dependency_dispatcher.set_folder_icon(self._get_xdg_dir("XDG_DOWNLOAD_DIR"), "downloads")
@@ -111,10 +111,10 @@ class HomeDirectoryStep(Step):
 
             dependency_dispatcher.add_multimedia_directories(
                 [
-                    (self._env.home() / "multimedia/wallpapers", "Wallpapers"),
-                    (self._env.home() / "multimedia/funny", "Multimedia/Funny"),
-                    (self._env.home() / "multimedia/tv_series", "Multimedia/TvSeries"),
-                    (self._env.home() / "multimedia/movies", "Multimedia/Movies"),
+                    (multimedia_dir / "wallpapers", "Wallpapers"),
+                    (multimedia_dir / "funny", "Multimedia/Funny"),
+                    (multimedia_dir / "tv_series", "Multimedia/TvSeries"),
+                    (multimedia_dir / "movies", "Multimedia/Movies"),
                 ]
             )
 
@@ -138,7 +138,7 @@ class HomeDirectoryStep(Step):
         filename = Path(file)
         if filename.is_absolute():
             try:
-                filename = filename.relative_to(self._env.home())
+                filename = filename.relative_to(self._paths.home())
             except ValueError:
                 self._logger.log(f"ERROR: incorrect path passed: {file}")
                 raise
@@ -166,7 +166,7 @@ class HomeDirectoryStep(Step):
 
     def _create_directories(self):
         for xdg_dir in itertools.chain(self._xdg_defaults.values(), self._xdg_custom.values()):
-            (self._env.home() / xdg_dir).mkdir(exist_ok=True)
+            (self._paths.home() / xdg_dir).mkdir(exist_ok=True)
 
         multimedia_dir = self._get_xdg_dir("XDG_MULTIMEDIA_DIR", must_succeed=False)
         if multimedia_dir is not None:
@@ -180,8 +180,8 @@ class HomeDirectoryStep(Step):
         with self._logger.indent("Making sure existing XDG dirs are ok"):
             # We renamed some default XDG dirs to different names, so we check if they are renamed in the filesystem
             for old, new in self._xdg_renamed.values():
-                old_path = self._env.home() / old
-                new_path = self._env.home() / new
+                old_path = self._paths.home() / old
+                new_path = self._paths.home() / new
 
                 if new_path.exists():
                     if old_path.exists():
@@ -202,7 +202,7 @@ class HomeDirectoryStep(Step):
 
             # We removed some default XDG dirs, so we check if they are truly gone
             for name in self._xdg_removed.values():
-                path = self._env.home() / name
+                path = self._paths.home() / name
                 if path.exists():
                     try:
                         path.rmdir()

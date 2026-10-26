@@ -5,6 +5,7 @@ from steps.step import Step
 from utils.command import *
 from utils.os_function import LinuxDistro
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class GitStep(Step):
@@ -17,7 +18,7 @@ class GitStep(Step):
         dependency_dispatcher.add_packages("git")
 
     def perform(self):
-        gitconfig_dir = self._env.home() / ".config/git"
+        gitconfig_dir = self._paths.get(KnownPath.ConfigHome) / "git"
         gitconfig_path = gitconfig_dir / "config"
         self._logger.log(f"Creating {gitconfig_path} file")
         gitconfig_dir.mkdir(parents=True, exist_ok=True)

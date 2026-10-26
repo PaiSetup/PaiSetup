@@ -105,7 +105,7 @@ Paths are managed by the `Paths` service (`self._paths`) and the `KnownPath` enu
 - `self._paths.get(...)` is required by default and raises if the path is missing. Pass
   `required=False` only for paths that a setup mode or plugin may legitimately not set, and handle
   `None` explicitly.
-- Before hardcoding something like `self._env.home() / "downloads"` or `.local/share`, check whether a
+- Before hardcoding something like `self._paths.home() / "downloads"` or `.local/share`, check whether a
   `KnownPath` already exists for it. If a second step starts needing a path that was private to one step,
   promote it to a `KnownPath`.
 - Some `KnownPath` values exist only on Windows or only on Linux; referencing one on the other OS is an

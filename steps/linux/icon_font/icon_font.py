@@ -4,6 +4,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils import external_project as ext
+from utils.services.paths import KnownPath
 
 
 class FontStep(Step):
@@ -23,7 +24,7 @@ class FontStep(Step):
         self._logger.log("Downloading icon font")
         ext.download_github_zip("PaiSetup", "IconFont", self._download_path, re_download=self._full)
 
-        dst_font_dir = self._env.home() / ".local/share/fonts"
+        dst_font_dir = self._paths.get(KnownPath.DataHome) / "fonts"
         dst_font_dir.mkdir(parents=True, exist_ok=True)
 
         src_font_file = self._download_path / "pai_setup_icon_font.ttf"

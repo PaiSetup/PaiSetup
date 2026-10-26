@@ -55,13 +55,17 @@ class Paths:
     def get(self, known_path, required=True):
         # Steps set paths in their __init__(), so querying a path in __init__() of another step would depend
         # on the order in which the steps are constructed.
-        if not self._steps_initialized:
+        # Home and PaiSetup are set on construction, so they are always safe to query.
+        if not self._steps_initialized and known_path not in (KnownPath.Home, KnownPath.PaiSetup):
             raise KnownPathQueriedTooEarly(f"Known path {known_path.name} cannot be queried before all steps are initialized")
 
         path = self._paths.get(known_path)
         if path is None and required:
             raise KeyError(f"Known path {known_path.name} is not set")
         return path
+
+    def home(self):
+        return self.get(KnownPath.Home)
 
     def finalize(self):
         pass

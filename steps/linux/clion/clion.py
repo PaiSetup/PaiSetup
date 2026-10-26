@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from steps.step import Step
+from utils.services.paths import KnownPath
 
 
 class ClionStep(Step):
@@ -28,7 +29,7 @@ class ClionStep(Step):
             self._logger.push_warning("No CLion configs found")
 
     def _find_clion_config_dirs(self):
-        config_dir = self._env.home() / ".config" / "JetBrains"
+        config_dir = self._paths.get(KnownPath.ConfigHome) / "JetBrains"
         result = []
         for subdir in config_dir.iterdir():
             if not subdir.is_dir():

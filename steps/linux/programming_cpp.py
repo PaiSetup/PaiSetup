@@ -2,6 +2,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class ProgrammingCppStep(Step):
@@ -38,8 +39,8 @@ class ProgrammingCppStep(Step):
         # Maybe I could do my own AUR with this PR cherry-pick on top?
         dependency_dispatcher.register_homedir_file(".renderdoc")
 
-        dependency_dispatcher.set_env("GDB paths", "GDBHISTFILE", f"{self._env.home()}/.cache/gdb/history")
-        dependency_dispatcher.set_env("GDB paths", "CGDB_DIR", f"{self._env.home()}/.config/cgdb")
+        dependency_dispatcher.set_env("GDB paths", "GDBHISTFILE", self._paths.get(KnownPath.CacheHome) / "gdb/history")
+        dependency_dispatcher.set_env("GDB paths", "CGDB_DIR", self._paths.get(KnownPath.ConfigHome) / "cgdb")
 
     def perform(self):
         self._file_writer.write_lines(
@@ -56,7 +57,7 @@ class ProgrammingCppStep(Step):
             ],
             file_type=FileType.ConfigFileNoComments,
         )
-        (self._env.home() / ".cache/gdb").mkdir(exist_ok=True, parents=True)
+        (self._paths.get(KnownPath.CacheHome) / "gdb").mkdir(exist_ok=True, parents=True)
 
         self._file_writer.write_section(
             ".profile",

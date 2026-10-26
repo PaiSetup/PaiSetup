@@ -48,8 +48,5 @@ class EnvManager:
         else:
             return os.environ[name]
 
-    def home(self):
-        return self.get("HOME")
-
     def finalize(self):
         pass

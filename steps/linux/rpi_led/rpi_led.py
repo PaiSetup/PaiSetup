@@ -3,20 +3,19 @@ from pathlib import Path
 from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.services.file_writer import LinePlacement
+from utils.services.paths import KnownPath
 
 
 class RpiLedStep(Step):
     def __init__(self):
         super().__init__("RpiLed")
         self._daemon_path = Path(__file__).parent / "client/rpi_led_client.py"
-        self._cache_file_path = self._env.home() / ".cache/PaiSetup/rpi_led_config"
-        self._fifo_file_path = self._env.home() / ".config/PaiSetup/rpi_led_fifo"
 
     def push_dependencies(self, dependency_dispatcher):
         command = f"python -u {self._daemon_path}"  # -u is for unbuffered mode, so that we can inspect stdout immediately
         dependency_dispatcher.schedule_spieven_daemon("rpiled", command, display_type=SpievenDisplayType.Headless, capture_stdout=True)
-        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_CACHE", self._cache_file_path)
-        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_FIFO", self._fifo_file_path)
+        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_CACHE", self._paths.get(KnownPath.CacheHome) / "PaiSetup/rpi_led_config")
+        dependency_dispatcher.set_env("RpiLed paths", "RPI_LED_FIFO", self._paths.get(KnownPath.ConfigHome) / "PaiSetup/rpi_led_fifo")
 
     def perform(self):
         # Do this earlier then the rest of setup (LinePlacement.Begin) as these files

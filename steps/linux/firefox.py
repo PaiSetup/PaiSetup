@@ -46,7 +46,7 @@ class FirefoxStep(Step):
             )
 
     def _get_profile_directories(self):
-        root = self._env.home() / ".mozilla/firefox"
+        root = self._paths.home() / ".mozilla/firefox"
         result = []
         if root.is_dir():
             for child in root.iterdir():

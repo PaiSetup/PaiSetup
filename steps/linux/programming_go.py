@@ -1,5 +1,6 @@
 from steps.step import Step
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class ProgrammingGoStep(Step):
@@ -12,8 +13,8 @@ class ProgrammingGoStep(Step):
             "delve",
         )
 
-        home = self._env.home()
-        dependency_dispatcher.set_env("Go paths", "GOPATH", f"{home}/.local/share/go")
-        dependency_dispatcher.set_env("Go paths", "GOMODCACHE", f"{home}/.cache/go/mod")
-        dependency_dispatcher.set_env("Go paths", "GOCACHE", f"{home}/.cache/go-build")
-        dependency_dispatcher.set_env("Go paths", "GOBIN", f"{home}/.local/share/go/bin")
+        cache_home = self._paths.get(KnownPath.CacheHome)
+        dependency_dispatcher.set_env("Go paths", "GOPATH", self._paths.get(KnownPath.DataHome) / "go")
+        dependency_dispatcher.set_env("Go paths", "GOMODCACHE", cache_home / "go/mod")
+        dependency_dispatcher.set_env("Go paths", "GOCACHE", cache_home / "go-build")
+        dependency_dispatcher.set_env("Go paths", "GOBIN", self._paths.get(KnownPath.DataHome) / "go/bin")

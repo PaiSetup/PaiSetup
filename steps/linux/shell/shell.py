@@ -52,7 +52,7 @@ class ShellStep(Step):
         )
         self._file_writer.write_lines(
             ".config/wgetrc",
-            [f"hsts-file={self._env.home()}/.cache/wget-hsts"],
+            [f"hsts-file={self._paths.get(KnownPath.CacheHome) / "wget-hsts"}"],
             file_type=FileType.ConfigFile,
         )
 

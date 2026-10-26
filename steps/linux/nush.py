@@ -6,7 +6,7 @@ from steps.step import Step
 class NushStep(Step):
     def __init__(self, fetch_git):
         super().__init__("Nush")
-        self._nush_root_dir = self._env.home() / "nush"
+        self._nush_root_dir = self._paths.home() / "nush"
         self._fetch_git = fetch_git
 
     def perform(self):

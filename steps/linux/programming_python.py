@@ -29,7 +29,7 @@ class ProgrammingPythonStep(Step):
         dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL_CMD python").desc("Python"))
 
         dependency_dispatcher.set_env("Python paths", "PYTHON_HISTORY", self._paths.get(KnownPath.DataHome) / "python_history")
-        dependency_dispatcher.set_env("Python paths", "PYTHONSTARTUP", f"{self._env.home()}/.config/python/pythonrc")
+        dependency_dispatcher.set_env("Python paths", "PYTHONSTARTUP", self._paths.get(KnownPath.ConfigHome) / "python/pythonrc")
 
     def perform(self):
         self._file_writer.write_lines(

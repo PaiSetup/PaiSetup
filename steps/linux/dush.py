@@ -5,7 +5,7 @@ from utils.services.paths import KnownPath
 
 class DushStep(DushStepBase):
     def __init__(self, fetch_git):
-        dush_dir = self._env.home() / "dush"
+        dush_dir = self._paths.home() / "dush"
         super().__init__("Dush", fetch_git, dush_dir)
 
     def perform(self):

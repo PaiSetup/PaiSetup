@@ -1,6 +1,7 @@
 import utils.external_project as ext
 from steps.step import Step
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class GuildWars2Step(Step):
@@ -31,7 +32,7 @@ class GuildWars2Step(Step):
             self._file_writer.write_symlink_executable(dst_dir / "burrito.x86_64", "burrito.x86_64")
 
     def _write_desktop_file(self):
-        path = self._env.home() / ".local/share/applications/gw2.desktop"
+        path = self._paths.get(KnownPath.DataHome) / "applications/gw2.desktop"
         self._file_writer.write_lines(
             path,
             [

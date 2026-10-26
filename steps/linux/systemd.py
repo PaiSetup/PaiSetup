@@ -6,6 +6,7 @@ from steps.step import Step
 from utils.command import run_command
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class SystemdService:
@@ -23,7 +24,6 @@ class SystemdService:
 class SystemdStep(Step):
     def __init__(self):
         super().__init__("Systemd")
-        self._services_dir = self._env.home() / ".config/PaiSetup/services"
         self._services = []
 
     @push_dependency_handler
@@ -31,26 +31,27 @@ class SystemdStep(Step):
         self._services.append(service)
 
     def perform(self):
-        self._clean_services()
-        self._setup_services()
+        services_dir = self._paths.get(KnownPath.ConfigHome) / "PaiSetup/services"
+        self._clean_services(services_dir)
+        self._setup_services(services_dir)
         self._refresh_services()
 
-    def _clean_services(self):
+    def _clean_services(self, services_dir):
         self._logger.log("Cleaning existing services")
-        if self._services_dir.exists():
-            for file in self._services_dir.iterdir():
+        if services_dir.exists():
+            for file in services_dir.iterdir():
                 file.unlink()
 
-    def _setup_services(self):
+    def _setup_services(self, services_dir):
         if not self._services:
             return
 
-        self._services_dir.mkdir(exist_ok=True, parents=True)
+        services_dir.mkdir(exist_ok=True, parents=True)
 
         for service in self._services:
             with self._logger.indent(f"Creating {service.name} service."):
                 self._logger.log("Creating .service file.")
-                service_file_path = self._services_dir / f"PaiSetup_{service.name}.service"
+                service_file_path = services_dir / f"PaiSetup_{service.name}.service"
                 self._file_writer.write_lines(
                     service_file_path,
                     [self._generate_service_file_content(service)],
