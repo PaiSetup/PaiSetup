@@ -1,12 +1,12 @@
 from steps.dush_base import DushStepBase
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class DushStep(DushStepBase):
     def __init__(self, fetch_git):
-        super().__init__("Dush", fetch_git)
-        self.setup_dush_root_dir(self._env.home() / "dush")
-        self._dush_workspace_dir = self._env.home() / "work"
+        dush_dir = self._env.home() / "dush"
+        super().__init__("Dush", fetch_git, dush_dir)
 
     def perform(self):
         super().perform()
@@ -14,8 +14,8 @@ class DushStep(DushStepBase):
             ".bashrc",
             "Developer scripts",
             [
-                f'export DUSH_PATH="{self._dush_root_dir}"',
-                f'export DUSH_WORKSPACE="{self._dush_workspace_dir}"',
+                f'export DUSH_PATH="{self._dush_dir}"',
+                f'export DUSH_WORKSPACE="{self._paths.get(KnownPath.Work)}"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
                 ". $DUSH_PATH/dush/framework/frontend.bash",
                 ". $DUSH_PATH/dush/projects/bashies/main.sh",
@@ -30,5 +30,5 @@ class DushStep(DushStepBase):
         dependency_dispatcher.add_packages(
             "shellcheck-bin",  # needed for sc/scc scripts
         )
-        dependency_dispatcher.set_folder_icon(self._dush_root_dir, "scripts")
-        dependency_dispatcher.register_homedir_file(self._dush_root_dir)
+        dependency_dispatcher.set_folder_icon(self._dush_dir, "scripts")
+        dependency_dispatcher.register_homedir_file(self._dush_dir)

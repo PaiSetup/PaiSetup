@@ -7,6 +7,7 @@ from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class HomeDirectoryStep(Step):
@@ -16,6 +17,8 @@ class HomeDirectoryStep(Step):
         self._homedir_whitelist = self._env.home() / ".config/PaiSetup/homedir_whitelist"
         self._homedir_whitelisted_files = []
 
+        # Prepare all XDG dirs. Some of them we leave at default, some we remove, rename or add.
+        # They may need different handling in some places, so we keep them in different vars.
         self._xdg_defaults = {
             "XDG_CONFIG_HOME": ".config",
             "XDG_CACHE_HOME": ".cache",
@@ -36,16 +39,26 @@ class HomeDirectoryStep(Step):
         }
         self._xdg_custom = {  # These directories are non-standard. It's called XDG for convenience.
             "XDG_WORK_DIR": "work",
-            "XDG_MULTIMEDIA_DIR": "multimedia",
             "XDG_MOUNTS_DIR": "mounts",
             "XDG_LOG_DIR": ".log",
         }
-        if not has_multimedia_dir:
-            self._xdg_custom.pop("XDG_MULTIMEDIA_DIR")
+
+        # Register the paths to the Paths service.
+        self._paths.set(KnownPath.ConfigHome, self._get_xdg_dir("XDG_CONFIG_HOME"))
+        self._paths.set(KnownPath.CacheHome, self._get_xdg_dir("XDG_CACHE_HOME"))
+        self._paths.set(KnownPath.DataHome, self._get_xdg_dir("XDG_DATA_HOME"))
+        self._paths.set(KnownPath.StateHome, self._get_xdg_dir("XDG_STATE_HOME"))
+        self._paths.set(KnownPath.Desktop, self._get_xdg_dir("XDG_DESKTOP_DIR"))
+        self._paths.set(KnownPath.Downloads, self._get_xdg_dir("XDG_DOWNLOAD_DIR"))
+        self._paths.set(KnownPath.Work, self._get_xdg_dir("XDG_WORK_DIR"))
+        self._paths.set(KnownPath.Log, self._get_xdg_dir("XDG_LOG_DIR"))
+
+        # Multimedia directory is optional.
+        if has_multimedia_dir:
+            self._xdg_custom["XDG_MULTIMEDIA_DIR"] = "multimedia"
+            self._paths.set(KnownPath.Multimedia, self._get_xdg_dir("XDG_MULTIMEDIA_DIR"))
 
     def register_env_variables(self):
-        # Other steps use these to resolve their paths
-        # TODO implement proper pull dependency like FoldersStep on Windows
         for name, path in self._xdg_defaults.items():
             self._env.set(name, self._env.home() / path, is_path=True)
 

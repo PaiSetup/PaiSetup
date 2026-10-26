@@ -1,4 +1,5 @@
 from steps.step import Step
+from utils.services.paths import KnownPath
 
 
 class ProgrammingJavaStep(Step):
@@ -24,9 +25,9 @@ class ProgrammingJavaStep(Step):
             dependency_dispatcher.register_homedir_file(".android")
             dependency_dispatcher.register_homedir_file("Android")
 
-        config_home = self._env.get("XDG_CONFIG_HOME")
-        cache_home = self._env.get("XDG_CACHE_HOME")
-        data_home = self._env.get("XDG_DATA_HOME")
+        config_home = self._paths.get(KnownPath.ConfigHome)
+        cache_home = self._paths.get(KnownPath.CacheHome)
+        data_home = self._paths.get(KnownPath.DataHome)
         dependency_dispatcher.set_env(
             "Override locations of java cache",
             "_JAVA_OPTIONS",

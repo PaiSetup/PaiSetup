@@ -1,6 +1,7 @@
 from utils.services.env import EnvManager
 from utils.services.file_writer import FileWriter
 from utils.services.logger import Logger
+from utils.services.paths import Paths
 from utils.services.perf_analyzer import PerfAnalyzer
 
 
@@ -14,6 +15,7 @@ class Services:
     def __enter__(self, *args, **kwargs):
         self._env = EnvManager()
         self._file_writer = FileWriter(self._env.home())
+        self._paths = Paths(self._env.home(), self._root_dir)
         self._perf_analyzer = PerfAnalyzer(self._root_dir, self._enable_perf_analyzer)
         self._logger = Logger(self._logs_dir, self._perf_analyzer, self._enable_logger)
         return self
@@ -24,12 +26,14 @@ class Services:
         their results.
         """
         self._env.finalize()
+        self._paths.finalize()
         self._file_writer.finalize()
         self._logger.finalize()
         self._perf_analyzer.finalize()  # Has to be last
 
     def assign_to(self, target):
         target._env = self._env
+        target._paths = self._paths
         target._file_writer = self._file_writer
         target._perf_analyzer = self._perf_analyzer
         target._logger = self._logger

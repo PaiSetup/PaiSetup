@@ -3,6 +3,7 @@ from pathlib import Path
 from steps.step import Step
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType, LinePlacement
+from utils.services.paths import KnownPath
 
 
 class ProgrammingPythonStep(Step):
@@ -27,7 +28,7 @@ class ProgrammingPythonStep(Step):
         )
         dependency_dispatcher.add_keybindings(KeyBinding("p").mod().shift().executeShell("$TERMINAL_CMD python").desc("Python"))
 
-        dependency_dispatcher.set_env("Python paths", "PYTHON_HISTORY", f"{self._env.get('XDG_DATA_HOME')}/python_history")
+        dependency_dispatcher.set_env("Python paths", "PYTHON_HISTORY", self._paths.get(KnownPath.DataHome) / "python_history")
         dependency_dispatcher.set_env("Python paths", "PYTHONSTARTUP", f"{self._env.home()}/.config/python/pythonrc")
 
     def perform(self):

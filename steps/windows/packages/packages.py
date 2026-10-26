@@ -3,10 +3,10 @@ from pathlib import Path
 
 import utils.external_project as ext
 from steps.step import Step
-from steps.windows.folders import KnownFolder
 from utils.command import *
 from utils.dependency_dispatcher import pull_dependency_handler, push_dependency_handler
 from utils.os_helpers import Pushd
+from utils.services.paths import KnownPath
 
 from .package_info import PackageInfo, custom_packages_dir
 
@@ -36,12 +36,11 @@ class PackagesStep(Step):
             )
 
     def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self._programs_dir = known_folders[KnownFolder.Programs]
-        self._hw_tools_dir = known_folders[KnownFolder.HwTools]
-        self._desktop_dir = known_folders[KnownFolder.Desktop]
-        self._public_desktop_dir = known_folders[KnownFolder.PublicDesktop]
-        self._games_dir = known_folders.get(KnownFolder.Games)
+        self._programs_dir = self._paths.get(KnownPath.Programs)
+        self._hw_tools_dir = self._paths.get(KnownPath.HwTools)
+        self._desktop_dir = self._paths.get(KnownPath.Desktop)
+        self._public_desktop_dir = self._paths.get(KnownPath.PublicDesktop)
+        self._games_dir = self._paths.get(KnownPath.Games, required=False)
 
     def perform(self):
         if self._enable_installation:

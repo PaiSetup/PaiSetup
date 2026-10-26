@@ -26,6 +26,11 @@ installing a package group, configuring the shell, or setting up a GUI composito
 implement any of: registering environment variables, declaring dependencies on other steps
 (pushing data to them or pulling data from them), and `perform()` - the actual work.
 
+`perform()` is only called if the concrete step class overrides it directly (see
+`Step.is_method_overriden()`); an implementation inherited from a base class doesn't count. A step
+deriving from a base class that implements `perform()` (e.g. `NotesStepBase`, `DushStepBase`) has to
+override it, even if only to call `super().perform()`.
+
 A **setup mode** (`utils/setup_mode.py`) represents one kind of machine to configure and owns the
 list of steps to run for it - e.g. an Arch desktop, a Debian "casual" install, a Windows machine.
 Each mode is a small class exposing a name and a `get_steps(...)` method that builds and returns the
@@ -55,6 +60,11 @@ and available on every `Step` instance:
   warnings mechanism (optionally attaching a saved report file) that gets echoed at the end of the
   run.
 - **PerfAnalyzer** - records timing of logged operations to help spot slow steps.
+- **Paths** - a registry of well-known paths (`KnownPath` enum; some values exist only on
+  Windows or only on Linux). Home and the PaiSetup root are set automatically; the rest are set by the
+  steps owning them (`FoldersStep` on Windows, `HomeDirectoryStep` on Linux) in their `__init__()`.
+  Other steps may query them in any phase after initialization (push, pull, perform), but never in
+  `__init__()`, since step construction order is undefined.
 
 Services are wired up once in `setup.py` and assigned onto the `Step` base class, so any step method
 can just use `self._env`, `self._file_writer`, `self._logger`, etc. without receiving them as

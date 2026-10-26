@@ -1,13 +1,12 @@
 from steps.step import Step
 from utils.dependency_dispatcher import push_dependency_handler
+from utils.services.paths import KnownPath
 
 
 class QBitTorrentStep(Step):
     def __init__(self):
         super().__init__("QBitTorrent")
-        self._save_paths = [
-            self._env.home() / "downloads",
-        ]
+        self._save_paths = []
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("qbittorrent")
@@ -18,7 +17,7 @@ class QBitTorrentStep(Step):
         self._save_paths += directories
 
     def perform(self):
-        paths = [str(x) for x in self._save_paths]
+        paths = [str(x) for x in [self._paths.get(KnownPath.Downloads)] + self._save_paths]
         paths = ", ".join(paths)
 
         self._file_writer.patch_ini_file(

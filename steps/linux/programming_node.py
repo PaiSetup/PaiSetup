@@ -1,5 +1,6 @@
 from steps.step import Step
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class ProgrammingNodeStep(Step):
@@ -15,7 +16,7 @@ class ProgrammingNodeStep(Step):
 
         home = self._env.home()
         dependency_dispatcher.set_env("Node paths", "NPM_CONFIG_USERCONFIG", f"{home}/{self._npmrc_path}")
-        dependency_dispatcher.set_env("Node paths", "NODE_REPL_HISTORY", f"{home}/.local/state/node_repl_history")
+        dependency_dispatcher.set_env("Node paths", "NODE_REPL_HISTORY", self._paths.get(KnownPath.StateHome) / "node_repl_history")
         dependency_dispatcher.append_env("Node paths", "PATH", f"{home}/.local/share/npm/bin")
 
     def perform(self):

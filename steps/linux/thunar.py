@@ -3,6 +3,7 @@ from xml.dom import minidom
 from steps.step import Step
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class ThunarCustomAction:
@@ -72,7 +73,7 @@ class ThunarStep(Step):
         self.add_thunar_custom_action(
             ThunarCustomAction(
                 name="Set wallpaper and generate colors",
-                command=f'bash -c "{self._env.get("PAI_SETUP_ROOT")}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
+                command=f'bash -c "{self._paths.get(KnownPath.PaiSetup)}/steps/linux/gui/scripts/select_wallpaper.py --wallpaper_file %f --restart_wm"',
                 image_files=True,
             )
         )
@@ -86,8 +87,8 @@ class ThunarStep(Step):
 
     def _setup_bookmarks(self):
         self._bookmarks += [
-            (self._env.home() / "downloads", "Downloads"),
-            (self._env.get("PAI_SETUP_ROOT"), "PaiSetup"),
+            (self._paths.get(KnownPath.Downloads), "Downloads"),
+            (self._paths.get(KnownPath.PaiSetup), "PaiSetup"),
         ]
 
         file_path = self._env.home() / ".config/gtk-3.0/bookmarks"

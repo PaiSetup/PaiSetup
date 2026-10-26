@@ -109,7 +109,7 @@ class ArchSetupMode(SetupMode):
             EncryptionStep(build_dir),
             CharonStep(build_dir, full=args.full),
             QtileStep(),
-            NotesStep(fetch_git=args.full),
+            NotesStep(fetch_git=args.full, use_private_notes=True),
             VirtualBoxStep(),
             VagrantStep(),
             RaspberryPiStep(),

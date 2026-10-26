@@ -6,6 +6,7 @@ import utils.external_project as ext
 from steps.linux.thunar import ThunarCustomAction
 from steps.step import Step
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class ImmediateCharonCall:
@@ -25,9 +26,11 @@ class CharonStep(Step):
         super().__init__("Charon")
         self.charon_dir = root_build_dir / "charon"
         self._full = full
-        self._log_file_path = self._env.home() / ".log/charon"
 
-        funny_normal_path = self._env.home() / "multimedia/funny"
+    def _prepare_immediate_charon_calls(self):
+        self._log_file_path = self._paths.get(KnownPath.Log) / "charon"
+
+        funny_normal_path = self._paths.get(KnownPath.Multimedia) / "funny"
         funny_backup_path = Path(f"/run/media/{self._env.get('USER')}/External/Backup/multimedia/Funny")
 
         self._immediate_charon_calls = [
@@ -64,6 +67,7 @@ class CharonStep(Step):
         ]
 
     def push_dependencies(self, dependency_dispatcher):
+        self._prepare_immediate_charon_calls()
         for call in self._immediate_charon_calls:
             action = ThunarCustomAction(
                 name=call.name,

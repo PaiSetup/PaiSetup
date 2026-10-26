@@ -1,6 +1,6 @@
 from steps.step import Step
-from steps.windows.folders import KnownFolder
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class VirtualBoxStep(Step):
@@ -12,14 +12,14 @@ class VirtualBoxStep(Step):
         dependency_dispatcher.add_packages("virtualbox")
 
     def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self._vm_dir = known_folders.get(KnownFolder.VirtualMachines)
         self._virtualbox_install_dir = dependency_dispatcher.get_package_info("virtualbox").install_dir
 
     def perform(self):
-        if self._vm_dir is None:
+        root_dir = self._paths.get(KnownPath.Root, required=False)
+        if root_dir is None:
             self._logger.push_warning("VM directory is not set")
             return
+        self._vm_dir = root_dir / "VMs"
         if not self._virtualbox_install_dir:
             self._logger.push_warning("Could not find VirtualBox info")
             return

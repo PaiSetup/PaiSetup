@@ -1,5 +1,5 @@
 from steps.step import Step
-from steps.windows.folders import KnownFolder
+from utils.services.paths import KnownPath
 
 
 class PaiSetupCmdStep(Step):
@@ -8,8 +8,7 @@ class PaiSetupCmdStep(Step):
         self._root_dir = root_dir
 
     def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self._desktop_dir = known_folders[KnownFolder.Desktop]
+        self._desktop_dir = self._paths.get(KnownPath.Desktop)
 
     def perform(self):
         lines = [

@@ -1,4 +1,5 @@
 from steps.step import Step
+from utils.services.paths import KnownPath
 
 
 class VagrantStep(Step):
@@ -8,6 +9,6 @@ class VagrantStep(Step):
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("vagrant")
 
-        data_home = self._env.get("XDG_DATA_HOME")
+        data_home = self._paths.get(KnownPath.DataHome)
         dependency_dispatcher.set_env("Vagrant paths", "VAGRANT_HOME", f"{data_home}/vagrant")
         dependency_dispatcher.set_env("Vagrant paths", "VAGRANT_ALIAS_FILE", f"{data_home}/vagrant/aliases")

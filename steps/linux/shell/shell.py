@@ -2,6 +2,7 @@ from pathlib import Path
 
 from steps.step import Step
 from utils.services.file_writer import FileType, LinePlacement
+from utils.services.paths import KnownPath
 
 
 class ShellStep(Step):
@@ -19,7 +20,7 @@ class ShellStep(Step):
         dependency_dispatcher.register_homedir_file(".bash_logout")
         dependency_dispatcher.register_homedir_file(".bash_profile")
 
-        config_home = self._env.get("XDG_CONFIG_HOME")
+        config_home = self._paths.get(KnownPath.ConfigHome)
         dependency_dispatcher.set_env("less/wget paths", "LESSHISTFILE", f"{config_home}/lesshst")
         dependency_dispatcher.set_env("less/wget paths", "WGETRC", f"{config_home}/wgetrc")
         dependency_dispatcher.set_env("Path to inputrc file", "INPUTRC", f"{config_home}/inputrc")

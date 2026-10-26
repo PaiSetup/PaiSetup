@@ -1,28 +1,25 @@
 from steps.dush_base import DushStepBase
-from steps.windows.folders import KnownFolder
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class DushStep(DushStepBase):
-    def __init__(self, fetch_git):
-        super().__init__("Dush", fetch_git)
+    def __init__(self, fetch_git, dush_dir=None):
+        super().__init__("Dush", fetch_git, dush_dir)
 
     def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-
-        self._projects_dir = known_folders[KnownFolder.Projects]
-        self._documents_dir = known_folders[KnownFolder.Documents]
-        self._dush_dir = known_folders[KnownFolder.Dush]
-
-        self.setup_dush_root_dir(self._dush_dir)
+        self._projects_dir = self._paths.get(KnownPath.Work)
+        self._documents_dir = self._paths.get(KnownPath.Documents)
 
     def perform(self):
+        if self._dush_dir is None:
+            self._dush_dir = self._paths.get(KnownPath.Root) / "Dush"
         super().perform()
         self._file_writer.write_section(
             ".bashrc",
             "Developer scripts",
             [
-                f'export DUSH_PATH="{self._dush_root_dir}"',
+                f'export DUSH_PATH="{self._dush_dir}"',
                 f'export DUSH_WORKSPACE="{self._projects_dir}"',
                 f'export DUSH_ENABLE_AUTOLOAD="1"',
                 ". $DUSH_PATH/dush/framework/frontend.bash",

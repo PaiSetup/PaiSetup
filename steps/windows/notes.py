@@ -1,14 +1,15 @@
 from steps.notes_base import NotesStepBase
-from steps.windows.folders import KnownFolder
+from utils.services.paths import KnownPath
 
 
 class NotesStep(NotesStepBase):
-    def __init__(self, fetch_git, use_private_notes):
-        super().__init__("Notes", fetch_git, use_private_notes)
+    def __init__(self, fetch_git, use_private_notes, notes_dir=None):
+        super().__init__("Notes", fetch_git, use_private_notes, notes_dir)
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
 
-    def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self.set_notes_root_dir(known_folders[KnownFolder.Notes])
+    def perform(self):
+        if self._notes_dir is None:
+            self._notes_dir = self._paths.get(KnownPath.Root) / "Notes"
+        super().perform()

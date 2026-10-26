@@ -3,12 +3,10 @@ from steps.step import Step
 
 
 class NotesStepBase(Step):
-    def __init__(self, name, fetch_git, use_private_notes):
+    def __init__(self, name, fetch_git, use_private_notes, notes_dir):
         super().__init__(name)
         self._fetch_git = fetch_git
         self._use_private_notes = use_private_notes
-
-    def set_notes_root_dir(self, notes_dir):
         self._notes_dir = notes_dir
 
     def perform(self):

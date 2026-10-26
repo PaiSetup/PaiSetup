@@ -8,6 +8,7 @@ from utils.dependency_dispatcher import push_dependency_handler
 from utils.keybinding import KeyBinding
 from utils.os_function import LinuxDistro
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class WindowManagerXorg:
@@ -95,7 +96,7 @@ class GuiXorg(Step):
         dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_INFO", 3)
         dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_SCROLL_UP", 4)
         dependency_dispatcher.set_env("Button names for statusbar scripts", "BUTTON_SCROLL_DOWN", 5)
-        dependency_dispatcher.set_env("X11 paths", "ERRFILE", f"{self._env.get('XDG_CACHE_HOME')}/X11/xsession-errors")
+        dependency_dispatcher.set_env("X11 paths", "ERRFILE", self._paths.get(KnownPath.CacheHome) / "X11/xsession-errors")
 
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):

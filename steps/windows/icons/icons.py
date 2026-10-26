@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from steps.step import Step
-from steps.windows.folders import KnownFolder
 from utils import external_project as ext
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class IconsStep(Step):
@@ -16,11 +16,12 @@ class IconsStep(Step):
         dependency_dispatcher.add_packages("windows-handies")  # For Iconfigure
 
     def pull_dependencies(self, dependency_dispatcher):
-        known_folders = dependency_dispatcher.get_known_folders()
-        self._root_folder = str(known_folders.get(KnownFolder.Root)).rstrip("\\")  # trailing backslashes in root cause some problems in Iconfigure
-        self._multimedia_folder = known_folders.get(KnownFolder.Multimedia)
-        self._programs_folder = known_folders.get(KnownFolder.Programs)
-        self._hw_tools_folder = known_folders.get(KnownFolder.HwTools)
+        self._root_folder = self._paths.get(KnownPath.Root, required=False)
+        if self._root_folder is not None:
+            self._root_folder = str(self._root_folder).rstrip("\\")  # trailing backslashes in root cause some problems in Iconfigure
+        self._multimedia_folder = self._paths.get(KnownPath.Multimedia, required=False)
+        self._programs_folder = self._paths.get(KnownPath.Programs)
+        self._hw_tools_folder = self._paths.get(KnownPath.HwTools, required=False)
 
     def perform(self):
         self.download_icons()
@@ -35,9 +36,11 @@ class IconsStep(Step):
         icon_commands = []
         if self._root_folder:
             icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._root_folder}"')
-        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._multimedia_folder}"')
+        if self._multimedia_folder is not None:
+            icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -d "{self._multimedia_folder}"')
         icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._programs_folder}"')
-        icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._hw_tools_folder}"')
+        if self._hw_tools_folder is not None:
+            icon_commands.append(f'Iconfigure.exe -y -f -l "{self._icons_dir}" -r -d "{self._hw_tools_folder}"')
 
         # Execute commands
         self._logger.log("Setting up icons")
