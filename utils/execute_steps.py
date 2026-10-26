@@ -40,11 +40,6 @@ def execute_steps(
     # Add framework step
     steps.insert(0, FrameworkStep())
 
-    # Setup env
-    Step._logger.log("Setting up environment variables")
-    for step in steps:
-        step.register_env_variables()
-
     # Allow the steps to query paths
     Step._paths.mark_steps_initialized()
 

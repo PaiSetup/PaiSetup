@@ -15,20 +15,6 @@ class Step:
         self.name = name
         self._enabled = True
 
-    def register_env_variables(self):
-        """
-        This method can be implemented by deriving classes.
-
-        Its goal is to set environment variables in current process. Some steps may add export
-        instructions to scripts like .profile, but this is not enough if other steps depend on
-        the env vars being set. They will only be set after relogging to the system. Hence
-        we also have to set it in the current process.
-
-        It cannot be done in perform(), because the order of execution is undefined. This method
-        will always be called before perform() invocations of all other steps.
-        """
-        pass
-
     def push_dependencies(self, dependency_dispatcher):
         """
         This method can be implemented by deriving classes.
@@ -87,9 +73,6 @@ class FrameworkStep(Step):
         if OperatingSystem.current().is_linux():
             dependency_dispatcher.set_env("Envs needed for PaiSetup framework", "PAI_SETUP_ROOT", self._paths.get(KnownPath.PaiSetup))
             dependency_dispatcher.append_env("Envs needed for PaiSetup framework", "PYTHONPATH", self._paths.get(KnownPath.PaiSetup))
-
-    def register_env_variables(self):
-        self._env.set("PAI_SETUP_ROOT", self._paths.get(KnownPath.PaiSetup), is_path=True)
 
     def perform(self):
         self._logger.get_log_dir().mkdir(parents=True, exist_ok=True)

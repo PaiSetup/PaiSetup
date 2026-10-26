@@ -23,8 +23,8 @@ interactive) `sudo` on Linux, since many steps write to system locations or inst
 
 The unit of work is a `Step` (see `steps/step.py`): a self-contained piece of configuration such as
 installing a package group, configuring the shell, or setting up a GUI compositor. A step can
-implement any of: registering environment variables, declaring dependencies on other steps
-(pushing data to them or pulling data from them), and `perform()` - the actual work.
+implement any of: declaring dependencies on other steps (pushing data to them or pulling data from
+them), and `perform()` - the actual work.
 
 `perform()` is only called if the concrete step class overrides it directly (see
 `Step.is_method_overriden()`); an implementation inherited from a base class doesn't count. A step

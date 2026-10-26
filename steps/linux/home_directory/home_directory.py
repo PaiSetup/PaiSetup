@@ -57,10 +57,6 @@ class HomeDirectoryStep(Step):
             self._xdg_custom["XDG_MULTIMEDIA_DIR"] = "multimedia"
             self._paths.set(KnownPath.Multimedia, self._get_xdg_dir("XDG_MULTIMEDIA_DIR"))
 
-    def register_env_variables(self):
-        for name, path in self._xdg_defaults.items():
-            self._env.set(name, self._paths.home() / path, is_path=True)
-
     def push_dependencies(self, dependency_dispatcher):
         for name, path in self._xdg_defaults.items():
             dependency_dispatcher.set_env("XDG variables", name, self._paths.home() / path)
