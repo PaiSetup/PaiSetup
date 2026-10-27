@@ -101,7 +101,8 @@ class GuiXorg(Step):
             self._logger.log('Compiling "colors" binary')
             colors_dir = self._paths.get(KnownPath.BuildDir) / "colors"
             ext.download(
-                "git://git.2f30.org/colors",
+                # "git://git.2f30.org/colors", # Ssh sometimes hangs
+                "https://git.2f30.org/colors",
                 "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
                 colors_dir,
                 logger=self._logger,

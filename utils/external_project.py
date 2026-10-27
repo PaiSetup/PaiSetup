@@ -55,6 +55,7 @@ def download(
             run_command(f"git submodule update")
 
         if fetch and not clone_needed:
+            run_command(f"git remote set-url origin {url}")
             run_command("git fetch --prune")
 
         if clean:
