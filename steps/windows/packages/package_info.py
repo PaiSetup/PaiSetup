@@ -101,6 +101,9 @@ class PackageInfo:
             self.install_dir = programs_dir / "Charon"
             self._set_installer(Installer.CustomPackage)
             self._append_package_arg(f"/folder={self.install_dir}")
+        elif package_name == "claude-code":
+            # No installer, just downloads the binary. Nothing to configure.
+            pass
         elif package_name == "cmake":
             self.install_dir = programs_dir / "CMake"
             self._set_installer(Installer.Msi)

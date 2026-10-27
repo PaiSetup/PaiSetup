@@ -3,6 +3,7 @@ from utils.setup_mode import SetupMode
 
 from .activate_windows import ActivateWindowsStep
 from .bash import BashStep
+from .claude import ClaudeStep
 from .dush import DushStep
 from .explorer import ExplorerStep
 from .extensions import ExtensionsStep
@@ -58,6 +59,7 @@ class WindowsSetupMode(SetupMode):
             MultimediaToolsStep(),
             ProgrammingCommonStep(),
             ProgrammingCppStep(False),
+            ClaudeStep(),
         ]
 
 
