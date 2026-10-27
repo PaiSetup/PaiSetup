@@ -31,7 +31,8 @@ strict_group.add_argument("-f", "--strict_full", action="store_true", help="Enab
 strict_group.add_argument("--strict_download", action="store_true", help="Skip downloading optimizations. Fetch git repositories and download files even if they are already present.")
 strict_group.add_argument("--strict_build", action="store_true", help="Skip compilation optimizations. Build binaries and generate content even if it is already present.")
 strict_group.add_argument("--strict_install", action="store_true", help="Skip package installation optimizations. Try to install packages even if they are already installed.")
-strict_group.add_argument("--strict_explorer", action="store_true", help="Restart Windows Explorer.")
+if OperatingSystem.current().is_windows():
+    strict_group.add_argument("--strict_explorer", action="store_true", help="Restart Windows Explorer.")
 debug_group = arg_parser.add_argument_group("debug", "Developer options. Use with caution, they can break the setup process.")
 debug_group.add_argument("-s", "--step_whitelist", nargs="+", metavar="STEP", help="Limit executed steps by names. Note that other steps may be implicitly enabled due to dependencies. Mutually exclusive with --step-blacklist.")
 debug_group.add_argument("-e", "--step_blacklist", nargs="+", metavar="STEP", help="Exclude steps from execution. Note that other steps may be implicitly enabled due to dependencies. Mutually exclusive with --step-whitelist.")
@@ -47,7 +48,7 @@ flags = SetupFlags(
     strict_download=args.strict_download or args.strict_full,
     strict_build=args.strict_build or args.strict_full,
     strict_install=args.strict_install or args.strict_full,
-    strict_explorer=args.strict_explorer or args.strict_full,
+    strict_explorer=getattr(args, "strict_explorer", False) or args.strict_full,
 )
 
 enable_logger = not (args.list_steps or args.list_packages)
