@@ -7,11 +7,10 @@ from utils.services.paths import KnownPath
 
 
 class PackagesStep(Step):
-    def __init__(self, print_installation, enable_installation):
+    def __init__(self, enable_installation):
         super().__init__("Packages")
         self._known_package_groups = ["vulkan-devel"]
         self._enable_installation = enable_installation
-        self.print_installation = print_installation
         self._packages = []
         self._assumed_packages = []
 
@@ -57,8 +56,7 @@ class PackagesStep(Step):
                 assumed_packages_option = " ".join((f"--assume-installed {x}" for x in self._assumed_packages))
                 install_command = f"yay -Syu --noconfirm {packages_option} {assumed_packages_option}"
                 self._logger.log(f"Running command: {install_command}")
-                stdout = Stdout.print_to_console() if self.print_installation else Stdout.ignore()
-                run_command(install_command, stdout=stdout)
+                run_command(install_command, stdout=Stdout.print_to_console())
 
     def _mark_packages_explicit(self):
         # Mark all packages we install here as explictly installed. Sometimes a package can be already

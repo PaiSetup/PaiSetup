@@ -63,7 +63,7 @@ class ArchSetupMode(SetupMode):
 
     def get_steps(self, args, install_packages):
         return [
-            PackagesStep(True, install_packages),
+            PackagesStep(install_packages),
             EnvStep(),
             ShellStep(),
             GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
