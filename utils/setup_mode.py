@@ -86,12 +86,12 @@ class SetupMode:
         return setup_modes
 
     @staticmethod
-    def retrieve_last_mode(root_dir, setup_modes):
+    def retrieve_last_mode(pai_setup_dir, setup_modes):
         """
         Returns the mode saved in the .lastmode file, or a default one, if the file is missing or
         holds a mode we cannot use. May return None - see _get_default_mode().
         """
-        lastmode_file = root_dir / ".lastmode"
+        lastmode_file = pai_setup_dir / ".lastmode"
         try:
             with open(lastmode_file, "r") as file:
                 return setup_modes[file.readline().strip()]
@@ -109,7 +109,7 @@ class SetupMode:
             return next(iter(setup_modes.values()))
         return None
 
-    def save_last_mode(self, root_dir):
-        lastmode_file = root_dir / ".lastmode"
+    def save_last_mode(self, pai_setup_dir):
+        lastmode_file = pai_setup_dir / ".lastmode"
         with open(lastmode_file, "w") as file:
             file.write(f"{self.get_name()}\n")

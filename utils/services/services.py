@@ -6,18 +6,18 @@ from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Services:
-    def __init__(self, root_dir, enable_perf_analyzer, enable_logger):
-        self._root_dir = root_dir
+    def __init__(self, pai_setup_dir, enable_perf_analyzer, enable_logger):
+        self._pai_setup_dir = pai_setup_dir
         self._enable_perf_analyzer = enable_perf_analyzer
         self._enable_logger = enable_logger
 
     def __enter__(self, *args, **kwargs):
         self._env = EnvManager()
         home = self._env.get("HOME")
-        self._paths = Paths(home, self._root_dir)
+        self._paths = Paths(home, self._pai_setup_dir)
         self._file_writer = FileWriter(home)
-        self._perf_analyzer = PerfAnalyzer(self._root_dir, self._enable_perf_analyzer)
-        self._logger = Logger(self._root_dir, self._perf_analyzer, self._enable_logger)
+        self._perf_analyzer = PerfAnalyzer(self._pai_setup_dir, self._enable_perf_analyzer)
+        self._logger = Logger(self._pai_setup_dir, self._perf_analyzer, self._enable_logger)
         return self
 
     def __exit__(self, *args, **kwargs):
