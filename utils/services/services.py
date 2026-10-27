@@ -6,9 +6,8 @@ from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Services:
-    def __init__(self, root_dir, logs_dir, enable_perf_analyzer, enable_logger):
+    def __init__(self, root_dir, enable_perf_analyzer, enable_logger):
         self._root_dir = root_dir
-        self._logs_dir = logs_dir
         self._enable_perf_analyzer = enable_perf_analyzer
         self._enable_logger = enable_logger
 
@@ -18,7 +17,7 @@ class Services:
         self._paths = Paths(home, self._root_dir)
         self._file_writer = FileWriter(home)
         self._perf_analyzer = PerfAnalyzer(self._root_dir, self._enable_perf_analyzer)
-        self._logger = Logger(self._logs_dir, self._perf_analyzer, self._enable_logger)
+        self._logger = Logger(self._root_dir, self._perf_analyzer, self._enable_logger)
         return self
 
     def __exit__(self, *args, **kwargs):

@@ -7,9 +7,8 @@ from utils.services.paths import KnownPath
 
 
 class VscodeStep(VscodeStepBase):
-    def __init__(self, root_build_dir):
-        super().__init__(root_build_dir)
-        self._root_build_dir = root_build_dir
+    def __init__(self):
+        super().__init__()
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(

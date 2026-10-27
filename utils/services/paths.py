@@ -8,6 +8,8 @@ class KnownPath(Enum):
     # Available on all systems
     Home = auto()
     PaiSetup = auto()
+    BuildDir = auto()
+    SecretDir = auto()
     Desktop = auto()
     Work = auto()
     Multimedia = auto()
@@ -43,6 +45,8 @@ class Paths:
         self._steps_initialized = False
         self.set(KnownPath.Home, home)
         self.set(KnownPath.PaiSetup, pai_setup_root)
+        self.set(KnownPath.BuildDir, Path(pai_setup_root) / "build")
+        self.set(KnownPath.SecretDir, Path(pai_setup_root) / "secret")
 
     def set(self, known_path, path):
         if known_path in self._paths:
@@ -55,8 +59,8 @@ class Paths:
     def get(self, known_path, required=True):
         # Steps set paths in their __init__(), so querying a path in __init__() of another step would depend
         # on the order in which the steps are constructed.
-        # Home and PaiSetup are set on construction, so they are always safe to query.
-        if not self._steps_initialized and known_path not in (KnownPath.Home, KnownPath.PaiSetup):
+        # Paths set on construction are always safe to query.
+        if not self._steps_initialized and known_path not in (KnownPath.Home, KnownPath.PaiSetup, KnownPath.BuildDir, KnownPath.SecretDir):
             raise KnownPathQueriedTooEarly(f"Known path {known_path.name} cannot be queried before all steps are initialized")
 
         path = self._paths.get(known_path)

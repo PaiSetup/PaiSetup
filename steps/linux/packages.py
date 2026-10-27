@@ -3,13 +3,13 @@ from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import pull_dependency_handler, push_dependency_handler
 from utils.os_helpers import Pushd
+from utils.services.paths import KnownPath
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir, print_installation, enable_installation):
+    def __init__(self, print_installation, enable_installation):
         super().__init__("Packages")
         self._known_package_groups = ["vulkan-devel"]
-        self.root_build_dir = root_build_dir
         self._enable_installation = enable_installation
         self.print_installation = print_installation
         self._packages = []
@@ -30,7 +30,7 @@ class PackagesStep(Step):
                 self._logger.log("Already installed. Skipping")
             else:
                 self._logger.log("Downloading yay")
-                build_dir = self.root_build_dir / "yay"
+                build_dir = self._paths.get(KnownPath.BuildDir) / "yay"
                 ext.download(
                     "https://aur.archlinux.org/yay-git.git",
                     "master",

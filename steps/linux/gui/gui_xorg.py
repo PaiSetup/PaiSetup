@@ -20,10 +20,9 @@ class WindowManagerXorg:
 
 
 class GuiXorg(Step):
-    def __init__(self, full, root_build_dir):
+    def __init__(self, full):
         super().__init__("GuiXorg")
         self._full = full
-        self._root_build_dir = root_build_dir
         self._window_managers = []
 
     def perform(self):
@@ -101,7 +100,7 @@ class GuiXorg(Step):
     def _compile_color_generator(self):
         if ext.should_build(self._full, ["colors"]):
             self._logger.log('Compiling "colors" binary')
-            colors_dir = self._root_build_dir / "colors"
+            colors_dir = self._paths.get(KnownPath.BuildDir) / "colors"
             ext.download(
                 "git://git.2f30.org/colors",
                 "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",

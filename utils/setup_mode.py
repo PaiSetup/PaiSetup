@@ -21,7 +21,7 @@ class SetupMode:
         """
         raise NotImplementedError()
 
-    def get_steps(self, args, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, install_packages):
         """
         This method has to be implemented by deriving classes.
 

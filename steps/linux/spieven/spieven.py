@@ -7,6 +7,7 @@ from steps.step import Step
 from utils.command import *
 from utils.dependency_dispatcher import push_dependency_handler
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class SpievenDisplayType(Enum):
@@ -32,9 +33,8 @@ class SpievenTask:
 
 
 class SpievenStep(Step):
-    def __init__(self, root_build_dir):
+    def __init__(self):
         super().__init__("Spieven")
-        self._root_build_dir = root_build_dir
         self._current_step_dir = Path(__file__).parent
 
         self._tasks = []
@@ -79,7 +79,7 @@ class SpievenStep(Step):
 
     def _install(self):
         spieven_version = "2.1.1"
-        dst_dir = self._root_build_dir / f"spieven-{spieven_version}"
+        dst_dir = self._paths.get(KnownPath.BuildDir) / f"spieven-{spieven_version}"
         ext.download_github_release(
             "DziubanMaciej",
             "Spieven",

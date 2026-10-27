@@ -98,7 +98,8 @@ Paths are managed by the `Paths` service (`self._paths`) and the `KnownPath` enu
   in `__init__()` or `perform()` (e.g. the Notes and Dush directories).
 - A path used by **multiple steps** **is** a `KnownPath`. Exactly one step makes the decision and sets it
   with `self._paths.set(...)` in its `__init__()` (`FoldersStep` on Windows, `HomeDirectoryStep` on
-  Linux). Home and the PaiSetup root are set automatically.
+  Linux). Home, the PaiSetup root, `BuildDir` and `SecretDir` are set automatically and, unlike the rest,
+  can be queried even in `__init__()`.
 - Steps may **query** paths only in `push_dependencies()`, `pull_dependencies()` or `perform()` -
   **never in `__init__()`**, because step construction order is undefined. If something computed in
   `__init__()` needs a known path, move that computation to the phase that first needs it.

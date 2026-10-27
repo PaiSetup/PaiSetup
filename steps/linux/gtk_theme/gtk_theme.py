@@ -30,7 +30,7 @@ class GtkThemeStep(Step):
            of GTK. We have to generate all of them. There's no need to regenerate them after wallpaper change.
     """
 
-    def __init__(self, *, root_build_dir, regenerate_widget_theme, regenerate_icon_theme):
+    def __init__(self, *, regenerate_widget_theme, regenerate_icon_theme):
         super().__init__("GtkTheme")
         self._current_step_dir = Path(__file__).parent
 
@@ -41,9 +41,9 @@ class GtkThemeStep(Step):
         # Icon theme
         self._icon_theme_name = "PaiSetupIconTheme"
         self._regenerate_icon_theme = regenerate_icon_theme
-        self._src_icon_theme_path = root_build_dir / "gtk_icon_theme"
+        self._src_icon_theme_path = self._paths.get(KnownPath.BuildDir) / "gtk_icon_theme"
 
-        self._emblems_path = root_build_dir / "gtk_emblems"
+        self._emblems_path = self._paths.get(KnownPath.BuildDir) / "gtk_emblems"
         self._emblems = {}
 
     def push_dependencies(self, dependency_dispatcher):

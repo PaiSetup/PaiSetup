@@ -5,12 +5,12 @@ from steps.linux.spieven.spieven import SpievenDisplayType
 from steps.step import Step
 from utils.keybinding import KeyBinding
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class EncryptionStep(Step):
-    def __init__(self, root_build_dir):
+    def __init__(self):
         super().__init__("Encryption")
-        self._root_build_dir = root_build_dir
         self._current_step_dir = Path(__file__).parent
 
     def push_dependencies(self, dependency_dispatcher):
@@ -38,7 +38,7 @@ class EncryptionStep(Step):
     def _download_cryptomator_cli(self):
         with self._logger.indent("Setting up cryptomator-cli"):
             version = "0.6.2"
-            dst_dir = self._root_build_dir / f"cryptomator-cli-{version}"
+            dst_dir = self._paths.get(KnownPath.BuildDir) / f"cryptomator-cli-{version}"
             downloaded = ext.download_github_release(
                 "cryptomator",
                 "cli",

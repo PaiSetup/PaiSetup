@@ -22,9 +22,9 @@ class ImmediateCharonCall:
 
 
 class CharonStep(Step):
-    def __init__(self, root_build_dir, full):
+    def __init__(self, full):
         super().__init__("Charon")
-        self.charon_dir = root_build_dir / "charon"
+        self.charon_dir = self._paths.get(KnownPath.BuildDir) / "charon"
         self._full = full
 
     def _prepare_immediate_charon_calls(self):

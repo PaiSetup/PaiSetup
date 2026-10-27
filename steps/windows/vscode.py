@@ -5,9 +5,8 @@ from utils.command import *
 
 
 class VscodeStep(VscodeStepBase):
-    def __init__(self, root_build_dir, use_vscodium):
-        super().__init__(root_build_dir)
-        self._root_build_dir = root_build_dir
+    def __init__(self, use_vscodium):
+        super().__init__()
         if use_vscodium:
             self._package_name = "vscodium"
             self._binary_name = "codium"

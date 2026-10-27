@@ -2,12 +2,12 @@ import re
 
 from steps.step import Step
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class ActivateWindowsStep(Step):
-    def __init__(self, secret_dir):
+    def __init__(self):
         super().__init__("ActivateWindows")
-        self._secret_dir = secret_dir
 
     def is_windows_activated(self):
         powershell_command = [
@@ -19,7 +19,7 @@ class ActivateWindowsStep(Step):
         return output.strip() == "True"
 
     def get_key(self):
-        file_path = self._secret_dir / "windows11"
+        file_path = self._paths.get(KnownPath.SecretDir) / "windows11"
         try:
             with open(file_path) as file:
                 key = file.readline()

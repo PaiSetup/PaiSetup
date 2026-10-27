@@ -7,13 +7,13 @@ from steps.step import Step
 from utils.command import *
 from utils.os_function import OperatingSystem, linux_only, windows_only
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class SshStep(Step):
-    def __init__(self, secret_dir, full):
+    def __init__(self, full):
         super().__init__("Ssh")
         self._full = full
-        self._secret_dir = secret_dir
 
     @windows_only
     def push_dependencies(self, dependency_dispatcher):
@@ -78,7 +78,7 @@ class SshStep(Step):
         os.chmod(ssh_public_key_path, stat.S_IRUSR | stat.S_IWUSR)
 
     def _find_ssh_key(self):
-        for file in self._secret_dir.iterdir():
+        for file in self._paths.get(KnownPath.SecretDir).iterdir():
             if file.suffix == ".ssh":
                 return file
         return None

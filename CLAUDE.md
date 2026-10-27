@@ -61,11 +61,11 @@ and available on every `Step` instance:
   run.
 - **PerfAnalyzer** - records timing of logged operations to help spot slow steps.
 - **Paths** - a registry of well-known paths (`KnownPath` enum; some values exist only on
-  Windows or only on Linux). Home and the PaiSetup root are set automatically; the rest are set by the
+  Windows or only on Linux). Home, the PaiSetup root and its build and secret dirs are set automatically; the rest are set by the
   steps owning them (`FoldersStep` on Windows, `HomeDirectoryStep` on Linux) in their `__init__()`.
   Other steps may query them in any phase after initialization (push, pull, perform), but never in
   `__init__()`, since step construction order is undefined. Home (`self._paths.home()`) and the
-  PaiSetup root are the exception - they're set before any step exists, so they can be queried anywhere.
+  PaiSetup root, along with `BuildDir` and `SecretDir`, are the exception - they're set before any step exists, so they can be queried anywhere.
 
 Services are wired up once in `setup.py` and assigned onto the `Step` base class, so any step method
 can just use `self._env`, `self._file_writer`, `self._logger`, etc. without receiving them as

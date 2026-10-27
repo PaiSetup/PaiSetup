@@ -1,4 +1,5 @@
 import time
+from pathlib import Path
 
 
 class LogIndent:
@@ -18,17 +19,17 @@ class LogIndent:
 
 
 class Logger:
-    def __init__(self, log_dir, perf_analyzer, enabled):
+    def __init__(self, pai_setup_dir, perf_analyzer, enabled):
         self._indent_level = 0
         self._indent = ""
         self._last_log_time = None
 
         self._warnings = []
-        self._log_dir = log_dir
+        self._log_dir = Path(pai_setup_dir) / "logs"
         self._perf_analyzer = perf_analyzer
         self._enabled = enabled
 
-        if enabled and self._log_dir is not None:
+        if enabled:
             for file in self._log_dir.iterdir():
                 if file.suffix == ".log":
                     file.unlink()
@@ -84,9 +85,6 @@ class Logger:
         *,
         print=True,
     ):
-        if self._log_dir is None:
-            return
-
         log_file_path = (self._log_dir / report_name).with_suffix(".log")
         self.push_warning(f"{text} See logs at {log_file_path}", print_to_console=print)
 

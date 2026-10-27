@@ -5,9 +5,8 @@ from utils.services.paths import KnownPath
 
 
 class GuildWars2Step(Step):
-    def __init__(self, root_build_dir):
+    def __init__(self):
         super().__init__("GuildWars2")
-        self._root_build_dir = root_build_dir
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("steam")
@@ -18,7 +17,7 @@ class GuildWars2Step(Step):
 
     def _install_burrito(self):
         burrito_version = "1.1.0"
-        dst_dir = self._root_build_dir / f"burrito-{burrito_version}"
+        dst_dir = self._paths.get(KnownPath.BuildDir) / f"burrito-{burrito_version}"
 
         downloaded = ext.download_github_release(
             "AsherGlick",

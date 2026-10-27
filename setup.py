@@ -13,9 +13,6 @@ from utils.setup_mode import SetupMode
 
 # Prepare common paths
 root_dir = Path(__file__).parent
-build_dir = root_dir / "build"
-secret_dir = root_dir / "secret"
-logs_dir = root_dir / "logs"
 
 # Gather all available setup modes
 setup_modes = SetupMode.find_setup_modes()
@@ -39,11 +36,11 @@ args.mode.save_last_mode(root_dir)
 
 enable_logger = not (args.list_steps or args.list_packages)
 enable_perf_analyzer = not (args.list_steps or args.list_packages)
-with Services(root_dir, logs_dir, enable_perf_analyzer, enable_logger) as services:
+with Services(root_dir, enable_perf_analyzer, enable_logger) as services:
     services.assign_to(Step)
 
     Step._logger.log("Initializing steps")
-    steps = args.mode.get_steps(args, build_dir, secret_dir, not args.skip_packages)
+    steps = args.mode.get_steps(args, not args.skip_packages)
 
     execute_steps(
         services,

@@ -4,13 +4,13 @@ from pathlib import Path
 from steps.step import Step
 from utils.command import *
 from utils.os_function import OperatingSystem
+from utils.services.paths import KnownPath
 
 
 class VscodeStepBase(Step):
-    def __init__(self, root_build_dir):
+    def __init__(self):
         super().__init__("Vscode")
-        self._root_build_dir = root_build_dir
-        self._extensions_download_dir = Path(self._root_build_dir) / "vscode-extensions"
+        self._extensions_download_dir = self._paths.get(KnownPath.BuildDir) / "vscode-extensions"
 
         current_step_dir = Path(__file__).parent
         self._keybindings_path = current_step_dir / "keybindings.json"

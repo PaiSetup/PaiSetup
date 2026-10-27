@@ -8,9 +8,9 @@ from utils.services.paths import KnownPath
 
 
 class FontStep(Step):
-    def __init__(self, root_build_dir, full):
+    def __init__(self, full):
         super().__init__("IconFont")
-        self._download_path = root_build_dir / "icon_font"
+        self._download_path = self._paths.get(KnownPath.BuildDir) / "icon_font"
         self._full = full
 
     def push_dependencies(self, dependency_dispatcher):

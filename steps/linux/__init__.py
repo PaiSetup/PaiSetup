@@ -61,12 +61,12 @@ class ArchSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_arch_like()
 
-    def get_steps(self, args, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, install_packages):
         return [
-            PackagesStep(build_dir, True, install_packages),
+            PackagesStep(True, install_packages),
             EnvStep(),
             ShellStep(),
-            GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
             FileAssociationsStep(),
             AudioStep(),
             ClionStep(),
@@ -82,18 +82,18 @@ class ArchSetupMode(SetupMode):
             QBitTorrentStep(),
             GitStep(),
             UlauncherStep(),
-            GuiXorg(full=args.full, root_build_dir=build_dir),
+            GuiXorg(full=args.full),
             AwesomeStep(),
             AlacrittyStep(),
             MultimediaSoftwareStep(),
             DushStep(fetch_git=args.full),
             NushStep(fetch_git=args.full),
-            VscodeStep(build_dir),
+            VscodeStep(),
             NeovimStep(),
             RpiLedStep(),
             UselessStep(),
-            GuildWars2Step(root_build_dir=build_dir),
-            FontStep(root_build_dir=build_dir, full=args.full),
+            GuildWars2Step(),
+            FontStep(full=args.full),
             PlexStep(),
             ProgrammingCppStep(graphics=True, systemc=True),
             ProgrammingPythonStep(),
@@ -103,11 +103,11 @@ class ArchSetupMode(SetupMode):
             ProgrammingGoStep(),
             ProgrammingNodeStep(),
             ClaudeStep(),
-            SshStep(secret_dir, full=args.full),
-            SpievenStep(build_dir),
+            SshStep(full=args.full),
+            SpievenStep(),
             LightDmStep(),
-            EncryptionStep(build_dir),
-            CharonStep(build_dir, full=args.full),
+            EncryptionStep(),
+            CharonStep(full=args.full),
             QtileStep(),
             NotesStep(fetch_git=args.full, use_private_notes=True),
             VirtualBoxStep(),
@@ -123,7 +123,7 @@ class DebianCasualSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_debian_like()
 
-    def get_steps(self, args, build_dir, secret_dir, install_packages):
+    def get_steps(self, args, install_packages):
         return [
             PackagesDebianStep(install_packages),
             EnvStep(),
@@ -134,22 +134,22 @@ class DebianCasualSetupMode(SetupMode):
             UdiskieStep(),
             AudioStep(),
             ThunarStep(),
-            SpievenStep(build_dir),
+            SpievenStep(),
             ShellStep(),
             MultimediaSoftwareStep(),
             QBitTorrentStep(),
-            GuiXorg(full=args.full, root_build_dir=build_dir),
-            FontStep(root_build_dir=build_dir, full=args.full),
+            GuiXorg(full=args.full),
+            FontStep(full=args.full),
             AlacrittyStep(),
-            GtkThemeStep(root_build_dir=build_dir, regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
             FirefoxStep(is_default_browser=True),
             FileAssociationsStep(),
             HomeDirectoryStep(has_multimedia_dir=False),
             UlauncherStep(),
             DushStep(fetch_git=args.full),
             NushStep(fetch_git=args.full),
-            SshStep(secret_dir, full=args.full),
-            VscodeStep(build_dir),
+            SshStep(full=args.full),
+            VscodeStep(),
         ]
 
 

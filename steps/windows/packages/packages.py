@@ -12,7 +12,7 @@ from .package_info import PackageInfo, custom_packages_dir
 
 
 class PackagesStep(Step):
-    def __init__(self, root_build_dir, enable_installation, skip_already_installed, is_main_machine):
+    def __init__(self, enable_installation, skip_already_installed, is_main_machine):
         super().__init__("Packages")
         self._enable_installation = enable_installation
         self._skip_already_installed = skip_already_installed
