@@ -11,9 +11,8 @@ from utils.services.paths import KnownPath
 
 
 class SshStep(Step):
-    def __init__(self, full):
+    def __init__(self):
         super().__init__("Ssh")
-        self._full = full
 
     @windows_only
     def push_dependencies(self, dependency_dispatcher):
@@ -57,7 +56,7 @@ class SshStep(Step):
         public_key = run_command(public_key_command, stdout=Stdout.return_back()).stdout
         self._file_writer.write_lines(ssh_public_key_path, [public_key], file_type=FileType.ConfigFileNoComments)
 
-        if self._full or not ssh_known_hosts_path.exists():
+        if self._flags.strict_download or not ssh_known_hosts_path.exists():
             self._logger.log("Setting up known_hosts for typical sites")
             known_hosts_command = "ssh-keyscan github.com"
             try:

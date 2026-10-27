@@ -30,17 +30,15 @@ class GtkThemeStep(Step):
            of GTK. We have to generate all of them. There's no need to regenerate them after wallpaper change.
     """
 
-    def __init__(self, *, regenerate_widget_theme, regenerate_icon_theme):
+    def __init__(self):
         super().__init__("GtkTheme")
         self._current_step_dir = Path(__file__).parent
 
         # Widget theme
         self._widget_theme_name = "PaiSetupWidgetTheme"
-        self._regenerate_widget_theme = regenerate_widget_theme
 
         # Icon theme
         self._icon_theme_name = "PaiSetupIconTheme"
-        self._regenerate_icon_theme = regenerate_icon_theme
         self._src_icon_theme_path = self._paths.get(KnownPath.BuildDir) / "gtk_icon_theme"
 
         self._emblems_path = self._paths.get(KnownPath.BuildDir) / "gtk_emblems"
@@ -71,7 +69,7 @@ class GtkThemeStep(Step):
         self._generate_gtk3_config()
 
     def _generate_emblems(self, sizes_to_generate):
-        if not self._emblems_path.exists() or self._regenerate_icon_theme:
+        if not self._emblems_path.exists() or self._flags.strict_download:
             self._logger.log(f"Downloading emblems ({self._emblems_path})")
             ext.download_github_zip("PaiSetup", "LinuxEmblems", self._emblems_path, re_download=True)
 
@@ -89,7 +87,7 @@ class GtkThemeStep(Step):
             if scaling_factor * src_size != dst_size:
                 self._logger.push_warning(f"could not generate emblems for size {dst_size} (division not even)")
                 continue
-            if dst_dir.exists() and self._regenerate_icon_theme:
+            if dst_dir.exists() and (self._flags.strict_download or self._flags.strict_build):
                 shutil.rmtree(dst_dir)
 
             # Perform downsizing if needed
@@ -102,7 +100,7 @@ class GtkThemeStep(Step):
 
     def _generate_widget_theme(self):
         dst_widget_theme_path = self._paths.get(KnownPath.DataHome) / "themes" / self._widget_theme_name
-        if dst_widget_theme_path.exists() and not self._regenerate_widget_theme:
+        if dst_widget_theme_path.exists() and not self._flags.strict_build:
             self._logger.log(f"Widget theme already generated")
             return
 
@@ -112,12 +110,12 @@ class GtkThemeStep(Step):
 
     def _generate_icon_theme(self):
         dst_icon_theme_path = self._paths.get(KnownPath.DataHome) / "icons" / self._icon_theme_name
-        if dst_icon_theme_path.exists() and not self._regenerate_icon_theme:
+        if dst_icon_theme_path.exists() and not (self._flags.strict_download or self._flags.strict_build):
             self._logger.log(f"Icon theme already generated")
             return
 
         self._logger.log(f"Downloading icon theme ({self._src_icon_theme_path})")
-        ext.download_github_zip("PaiSetup", "GtkIconTheme", self._src_icon_theme_path, re_download=self._regenerate_icon_theme)
+        ext.download_github_zip("PaiSetup", "GtkIconTheme", self._src_icon_theme_path, re_download=self._flags.strict_download)
 
         self._logger.log(f"Generating icon theme ({dst_icon_theme_path})")
         command = str(self._current_step_dir / "generate_icon_theme.sh")

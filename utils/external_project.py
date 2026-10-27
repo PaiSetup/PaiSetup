@@ -14,8 +14,8 @@ def apply_patch(file):
         run_command(f"git commit -am {file.name}")
 
 
-def should_build(full, binaries):
-    if full:
+def should_build(force, binaries):
+    if force:
         return True
     return any((shutil.which(x) is None for x in binaries))
 

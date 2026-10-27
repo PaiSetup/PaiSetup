@@ -61,12 +61,12 @@ class ArchSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_arch_like()
 
-    def get_steps(self, args, install_packages):
+    def get_steps(self):
         return [
-            PackagesStep(install_packages),
+            PackagesStep(),
             EnvStep(),
             ShellStep(),
-            GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            GtkThemeStep(),
             FileAssociationsStep(),
             AudioStep(),
             ClionStep(),
@@ -82,18 +82,18 @@ class ArchSetupMode(SetupMode):
             QBitTorrentStep(),
             GitStep(),
             UlauncherStep(),
-            GuiXorg(full=args.full),
+            GuiXorg(),
             AwesomeStep(),
             AlacrittyStep(),
             MultimediaSoftwareStep(),
-            DushStep(fetch_git=args.full),
-            NushStep(fetch_git=args.full),
+            DushStep(),
+            NushStep(),
             VscodeStep(),
             NeovimStep(),
             RpiLedStep(),
             UselessStep(),
             GuildWars2Step(),
-            FontStep(full=args.full),
+            FontStep(),
             PlexStep(),
             ProgrammingCppStep(graphics=True, systemc=True),
             ProgrammingPythonStep(),
@@ -103,13 +103,13 @@ class ArchSetupMode(SetupMode):
             ProgrammingGoStep(),
             ProgrammingNodeStep(),
             ClaudeStep(),
-            SshStep(full=args.full),
+            SshStep(),
             SpievenStep(),
             LightDmStep(),
             EncryptionStep(),
-            CharonStep(full=args.full),
+            CharonStep(),
             QtileStep(),
-            NotesStep(fetch_git=args.full, use_private_notes=True),
+            NotesStep(use_private_notes=True),
             VirtualBoxStep(),
             VagrantStep(),
             RaspberryPiStep(),
@@ -123,9 +123,9 @@ class DebianCasualSetupMode(SetupMode):
     def is_compatible(self):
         return LinuxDistro.current().is_debian_like()
 
-    def get_steps(self, args, install_packages):
+    def get_steps(self):
         return [
-            PackagesDebianStep(install_packages),
+            PackagesDebianStep(),
             EnvStep(),
             AwesomeStep(),
             ProgrammingCommonStep(),
@@ -138,17 +138,17 @@ class DebianCasualSetupMode(SetupMode):
             ShellStep(),
             MultimediaSoftwareStep(),
             QBitTorrentStep(),
-            GuiXorg(full=args.full),
-            FontStep(full=args.full),
+            GuiXorg(),
+            FontStep(),
             AlacrittyStep(),
-            GtkThemeStep(regenerate_widget_theme=args.full, regenerate_icon_theme=args.full),
+            GtkThemeStep(),
             FirefoxStep(is_default_browser=True),
             FileAssociationsStep(),
             HomeDirectoryStep(has_multimedia_dir=False),
             UlauncherStep(),
-            DushStep(fetch_git=args.full),
-            NushStep(fetch_git=args.full),
-            SshStep(full=args.full),
+            DushStep(),
+            NushStep(),
+            SshStep(),
             VscodeStep(),
         ]
 

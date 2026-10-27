@@ -55,15 +55,14 @@ class DebianPackageScript(DebianPackage):
 
 
 class PackagesDebianStep(Step):
-    def __init__(self, enable_installation, separate_apt_commands=False):
+    def __init__(self, separate_apt_commands=False):
         super().__init__("Packages")
-        self._enable_installation = enable_installation
         self._separate_apt_commands = separate_apt_commands
         self._package_names = []
         self._debian_package_names = []
 
     def perform(self):
-        if not self._enable_installation:
+        if not self._flags.install_packages:
             return
 
         installed_package_names = PackagesDebianStep._get_installed_packages()

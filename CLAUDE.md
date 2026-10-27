@@ -66,6 +66,12 @@ and available on every `Step` instance:
   Other steps may query them in any phase after initialization (push, pull, perform), but never in
   `__init__()`, since step construction order is undefined. Home (`self._paths.home()`) and the
   PaiSetup root, along with `BuildDir` and `SecretDir`, are the exception - they're set before any step exists, so they can be queried anywhere.
+- **SetupFlags** - options of the current run, resolved from the command line before any step
+  exists, so they can be queried anywhere (`self._flags`). Besides `install_packages`, these are the
+  `strict_*` options: by default the run is as fast as possible and skips work it believes is already
+  done (git fetches, downloads, builds, reinstalls); each `--strict_*` flag turns one kind of shortcut
+  off, and `--strict_full` turns off all of them. Steps read these instead of taking such flags as
+  constructor arguments.
 
 Services are wired up once in `setup.py` and assigned onto the `Step` base class, so any step method
 can just use `self._env`, `self._file_writer`, `self._logger`, etc. without receiving them as

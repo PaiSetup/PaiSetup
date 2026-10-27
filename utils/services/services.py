@@ -6,8 +6,9 @@ from utils.services.perf_analyzer import PerfAnalyzer
 
 
 class Services:
-    def __init__(self, pai_setup_dir, enable_perf_analyzer, enable_logger):
+    def __init__(self, pai_setup_dir, flags, enable_perf_analyzer, enable_logger):
         self._pai_setup_dir = pai_setup_dir
+        self._flags = flags
         self._enable_perf_analyzer = enable_perf_analyzer
         self._enable_logger = enable_logger
 
@@ -34,6 +35,7 @@ class Services:
     def assign_to(self, target):
         target._env = self._env
         target._paths = self._paths
+        target._flags = self._flags
         target._file_writer = self._file_writer
         target._perf_analyzer = self._perf_analyzer
         target._logger = self._logger

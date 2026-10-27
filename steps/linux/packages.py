@@ -7,15 +7,14 @@ from utils.services.paths import KnownPath
 
 
 class PackagesStep(Step):
-    def __init__(self, enable_installation):
+    def __init__(self):
         super().__init__("Packages")
         self._known_package_groups = ["vulkan-devel"]
-        self._enable_installation = enable_installation
         self._packages = []
         self._assumed_packages = []
 
     def perform(self):
-        if not self._enable_installation:
+        if not self._flags.install_packages:
             return
         self._install_yay()
         self._set_yay_permissions()

@@ -137,6 +137,9 @@ Calling OS commands or third-party tools (`systemctl`, package managers, compile
   only run `sudo systemctl enable lightdm.service` if LightDM isn't already the display manager. Other
   examples: compare current vs desired value before setting it, check if a file/dir/symlink already
   matches, use `ext.should_build(...)` before compiling.
+- Make such a shortcut overridable with the matching `self._flags.strict_*` option (see
+  `utils/services/setup_flags.py`), e.g. `fetch=self._flags.strict_download` for git repositories. If
+  content is both downloaded and built, `strict_download` must trigger the build as well.
 Iterating over a short list or reading a file is not slow - don't optimize those.
 
 ### Shelling out

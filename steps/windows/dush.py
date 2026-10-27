@@ -4,8 +4,8 @@ from utils.services.paths import KnownPath
 
 
 class DushStep(DushStepBase):
-    def __init__(self, fetch_git, dush_dir=None):
-        super().__init__("Dush", fetch_git, dush_dir)
+    def __init__(self, dush_dir=None):
+        super().__init__("Dush", dush_dir)
 
     def pull_dependencies(self, dependency_dispatcher):
         self._projects_dir = self._paths.get(KnownPath.Work)

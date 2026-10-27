@@ -3,8 +3,8 @@ from utils.services.paths import KnownPath
 
 
 class NotesStep(NotesStepBase):
-    def __init__(self, fetch_git, use_private_notes, notes_dir=None):
-        super().__init__("Notes", fetch_git, use_private_notes, notes_dir)
+    def __init__(self, use_private_notes, notes_dir=None):
+        super().__init__("Notes", use_private_notes, notes_dir)
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")

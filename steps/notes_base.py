@@ -3,9 +3,8 @@ from steps.step import Step
 
 
 class NotesStepBase(Step):
-    def __init__(self, name, fetch_git, use_private_notes, notes_dir):
+    def __init__(self, name, use_private_notes, notes_dir):
         super().__init__(name)
-        self._fetch_git = fetch_git
         self._use_private_notes = use_private_notes
         self._notes_dir = notes_dir
 
@@ -15,7 +14,7 @@ class NotesStepBase(Step):
             "master",
             self._notes_dir,
             logger=self._logger,
-            fetch=self._fetch_git,
+            fetch=self._flags.strict_download,
         )
 
         if self._use_private_notes:
@@ -24,5 +23,5 @@ class NotesStepBase(Step):
                 "master",
                 self._notes_dir / "_prv",
                 logger=self._logger,
-                fetch=self._fetch_git,
+                fetch=self._flags.strict_download,
             )

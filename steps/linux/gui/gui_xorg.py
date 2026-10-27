@@ -20,9 +20,8 @@ class WindowManagerXorg:
 
 
 class GuiXorg(Step):
-    def __init__(self, full):
+    def __init__(self):
         super().__init__("GuiXorg")
-        self._full = full
         self._window_managers = []
 
     def perform(self):
@@ -98,7 +97,7 @@ class GuiXorg(Step):
         dependency_dispatcher.set_env("X11 paths", "ERRFILE", self._paths.get(KnownPath.CacheHome) / "X11/xsession-errors")
 
     def _compile_color_generator(self):
-        if ext.should_build(self._full, ["colors"]):
+        if ext.should_build(self._flags.strict_download or self._flags.strict_build, ["colors"]):
             self._logger.log('Compiling "colors" binary')
             colors_dir = self._paths.get(KnownPath.BuildDir) / "colors"
             ext.download(
@@ -106,7 +105,7 @@ class GuiXorg(Step):
                 "8edb1839c1d2a62fbd1d4447f802997896c2b0c0",
                 colors_dir,
                 logger=self._logger,
-                fetch=self._full,
+                fetch=self._flags.strict_download,
                 clean=False,
             )
             ext.make(colors_dir, logger=self._logger)

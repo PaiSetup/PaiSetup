@@ -30,14 +30,14 @@ class WindowsSetupMode(SetupMode):
     def get_name(self):
         return "windows"
 
-    def get_steps(self, args, install_packages):
+    def get_steps(self):
         # TODO-WINDOWS check for admin
 
         return [
-            PackagesStep(enable_installation=install_packages, skip_already_installed=True, is_main_machine=True),
+            PackagesStep(is_main_machine=True),
             ActivateWindowsStep(),
             VscodeStep(use_vscodium=True),
-            ExplorerStep(full=args.full),
+            ExplorerStep(),
             ExtensionsStep(),
             HwToolsStep(gaming=True),
             IconsStep(),
@@ -49,11 +49,11 @@ class WindowsSetupMode(SetupMode):
             FoldersStep(root_folder="D:\\"),
             PaiSetupCmdStep(),
             BashStep(),
-            DushStep(fetch_git=True),
-            NotesStep(fetch_git=True, use_private_notes=True),
+            DushStep(),
+            NotesStep(use_private_notes=True),
             GamesStep(),
             GitStep(),
-            SshStep(args.full),
+            SshStep(),
             # VirtualBoxStep(), # TODO-WINDOWS broken package
             MultimediaToolsStep(),
             ProgrammingCommonStep(),

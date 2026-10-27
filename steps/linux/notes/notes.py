@@ -3,9 +3,9 @@ from utils.keybinding import KeyBinding
 
 
 class NotesStep(NotesStepBase):
-    def __init__(self, fetch_git, use_private_notes):
+    def __init__(self, use_private_notes):
         notes_dir = self._paths.home() / "notes"
-        super().__init__("Notes", fetch_git, use_private_notes, notes_dir)
+        super().__init__("Notes", use_private_notes, notes_dir)
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")

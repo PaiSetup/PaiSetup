@@ -12,10 +12,8 @@ from .package_info import PackageInfo, custom_packages_dir
 
 
 class PackagesStep(Step):
-    def __init__(self, enable_installation, skip_already_installed, is_main_machine):
+    def __init__(self, is_main_machine):
         super().__init__("Packages")
-        self._enable_installation = enable_installation
-        self._skip_already_installed = skip_already_installed
         self._is_main_machine = is_main_machine
         self._packages = []
 
@@ -43,9 +41,9 @@ class PackagesStep(Step):
         self._games_dir = self._paths.get(KnownPath.Games, required=False)
 
     def perform(self):
-        if self._enable_installation:
+        if self._flags.install_packages:
             self._logger.log(f"Required packages: {self._packages}")
-            if self._skip_already_installed:
+            if not self._flags.strict_install:
                 packages_to_install = self._get_missing_packages(self._packages)
                 self._logger.log(f"Packages to install: {packages_to_install}")
             else:

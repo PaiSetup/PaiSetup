@@ -22,10 +22,9 @@ class ImmediateCharonCall:
 
 
 class CharonStep(Step):
-    def __init__(self, full):
+    def __init__(self):
         super().__init__("Charon")
         self.charon_dir = self._paths.get(KnownPath.BuildDir) / "charon"
-        self._full = full
 
     def _prepare_immediate_charon_calls(self):
         self._log_file_path = self._paths.get(KnownPath.Log) / "charon"
@@ -82,14 +81,14 @@ class CharonStep(Step):
         self._generate_charon_configs()
 
     def _compile_charon(self):
-        if ext.should_build(self._full, ["Charon"]):
+        if ext.should_build(self._flags.strict_download or self._flags.strict_build, ["Charon"]):
             ext.download(
                 "https://github.com/DziubanMaciej/Charon.git",
                 "23a67b8",
                 self.charon_dir,
                 logger=self._logger,
                 has_submodules=True,
-                fetch=self._full,
+                fetch=self._flags.strict_download,
             )
             ext.cmake(self.charon_dir, cmake_args="-DCMAKE_BUILD_TYPE=Release -DCHARON_TESTS=OFF", logger=self._logger)
             ext.make(self.charon_dir / "build", logger=self._logger)
