@@ -2,6 +2,7 @@ import os
 
 from steps.step import Step
 from utils.command import *
+from utils.services.paths import KnownPath
 
 
 class FileAssociationsStep(Step):
@@ -137,7 +138,7 @@ class FileAssociationsStep(Step):
         ]
 
         associations = [
-            ("thunar.desktop", "inode/directory"),
+            ("thunar.desktop", ["inode/directory"]),
             ("vlc.desktop", video_mimes + audio_mimes),
             ("org.gnome.Rhythmbox3.desktop", music_mimes),
             ("org.nomacs.ImageLounge.desktop", image_mimes),
@@ -153,8 +154,33 @@ class FileAssociationsStep(Step):
         # Check default app of a given file with following command:
         #    xdg-mime query default "$(xdg-mime query filetype "file")"
 
+        current_defaults = self._read_current_defaults()
         for application, mime_types in associations:
+            if not self._flags.strict_build and all(current_defaults.get(x) == application for x in mime_types):
+                self._logger.log(f"{len(mime_types)} already associated with {application}")
+                continue
+
             self._logger.log(f"Associating {len(mime_types)} with {application}")
 
             # This command will update ~/.config/mimeapps.list file
             run_command(f"xdg-mime default {application} {' '.join(mime_types)}")
+
+    def _read_current_defaults(self):
+        # Parse [Default Applications] section of the file xdg-mime writes to. Calling "xdg-mime query default"
+        # instead would be as slow as setting the association.
+        mimeapps_path = self._paths.get(KnownPath.ConfigHome) / "mimeapps.list"
+        try:
+            lines = mimeapps_path.read_text().splitlines()
+        except FileNotFoundError:
+            return {}
+
+        defaults = {}
+        in_defaults_section = False
+        for line in lines:
+            line = line.strip()
+            if line.startswith("["):
+                in_defaults_section = line == "[Default Applications]"
+            elif in_defaults_section and "=" in line:
+                mime_type, applications = line.split("=", 1)
+                defaults[mime_type] = applications.split(";")[0]
+        return defaults
