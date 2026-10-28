@@ -130,6 +130,8 @@ class PackagesDebianStep(Step):
                 pass  # For checkupdates on arch.
             case "libnotify":
                 return DebianPackageApt("libnotify-bin")
+            case "libpulse":
+                return DebianPackageApt("pulseaudio-utils")  # Debian splits out paplay and friends.
             case "eza":
                 dependencies = [
                     "gettext",

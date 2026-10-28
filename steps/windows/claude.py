@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from steps.claude.claude_base import ClaudeStepBase
 
 
@@ -17,8 +19,6 @@ class ClaudeStep(ClaudeStepBase):
     def _get_config_dir(self):
         return self._paths.home() / ".claude"
 
-    def _override_settings(self, settings, statusline_script_path):
-        settings = self._setup_settings_model(settings)
-        settings = self._setup_settings_default_mode(settings)
-        settings = self._setup_settings_statusline(settings, statusline_script_path)
-        return settings
+    def _get_sound_command(self):
+        sound_path = Path(self._env.get("SystemRoot")) / "Media" / "Windows Proximity Notification.wav"
+        return f"powershell -NoProfile -Command \"(New-Object Media.SoundPlayer '{sound_path}').PlaySync()\""
