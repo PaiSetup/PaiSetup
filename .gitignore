@@ -1,5 +1,6 @@
 .vscode
 .lastmode
+.claude/settings.local.json
 *.py[cod]
 desktop.ini
 flamegraph.svg
