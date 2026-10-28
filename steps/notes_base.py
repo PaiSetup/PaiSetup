@@ -3,16 +3,18 @@ from steps.step import Step
 
 
 class NotesStepBase(Step):
-    def __init__(self, name, use_private_notes, notes_dir):
+    def __init__(self, name, use_private_notes):
         super().__init__(name)
         self._use_private_notes = use_private_notes
-        self._notes_dir = notes_dir
 
-    def perform(self):
+    def _get_notes_dir(self):
+        raise NotImplementedError()
+
+    def _download_notes(self, notes_dir):
         ext.download(
             "git@github.com:DziubanMaciej/Notes.git",
             "master",
-            self._notes_dir,
+            notes_dir,
             logger=self._logger,
             fetch=self._flags.strict_download,
         )
@@ -21,7 +23,7 @@ class NotesStepBase(Step):
             ext.download(
                 "git@github.com:DziubanMaciej/NotesPrivate.git",
                 "master",
-                self._notes_dir / "_prv",
+                notes_dir / "_prv",
                 logger=self._logger,
                 fetch=self._flags.strict_download,
             )

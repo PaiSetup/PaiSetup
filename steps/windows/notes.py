@@ -3,13 +3,14 @@ from utils.services.paths import KnownPath
 
 
 class NotesStep(NotesStepBase):
-    def __init__(self, use_private_notes, notes_dir=None):
-        super().__init__("Notes", use_private_notes, notes_dir)
+    def __init__(self, use_private_notes):
+        super().__init__("Notes", use_private_notes)
+
+    def _get_notes_dir(self):
+        return self._paths.get(KnownPath.Root) / "Notes"
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages("obsidian")
 
     def perform(self):
-        if self._notes_dir is None:
-            self._notes_dir = self._paths.get(KnownPath.Root) / "Notes"
-        super().perform()
+        self._download_notes(self._get_notes_dir())
