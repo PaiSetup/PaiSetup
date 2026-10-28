@@ -35,7 +35,7 @@ class KnownPathConflict(Exception):
     pass
 
 
-class KnownPathQueriedTooEarly(Exception):
+class KnownPathWrongPhase(Exception):
     pass
 
 
@@ -49,6 +49,11 @@ class Paths:
         self.set(KnownPath.SecretDir, Path(pai_setup_root) / "secret")
 
     def set(self, known_path, path):
+        # Paths have to be set in __init__() of the step owning them. Setting one later would be
+        # invisible to the steps that already queried it.
+        if self._steps_initialized:
+            raise KnownPathWrongPhase(f"Known path {known_path.name} cannot be set after all steps are initialized")
+
         if known_path in self._paths:
             raise KnownPathConflict(f"Duplicate path: {known_path.name}")
         self._paths[known_path] = Path(path)
@@ -61,7 +66,7 @@ class Paths:
         # on the order in which the steps are constructed.
         # Paths set on construction are always safe to query.
         if not self._steps_initialized and known_path not in (KnownPath.Home, KnownPath.PaiSetup, KnownPath.BuildDir, KnownPath.SecretDir):
-            raise KnownPathQueriedTooEarly(f"Known path {known_path.name} cannot be queried before all steps are initialized")
+            raise KnownPathWrongPhase(f"Known path {known_path.name} cannot be queried before all steps are initialized")
 
         path = self._paths.get(known_path)
         if path is None and required:
