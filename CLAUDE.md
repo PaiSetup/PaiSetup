@@ -16,8 +16,10 @@ Setting up a machine happens in two phases:
   repeatedly as the configuration evolves. Each run re-applies the current configuration; steps
   that detect nothing has changed do little to no work.
 
-`setup.py` needs elevated privileges to do its job: administrator on Windows, and passwordless (or
-interactive) `sudo` on Linux, since many steps write to system locations or install packages.
+`setup.py` needs elevated privileges to do its job, since many steps write to system locations or
+install packages: administrator on Windows, and passwordless (or interactive) `sudo` privileges on
+Linux. On Linux, `setup.py` itself is run as the regular user, not via `sudo` - steps prefix the
+individual commands that need root with `sudo` themselves.
 
 ## Setup modes and steps
 
