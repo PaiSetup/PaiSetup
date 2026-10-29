@@ -1,3 +1,4 @@
+import json
 import re
 from pathlib import Path
 
@@ -33,20 +34,19 @@ class VscodeStepBase(Step):
 
         # Generic
         extensions_command.append("vscode-icons-team.vscode-icons")
+        extensions_command.append("shardulm94.trailing-spaces")
 
         # C++
         cpp_tools_vsix_name = "cpptools-linux-x64.vsix" if OperatingSystem.current().is_linux() else "cpptools-windows-x64.vsix"
         extensions_github.append(("microsoft", "vscode-cpptools", cpp_tools_vsix_name, "ms-vscode.cpptools"))
-        extensions_command.append("matepek.vscode-catch2-test-adapter")
         extensions_command.append("twxs.cmake")
         extensions_command.append("ms-vscode.cmake-tools")
-        extensions_command.append("hbenl.vscode-test-explorer")
         extensions_command.append("xaver.clang-format")
-        extensions_command.append("shardulm94.trailing-spaces")
 
         # Rust
-        extensions_command.append("rust-lang.rust-analyzer")
-        extensions_command.append("vadimcn.vscode-lldb")
+        # TODO move this to ProgrammingRustStep as a dependency. Similar for C++ and Python
+        # extensions_command.append("rust-lang.rust-analyzer")
+        # extensions_command.append("vadimcn.vscode-lldb")
 
         # Python
         if not OperatingSystem.current().is_linux():  # On Arch there is a separate pacman package for this...
@@ -57,22 +57,52 @@ class VscodeStepBase(Step):
         extensions_command.append("ms-python.black-formatter")
 
         # Install everything
-        self._install_extensions_with_commad(extensions_command)
+        installed_extensions = self._get_installed_extensions()
+        self._install_extensions_with_commad(extensions_command, installed_extensions)
         for x in extensions_github:
-            self._install_extension_github(*x)
+            self._install_extension_github(*x, installed_extensions)
         for x in python_packages:
             self._install_python_package(x)
 
-    def _is_extension_installed(self, extension_name):
-        extensions = run_command(f"{self._get_vscode_command()} --list-extensions", shell=True, stdout=Stdout.return_back()).stdout
-        extensions = extensions.split("\n")
-        return extension_name in extensions
+    def _get_installed_extensions(self):
+        def read_json(path, default):
+            if not path.exists():
+                return default
+            with open(path) as file:
+                return json.load(file)
 
-    def _install_extensions_with_commad(self, extension_names):
-        args = (f"--install-extension {x}" for x in extension_names)
-        args = " ".join(args)
-        self._logger.log(f"Installing extensions: {', '.join(extension_names)}")
-        run_command(f"{self._get_vscode_command()} {args}", shell=True)
+        # Read the json files with extensions. The xtensions  uninstalled, but not yet cleaned up from disk are listed
+        # in .obsolete and have to be filtered out.
+        extensions_dir = self._get_vscode_extensions_dir()
+        try:
+            extensions = read_json(extensions_dir / "extensions.json", None)
+            obsolete = read_json(extensions_dir / ".obsolete", {})
+            if extensions is not None:
+                return {
+                    extension["identifier"]["id"].lower()  #
+                    for extension in extensions  #
+                    if not obsolete.get(extension["relativeLocation"], False)  #
+                }
+        except (OSError, ValueError, KeyError, TypeError) as e:
+            self._logger.push_warning(f"Failed to read installed extensions from {extensions_dir}")
+
+        # Fallback to a slower query command in case of problems
+        extensions = run_command(f"{self._get_vscode_command()} --list-extensions", shell=True, stdout=Stdout.return_back()).stdout
+        return {x.strip().lower() for x in extensions.splitlines() if x.strip()}
+
+    def _install_extensions_with_commad(self, extension_names, installed_extensions):
+        if self._flags.strict_install:
+            extensions_to_install = extension_names
+        else:
+            extensions_to_install = [x for x in extension_names if x.lower() not in installed_extensions]
+
+        if extensions_to_install:
+            args = (f"--install-extension {x}" for x in extensions_to_install)
+            args = " ".join(args)
+            self._logger.log(f"Installing extensions: {', '.join(extensions_to_install)}")
+            run_command(f"{self._get_vscode_command()} {args}", shell=True)
+        else:
+            self._logger.log(f"Skipped installing {len(extension_names)} extensions.")
 
     def _install_python_package(self, package_name, import_name=None):
         if import_name is None:
@@ -86,10 +116,13 @@ class VscodeStepBase(Step):
     def _get_vscode_config_dir(self):
         raise NotImplementedError()
 
+    def _get_vscode_extensions_dir(self):
+        raise NotImplementedError()
+
     def _get_vscode_command(self):
         raise NotImplementedError()
 
-    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name):
+    def _install_extension_github(self, repo_owner, repo_name, vsix_name, extension_name, installed_extensions):
         """
         This function is for a handful of extension which are not downloadable by vscode OSS (or vscodium)
         command, because Microsoft says so. So we have to manually pull the .vsix from the web and install
@@ -99,7 +132,7 @@ class VscodeStepBase(Step):
         - extension name - name of the extension once it's installed (run code --list-extensions)
         """
 
-        if self._is_extension_installed(extension_name):
+        if extension_name.lower() in installed_extensions:
             self._logger.log(f"Installing extension {vsix_name} from GitHub (skipped)")
             return
 

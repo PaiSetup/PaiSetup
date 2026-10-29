@@ -158,3 +158,26 @@ results in a second table:
 
 Take "Before"/"After" from the same log lines in both runs. If an optimization didn't help as much as
 expected, say so.
+
+## 7. Verify the shortcut doesn't always kick in
+
+A fast run proves the skip works, but not that the work still happens when it's actually needed - a
+broken check that always says "already done" looks exactly like a successful optimization. After
+reporting the results, propose to the user to test each implemented optimization:
+
+1. For each optimization, propose a command that undoes the state the check looks at, so the step should
+   no longer skip. Explain what it changes and don't run it without the user's approval - it modifies
+   the real machine. For example, for the LightDm check:
+
+   ```bash
+   sudo systemctl disable lightdm.service   # display-manager alias disappears, so the check fails
+   ```
+
+   Other examples: `git -C <repo> reset --hard HEAD~1` for a skipped fetch, deleting a built binary for a
+   skipped build, `yay -R <package>` for a skipped install (only for a harmless package).
+2. Offer to rerun the entire setup (same as step 1) once the condition is removed.
+3. In the log, check that the step really did the work this time - the log line of the skipped action
+   (e.g. `Enabling lightdm.service`) is back, with the original cost - and that the state is restored
+   afterwards (e.g. `systemctl status display-manager` shows lightdm again).
+4. Report per optimization whether it passed (work was done when needed) or failed (still skipped). A
+   failed one is a bug - fix the check, or revert the optimization.

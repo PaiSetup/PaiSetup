@@ -11,10 +11,12 @@ class VscodeStep(VscodeStepBase):
             self._package_name = "vscodium"
             self._binary_name = "codium"
             self._config_dir_name = "VSCodium"
+            self._extensions_dir_name = ".vscode-oss"
         else:
             self._package_name = "vscode"
             self._binary_name = "code"
             self._config_dir_name = "Code"
+            self._extensions_dir_name = ".vscode"
 
     def push_dependencies(self, dependency_dispatcher):
         dependency_dispatcher.add_packages(self._package_name)
@@ -29,6 +31,9 @@ class VscodeStep(VscodeStepBase):
 
     def _get_vscode_config_dir(self):
         return Path(self._env.get("APPDATA")) / self._config_dir_name / "User"
+
+    def _get_vscode_extensions_dir(self):
+        return self._paths.home() / self._extensions_dir_name / "extensions"
 
     def _get_vscode_command(self):
         return self._vscode_command

@@ -50,5 +50,8 @@ class VscodeStep(VscodeStepBase):
     def _get_vscode_config_dir(self):
         return Path(".config/Code/User/")
 
+    def _get_vscode_extensions_dir(self):
+        return self._paths.home() / ".vscode/extensions"
+
     def _get_vscode_command(self):
         return "code"
