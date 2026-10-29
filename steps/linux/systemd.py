@@ -83,5 +83,6 @@ WantedBy=default.target
 """
 
     def _refresh_services(self):
-        self._logger.log("Reloading systemctl daemon.")
-        run_command("systemctl --user daemon-reload")
+        if self._flags.strict_config:
+            self._logger.log("Reloading systemctl daemon.")
+            run_command("systemctl --user daemon-reload")

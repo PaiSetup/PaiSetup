@@ -87,7 +87,7 @@ class GtkThemeStep(Step):
             if scaling_factor * src_size != dst_size:
                 self._logger.push_warning(f"could not generate emblems for size {dst_size} (division not even)")
                 continue
-            if dst_dir.exists() and (self._flags.strict_download or self._flags.strict_build):
+            if dst_dir.exists() and (self._flags.strict_download or self._flags.strict_config):
                 shutil.rmtree(dst_dir)
 
             # Perform downsizing if needed
@@ -100,7 +100,7 @@ class GtkThemeStep(Step):
 
     def _generate_widget_theme(self):
         dst_widget_theme_path = self._paths.get(KnownPath.DataHome) / "themes" / self._widget_theme_name
-        if dst_widget_theme_path.exists() and not self._flags.strict_build:
+        if dst_widget_theme_path.exists() and not self._flags.strict_config:
             self._logger.log(f"Widget theme already generated")
             return
 
@@ -110,7 +110,7 @@ class GtkThemeStep(Step):
 
     def _generate_icon_theme(self):
         dst_icon_theme_path = self._paths.get(KnownPath.DataHome) / "icons" / self._icon_theme_name
-        if dst_icon_theme_path.exists() and not (self._flags.strict_download or self._flags.strict_build):
+        if dst_icon_theme_path.exists() and not (self._flags.strict_download or self._flags.strict_config):
             self._logger.log(f"Icon theme already generated")
             return
 

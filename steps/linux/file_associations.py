@@ -157,7 +157,7 @@ class FileAssociationsStep(Step):
         current_defaults = self._read_current_defaults()
         for application, mime_types in associations:
             already_associated = all(current_defaults.get(x) == application for x in mime_types)
-            if already_associated and not self._flags.strict_build:
+            if already_associated and not self._flags.strict_config:
                 self._logger.log(f"{len(mime_types)} already associated with {application}")
                 continue
 
