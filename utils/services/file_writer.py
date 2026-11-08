@@ -251,7 +251,7 @@ class FileWriter:
         self.remove_file(link)
 
         try:
-            os.symlink(src, link)
+            os.symlink(src, link, target_is_directory=Path(src).is_dir())
         except PermissionError:
             run_command(f"sudo ln -s {src} {link}")
 
@@ -267,7 +267,11 @@ class FileWriter:
     def remove_file(self, path):
         path = self.resolve_path(path)
         try:
-            os.remove(path)
+            # Windows directory symlinks have to be removed like directories
+            if OperatingSystem.current().is_windows() and os.path.islink(path) and os.path.isdir(path):
+                os.rmdir(path)
+            else:
+                os.remove(path)
         except FileNotFoundError:
             pass
         except PermissionError:

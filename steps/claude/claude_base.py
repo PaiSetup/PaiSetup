@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 
+import utils.external_project as ext
 from steps.step import Step
 from utils.services.file_writer import FileType
+from utils.services.paths import KnownPath
 
 
 class ClaudeStepBase(Step):
@@ -19,6 +21,7 @@ class ClaudeStepBase(Step):
 
         self._setup_statusline_script(statusline_link_path)
         self._setup_settings(config_dir, statusline_link_path)
+        self._setup_pai_skills()
 
     def _get_config_dir(self):
         raise NotImplementedError()
@@ -54,6 +57,31 @@ class ClaudeStepBase(Step):
             file_type=FileType.Json,
             skip_recreate=True,
         )
+
+    def _setup_pai_skills(self):
+        pai_skills_dir = self._paths.get(KnownPath.Work) / "PaiSkills"
+        with self._logger.indent("Setting up PaiSkills"):
+            ext.download(
+                "git@github.com:PaiSetup/PaiSkills.git",
+                "master",
+                pai_skills_dir,
+                logger=self._logger,
+                fetch=self._flags.strict_download,
+            )
+
+            self._symlink_skills(pai_skills_dir)
+
+    def _symlink_skills(self, src_dir):
+        skills_dir = self._get_config_dir() / "skills"
+        with self._logger.indent(f"Symlinking skills from {src_dir} to {skills_dir}"):
+            for skill_dir in src_dir.iterdir():
+                if not (skill_dir / "SKILL.md").is_file():
+                    continue
+                self._logger.log(f"Symlinking {skill_dir.name}")
+                self._file_writer.write_symlink(
+                    src=skill_dir,
+                    link=skills_dir / skill_dir.name,
+                )
 
     def _override_settings(self, settings, statusline_link_path):
         settings = self._setup_settings_model(settings)
