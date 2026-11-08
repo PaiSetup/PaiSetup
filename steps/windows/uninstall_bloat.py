@@ -62,11 +62,11 @@ class UninstallBloatStep(Step):
         ]
 
         powershell_script = [
+            "$ProgressPreference = 'SilentlyContinue'",
             "function uninstall_app { param($appName)",
             "",
             "    $output = Get-AppxPackage -Name $appName -AllUsers",
             "    if ($output) {",
-            '        echo "Removing appx package: $appName"',
             "        $output | Remove-AppxPackage -ErrorAction SilentlyContinue",
             "        return",
             "    }",
@@ -89,4 +89,4 @@ class UninstallBloatStep(Step):
 
         for app in unnecessary_microsoft_apps + sponsored_apps:
             powershell_script.append(f"uninstall_app {app}")
-        run_powershell_command(powershell_script, stdout=Stdout.print_to_console())
+        run_powershell_command(powershell_script)
