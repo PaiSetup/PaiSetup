@@ -152,14 +152,15 @@ class ExtensionsStep(Step):
             delete_registry_sub_key_tree(HKLM, rf"SOFTWARE\Classes\{name}", "runas")
             delete_registry_sub_key_tree(HKCU, rf"SOFTWARE\Classes\{name}", "runas")
 
-    def _setup_extension(self, extension, application_key_name, new_file_entry):
+    def _setup_extension(self, extension, application_key_name, new_file_entry, clear_user_choice=True):
         # Default value of the extension key points to application key. It can be empty, meaning
         # there is no application key associated.
         set_registry_value_string(HKCU, rf"SOFTWARE\Classes\{extension}", None, application_key_name, create_keys=True)
 
         # Clear previous settings
         self._clear_new_file_entry(extension)
-        self._clear_user_choice(extension)
+        if clear_user_choice:
+            self._clear_user_choice(extension)
 
         # Setup entry in RMB->New context menu, if requested
         if new_file_entry:
@@ -176,11 +177,10 @@ class ExtensionsStep(Step):
 
     def _setup_extension_powershell(self, extension, description, new_file_entry):
         app_path = run_command("where powershell", stdout=Stdout.return_back()).stdout.strip()
-        open_command = f'"{app_path}" "%1"'
+        open_command = f'"{app_path}" -NoLogo -ExecutionPolicy Bypass -File "%1"'
         application_key_name = f"PaiSetup{extension}"
         icon = f'"{app_path}",0'
         runas = ("Run with powershell (admin)", open_command)
-        default_command = "Run with powershell"  # This command is already present in the system, we don't have to create it
         self._create_application_key(
             application_key_name,
             open_command,
@@ -188,10 +188,9 @@ class ExtensionsStep(Step):
             new_file_entry,
             icon=icon,
             run_as_admin_specification=runas,
-            default_command=default_command,
         )
 
-        self._setup_extension(extension, application_key_name, new_file_entry)
+        self._setup_extension(extension, application_key_name, new_file_entry, clear_user_choice=False)
 
         set_registry_value_string(
             HKCR,
