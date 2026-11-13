@@ -17,6 +17,10 @@ class ClionStep(Step):
             "jetbrains-toolbox",
         )
 
+        # CLion Nova uses bundled NuGet, which creates ~/.nuget/NuGet/NuGet.Config. It can't be redirected. See:
+        #    - https://youtrack-production.pub.aws.intellij.net/issue/CPP-51657
+        dependency_dispatcher.register_homedir_file(".nuget")
+
 
     def perform(self):
         src_config_dir = self._current_step_dir / "config"
